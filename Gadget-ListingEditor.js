@@ -22,7 +22,7 @@ Listing Editor v2.4.2
 ********************************************************************/
 //<nowiki>
 
-module.exports = ( function ( ALLOWED_NAMESPACE ) {
+module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS ) {
 	'use strict';
 
 	/* ***********************************************************************
@@ -57,51 +57,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE ) {
 		var WIKIDATA_URL = '//www.wikidata.org';
 		var WIKIPEDIA_URL = '//en.wikipedia.org';
 		var WIKIDATA_SITELINK_WIKIPEDIA = 'enwiki';
-		var TRANSLATIONS = {
-			'addTitle' : 'Add New Listing',
-			'editTitle' : 'Edit Existing Listing',
-			'syncTitle' : 'Wikidata Sync',
-			'add': 'add listing',
-			'edit': 'edit',
-			'saving': 'Saving...',
-			'submit': 'Submit',
-			'cancel': 'Cancel',
-			'cancelAll': 'Clear all',
-			'preview': 'Preview',
-			'previewOff': 'Preview off',
-			'refresh': '↺', // \ue031 not yet working
-			'refreshTitle': 'Refresh preview',
-			'selectAll': 'Select all',
-			'selectAlternatives': 'Select all values where the alternative is empty.',
-			'validationEmptyListing': 'Please enter either a name or an address',
-			'validationEmail': 'Please ensure the email address is valid',
-			'validationWikipedia': 'Please insert the Wikipedia page title only; not the full URL address',
-			'validationImage': 'Please insert the Commons image title only without any prefix',
-			'image': '', //Local prefix for Image (or File)
-			'added': 'Added listing for ',
-			'updated': 'Updated listing for ',
-			'removed': 'Deleted listing for ',
-			'helpPage': '//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor',
-			'enterCaptcha': 'Enter CAPTCHA',
-			'externalLinks': 'Your edit includes new external links.',
-			// license text should match MediaWiki:Wikimedia-copyrightwarning
-			'licenseText': 'By clicking "Submit", you agree to the <a class="external" target="_blank" href="//wikimediafoundation.org/wiki/Terms_of_use">Terms of use</a>, and you irrevocably agree to release your contribution under the <a class="external" target="_blank" href="//en.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license">CC-BY-SA 3.0 License</a>. You agree that a hyperlink or URL is sufficient attribution under the Creative Commons license.',
-			'ajaxInitFailure': 'Error: Unable to initialize the listing editor',
-			'sharedWikipedia': 'wikipedia',
-			'synchronized': 'synchronized.',
-			'submitApiError': 'Error: The server returned an error while attempting to save the listing, please try again',
-			'submitBlacklistError': 'Error: A value in the data submitted has been blacklisted, please remove the blacklisted pattern and try again',
-			'submitUnknownError': 'Error: An unknown error has been encountered while attempting to save the listing, please try again',
-			'submitHttpError': 'Error: The server responded with an HTTP error while attempting to save the listing, please try again',
-			'submitEmptyError': 'Error: The server returned an empty response while attempting to save the listing, please try again',
-			'viewCommonsPage' : 'view Commons page',
-			'viewWikidataPage' : 'view Wikidata record',
-			'viewWikipediaPage' : 'view Wikipedia page',
-			'wikidataSharedMatch': 'No differences found between local and Wikidata values',
-			'wikidataShared': 'The following data was found in the shared Wikidata record. Update shared fields using these values?',
-			'wikidataSharedNotFound': 'No shared data found in the Wikidata repository',
-			'wikidataSyncBlurb': 'Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally.<p>You are encouraged to go to the Wikidata item and add references for any data you change.',
-		};
 
 		// --------------------------------------------------------------------
 		// TRANSLATE AND CONFIGURE
@@ -165,9 +120,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE ) {
 		var DEFAULT_LISTING_TEMPLATE = 'listing';
 		var LISTING_TYPE_PARAMETER = 'type';
 		var LISTING_CONTENT_PARAMETER = 'content';
-		// selector that identifies the HTML elements into which the 'edit' link
-		// for each listing will be placed
-		var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
 		// The arrays below must include entries for each listing template
 		// parameter in use for each Wikivoyage language version - for example
 		// "name", "address", "phone", etc. If all listing template types use
@@ -505,7 +457,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE ) {
 			DEFAULT_LISTING_TEMPLATE: DEFAULT_LISTING_TEMPLATE,
 			LISTING_TYPE_PARAMETER: LISTING_TYPE_PARAMETER,
 			LISTING_CONTENT_PARAMETER: LISTING_CONTENT_PARAMETER,
-			EDIT_LINK_CONTAINER_SELECTOR: EDIT_LINK_CONTAINER_SELECTOR,
 			ALLOW_UNRECOGNIZED_PARAMETERS: ALLOW_UNRECOGNIZED_PARAMETERS,
 			SECTION_TO_TEMPLATE_TYPE: SECTION_TO_TEMPLATE_TYPE,
 			LISTING_TEMPLATES: LISTING_TEMPLATES,
@@ -1690,25 +1641,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE ) {
 		};
 
 		/**
-		 * Place an "edit" link next to all existing listing tags.
-		 */
-		var addEditButtons = function() {
-			var editButton = $('<span class="vcard-edit-button noprint">')
-				.html('<a href="javascript:" class="listingeditor-edit">'+Config.TRANSLATIONS.edit+'</a>' )
-				.click(function() {
-					initListingEditorDialog(MODE_EDIT, $(this));
-				});
-			// if there is already metadata present add a separator
-			$(Config.EDIT_LINK_CONTAINER_SELECTOR).each(function() {
-				if (!isElementEmpty(this)) {
-					$(this).append('&nbsp;|&nbsp;');
-				}
-			});
-			// append the edit link
-			$(Config.EDIT_LINK_CONTAINER_SELECTOR).append( editButton );
-		};
-
-		/**
 		 * Determine whether a listing entry is within a paragraph rather than
 		 * an entry in a list; inline listings will be formatted slightly
 		 * differently than entries in lists (no newlines in the template syntax,
@@ -2537,18 +2469,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE ) {
 		};
 
 		/**
-		 * Determine if the specified DOM element contains only whitespace or
-		 * whitespace HTML characters (&nbsp;).
-		 */
-		var isElementEmpty = function(element) {
-			var text = $(element).text();
-			if (!text.trim()) {
-				return true;
-			}
-			return (text.trim() == '&nbsp;');
-		};
-
-		/**
 		 * Trim whitespace at the end of a string.
 		 */
 		var rtrim = function(str) {
@@ -2628,7 +2548,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE ) {
 
 		// expose public members
 		return {
-			addEditButtons: addEditButtons,
+			initListingEditorDialog: initListingEditorDialog,
 			MODE_ADD: MODE_ADD,
 			MODE_EDIT: MODE_EDIT,
 			trimDecimal: trimDecimal,

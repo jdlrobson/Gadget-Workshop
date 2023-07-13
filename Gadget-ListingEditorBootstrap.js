@@ -205,7 +205,7 @@ $(function() {
 			return;
 		}
 		wrapContent();
-		mw.hook( 'wikipage.content' ).add( addListingButtons() );
+		mw.hook( 'wikipage.content' ).add( addListingButtons );
 		addEditButtons();
 	};
 	initListingEditor();

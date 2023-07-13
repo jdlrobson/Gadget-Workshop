@@ -3,7 +3,47 @@ $(function() {
 	if ( mw.config.get( 'skin' ) === 'minerva' ) {
 		return;
 	}
-	mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( function () {
-		Core.init();
+
+	// List of namespaces where the editor is allowed
+	var ALLOWED_NAMESPACE = [
+		0, //Main
+		2, //User
+		4, //Wikivoyage
+	];
+
+	/**
+	 * Return false if the current page should not enable the listing editor.
+	 * Examples where the listing editor should not be enabled include talk
+	 * pages, edit pages, history pages, etc.
+	 */
+	var listingEditorAllowedForCurrentPage = function() {
+		var namespace = mw.config.get( 'wgNamespaceNumber' );
+		if (ALLOWED_NAMESPACE.indexOf(namespace)<0) {
+			return false;
+		}
+		if ( mw.config.get('wgAction') != 'view' || $('#mw-revision-info').length
+				|| mw.config.get('wgCurRevisionId') != mw.config.get('wgRevisionId')
+				|| $('#ca-viewsource').length ) {
+			return false;
+		}
+		return true;
+	};
+
+	mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( function ( req ) {
+		var module = req( 'ext.gadget.ListingEditorMain' );
+		/**
+		 * Called on DOM ready, this method initializes the listing editor and
+		 * adds the "add/edit listing" links to sections and existing listings.
+		 */
+		var initListingEditor = function() {
+			var core = module( ALLOWED_NAMESPACE );
+			if (!listingEditorAllowedForCurrentPage()) {
+				return;
+			}
+			module.wrapContent();
+			mw.hook( 'wikipage.content' ).add( core.addListingButtons.bind( this ) );
+			core.addEditButtons();
+		};
+		initListingEditor();
 	} );
 });

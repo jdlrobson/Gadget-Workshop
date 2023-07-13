@@ -22,7 +22,7 @@ Listing Editor v2.4.2
 ********************************************************************/
 //<nowiki>
 
-( function ( mw, $ ) {
+module.exports = ( function ( ALLOWED_NAMESPACE ) {
 	'use strict';
 
 	/* ***********************************************************************
@@ -45,7 +45,7 @@ Listing Editor v2.4.2
 	 * modified for each Wikivoyage language version. Properties in this
 	 * module will be referenced from the other ListingEditor modules.
 	 * ***********************************************************************/
-	var Config = function() {
+	var Config = function( ALLOWED_NAMESPACE ) {
 
 		// --------------------------------------------------------------------
 		// TRANSLATE THE FOLLOWING BASED ON THE WIKIVOYAGE LANGUAGE IN USE
@@ -155,13 +155,6 @@ Listing Editor v2.4.2
 		// If any of these patterns are present on a page then no 'add listing'
 		// buttons will be added to the page
 		var DISALLOW_ADD_LISTING_IF_PRESENT = ['#Cities', '#Other_destinations', '#Islands', '#print-districts' ];
-
-		// List of namespaces where the editor is allowed
-		var ALLOWED_NAMESPACE = [
-			0, //Main
-			2, //User
-			4, //Wikivoyage
-			];
 
 		// --------------------------------------------------------------------
 		// CONFIGURE THE FOLLOWING TO MATCH THE LISTING TEMPLATE PARAMS & OUTPUT
@@ -524,7 +517,7 @@ Listing Editor v2.4.2
 			SYNC_FORM_SELECTOR: SYNC_FORM_SELECTOR,
 			EDITOR_FORM_HTML: EDITOR_FORM_HTML
 		};
-	}();
+	}( ALLOWED_NAMESPACE );
 
 	/* ***********************************************************************
 	 * Callbacks implements custom functionality that may be
@@ -1616,24 +1609,6 @@ Listing Editor v2.4.2
 		var LC = '';
 
 		/**
-		 * Return false if the current page should not enable the listing editor.
-		 * Examples where the listing editor should not be enabled include talk
-		 * pages, edit pages, history pages, etc.
-		 */
-		var listingEditorAllowedForCurrentPage = function() {
-			var namespace = mw.config.get( 'wgNamespaceNumber' );
-			if (Config.ALLOWED_NAMESPACE.indexOf(namespace)<0) {
-				return false;
-			}
-			if ( mw.config.get('wgAction') != 'view' || $('#mw-revision-info').length
-					|| mw.config.get('wgCurRevisionId') != mw.config.get('wgRevisionId')
-					|| $('#ca-viewsource').length ) {
-				return false;
-			}
-			return true;
-		};
-
-		/**
 		 * Generate the form UI for the listing editor. If editing an existing
 		 * listing, pre-populate the form input fields with the existing values.
 		 */
@@ -2607,19 +2582,6 @@ Listing Editor v2.4.2
 		};
 
 		/**
-		 * Called on DOM ready, this method initializes the listing editor and
-		 * adds the "add/edit listing" links to sections and existing listings.
-		 */
-		var initListingEditor = function() {
-			if (!listingEditorAllowedForCurrentPage()) {
-				return;
-			}
-			wrapContent();
-			mw.hook( 'wikipage.content' ).add( addListingButtons.bind( this ) );
-			addEditButtons();
-		};
-
-		/**
 		 * Parse coordinates in DMS notation, to convert it into DD notation in Wikidata format (i.e. without "°" symbol).
 		 * If the input is already in DD notation, input value is returned unchanged.
 		 * Notes:
@@ -2681,16 +2643,18 @@ Listing Editor v2.4.2
 
 		// expose public members
 		return {
+			addEditButtons: addEditButtons,
+			wrapContent: wrapContent,
 			MODE_ADD: MODE_ADD,
 			MODE_EDIT: MODE_EDIT,
 			trimDecimal: trimDecimal,
-			parseDMS: parseDMS,
-			init: initListingEditor
+			addListingButtons: addListingButtons,
+			parseDMS: parseDMS
 		};
 	}();
 
-	module.exports = Core;
+	return Core;
 
-} ( mediaWiki, jQuery ) );
+} );
 
 //</nowiki>

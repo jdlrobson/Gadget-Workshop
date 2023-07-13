@@ -140,11 +140,13 @@ $(function() {
 	/**
 	 * Place an "edit" link next to all existing listing tags.
 	 */
-	var addEditButtons = function( core ) {
+	var addEditButtons = function() {
 		var editButton = $('<span class="vcard-edit-button noprint">')
 			.html('<a href="javascript:" class="listingeditor-edit">'+TRANSLATIONS.edit+'</a>' )
-			.click(function() {
-				core.initListingEditorDialog(MODE_EDIT, $(this));
+			.on('click', function() {
+				loadMain().then( function ( core ) {
+					core.initListingEditorDialog(MODE_EDIT, $(this));
+				} );
 			});
 		// if there is already metadata present add a separator
 		$(EDIT_LINK_CONTAINER_SELECTOR).each(function() {
@@ -168,7 +170,7 @@ $(function() {
 	 * Place an "add listing" link at the top of each section heading next to
 	 * the "edit" link in the section heading.
 	 */
-	var addListingButtons = function( core ) {
+	var addListingButtons = function() {
 		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
 			return false;
 		}
@@ -188,23 +190,23 @@ $(function() {
 			}
 		}
 		$('.listingeditor-add').click(function() {
-			core.initListingEditorDialog(core.MODE_ADD, $(this));
+			loadMain().then( function ( core ) {
+				core.initListingEditorDialog(core.MODE_ADD, $(this));
+			} );
 		});
 	};
 
-	loadMain().then( function ( core ) {
-		/**
-		 * Called on DOM ready, this method initializes the listing editor and
-		 * adds the "add/edit listing" links to sections and existing listings.
-		 */
-		var initListingEditor = function() {
-			if (!listingEditorAllowedForCurrentPage()) {
-				return;
-			}
-			wrapContent();
-			mw.hook( 'wikipage.content' ).add( addListingButtons( core ) );
-			addEditButtons( core );
-		};
-		initListingEditor();
-	} );
+	/**
+	 * Called on DOM ready, this method initializes the listing editor and
+	 * adds the "add/edit listing" links to sections and existing listings.
+	 */
+	var initListingEditor = function() {
+		if (!listingEditorAllowedForCurrentPage()) {
+			return;
+		}
+		wrapContent();
+		mw.hook( 'wikipage.content' ).add( addListingButtons() );
+		addEditButtons();
+	};
+	initListingEditor();
 });

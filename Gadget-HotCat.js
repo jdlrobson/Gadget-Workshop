@@ -2985,6 +2985,32 @@ For use with older versions of MediaWiki, use the archived versions below:
 		return ( result && result.length ) ? result[ 0 ] : null;
 	}
 
+	function enableAMC() {
+		var api = new mw.Api();
+		return api.saveOption( 'mf_amc_optin', '1' ).then( function () {
+			if ( window.confirm( 'Please reload your page to use hotcat.' ) ) {
+				location.reload();
+			}
+		}, function () {
+			console.warn( 'Unable to setup HotCat' );
+		} );
+	}
+
+	function showWarning( text ) {
+		var warning = document.createElement( 'div' );
+		warning.setAttribute( 'style', 'padding: 20px; background: orange; color: #333; font-weight: bold; margin-top: 20px;' );
+		warning.textContent = text;
+		var btn = document.createElement( 'button' );
+		btn.classList.add( 'mw-ui-button', 'cdx-button' );
+		btn.style.display = 'block';
+		btn.textContent = 'Enable HotCat on this page';
+		btn.addEventListener( 'click', function () {
+			enableAMC();
+		} );
+		warning.appendChild( btn );
+		document.getElementById( 'mw-content-text' ).appendChild( warning );
+	}
+
 	function setup( additionalWork ) {
 		if ( initialized ) return;
 		initialized = true;
@@ -3003,17 +3029,8 @@ For use with older versions of MediaWiki, use the archived versions below:
 
 			// Workaround for T24660
 			if ( mw.config.get('skin') === 'minerva' ) {
-				if ( mw.user.isAnon() ) {
-					console.warn( 'HotCat currently does not work for anonymous users on mobile' );
-				} else if ( document.body.classList.contains('mw-mf-amc-disabled') ) {
-					var api = new mw.Api();
-					return api.saveOption( 'mf_amc_optin', '1' ).then( function () {
-						if ( window.confirm( 'Please reload your page to use hotcat.' ) ) {
-							location.reload();
-						}
-					}, function () {
-						console.warn( 'Unable to setup HotCat' );
-					} );
+				if ( document.body.classList.contains('mw-mf-amc-disabled') ) {
+					showWarning( 'HotCat requires AMC mode.' );
 				}
 			}
 			var footer = null;

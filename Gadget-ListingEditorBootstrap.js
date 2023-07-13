@@ -163,7 +163,7 @@ $(function() {
 	 */
 	var insertAddListingPlaceholder = function(parentHeading) {
 		var editSection = $(parentHeading).next('.mw-editsection');
-		editSection.append('<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">'+Config.TRANSLATIONS.add+'</a><span class="mw-editsection-bracket">]</span>');
+		editSection.append('<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">'+TRANSLATIONS.add+'</a><span class="mw-editsection-bracket">]</span>');
 	};
 
 	/**

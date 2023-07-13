@@ -4,6 +4,25 @@ $(function() {
 		return;
 	}
 
+	// --------------------------------------------------------------------
+	// UPDATE THE FOLLOWING TO MATCH WIKIVOYAGE ARTICLE SECTION NAMES
+	// --------------------------------------------------------------------
+
+	// map section heading ID to the listing template to use for that section
+	var SECTION_TO_TEMPLATE_TYPE = {
+		'See': 'see',
+		'Do': 'do',
+		'Buy': 'buy',
+		'Eat': 'eat',
+		'Drink': 'drink',
+		'Sleep': 'sleep',
+		'Connect': 'listing',
+		'Wait': 'see',
+		'See_and_do': 'see',
+		'Eat_and_drink': 'eat',
+		'Get_in': 'go',
+		'Get_around': 'go',
+	};
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
 	var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
@@ -15,6 +34,10 @@ $(function() {
 		2, //User
 		4, //Wikivoyage
 	];
+
+	// If any of these patterns are present on a page then no 'add listing'
+	// buttons will be added to the page
+	var DISALLOW_ADD_LISTING_IF_PRESENT = ['#Cities', '#Other_destinations', '#Islands', '#print-districts' ];
 
 	/**
 	 * Determine if the specified DOM element contains only whitespace or
@@ -126,6 +149,42 @@ $(function() {
 		$(EDIT_LINK_CONTAINER_SELECTOR).append( editButton );
 	};
 
+	/**
+	 * Utility function for appending the "add listing" link text to a heading.
+	 */
+	var insertAddListingPlaceholder = function(parentHeading) {
+		var editSection = $(parentHeading).next('.mw-editsection');
+		editSection.append('<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">'+Config.TRANSLATIONS.add+'</a><span class="mw-editsection-bracket">]</span>');
+	};
+
+	/**
+	 * Place an "add listing" link at the top of each section heading next to
+	 * the "edit" link in the section heading.
+	 */
+	var addListingButtons = function( core ) {
+		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
+			return false;
+		}
+		for (var sectionId in SECTION_TO_TEMPLATE_TYPE) {
+			// do not search using "#id" for two reasons. one, the article might
+			// re-use the same heading elsewhere and thus have two of the same ID.
+			// two, unicode headings are escaped ("è" becomes ".C3.A8") and the dot
+			// is interpreted by JQuery to indicate a child pattern unless it is
+			// escaped
+			var topHeading = $('h2 [id="' + sectionId + '"]');
+			if (topHeading.length) {
+				insertAddListingPlaceholder(topHeading);
+				var parentHeading = topHeading.closest('div.mw-h2section');
+				$('h3 .mw-headline', parentHeading).each(function() {
+					insertAddListingPlaceholder(this);
+				});
+			}
+		}
+		$('.listingeditor-add').click(function() {
+			core.initListingEditorDialog(core.MODE_ADD, $(this));
+		});
+	};
+
 	mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( function ( req ) {
 		var module = req( 'ext.gadget.ListingEditorMain' );
 		/**
@@ -133,12 +192,12 @@ $(function() {
 		 * adds the "add/edit listing" links to sections and existing listings.
 		 */
 		var initListingEditor = function() {
-			var core = module( ALLOWED_NAMESPACE, TRANSLATIONS );
+			var core = module( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLATE_TYPE );
 			if (!listingEditorAllowedForCurrentPage()) {
 				return;
 			}
 			wrapContent();
-			mw.hook( 'wikipage.content' ).add( core.addListingButtons.bind( this ) );
+			mw.hook( 'wikipage.content' ).add( addListingButtons( core ) );
 			addEditButtons( core );
 		};
 		initListingEditor();

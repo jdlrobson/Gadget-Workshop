@@ -22,7 +22,7 @@ Listing Editor v2.4.2
 ********************************************************************/
 //<nowiki>
 
-module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS ) {
+module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLATE_TYPE ) {
 	'use strict';
 
 	/* ***********************************************************************
@@ -87,29 +87,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS ) {
 		// if the flag is set to true then unrecognized parameters will be allowed
 		// as long as they have a non-empty value.
 		var ALLOW_UNRECOGNIZED_PARAMETERS = true;
-
-		// --------------------------------------------------------------------
-		// UPDATE THE FOLLOWING TO MATCH WIKIVOYAGE ARTICLE SECTION NAMES
-		// --------------------------------------------------------------------
-
-		// map section heading ID to the listing template to use for that section
-		var SECTION_TO_TEMPLATE_TYPE = {
-			'See': 'see',
-			'Do': 'do',
-			'Buy': 'buy',
-			'Eat': 'eat',
-			'Drink': 'drink',
-			'Sleep': 'sleep',
-			'Connect': 'listing',
-			'Wait': 'see',
-			'See_and_do': 'see',
-			'Eat_and_drink': 'eat',
-			'Get_in': 'go',
-			'Get_around': 'go',
-		};
-		// If any of these patterns are present on a page then no 'add listing'
-		// buttons will be added to the page
-		var DISALLOW_ADD_LISTING_IF_PRESENT = ['#Cities', '#Other_destinations', '#Islands', '#print-districts' ];
 
 		// --------------------------------------------------------------------
 		// CONFIGURE THE FOLLOWING TO MATCH THE LISTING TEMPLATE PARAMS & OUTPUT
@@ -452,7 +429,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS ) {
 			WIKIDATA_SITELINK_WIKIPEDIA: WIKIDATA_SITELINK_WIKIPEDIA,
 			TRANSLATIONS: TRANSLATIONS,
 			MAX_DIALOG_WIDTH: MAX_DIALOG_WIDTH,
-			DISALLOW_ADD_LISTING_IF_PRESENT: DISALLOW_ADD_LISTING_IF_PRESENT,
 			ALLOWED_NAMESPACE: ALLOWED_NAMESPACE,
 			DEFAULT_LISTING_TEMPLATE: DEFAULT_LISTING_TEMPLATE,
 			LISTING_TYPE_PARAMETER: LISTING_TYPE_PARAMETER,
@@ -1605,42 +1581,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS ) {
 		};
 
 		/**
-		 * Place an "add listing" link at the top of each section heading next to
-		 * the "edit" link in the section heading.
-		 */
-		var addListingButtons = function() {
-			if ($(Config.DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
-				return false;
-			}
-			for (var sectionId in Config.SECTION_TO_TEMPLATE_TYPE) {
-				// do not search using "#id" for two reasons. one, the article might
-				// re-use the same heading elsewhere and thus have two of the same ID.
-				// two, unicode headings are escaped ("è" becomes ".C3.A8") and the dot
-				// is interpreted by JQuery to indicate a child pattern unless it is
-				// escaped
-				var topHeading = $('h2 [id="' + sectionId + '"]');
-				if (topHeading.length) {
-					insertAddListingPlaceholder(topHeading);
-					var parentHeading = topHeading.closest('div.mw-h2section');
-					$('h3 .mw-headline', parentHeading).each(function() {
-						insertAddListingPlaceholder(this);
-					});
-				}
-			}
-			$('.listingeditor-add').click(function() {
-				initListingEditorDialog(MODE_ADD, $(this));
-			});
-		};
-
-		/**
-		 * Utility function for appending the "add listing" link text to a heading.
-		 */
-		var insertAddListingPlaceholder = function(parentHeading) {
-			var editSection = $(parentHeading).next('.mw-editsection');
-			editSection.append('<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">'+Config.TRANSLATIONS.add+'</a><span class="mw-editsection-bracket">]</span>');
-		};
-
-		/**
 		 * Determine whether a listing entry is within a paragraph rather than
 		 * an entry in a list; inline listings will be formatted slightly
 		 * differently than entries in lists (no newlines in the template syntax,
@@ -2552,7 +2492,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS ) {
 			MODE_ADD: MODE_ADD,
 			MODE_EDIT: MODE_EDIT,
 			trimDecimal: trimDecimal,
-			addListingButtons: addListingButtons,
 			parseDMS: parseDMS
 		};
 	}();

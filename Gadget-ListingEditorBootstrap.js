@@ -29,6 +29,21 @@ $(function() {
 		return true;
 	};
 
+	/**
+	 * Wrap the h2/h3 heading tag and everything up to the next section
+	 * (including sub-sections) in a div to make it easier to traverse the DOM.
+	 * This change introduces the potential for code incompatibility should the
+	 * div cause any CSS or UI conflicts.
+	 */
+	var wrapContent = function() {
+		$('#bodyContent h2').each(function(){
+			$(this).nextUntil("h1, h2").addBack().wrapAll('<div class="mw-h2section" />');
+		});
+		$('#bodyContent h3').each(function(){
+			$(this).nextUntil("h1, h2, h3").addBack().wrapAll('<div class="mw-h3section" />');
+		});
+	};
+
 	mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( function ( req ) {
 		var module = req( 'ext.gadget.ListingEditorMain' );
 		/**
@@ -40,7 +55,7 @@ $(function() {
 			if (!listingEditorAllowedForCurrentPage()) {
 				return;
 			}
-			module.wrapContent();
+			wrapContent();
 			mw.hook( 'wikipage.content' ).add( core.addListingButtons.bind( this ) );
 			core.addEditButtons();
 		};

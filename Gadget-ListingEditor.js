@@ -1654,21 +1654,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE ) {
 		};
 
 		/**
-		 * Wrap the h2/h3 heading tag and everything up to the next section
-		 * (including sub-sections) in a div to make it easier to traverse the DOM.
-		 * This change introduces the potential for code incompatibility should the
-		 * div cause any CSS or UI conflicts.
-		 */
-		var wrapContent = function() {
-			$('#bodyContent h2').each(function(){
-				$(this).nextUntil("h1, h2").addBack().wrapAll('<div class="mw-h2section" />');
-			});
-			$('#bodyContent h3').each(function(){
-				$(this).nextUntil("h1, h2, h3").addBack().wrapAll('<div class="mw-h3section" />');
-			});
-		};
-
-		/**
 		 * Place an "add listing" link at the top of each section heading next to
 		 * the "edit" link in the section heading.
 		 */
@@ -2644,7 +2629,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE ) {
 		// expose public members
 		return {
 			addEditButtons: addEditButtons,
-			wrapContent: wrapContent,
 			MODE_ADD: MODE_ADD,
 			MODE_EDIT: MODE_EDIT,
 			trimDecimal: trimDecimal,

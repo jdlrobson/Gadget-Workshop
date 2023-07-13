@@ -481,7 +481,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		 */
 		var initStringFormFields = function(form, mode) {
 			var STRING_SELECTOR = '.listing-charinsert';
-			$(STRING_SELECTOR, form).click(function() {
+			$(STRING_SELECTOR, form).on( 'click', function() {
 				var target = $(this).attr('data-for');
 				var fieldInput = $('#'+target);
 				var caretPos = fieldInput[0].selectionStart;
@@ -710,7 +710,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 				return $("<li>").data('ui-autocomplete-item', item).append($("<a>").html(label)).appendTo(ul);
 			};
 			// add a listener to the "remove" button so that links can be deleted
-			$('#wikidata-remove', form).click(function() {
+			$('#wikidata-remove', form).on( 'click', function() {
 				wikidataRemove(form);
 			});
 			$('#input-wikidata-label', form).change(function() {
@@ -724,15 +724,15 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 				$("#wikidata-value-display-container", form).hide();
 				$('#div_wikidata_update', form).hide();
 			};
-			$('#wp-wd', form).click(function() {
+			$('#wp-wd', form).on( 'click', function() {
 				var wikipediaLink = $("#input-wikipedia", form).val();
 				getWikidataFromWikipedia(wikipediaLink, form);
 			});
-			$('#wikidata-shared', form).click(function() {
+			$('#wikidata-shared', form).on( 'click', function() {
 				var wikidataRecord = $("#input-wikidata-value", form).val();
 				updateWikidataSharedFields(wikidataRecord);
 			});
-			$('#wikidata-shared-quick', form).click(function() {
+			$('#wikidata-shared-quick', form).on( 'click', function() {
 				var wikidataRecord = $("#input-wikidata-value", form).val();
 				quickUpdateWikidataSharedFields(wikidataRecord);
 			});
@@ -960,15 +960,15 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 				}
 				wikidataLink("", $("#input-wikidata-value").val()); // called to append the Wikidata link to the dialog title
 
-				$('.clear').click( function() {
+				$('.clear').on( 'click',  function() {
 					$(Config.SYNC_FORM_SELECTOR).find('input:radio:not([id]):enabled').prop('checked', true);
 				});
-				$('.syncSelect').click( function() {
+				$('.syncSelect').on( 'click',  function() {
 					var field = $(this).attr('name'); // wv or wd
 					$(Config.SYNC_FORM_SELECTOR + ' input[type=radio]').prop('checked', false);
 					$(Config.SYNC_FORM_SELECTOR + ' input[id$='+field+']').prop('checked', true);
 				});
-				$('#autoSelect').click( function() { // auto select non-empty values
+				$('#autoSelect').on( 'click',  function() { // auto select non-empty values
 					$(Config.SYNC_FORM_SELECTOR).find('.choose-row').each(function () {
 						var WD_value = $(this).find('label:first').text().trim().length;
 						var WV_value = $(this).find('label:last').text().trim().length;

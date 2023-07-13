@@ -189,7 +189,7 @@ $(function() {
 				});
 			}
 		}
-		$('.listingeditor-add').click(function() {
+		$('.listingeditor-add').on('click', function() {
 			loadMain().then( function ( core ) {
 				core.initListingEditorDialog(core.MODE_ADD, $(this));
 			} );

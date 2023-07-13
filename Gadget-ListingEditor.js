@@ -22,12 +22,9 @@ Listing Editor v2.4.2
 ********************************************************************/
 //<nowiki>
 
-var ListingEditor = ( function ( mw, $ ) {
+( function ( mw, $ ) {
 	'use strict';
-	// (oldid=4687849)[[Wikivoyage:Travellers%27_pub#c-WhatamIdoing-20230630083400-FredTC-20230630053700]]
-	if ( mw.config.get( 'skin' ) === 'minerva' ) {
-		return;
-	}
+
 	/* ***********************************************************************
 	 * CUSTOMIZATION INSTRUCTIONS:
 	 *
@@ -2692,9 +2689,7 @@ var ListingEditor = ( function ( mw, $ ) {
 		};
 	}();
 
-	$(document).ready(function() {
-		Core.init();
-	});
+	module.exports = Core;
 
 } ( mediaWiki, jQuery ) );
 

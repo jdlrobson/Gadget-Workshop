@@ -130,6 +130,13 @@ $(function() {
 		});
 	};
 
+	function loadMain() {
+		return mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( function ( req ) {
+			var module = req( 'ext.gadget.ListingEditorMain' );
+			return module( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLATE_TYPE );
+		} );
+	}
+
 	/**
 	 * Place an "edit" link next to all existing listing tags.
 	 */
@@ -185,14 +192,12 @@ $(function() {
 		});
 	};
 
-	mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( function ( req ) {
-		var module = req( 'ext.gadget.ListingEditorMain' );
+	loadMain().then( function ( core ) {
 		/**
 		 * Called on DOM ready, this method initializes the listing editor and
 		 * adds the "add/edit listing" links to sections and existing listings.
 		 */
 		var initListingEditor = function() {
-			var core = module( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLATE_TYPE );
 			if (!listingEditorAllowedForCurrentPage()) {
 				return;
 			}

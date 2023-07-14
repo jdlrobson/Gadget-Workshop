@@ -107,7 +107,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			checkin: { hideDivIfEmpty: null, skipIfEmpty: false },
 			checkout: { hideDivIfEmpty: null, skipIfEmpty: false }
 		},
-		LISTING_TEMPLATE_PARAMETERS_ITWIKIVOYAGE: {
+		LISTING_TEMPLATE_PARAMETERS: {
 			'tipo': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
 			'nome': { id:'input-name' },
 			'alt': { id:'input-alt' },

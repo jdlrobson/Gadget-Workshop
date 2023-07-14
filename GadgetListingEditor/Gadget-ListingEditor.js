@@ -27,26 +27,6 @@ Listing Editor v3.0.0alpha
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	'use strict';
 
-	/* ***********************************************************************
-	 * CUSTOMIZATION INSTRUCTIONS:
-	 *
-	 * Different Wikivoyage language versions have different implementations of
-	 * the listing template, so this module must be customized for each. The
-	 * Config and Callbacks modules should be the
-	 * ONLY code that requires customization - Core should be
-	 * shared across all language versions. If for some reason the Core module
-	 * must be modified, ideally the module should be modified for all language
-	 * versions so that the code can stay in sync.
-	 * ***********************************************************************/
-
-	// see http://toddmotto.com/mastering-the-module-pattern/ for an overview
-	// of the module design pattern being used in this gadget
-
-	/* ***********************************************************************
-	 * Config contains properties that will likely need to be
-	 * modified for each Wikivoyage language version. Properties in this
-	 * module will be referenced from the other ListingEditor modules.
-	 * ***********************************************************************/
 	var PROJECT_CONFIG_ENWIKIVOYAGE = {
 		iata: function ( value ) {
 			return `{{IATA|${value}}}`
@@ -314,9 +294,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var WIKIPEDIA_URL = '//' + PAGE_VIEW_LANGUAGE + '.wikipedia.org';
 		var WIKIDATA_SITELINK_WIKIPEDIA = LANG + 'wiki';
 
-		// --------------------------------------------------------------------
-		// TRANSLATE AND CONFIGURE
-		// --------------------------------------------------------------------
 		//	- doNotUpload: hide upload option
 		//	- remotely_sync: for fields which can auto-acquire values, leave the local value blank when syncing
 
@@ -341,10 +318,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			'image':		{ 'p': 'P18', 'label': 'image', 'fields': lookupField( 'P18'), 'remotely_sync': true, }
 		};
 
-		// --------------------------------------------------------------------
-		// CONFIGURE THE FOLLOWING BASED ON WIKIVOYAGE COMMUNITY PREFERENCES
-		// --------------------------------------------------------------------
-
 		// if the browser window width is less than MAX_DIALOG_WIDTH (pixels), the
 		// listing editor dialog will fill the available space, otherwise it will
 		// be limited to the specified width
@@ -355,10 +328,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		// if the flag is set to true then unrecognized parameters will be allowed
 		// as long as they have a non-empty value.
 		var ALLOW_UNRECOGNIZED_PARAMETERS = PROJECT_CONFIG.ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP;
-
-		// --------------------------------------------------------------------
-		// CONFIGURE THE FOLLOWING TO MATCH THE LISTING TEMPLATE PARAMS & OUTPUT
-		// --------------------------------------------------------------------
 
 		// name of the generic listing template to use when a more specific
 		// template ("see", "do", etc) is not appropriate

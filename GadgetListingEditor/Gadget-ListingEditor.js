@@ -49,6 +49,29 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		iata: function ( value ) {
 			return `{{IATA|${value}}}`
 		},
+		DEFAULT_PLACEHOLDERS: {
+			'name':				'name of place',
+			'alt':				'also known as',
+			'url':				'https://www.example.com',
+			'address':			'address of place',
+			'directions':		'how to get here',
+			'phone':			'+55 555 555 5555',
+			'tollfree':			'+1 800 100 1000',
+			'fax':				'+55 555 555 555',
+			'email':			'info@example.com',
+			'lastedit':			'2020-01-15',
+			'lat':				'11.11111',
+			'long':				'111.11111',
+			'hours':			'9AM-5PM or 09:00-17:00',
+			'checkin':			'check in time',
+			'checkout':			'check out time',
+			'price':			'entry or service price',
+			'wikidata-label':	'wikidata record',
+			'wikipedia':		'wikipedia article',
+			'image':			'image of place',
+			'content':			'description of place',
+			'summary':			'reason listing was changed'
+		},
 		WIKIDATAID: '19826574',
 		SPECIAL_CHARS: []
 	};
@@ -259,29 +282,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		var INTL_CURRENCIES = [ '€', '$', '£', '¥', '₩' ];
 		var SPECIAL_CHARS = PROJECT_CONFIG.SPECIAL_CHARS;
 		
-		var DEFAULT_PLACEHOLDERS = {
-			'name':				'name of place',
-			'alt':				'also known as',
-			'url':				'https://www.example.com',
-			'address':			'address of place',
-			'directions':		'how to get here',
-			'phone':			'+55 555 555 5555',
-			'tollfree':			'+1 800 100 1000',
-			'fax':				'+55 555 555 555',
-			'email':			'info@example.com',
-			'lastedit':			'2020-01-15',
-			'lat':				'11.11111',
-			'long':				'111.11111',
-			'hours':			'9AM-5PM or 09:00-17:00',
-			'checkin':			'check in time',
-			'checkout':			'check out time',
-			'price':			'entry or service price',
-			'wikidata-label':	'wikidata record',
-			'wikipedia':		'wikipedia article',
-			'image':			'image of place',
-			'content':			'description of place',
-			'summary':			'reason listing was changed'
-		};
+		var DEFAULT_PLACEHOLDERS = PROJECT_CONFIG.DEFAULT_PLACEHOLDERS;
 
 		// the below HTML is the UI that will be loaded into the listing editor
 		// dialog box when a listing is added or edited. EACH WIKIVOYAGE

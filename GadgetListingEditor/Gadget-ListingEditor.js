@@ -76,6 +76,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			'content':			'description of place',
 			'summary':			'reason listing was changed'
 		},
+		SLEEP_TEMPLATE_PARAMETERS: {
+			'hours': { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
+			'checkin': { hideDivIfEmpty: null, skipIfEmpty: false },
+			'checkout': { hideDivIfEmpty: null, skipIfEmpty: false }
+		},
 		LISTING_TEMPLATE_PARAMETERS: {
 			'type': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
 			'name': { id:'input-name' },
@@ -249,11 +254,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		var LISTING_TEMPLATE_PARAMETERS = PROJECT_CONFIG.LISTING_TEMPLATE_PARAMETERS;
 		// override the default settings for "sleep" listings since that
 		// listing type uses "checkin"/"checkout" instead of "hours"
-		var SLEEP_TEMPLATE_PARAMETERS = $.extend(true, {}, LISTING_TEMPLATE_PARAMETERS, {
-			'hours': { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
-			'checkin': { hideDivIfEmpty: null, skipIfEmpty: false },
-			'checkout': { hideDivIfEmpty: null, skipIfEmpty: false }
-		});
+		var SLEEP_TEMPLATE_PARAMETERS = $.extend(true, {}, LISTING_TEMPLATE_PARAMETERS, PROJECT_CONFIG.SLEEP_TEMPLATE_PARAMETERS );
+
 		// map the template name to configuration information needed by the listing
 		// editor
 		var LISTING_TEMPLATES = {

@@ -30,7 +30,7 @@ $(function() {
 		'See_and_do': 'see',
 		'Eat_and_drink': 'eat',
 		'Get_in': 'go',
-		'Get_around': 'go',
+		'Get_around': 'go'
 	};
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
@@ -109,18 +109,24 @@ $(function() {
 		});
 	};
 
-	var mainModule = null;
+	var isLoaded = false;
 	function importForeignModule() {
-		if ( mainModule ) {
-			return Promise.resolve( mainModule );
-		} else {
-			return new Promise( function ( resolve ) {
-				mw.loader.addScriptTag( 'https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditorMain', function () {
-					setTimeout( function () {
-						resolve( mw.loader.require );
-					}, 300 );
+		if ( isLoaded ) {
+			return Promise.resolve( mw.loader.require );
+		} else if (  mw.loader.getState( 'ext.gadget.ListingEditorMain' ) !== 'ready' ) {
+			isLoaded = true;
+			if ( mw.loader.getState( 'ext.gadget.ListingEditorMain' ) === null ) {
+				return new Promise( function ( resolve ) {
+					mw.loader.addScriptTag( 'https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditorMain', function () {
+						setTimeout( function () {
+							resolve( mw.loader.require );
+						}, 300 );
+					} );
 				} );
-			} );
+			} else {
+				// use the local gadget
+				return mw.loader.using( 'ext.gadget.ListingEditorMain' );
+			}
 		}
 	}
 

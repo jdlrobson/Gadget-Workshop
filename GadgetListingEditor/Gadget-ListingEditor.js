@@ -45,6 +45,52 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 	 * modified for each Wikivoyage language version. Properties in this
 	 * module will be referenced from the other ListingEditor modules.
 	 * ***********************************************************************/
+
+	var TRANSLATIONS_EDITOR_FORM = {
+		en: {
+			editSummary: 'Edit Summary',
+			name: 'Name',
+			alt: 'Alt',
+			website: 'Website',
+			address: 'Address',
+			directions: 'Directions',
+			phone: 'Phone',
+			tollfree: 'Tollfree',
+			fax: 'Fax',
+			lastUpdated: 'Last Updated',
+			syncWikidata: 'Sync shared fields to/from Wikidata',
+			syncWikidataTitle: 'This simply gets the values from Wikidata and replaces the local values. Useful for new listings.',
+			syncWikidataLabel: '(quick fetch)',
+			content: 'Content',
+			minorTitle: 'Check the box if the change to the listing is minor, such as a typo correction',
+			minorLabel: 'minor change?',
+			preview: 'Preview',
+			email: 'Email',
+			type: 'Type',
+			latitude: 'Latitude',
+			longitude: 'Longitude',
+			findOnMap: 'find on map',
+			hours: 'Hours',
+			checkin: 'Check-in',
+			checkout: 'Check-out',
+			price: 'Price',
+			wpWd: 'Get ID from Wikipedia article',
+			wikidataRemoveTitle: 'Delete the Wikidata entry from this listing',
+			wikidataRemoveLabel: 'remove',
+			image: 'Image',
+			listingTooltip: 'Check the box if the business is no longer in operation or if the listing should be deleted for some other reason, and it will be removed from this article',
+			listingLabel: 'delete this listing?',
+			listingUpdatedTooltip: 'Check the box if the information in this listing has been verified to be current and accurate, and the last updated date will be changed to the current date',
+			listingUpdatedLabel: 'mark the listing as up-to-date?'
+		}
+	};
+
+	var TRANSLATIONS_EDITOR_FORM = Object.assign(
+		{},
+		TRANSLATIONS_EDITOR_FORM_LOOKUP.en,
+		TRANSLATIONS_EDITOR_FORM_LOOKUP[ mw.config.get( 'wgUserLanguage' ) ]
+	);
+
 	var Config = function( ALLOWED_NAMESPACE ) {
 
 		// --------------------------------------------------------------------
@@ -226,55 +272,55 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			'<div class="listing-col">' +
 				'<div class="editor-fullwidth">' +
 				'<div id="div_name" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-name">Name</label></div>' +
+					'<div class="editor-label-col"><label for="input-name">' + TRANSLATIONS_EDITOR_FORM.name + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-name"></div>' +
 				'</div>' +
 				'<div id="div_alt" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-alt">Alt</label></div>' +
+					'<div class="editor-label-col"><label for="input-alt">' + TRANSLATIONS_EDITOR_FORM.alt + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-alt"></div>' +
 				'</div>' +
 				'<div id="div_url" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-url">Website<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-url">' + TRANSLATIONS_EDITOR_FORM.website + '<span class="wikidata-update"></span></label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-url"></div>' +
 				'</div>' +
 				'<div id="div_address" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-address">Address</label></div>' +
+					'<div class="editor-label-col"><label for="input-address">' + TRANSLATIONS_EDITOR_FORM.address + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-address"></div>' +
 				'</div>' +
 				'<div id="div_directions" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-directions">Directions</label></div>' +
+					'<div class="editor-label-col"><label for="input-directions">' + TRANSLATIONS_EDITOR_FORM.directions + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-directions"></div>' +
 				'</div>' +
 				'<div id="div_phone" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-phone">Phone</label></div>' +
+					'<div class="editor-label-col"><label for="input-phone">' + TRANSLATIONS_EDITOR_FORM.phone + '</label></div>' +
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-phone"><div class="input-cc" data-for="input-phone"></div></div>' +
 				'</div>' +
 				'<div id="div_tollfree" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-tollfree">Tollfree</label></div>' +
+					'<div class="editor-label-col"><label for="input-tollfree">' + TRANSLATIONS_EDITOR_FORM.tollfree + '</label></div>' +
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-tollfree"><div class="input-cc" data-for="input-tollfree"></div></div>' +
 				'</div>' +
 				'<div id="div_fax" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-fax">Fax</label></div>' +
+					'<div class="editor-label-col"><label for="input-fax">' + TRANSLATIONS_EDITOR_FORM.fax + '</label></div>' +
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax"><div class="input-cc" data-for="input-fax"></div></div>' +
 				'</div>' +
 				'<div id="div_email" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-email">Email<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-email">' + TRANSLATIONS_EDITOR_FORM.email + '<span class="wikidata-update"></span></label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-email"></div>' +
 				'</div>' +
 				'<div id="div_lastedit" style="display: none;">' +
-					'<div class="editor-label-col"><label for="input-lastedit">Last Updated</label></div>' +
+					'<div class="editor-label-col"><label for="input-lastedit">' + TRANSLATIONS_EDITOR_FORM.lastUpdated + '</label></div>' +
 					'<div><input type="text" size="10" id="input-lastedit"></div>' +
 				'</div>' +
 				'<div id="div_wikidata_update" style="display: none">' +
 					'<div class="editor-label-col">&#160;</div>' +
-					'<div><span class="wikidata-update"></span><a href="javascript:" id="wikidata-shared">Sync shared fields to/from Wikidata</a><small>&nbsp;<a href="javascript:" title="This simply gets the values from Wikidata and replaces the local values. Useful for new listings." class="listing-tooltip" id="wikidata-shared-quick">(quick fetch)</a></small></div>' +
+					'<div><span class="wikidata-update"></span><a href="javascript:" id="wikidata-shared">' + TRANSLATIONS_EDITOR_FORM.syncWikidata + '</a><small>&nbsp;<a href="javascript:" title="' + TRANSLATIONS_EDITOR_FORM.syncWikidataTitle + '" class="listing-tooltip" id="wikidata-shared-quick">' + TRANSLATIONS_EDITOR_FORM.syncWikidataLabel + '</a></small></div>' +
 				'</div>' +
 				'</div>' +
 			'</div>' +
 			'<div class="listing-col">' +
 				'<div class="editor-fullwidth">' +
 				'<div id="div_type" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-type">Type</label></div>' +
+					'<div class="editor-label-col"><label for="input-type">' + TRANSLATIONS_EDITOR_FORM.type + '</label></div>' +
 					'<div>' +
 						'<select id="input-type">' +
 							'<option value="listing">listing</option>' +
@@ -289,34 +335,34 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 					'</div>' +
 				'</div>' +
 				'<div id="div_lat" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-lat">Latitude<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-lat">' + TRANSLATIONS_EDITOR_FORM.latitude + '<span class="wikidata-update"></span></label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-lat">' +
 						// update the Callbacks.initFindOnMapLink
 						// method if this field is removed or modified
-						'<div class="input-other"><a id="geomap-link" target="_blank" href="https://wikivoyage.toolforge.org/w/geomap.php">find on map</a></div>' +
+						'<div class="input-other"><a id="geomap-link" target="_blank" href="https://wikivoyage.toolforge.org/w/geomap.php">' + TRANSLATIONS_EDITOR_FORM.findOnMap + '</a></div>' +
 					'</div>' +
 				'</div>' +
 				'<div id="div_long" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-long">Longitude<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-long">' + TRANSLATIONS_EDITOR_FORM.longitude + '<span class="wikidata-update"></span></label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-long">' +
 					'</div>' +
 				'</div>' +
 				'<div id="div_hours" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-hours">Hours</label></div>' +
+					'<div class="editor-label-col"><label for="input-hours">' + TRANSLATIONS_EDITOR_FORM.hours + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-hours"></div>' +
 				'</div>' +
 				'<div id="div_checkin" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-checkin">Check-in</label></div>' +
+					'<div class="editor-label-col"><label for="input-checkin">' + TRANSLATIONS_EDITOR_FORM.checkin + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-checkin"></div>' +
 				'</div>' +
 				'<div id="div_checkout" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-checkout">Check-out</label></div>' +
+					'<div class="editor-label-col"><label for="input-checkout">' + TRANSLATIONS_EDITOR_FORM.checkout + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-checkout"></div>' +
 				'</div>' +
 				'<div id="div_price" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-price">Price</label></div>' +
+					'<div class="editor-label-col"><label for="input-price">' + TRANSLATIONS_EDITOR_FORM.price + '</label></div>' +
 					// update the Callbacks.initStringFormFields
 					// method if the currency symbols are removed or modified
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">' +
@@ -338,11 +384,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-wikidata-label">' +
 						'<input type="hidden" id="input-wikidata-value">' +
-						'<a href="javascript:" id="wp-wd" title="Get ID from Wikipedia article" style="display:none"><small>&#160;WP</small></a>' +
+						'<a href="javascript:" id="wp-wd" title="' + TRANSLATIONS_EDITOR_FORM.wpWd + '" style="display:none"><small>&#160;WP</small></a>' +
 						'<span id="wikidata-value-display-container" style="display:none">' +
 							'<small>' +
 							'&#160;<span id="wikidata-value-link"></span>' +
-							'&#160;|&#160;<a href="javascript:" id="wikidata-remove" title="Delete the Wikidata entry from this listing">remove</a>' +
+							'&#160;|&#160;<a href="javascript:" id="wikidata-remove" title="' + TRANSLATIONS_EDITOR_FORM.wikidataRemoveTitle + '">' + TRANSLATIONS_EDITOR_FORM.wikidataRemoveLabel + '</a>' +
 							'</small>' +
 						'</span>' +
 					'</div>' +
@@ -357,10 +403,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 					'</div>' +
 				'</div>' +
 				'<div id="div_image" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-image">Image<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-image">' + TRANSLATIONS_EDITOR_FORM.image + '<span class="wikidata-update"></span></label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-image">' +
-						'<span id="image-value-display-container" style="display:none">' +
+						'<spaqn id="image-value-display-container" style="display:none">' +
 							'<small>&#160;<span id="image-value-link"></span></small>' +
 						'</span>' +
 					'</div>' +
@@ -387,13 +433,13 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 				'<div>' +
 					'<span id="span-closed">' +
 						'<input type="checkbox" id="input-closed">' +
-						'<label for="input-closed" class="listing-tooltip" title="Check the box if the business is no longer in operation or if the listing should be deleted for some other reason, and it will be removed from this article">delete this listing?</label>' +
+						'<label for="input-closed" class="listing-tooltip" title="' + TRANSLATIONS_EDITOR_FORM.listingTooltip + '">' + TRANSLATIONS_EDITOR_FORM.listinglLabel + '</label>' +
 					'</span>' +
 					// update the Callbacks.updateLastEditDate
 					// method if the last edit input is removed or modified
 					'<span id="span-last-edit">' +
 						'<input type="checkbox" id="input-last-edit" />' +
-						'<label for="input-last-edit" class="listing-tooltip" title="Check the box if the information in this listing has been verified to be current and accurate, and the last updated date will be changed to the current date">mark the listing as up-to-date?</label>' +
+						'<label for="input-last-edit" class="listing-tooltip" title="' + TRANSLATIONS_EDITOR_FORM.listingUpdatedTooltip + '">' + TRANSLATIONS_EDITOR_FORM.listingUpdatedLabel + '</label>' +
 					'</span>' +
 				'</div>' +
 			'</div>' +
@@ -402,17 +448,17 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			'<div id="div_summary" class="editor-fullwidth">' +
 				'<div class="listing-divider"></div>' +
 				'<div class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-summary">Edit Summary</label></div>' +
+					'<div class="editor-label-col"><label for="input-summary">' + TRANSLATIONS_EDITOR_FORM.editSummary + '</label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-summary">' +
-						'<span id="span-minor"><input type="checkbox" id="input-minor"><label for="input-minor" class="listing-tooltip" title="Check the box if the change to the listing is minor, such as a typo correction">minor change?</label></span>' +
+						'<span id="span-minor"><input type="checkbox" id="input-minor"><label for="input-minor" class="listing-tooltip" title="' + TRANSLATIONS_EDITOR_FORM.minorTitle + '">' + TRANSLATIONS_EDITOR_FORM.minorLabel + '</label></span>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
 			'<div id="listing-preview" style="display: none;">' +
 				'<div class="listing-divider"></div>' +
 				'<div class="editor-row">' +
-					'<div title="Preview">Preview</div>' +
+					'<div title="Preview">' + TRANSLATIONS_EDITOR_FORM.preview + '</div>' +
 					'<div id="listing-preview-text"></div>' +
 				'</div>' +
 			'</div>' +

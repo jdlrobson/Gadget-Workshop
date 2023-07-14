@@ -46,6 +46,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 	 * module will be referenced from the other ListingEditor modules.
 	 * ***********************************************************************/
 	var PROJECT_CONFIG_ENWIKIVOYAGE = {
+		iata: function ( value ) {
+			return `{{IATA|${value}}}`
+		},
 		WIKIDATAID: '19826574',
 		SPECIAL_CHARS: []
 	};
@@ -890,7 +893,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 						}
 						else if (key === 'iata') {
 							msg += '\n' + Config.WIKIDATA_CLAIMS[key].label + ': ' + res[key];
-							res[key] = '{{IATA|'+res[key]+'}}';
+							res[key] = PROJECT_CONFIG.iata( res[key] );
 						}
 						else if (key === 'email') {
 							res[key] = res[key].replace('mailto:', '');
@@ -964,7 +967,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 					res[key].value = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p);
 					res[key].guidObj = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p, true);
 					if (key === 'iata') {
-						if( res[key].value ) { res[key].value = '{{IATA|'+res[key].value+'}}'; }
+						if( res[key].value ) {
+							res[key].value = PROJECT_CONFIG.iata( res[key].value );
+						}
 						msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 					}
 					else if (key === 'email') {

@@ -558,7 +558,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				'</div>' +
 			'</div>' +
 			'<div id="div_content" class="editor-row">' +
-				'<div class="editor-label-col"><label for="input-content">Content';
+				'<div class="editor-label-col"><label for="input-content">' + TRANSLATIONS.content;
 		if (SPECIAL_CHARS.length){
 			EDITOR_FORM_HTML +=	'<br />(';
 			for (i = 0; i < SPECIAL_CHARS.length; i++) {

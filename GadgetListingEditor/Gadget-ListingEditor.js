@@ -22,7 +22,7 @@ Listing Editor v2.4.2
 ********************************************************************/
 //<nowiki>
 
-module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLATE_TYPE ) {
+module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	'use strict';
 
 	/* ***********************************************************************
@@ -114,8 +114,54 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		enwikivoyage: PROJECT_CONFIG_ENWIKIVOYAGE
 	};
 
-	var TRANSLATIONS_EDITOR_FORM = {
+	var TRANSLATIONS_ALL = {
 		en: {
+			propertyP625: ['lat', 'long'],
+			propertyP856: ['url'],
+			propertyP968: ['email'],
+			propertyP238: ['alt'],
+			propertyP18: ['image'],
+			addTitle: 'Add New Listing',
+			editTitle: 'Edit Existing Listing',
+			syncTitle: 'Wikidata Sync',
+			saving: 'Saving...',
+			submit: 'Submit',
+			cancel: 'Cancel',
+			cancelAll: 'Clear all',
+			preview: 'Preview',
+			previewOff: 'Preview off',
+			refresh: '↺', // \ue031 not yet working
+			refreshTitle: 'Refresh preview',
+			selectAll: 'Select all',
+			selectAlternatives: 'Select all values where the alternative is empty.',
+			validationEmptyListing: 'Please enter either a name or an address',
+			validationEmail: 'Please ensure the email address is valid',
+			validationWikipedia: 'Please insert the Wikipedia page title only; not the full URL address',
+			validationImage: 'Please insert the Commons image title only without any prefix',
+			image: '', //Local prefix for Image (or File)
+			added: 'Added listing for ',
+			updated: 'Updated listing for ',
+			removed: 'Deleted listing for ',
+			helpPage: '//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor',
+			enterCaptcha: 'Enter CAPTCHA',
+			externalLinks: 'Your edit includes new external links.',
+			// license text should match MediaWiki:Wikimedia-copyrightwarning
+			licenseText: 'By clicking "Submit", you agree to the <a class="external" target="_blank" href="//wikimediafoundation.org/wiki/Terms_of_use">Terms of use</a>, and you irrevocably agree to release your contribution under the <a class="external" target="_blank" href="//en.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license">CC-BY-SA 3.0 License</a>. You agree that a hyperlink or URL is sufficient attribution under the Creative Commons license.',
+			ajaxInitFailure: 'Error: Unable to initialize the listing editor',
+			sharedWikipedia: 'wikipedia',
+			synchronized: 'synchronized.',
+			submitApiError: 'Error: The server returned an error while attempting to save the listing, please try again',
+			submitBlacklistError: 'Error: A value in the data submitted has been blacklisted, please remove the blacklisted pattern and try again',
+			submitUnknownError: 'Error: An unknown error has been encountered while attempting to save the listing, please try again',
+			submitHttpError: 'Error: The server responded with an HTTP error while attempting to save the listing, please try again',
+			submitEmptyError: 'Error: The server returned an empty response while attempting to save the listing, please try again',
+			viewCommonsPage: 'view Commons page',
+			viewWikidataPage: 'view Wikidata record',
+			viewWikipediaPage: 'view Wikipedia page',
+			wikidataSharedMatch: 'No differences found between local and Wikidata values',
+			wikidataShared: 'The following data was found in the shared Wikidata record. Update shared fields using these values?',
+			wikidataSharedNotFound: 'No shared data found in the Wikidata repository',
+			wikidataSyncBlurb: 'Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally.<p>You are encouraged to go to the Wikidata item and add references for any data you change.',
 			editSummary: 'Edit Summary',
 			name: 'Name',
 			alt: 'Alt',
@@ -153,10 +199,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		}
 	};
 
-	var TRANSLATIONS_EDITOR_FORM = Object.assign(
+	var TRANSLATIONS = Object.assign(
 		{},
-		TRANSLATIONS_EDITOR_FORM_LOOKUP.en,
-		TRANSLATIONS_EDITOR_FORM_LOOKUP[ mw.config.get( 'wgUserLanguage' ) ]
+		TRANSLATIONS_ALL.en,
+		TRANSLATIONS_ALL[ mw.config.get( 'wgUserLanguage' ) ]
 	);
 
 	var DB_NAME = mw.config.get( 'wgDBname' );
@@ -308,55 +354,55 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			'<div class="listing-col">' +
 				'<div class="editor-fullwidth">' +
 				'<div id="div_name" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-name">' + TRANSLATIONS_EDITOR_FORM.name + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-name">' + TRANSLATIONS.name + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-name"></div>' +
 				'</div>' +
 				'<div id="div_alt" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-alt">' + TRANSLATIONS_EDITOR_FORM.alt + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-alt">' + TRANSLATIONS.alt + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-alt"></div>' +
 				'</div>' +
 				'<div id="div_url" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-url">' + TRANSLATIONS_EDITOR_FORM.website + '<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-url">' + TRANSLATIONS.website + '<span class="wikidata-update"></span></label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-url"></div>' +
 				'</div>' +
 				'<div id="div_address" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-address">' + TRANSLATIONS_EDITOR_FORM.address + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-address">' + TRANSLATIONS.address + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-address"></div>' +
 				'</div>' +
 				'<div id="div_directions" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-directions">' + TRANSLATIONS_EDITOR_FORM.directions + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-directions">' + TRANSLATIONS.directions + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-directions"></div>' +
 				'</div>' +
 				'<div id="div_phone" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-phone">' + TRANSLATIONS_EDITOR_FORM.phone + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-phone">' + TRANSLATIONS.phone + '</label></div>' +
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-phone"><div class="input-cc" data-for="input-phone"></div></div>' +
 				'</div>' +
 				'<div id="div_tollfree" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-tollfree">' + TRANSLATIONS_EDITOR_FORM.tollfree + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-tollfree">' + TRANSLATIONS.tollfree + '</label></div>' +
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-tollfree"><div class="input-cc" data-for="input-tollfree"></div></div>' +
 				'</div>' +
 				'<div id="div_fax" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-fax">' + TRANSLATIONS_EDITOR_FORM.fax + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-fax">' + TRANSLATIONS.fax + '</label></div>' +
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax"><div class="input-cc" data-for="input-fax"></div></div>' +
 				'</div>' +
 				'<div id="div_email" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-email">' + TRANSLATIONS_EDITOR_FORM.email + '<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-email">' + TRANSLATIONS.email + '<span class="wikidata-update"></span></label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-email"></div>' +
 				'</div>' +
 				'<div id="div_lastedit" style="display: none;">' +
-					'<div class="editor-label-col"><label for="input-lastedit">' + TRANSLATIONS_EDITOR_FORM.lastUpdated + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-lastedit">' + TRANSLATIONS.lastUpdated + '</label></div>' +
 					'<div><input type="text" size="10" id="input-lastedit"></div>' +
 				'</div>' +
 				'<div id="div_wikidata_update" style="display: none">' +
 					'<div class="editor-label-col">&#160;</div>' +
-					'<div><span class="wikidata-update"></span><a href="javascript:" id="wikidata-shared">' + TRANSLATIONS_EDITOR_FORM.syncWikidata + '</a><small>&nbsp;<a href="javascript:" title="' + TRANSLATIONS_EDITOR_FORM.syncWikidataTitle + '" class="listing-tooltip" id="wikidata-shared-quick">' + TRANSLATIONS_EDITOR_FORM.syncWikidataLabel + '</a></small></div>' +
+					'<div><span class="wikidata-update"></span><a href="javascript:" id="wikidata-shared">' + TRANSLATIONS.syncWikidata + '</a><small>&nbsp;<a href="javascript:" title="' + TRANSLATIONS.syncWikidataTitle + '" class="listing-tooltip" id="wikidata-shared-quick">' + TRANSLATIONS.syncWikidataLabel + '</a></small></div>' +
 				'</div>' +
 				'</div>' +
 			'</div>' +
 			'<div class="listing-col">' +
 				'<div class="editor-fullwidth">' +
 				'<div id="div_type" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-type">' + TRANSLATIONS_EDITOR_FORM.type + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-type">' + TRANSLATIONS.type + '</label></div>' +
 					'<div>' +
 						'<select id="input-type">' +
 							'<option value="listing">listing</option>' +
@@ -371,34 +417,34 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 					'</div>' +
 				'</div>' +
 				'<div id="div_lat" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-lat">' + TRANSLATIONS_EDITOR_FORM.latitude + '<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-lat">' + TRANSLATIONS.latitude + '<span class="wikidata-update"></span></label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-lat">' +
 						// update the Callbacks.initFindOnMapLink
 						// method if this field is removed or modified
-						'<div class="input-other"><a id="geomap-link" target="_blank" href="https://wikivoyage.toolforge.org/w/geomap.php">' + TRANSLATIONS_EDITOR_FORM.findOnMap + '</a></div>' +
+						'<div class="input-other"><a id="geomap-link" target="_blank" href="https://wikivoyage.toolforge.org/w/geomap.php">' + TRANSLATIONS.findOnMap + '</a></div>' +
 					'</div>' +
 				'</div>' +
 				'<div id="div_long" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-long">' + TRANSLATIONS_EDITOR_FORM.longitude + '<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-long">' + TRANSLATIONS.longitude + '<span class="wikidata-update"></span></label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-long">' +
 					'</div>' +
 				'</div>' +
 				'<div id="div_hours" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-hours">' + TRANSLATIONS_EDITOR_FORM.hours + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-hours">' + TRANSLATIONS.hours + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-hours"></div>' +
 				'</div>' +
 				'<div id="div_checkin" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-checkin">' + TRANSLATIONS_EDITOR_FORM.checkin + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-checkin">' + TRANSLATIONS.checkin + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-checkin"></div>' +
 				'</div>' +
 				'<div id="div_checkout" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-checkout">' + TRANSLATIONS_EDITOR_FORM.checkout + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-checkout">' + TRANSLATIONS.checkout + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-checkout"></div>' +
 				'</div>' +
 				'<div id="div_price" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-price">' + TRANSLATIONS_EDITOR_FORM.price + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-price">' + TRANSLATIONS.price + '</label></div>' +
 					// update the Callbacks.initStringFormFields
 					// method if the currency symbols are removed or modified
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">' +
@@ -420,11 +466,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-wikidata-label">' +
 						'<input type="hidden" id="input-wikidata-value">' +
-						'<a href="javascript:" id="wp-wd" title="' + TRANSLATIONS_EDITOR_FORM.wpWd + '" style="display:none"><small>&#160;WP</small></a>' +
+						'<a href="javascript:" id="wp-wd" title="' + TRANSLATIONS.wpWd + '" style="display:none"><small>&#160;WP</small></a>' +
 						'<span id="wikidata-value-display-container" style="display:none">' +
 							'<small>' +
 							'&#160;<span id="wikidata-value-link"></span>' +
-							'&#160;|&#160;<a href="javascript:" id="wikidata-remove" title="' + TRANSLATIONS_EDITOR_FORM.wikidataRemoveTitle + '">' + TRANSLATIONS_EDITOR_FORM.wikidataRemoveLabel + '</a>' +
+							'&#160;|&#160;<a href="javascript:" id="wikidata-remove" title="' + TRANSLATIONS.wikidataRemoveTitle + '">' + TRANSLATIONS.wikidataRemoveLabel + '</a>' +
 							'</small>' +
 						'</span>' +
 					'</div>' +
@@ -439,7 +485,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 					'</div>' +
 				'</div>' +
 				'<div id="div_image" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-image">' + TRANSLATIONS_EDITOR_FORM.image + '<span class="wikidata-update"></span></label></div>' +
+					'<div class="editor-label-col"><label for="input-image">' + TRANSLATIONS.image + '<span class="wikidata-update"></span></label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-image">' +
 						'<spaqn id="image-value-display-container" style="display:none">' +
@@ -469,13 +515,13 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 				'<div>' +
 					'<span id="span-closed">' +
 						'<input type="checkbox" id="input-closed">' +
-						'<label for="input-closed" class="listing-tooltip" title="' + TRANSLATIONS_EDITOR_FORM.listingTooltip + '">' + TRANSLATIONS_EDITOR_FORM.listinglLabel + '</label>' +
+						'<label for="input-closed" class="listing-tooltip" title="' + TRANSLATIONS.listingTooltip + '">' + TRANSLATIONS.listinglLabel + '</label>' +
 					'</span>' +
 					// update the Callbacks.updateLastEditDate
 					// method if the last edit input is removed or modified
 					'<span id="span-last-edit">' +
 						'<input type="checkbox" id="input-last-edit" />' +
-						'<label for="input-last-edit" class="listing-tooltip" title="' + TRANSLATIONS_EDITOR_FORM.listingUpdatedTooltip + '">' + TRANSLATIONS_EDITOR_FORM.listingUpdatedLabel + '</label>' +
+						'<label for="input-last-edit" class="listing-tooltip" title="' + TRANSLATIONS.listingUpdatedTooltip + '">' + TRANSLATIONS.listingUpdatedLabel + '</label>' +
 					'</span>' +
 				'</div>' +
 			'</div>' +
@@ -484,17 +530,17 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			'<div id="div_summary" class="editor-fullwidth">' +
 				'<div class="listing-divider"></div>' +
 				'<div class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-summary">' + TRANSLATIONS_EDITOR_FORM.editSummary + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-summary">' + TRANSLATIONS.editSummary + '</label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-summary">' +
-						'<span id="span-minor"><input type="checkbox" id="input-minor"><label for="input-minor" class="listing-tooltip" title="' + TRANSLATIONS_EDITOR_FORM.minorTitle + '">' + TRANSLATIONS_EDITOR_FORM.minorLabel + '</label></span>' +
+						'<span id="span-minor"><input type="checkbox" id="input-minor"><label for="input-minor" class="listing-tooltip" title="' + TRANSLATIONS.minorTitle + '">' + TRANSLATIONS.minorLabel + '</label></span>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
 			'<div id="listing-preview" style="display: none;">' +
 				'<div class="listing-divider"></div>' +
 				'<div class="editor-row">' +
-					'<div title="Preview">' + TRANSLATIONS_EDITOR_FORM.preview + '</div>' +
+					'<div title="Preview">' + TRANSLATIONS.preview + '</div>' +
 					'<div id="listing-preview-text"></div>' +
 				'</div>' +
 			'</div>' +

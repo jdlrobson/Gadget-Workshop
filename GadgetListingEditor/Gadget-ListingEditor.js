@@ -46,6 +46,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 	 * module will be referenced from the other ListingEditor modules.
 	 * ***********************************************************************/
 	var PROJECT_CONFIG_ENWIKIVOYAGE = {
+		WIKIDATAID: '19826574',
 		SPECIAL_CHARS: []
 	};
 
@@ -102,17 +103,13 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 	var PROJECT_CONFIG = Object.assign( {}, PROJECT_CONFIG_ENWIKIVOYAGE, PROJECT_CONFIG_DIRECTORY[ DB_NAME ] )
 
 	var Config = function( ALLOWED_NAMESPACE ) {
-
-		// --------------------------------------------------------------------
-		// TRANSLATE THE FOLLOWING BASED ON THE WIKIVOYAGE LANGUAGE IN USE
-		// --------------------------------------------------------------------
-
-		var LANG = 'en';
-		var WIKIDATAID = '19826574'; // wikidata ID of this wikivoyage edition
+		var PAGE_VIEW_LANGUAGE = mw.config.get( 'wgPageViewLanguage' );
+		var LANG = mw.config.get( 'wgUserLanguage', 'en' );
+		var WIKIDATAID = PROJECT_CONFIG.WIKIDATAID;
 		var COMMONS_URL = '//commons.wikimedia.org';
 		var WIKIDATA_URL = '//www.wikidata.org';
-		var WIKIPEDIA_URL = '//en.wikipedia.org';
-		var WIKIDATA_SITELINK_WIKIPEDIA = 'enwiki';
+		var WIKIPEDIA_URL = '//' + PAGE_VIEW_LANGUAGE + '.wikipedia.org';
+		var WIKIDATA_SITELINK_WIKIPEDIA = LANG + 'wiki';
 
 		// --------------------------------------------------------------------
 		// TRANSLATE AND CONFIGURE

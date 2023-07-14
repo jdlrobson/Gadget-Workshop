@@ -1,5 +1,6 @@
 /******************************************************************
-Listing Editor v2.4.2
+Listing Editor v3.0.0alpha
+	Source code: https://github.com/jdlrobson/-Gadget-Workshop
 	Original author:
 	- torty3
 	Additional contributors:
@@ -7,6 +8,7 @@ Listing Editor v2.4.2
 	- ARR8
 	- RolandUnger
 	- Wrh2
+	- Jdlrobson
 	Changelog: https://en.wikivoyage.org/wiki/Wikivoyage:Listing_editor#Changelog
 
 	TODO

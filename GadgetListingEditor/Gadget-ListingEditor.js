@@ -50,6 +50,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			return `{{IATA|${value}}}`
 		},
 		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: true,
+		LISTING_TYPE_PARAMETER: 'type',
+		LISTING_CONTENT_PARAMETER: 'content',
+		DEFAULT_LISTING_TEMPLATE: 'listing',
 		DEFAULT_PLACEHOLDERS: {
 			'name':				'name of place',
 			'alt':				'also known as',
@@ -186,9 +189,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 
 		// name of the generic listing template to use when a more specific
 		// template ("see", "do", etc) is not appropriate
-		var DEFAULT_LISTING_TEMPLATE = 'listing';
-		var LISTING_TYPE_PARAMETER = 'type';
-		var LISTING_CONTENT_PARAMETER = 'content';
+		var DEFAULT_LISTING_TEMPLATE = PROJECT_CONFIG.DEFAULT_LISTING_TEMPLATE;
+		var LISTING_TYPE_PARAMETER = PROJECT_CONFIG.LISTING_TYPE_PARAMETER;
+		var LISTING_CONTENT_PARAMETER = PROJECT_CONFIG.LISTING_CONTENT_PARAMETER;
 		// The arrays below must include entries for each listing template
 		// parameter in use for each Wikivoyage language version - for example
 		// "name", "address", "phone", etc. If all listing template types use

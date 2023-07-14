@@ -29,7 +29,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 
 	var PROJECT_CONFIG_ENWIKIVOYAGE = {
 		iata: function ( value ) {
-			return `{{IATA|${value}}}`
+			return '{{IATA|' + value + '}}';
 		},
 		LISTING_TEMPLATES_OMIT: [],
 		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
@@ -94,7 +94,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 
 	var PROJECT_CONFIG_ITWIKIVOYAGE = {
 		iata: function ( value ) {
-			return `IATA:${value}`
+			return 'IATA:' + value
 		},
 		LISTING_TYPE_PARAMETER: 'tipo',
 		DEFAULT_LISTING_TEMPLATE: 'descrizione',
@@ -386,10 +386,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		( PROJECT_CONFIG.LISTING_TEMPLATES_OMIT || [] ).forEach( function ( key ) {
 			delete LISTING_TEMPLATES[ key ];
 		} );
-
-		// --------------------------------------------------------------------
-		// CONFIGURE THE FOLLOWING TO IMPLEMENT THE UI FOR THE LISTING EDITOR
-		// --------------------------------------------------------------------
 
 		// these selectors should match a value defined in the EDITOR_FORM_HTML
 		// if the selector refers to a field that is not used by a Wikivoyage

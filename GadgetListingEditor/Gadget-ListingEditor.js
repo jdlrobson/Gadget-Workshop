@@ -45,6 +45,13 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 	 * modified for each Wikivoyage language version. Properties in this
 	 * module will be referenced from the other ListingEditor modules.
 	 * ***********************************************************************/
+	var PROJECT_CONFIG_ENWIKIVOYAGE = {
+		SPECIAL_CHARS: []
+	};
+
+	var PROJECT_CONFIG_DIRECTORY = {
+		enwikivoyage: PROJECT_CONFIG_ENWIKIVOYAGE
+	};
 
 	var TRANSLATIONS_EDITOR_FORM = {
 		en: {
@@ -90,6 +97,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		TRANSLATIONS_EDITOR_FORM_LOOKUP.en,
 		TRANSLATIONS_EDITOR_FORM_LOOKUP[ mw.config.get( 'wgUserLanguage' ) ]
 	);
+
+	var DB_NAME = mw.config.get( 'wgDBname' );
+	var PROJECT_CONFIG = Object.assign( {}, PROJECT_CONFIG_ENWIKIVOYAGE, PROJECT_CONFIG_DIRECTORY[ DB_NAME ] )
 
 	var Config = function( ALLOWED_NAMESPACE ) {
 
@@ -235,7 +245,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		var SYNC_FORM_SELECTOR = '#listing-editor-sync';
 		
 		var INTL_CURRENCIES = [ '€', '$', '£', '¥', '₩' ];
-		var SPECIAL_CHARS = [];
+		var SPECIAL_CHARS = PROJECT_CONFIG.SPECIAL_CHARS;
 		
 		var DEFAULT_PLACEHOLDERS = {
 			'name':				'name of place',

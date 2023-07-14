@@ -49,6 +49,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		iata: function ( value ) {
 			return `{{IATA|${value}}}`
 		},
+		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: true,
 		DEFAULT_PLACEHOLDERS: {
 			'name':				'name of place',
 			'alt':				'also known as',
@@ -177,7 +178,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		// LISTING_TEMPLATES parameter arrays (such as wikipedia, phoneextra, etc).
 		// if the flag is set to true then unrecognized parameters will be allowed
 		// as long as they have a non-empty value.
-		var ALLOW_UNRECOGNIZED_PARAMETERS = true;
+		var ALLOW_UNRECOGNIZED_PARAMETERS = PROJECT_CONFIG.ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP;
 
 		// --------------------------------------------------------------------
 		// CONFIGURE THE FOLLOWING TO MATCH THE LISTING TEMPLATE PARAMS & OUTPUT

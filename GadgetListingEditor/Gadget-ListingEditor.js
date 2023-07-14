@@ -110,7 +110,69 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		SPECIAL_CHARS: []
 	};
 
+	var PROJECT_CONFIG_ITWIKIVOYAGE = {
+		iata: function ( value ) {
+			return `IATA:${value}`
+		},
+		LISTING_TYPE_PARAMETER: 'tipo',
+		DEFAULT_LISTING_TEMPLATE: 'descrizione',
+		SPECIAL_CHARS: [ 'È', 'è', 'é' ],
+		WIKIDATAID: '24237997',
+		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: false,
+		LISTING_TEMPLATES_OMIT: [ 'go' ],
+		SLEEP_TEMPLATE_PARAMETERS: {
+			orari: { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
+			checkin: { hideDivIfEmpty: null, skipIfEmpty: false },
+			checkout: { hideDivIfEmpty: null, skipIfEmpty: false }
+		},
+		LISTING_TEMPLATE_PARAMETERS_ITWIKIVOYAGE: {
+			'tipo': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
+			'nome': { id:'input-name' },
+			'alt': { id:'input-alt' },
+			'sito': { id:'input-url' },
+			'email': { id:'input-email', newline: true },
+			'indirizzo': { id:'input-address' },
+			'lat': { id:'input-lat' },
+			'long': { id:'input-long' },
+			'indicazioni': { id:'input-directions', newline: true },
+			'tel': { id:'input-phone' },
+			'numero verde': { id:'input-tollfree' },
+			'fax': { id:'input-fax', newline: true },
+			'orari': { id:'input-hours' },
+			'checkin': { id:'input-checkin', hideDivIfEmpty: 'div_checkin', skipIfEmpty: true },
+			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
+			'prezzo': { id:'input-price', newline: true },
+			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
+			'immagine': { id:'input-image', skipIfEmpty: true },
+			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
+			'descrizione': { id:'input-content', newline: true }
+		},
+		DEFAULT_PLACEHOLDERS: {
+			'name':				'nome del posto',
+			'alt':				'noto anche come',
+			'url':				'https://www.esempio.com',
+			'address':			'indirizzo del posto',
+			'directions':		'come arrivare qui',
+			'phone':			'+55 555 555 5555',
+			'tollfree':			'+1 800 100 1000',
+			'fax':				'+55 555 555 555',
+			'email':			'info@esempio.com',
+			'lat':				'11.11111',
+			'long':				'111.11111',
+			'hours':			'Lun-Ven 9:00-17:00',
+			'checkin':			'orario di check in',
+			'checkout':			'orario di check out',
+			'price':			'prezzo e riferimento temporale (mese anno)',
+			'wikidata-label':	'istanza wikidata',
+			'wikipedia':		'voce wikipedia',
+			'image':			'immagine del luogo',
+			'content':			'descrizione del posto',
+			'summary':			'Motivo di modifica dell\'elemento',
+		}
+	};
+
 	var PROJECT_CONFIG_DIRECTORY = {
+		itwikivoyage: PROJECT_CONFIG_ITWIKIVOYAGE,
 		enwikivoyage: PROJECT_CONFIG_ENWIKIVOYAGE
 	};
 
@@ -196,6 +258,39 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			listingLabel: 'delete this listing?',
 			listingUpdatedTooltip: 'Check the box if the information in this listing has been verified to be current and accurate, and the last updated date will be changed to the current date',
 			listingUpdatedLabel: 'mark the listing as up-to-date?'
+		},
+		it: {
+			editSummary: 'Oggetto della modifica',
+			name: 'Nome',
+			alt: 'Altro nome',
+			website: 'Sito web',
+			address: 'Indirizzo',
+			directions: 'Indicazioni',
+			phone: 'Telefono',
+			tollfree: 'Numero verde',
+			fax: 'Fax',
+			content: 'Descrizione',
+			preview: 'Anteprima',
+			email: 'Email',
+			type: 'Tipo',
+			latitude: 'Latitudine',
+			longitude: 'Longitudine',
+			findOnMap: 'localizza su geomap',
+			hours: 'Orari',
+			checkin: 'Check-in',
+			checkout: 'Check-out',
+			price: 'Prezzo',
+			wpWd: 'Ottieni l\'ID dalla voce Wikipedia',
+			wikidataRemoveTitle: 'Cancella l\'istanza Wikidata da questo elemento',
+			wikidataRemoveLabel: 'rimuovi',
+			image: 'Immagine',
+			listingTooltip: 'Spunta il riquadro se l\'attività non è più operativa, al fine di rimuoverla da questo articolo',
+			listingLabel: 'Cancello?',
+			minorTitle: 'Spunta il riquadro se la modifica dell\'elemento non è rilevante, come la correzione di un refuso',
+			minorLabel: 'modifica minore?',
+			syncWikidata: 'qni con Wikidata',
+			syncWikidataTitle: 'Questo semplicemente prende i valori da Wikidata sostituendoli a quelli locali. Utile per i nuovi listings.',
+			syncWikidataLabel: '(inserimento rapido)'
 		}
 	};
 

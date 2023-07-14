@@ -64,6 +64,10 @@ $(function() {
 		en: {
 			add: 'add listing',
 			edit: 'edit'
+		},
+		it: {
+			add: 'aggiungi elemento',
+			edit: 'modifica'
 		}
 	};
 	var TRANSLATIONS = Object.assign(
@@ -105,8 +109,23 @@ $(function() {
 		});
 	};
 
+	var mainModule = null;
+	function importForeignModule() {
+		if ( mainModule ) {
+			return Promise.resolve( mainModule );
+		} else {
+			return new Promise( function ( resolve ) {
+				mw.loader.addScriptTag( 'https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditorMain', function () {
+					setTimeout( function () {
+						resolve( mw.loader.require );
+					}, 300 );
+				} );
+			} );
+		}
+	}
+
 	function loadMain() {
-		return mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( function ( req ) {
+		return importForeignModule().then( function ( req ) {
 			var module = req( 'ext.gadget.ListingEditorMain' );
 			return module( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE );
 		} );

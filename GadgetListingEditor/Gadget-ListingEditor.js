@@ -126,6 +126,18 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			//'directions':	{ 'p': 'P2795', 'label': 'directions', 'fields': ['directions'], },
 		};
 
+		var lookupField = function ( property ) {
+			return TRANSLATIONS['property' + property] || [];
+		};
+
+		var WIKIDATA_CLAIMS = {
+			'coords':		{ 'p': 'P625', 'label': 'coordinates', 'fields': lookupField( 'P625'), 'remotely_sync': false, },
+			'url':			{ 'p': 'P856', 'label': 'website', 'fields': lookupField( 'P856') }, // link
+			'email':		{ 'p': 'P968', 'label': 'e-mail', 'fields': lookupField( 'P968') },
+			'iata':			{ 'p': 'P238', 'label': 'IATA code (if Alt is empty)', 'fields': lookupField( 'P238'), 'doNotUpload': true, },
+			'image':		{ 'p': 'P18', 'label': 'image', 'fields': lookupField( 'P18'), 'remotely_sync': true, }
+		};
+
 		// --------------------------------------------------------------------
 		// CONFIGURE THE FOLLOWING BASED ON WIKIVOYAGE COMMUNITY PREFERENCES
 		// --------------------------------------------------------------------

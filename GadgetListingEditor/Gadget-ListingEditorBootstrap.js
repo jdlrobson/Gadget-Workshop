@@ -52,6 +52,11 @@ $(function() {
 	};
 
 	var TRANSLATIONS = {
+		propertyP625: ['lat', 'long'],
+		propertyP856: ['url'],
+		propertyP968: ['email'],
+		propertyP238: ['alt'],
+		propertyP18: ['image'],
 		'addTitle' : 'Add New Listing',
 		'editTitle' : 'Edit Existing Listing',
 		'syncTitle' : 'Wikidata Sync',

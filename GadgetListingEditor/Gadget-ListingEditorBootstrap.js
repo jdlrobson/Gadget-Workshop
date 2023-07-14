@@ -10,6 +10,15 @@ $(function() {
 
 	// map section heading ID to the listing template to use for that section
 	var SECTION_TO_TEMPLATE_TYPE = {
+		'Cosa_vedere': 'see',
+		'Cosa_fare': 'do',
+		'Acquisti': 'buy',
+		'Dove_mangiare': 'eat',
+		'Come_divertirsi': 'drink',
+		'Dove_alloggiare': 'sleep',
+		'Eventi_e_feste': 'listing',
+		'Come arrivare': 'listing',
+		'Come spostarsi': 'listing',
 		'See': 'see',
 		'Do': 'do',
 		'Buy': 'buy',

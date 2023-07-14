@@ -76,6 +76,29 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			'content':			'description of place',
 			'summary':			'reason listing was changed'
 		},
+		LISTING_TEMPLATE_PARAMETERS: {
+			'type': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
+			'name': { id:'input-name' },
+			'alt': { id:'input-alt' },
+			'url': { id:'input-url' },
+			'email': { id:'input-email', newline: true },
+			'address': { id:'input-address' },
+			'lat': { id:'input-lat' },
+			'long': { id:'input-long' },
+			'directions': { id:'input-directions', newline: true },
+			'phone': { id:'input-phone' },
+			'tollfree': { id:'input-tollfree' },
+			'fax': { id:'input-fax', hideDivIfEmpty: 'div_fax', newline: true, skipIfEmpty: true },
+			'hours': { id:'input-hours' },
+			'checkin': { id:'input-checkin', hideDivIfEmpty: 'div_checkin', skipIfEmpty: true },
+			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
+			'price': { id:'input-price', newline: true },
+			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
+			'image': { id:'input-image', skipIfEmpty: true },
+			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
+			'lastedit': { id:'input-lastedit', newline: true, skipIfEmpty: true },
+			'content': { id:'input-content', newline: true }
+		},
 		WIKIDATAID: '19826574',
 		SPECIAL_CHARS: []
 	};
@@ -223,29 +246,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		//	  in the listing template syntax unless it has a value.
 		//	- newline: Append a newline after the parameter in the listing
 		//	  template syntax when the article is saved.
-		var LISTING_TEMPLATE_PARAMETERS = {
-			'type': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
-			'name': { id:'input-name' },
-			'alt': { id:'input-alt' },
-			'url': { id:'input-url' },
-			'email': { id:'input-email', newline: true },
-			'address': { id:'input-address' },
-			'lat': { id:'input-lat' },
-			'long': { id:'input-long' },
-			'directions': { id:'input-directions', newline: true },
-			'phone': { id:'input-phone' },
-			'tollfree': { id:'input-tollfree' },
-			'fax': { id:'input-fax', hideDivIfEmpty: 'div_fax', newline: true, skipIfEmpty: true },
-			'hours': { id:'input-hours' },
-			'checkin': { id:'input-checkin', hideDivIfEmpty: 'div_checkin', skipIfEmpty: true },
-			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
-			'price': { id:'input-price', newline: true },
-			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
-			'image': { id:'input-image', skipIfEmpty: true },
-			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
-			'lastedit': { id:'input-lastedit', newline: true, skipIfEmpty: true },
-			'content': { id:'input-content', newline: true }
-		};
+		var LISTING_TEMPLATE_PARAMETERS = PROJECT_CONFIG.LISTING_TEMPLATE_PARAMETERS;
 		// override the default settings for "sleep" listings since that
 		// listing type uses "checkin"/"checkout" instead of "hours"
 		var SLEEP_TEMPLATE_PARAMETERS = $.extend(true, {}, LISTING_TEMPLATE_PARAMETERS, {

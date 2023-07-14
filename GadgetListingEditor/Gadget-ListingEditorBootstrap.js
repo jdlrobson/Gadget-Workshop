@@ -30,7 +30,21 @@ $(function() {
 		'See_and_do': 'see',
 		'Eat_and_drink': 'eat',
 		'Get_in': 'go',
-		'Get_around': 'go'
+		'Get_around': 'go',
+		'Anreise': 'station', // go
+		'Mobilität': 'public transport', // go
+		'Sehenswürdigkeiten': 'monument', // see
+		'Aktivitäten': 'sports', // do
+		'Einkaufen': 'shop', // buy
+		'Küche': 'restaurant', // eat
+		'Nachtleben': 'bar', // drink
+		// dummy line (es) // drink and night life
+		'Unterkunft': 'hotel', // sleep
+		'Lernen': 'education', // education
+		'Arbeiten': 'administration', // work
+		'Sicherheit': 'administration', // security
+		'Gesundheit': 'health', // health
+		'Praktische_Hinweise': 'office' // practicalities
 	};
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
@@ -64,6 +78,10 @@ $(function() {
 		en: {
 			add: 'add listing',
 			edit: 'edit'
+		},
+		de: {
+			add: 'Eintrag hinzufügen',
+			edit: 'bearbeiten'
 		},
 		it: {
 			add: 'aggiungi elemento',

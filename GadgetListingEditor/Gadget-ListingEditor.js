@@ -97,7 +97,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			return 'IATA:' + value
 		},
 		LISTING_TYPE_PARAMETER: 'tipo',
-		DEFAULT_LISTING_TEMPLATE: 'descrizione',
+		LISTING_CONTENT_PARAMETER: 'descrizione',
 		SPECIAL_CHARS: [ 'È', 'è', 'é' ],
 		WIKIDATAID: '24237997',
 		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: false,

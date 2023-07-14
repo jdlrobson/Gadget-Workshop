@@ -49,6 +49,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 		iata: function ( value ) {
 			return `{{IATA|${value}}}`
 		},
+		LISTING_TEMPLATES_OMIT: [],
+		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
 		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: true,
 		LISTING_TYPE_PARAMETER: 'type',
 		LISTING_CONTENT_PARAMETER: 'content',
@@ -268,6 +270,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 			'go': LISTING_TEMPLATE_PARAMETERS,
 			'sleep': SLEEP_TEMPLATE_PARAMETERS
 		};
+
+		( PROJECT_CONFIG.LISTING_TEMPLATES_OMIT || [] ).forEach( function ( key ) {
+			delete LISTING_TEMPLATES[ key ];
+		} );
 
 		// --------------------------------------------------------------------
 		// CONFIGURE THE FOLLOWING TO IMPLEMENT THE UI FOR THE LISTING EDITOR
@@ -1316,7 +1322,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, TRANSLATIONS, SECTION_TO_TEMPLA
 				listing[LISTING_LAST_EDIT_PARAMETER] = currentLastEditDate();
 			}
 		};
-		SUBMIT_FORM_CALLBACKS.push(updateLastEditDate);
+		if ( PROJECT_CONFIG.SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT ) {
+			SUBMIT_FORM_CALLBACKS.push(updateLastEditDate);
+		}
 
 		// --------------------------------------------------------------------
 		// LISTING EDITOR FORM VALIDATION CALLBACKS

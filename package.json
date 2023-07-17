@@ -1,0 +1,22 @@
+{
+  "name": "gadget-workshop",
+  "version": "1.0.0",
+  "main": "Gadget-HotCat.js",
+  "scripts": {
+    "test": "eslint **/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdlrobson/-Gadget-Workshop.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jdlrobson/-Gadget-Workshop/issues"
+  },
+  "homepage": "https://github.com/jdlrobson/-Gadget-Workshop#readme",
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.45.0"
+  }
+}

@@ -32,6 +32,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			return '{{IATA|' + value + '}}';
 		},
 		LISTING_TEMPLATES_OMIT: [],
+		VALIDATE_CALLBACKS_EMAIL: false,
 		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
 		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: true,
 		LISTING_TYPE_PARAMETER: 'type',
@@ -96,6 +97,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		iata: function ( value ) {
 			return 'IATA:' + value
 		},
+		VALIDATE_CALLBACKS_EMAIL: false,
 		LISTING_TYPE_PARAMETER: 'tipo',
 		LISTING_CONTENT_PARAMETER: 'descrizione',
 		SPECIAL_CHARS: [ 'È', 'è', 'é' ],
@@ -182,7 +184,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			validationEmail: 'Please ensure the email address is valid',
 			validationWikipedia: 'Please insert the Wikipedia page title only; not the full URL address',
 			validationImage: 'Please insert the Commons image title only without any prefix',
-			image: '', //Local prefix for Image (or File)
 			added: 'Added listing for ',
 			updated: 'Updated listing for ',
 			removed: 'Deleted listing for ',
@@ -222,7 +223,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			content: 'Content',
 			minorTitle: 'Check the box if the change to the listing is minor, such as a typo correction',
 			minorLabel: 'minor change?',
-			preview: 'Preview',
 			email: 'Email',
 			type: 'Type',
 			latitude: 'Latitude',
@@ -294,22 +294,13 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var WIKIPEDIA_URL = '//' + PAGE_VIEW_LANGUAGE + '.wikipedia.org';
 		var WIKIDATA_SITELINK_WIKIPEDIA = LANG + 'wiki';
 
-		//	- doNotUpload: hide upload option
-		//	- remotely_sync: for fields which can auto-acquire values, leave the local value blank when syncing
-
-		var WIKIDATA_CLAIMS = {
-			'coords':		{ 'p': 'P625', 'label': 'coordinates', 'fields': ['lat', 'long'], 'remotely_sync': false, },
-			'url':			{ 'p': 'P856', 'label': 'website', 'fields': ['url'], }, // link
-			'email':		{ 'p': 'P968', 'label': 'e-mail', 'fields': ['email'], },
-			'iata':			{ 'p': 'P238', 'label': 'IATA code (if Alt is empty)', 'fields': ['alt'], 'doNotUpload': true, },
-			'image':		{ 'p': 'P18', 'label': 'image', 'fields': ['image'], 'remotely_sync': true, },
-			//'directions':	{ 'p': 'P2795', 'label': 'directions', 'fields': ['directions'], },
-		};
-
 		var lookupField = function ( property ) {
 			return TRANSLATIONS['property' + property] || [];
 		};
 
+
+		//	- doNotUpload: hide upload option
+		//	- remotely_sync: for fields which can auto-acquire values, leave the local value blank when syncing
 		var WIKIDATA_CLAIMS = {
 			'coords':		{ 'p': 'P625', 'label': 'coordinates', 'fields': lookupField( 'P625'), 'remotely_sync': false, },
 			'url':			{ 'p': 'P856', 'label': 'website', 'fields': lookupField( 'P856') }, // link
@@ -669,7 +660,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		 * Add listeners to specific strings so that clicking on a string
 		 * will insert it into the associated input.
 		 */
-		var initStringFormFields = function(form, mode) {
+		var initStringFormFields = function(form) {
 			var STRING_SELECTOR = '.listing-charinsert';
 			$(STRING_SELECTOR, form).on( 'click', function() {
 				var target = $(this).attr('data-for');
@@ -689,25 +680,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		/**
 		 * Add listeners on various fields to update the "find on map" link.
 		 */
-		var initFindOnMapLink = function(form, mode) {
+		var initFindOnMapLink = function(form) {
 			var latlngStr = '?lang=' + Config.LANG;
 			//*****
 			// page & location cause the geomap-link crash
 			// to investigate if it's a geomap-link bug/limitation or if those parameters shall not be used
 			//*****
-			//latlngStr += '&page=' + encodeURIComponent(mw.config.get('wgTitle'));
-			/*if ($('#input-address', form).val() !== '') {
-				latlngStr += '&location=' + encodeURIComponent($('#input-address', form).val());
-			} else if ($('#input-name', form).val() !== '') {
-				latlngStr += '&location=' + encodeURIComponent($('#input-name', form).val());
-			}
-			$('#input-address', form).change( function () {
-				var link = $('#geomap-link').attr('href');
-				var index = link.indexOf('&location');
-				if (index < 0) index = link.length;
-				$('#geomap-link').attr('href', link.substr(0,index) + '&location='
-						+ encodeURIComponent($('#input-address').val()));
-			});*/
 			// try to find and collect the best available coords
 			if ( $('#input-lat', form).val() && $('#input-long', form).val() ) {
 				// listing specific coords
@@ -813,7 +791,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var changeColor = function(color, form) {
 			$('#input-type', form).css( 'box-shadow', '-20px 0 0 0 #' + color + ' inset' );
 		};
-		var initColor = function(form, mode) {
+		var initColor = function(form) {
 			typeToColor( $('#input-type', form).val(), form );
 			$('#input-type', form).on('change', function () {
 				typeToColor(this.value, form);
@@ -824,6 +802,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var isRTL = function (s){ // based on https://stackoverflow.com/questions/12006095/javascript-how-to-check-if-character-is-rtl
 			var ltrChars = 'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02B8\u0300-\u0590\u0800-\u1FFF'+'\u2C00-\uFB1C\uFDFE-\uFE6F\uFEFD-\uFFFF',
 			rtlChars = '\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC',
+			// eslint-disable-next-line no-misleading-character-class
 			rtlDirCheck = new RegExp('^[^'+ltrChars+']*['+rtlChars+']');
 			return rtlDirCheck.test(s);
 		};
@@ -852,7 +831,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		};
 		CREATE_FORM_CALLBACKS.push(setDefaultPlaceholders);
 
-		var wikidataLookup = function(form, mode) {
+		var wikidataLookup = function(form) {
 			// get the display value for the pre-existing wikidata record ID
 			var value = $("#input-wikidata-value", form).val();
 			if (value) {
@@ -1458,7 +1437,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			var VALID_EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 			_validateFieldAgainstRegex(validationFailureMessages, VALID_EMAIL_REGEX, '#input-email', Config.TRANSLATIONS.validationEmail);
 		};
-		//VALIDATE_FORM_CALLBACKS.push(validateEmail);
+		if ( PROJECT_CONFIG.VALIDATE_CALLBACKS_EMAIL ) {
+			VALIDATE_FORM_CALLBACKS.push(validateEmail);
+		}
 
 		/**
 		 * Implement SIMPLE validation on Wikipedia field to verify that the
@@ -1523,8 +1504,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				var titleResults = $(jsonObj[1]);
 				for (var i=0; i < titleResults.length; i++) {
 					var result = titleResults[i];
-					var valueWithoutFileNamespace = (titleResults[i].indexOf("File:") != -1) ? titleResults[i].substring("File:".length) : titleResults[i];
-					var titleResult = { value: valueWithoutFileNamespace, label: titleResults[i], description: $(jsonObj[2])[i], link: $(jsonObj[3])[i] };
+					var valueWithoutFileNamespace = (result.indexOf("File:") != -1) ? result.substring("File:".length) : result;
+					var titleResult = { value: valueWithoutFileNamespace, label: result, description: $(jsonObj[2])[i], link: $(jsonObj[3])[i] };
 					results.push(titleResult);
 				}
 				return results;
@@ -1630,11 +1611,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				action: 'wbremoveclaims',
 				claim: guidObj,
 			};
-			var ajaxSuccess = function(jsonObj) {
-				//console.log(jsonObj);
-			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
+			api.postWithToken( 'csrf', ajaxData, { async: false } );
 		};
 		var _changeOnWikidata = function(guidObj, prop, value, snaktype) {
 			var ajaxData = {
@@ -1670,11 +1648,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				snaks: '{"'+WIKIDATA_PROP_WMURL+'":[{"snaktype":"value","property":"'+WIKIDATA_PROP_WMURL+'","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":"' + Config.WIKIDATAID + '"}}}],' +
 					'"'+WIKIDATA_PROP_WMPRJ+'": [{"snaktype":"value","property":"'+WIKIDATA_PROP_WMPRJ+'","datavalue":{"type":"string","value":"' + revUrl + '"}}]}',
 			};
-			var ajaxSuccess = function(jsonObj) {
-				//console.log(jsonObj);
-			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
+			api.postWithToken( 'csrf', ajaxData, { async: false } );
 		};
 		var _unreferenceWikidata = function(statement, references) {
 			var ajaxData = {
@@ -1682,11 +1657,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				statement: statement,
 				references: references,
 			};
-			var ajaxSuccess = function(jsonObj) {
-				//console.log(jsonObj);
-			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
+			api.postWithToken( 'csrf', ajaxData, { async: false } );
 		};
 		// expose public members
 		return {
@@ -2056,10 +2028,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				url: mw.util.wikiScript(''),
 				data: { title: mw.config.get('wgPageName'), action: 'raw', section: sectionIndex },
 				cache: false // required
-			}).done(function(data, textStatus, jqXHR) {
+			}).done(function(data) {
 				sectionText = data;
 				openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
-			}).fail(function(jqXHR, textStatus, errorThrown) {
+			}).fail(function( _jqXHR, textStatus, errorThrown ) {
 				alert(Config.TRANSLATIONS.ajaxInitFailure + ': ' + textStatus + ' ' + errorThrown);
 			});
 		};
@@ -2169,7 +2141,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					],
 					create: function() {
 						$('.ui-dialog-buttonpane').append('<div class="listing-license">' + Config.TRANSLATIONS.licenseText + '</div>');
-						$('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function(event) { //if closed with X buttons
+						$('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
 							// if a sync editor dialog is open, get rid of it
 							if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
 								$(Config.SYNC_FORM_SELECTOR).dialog('destroy').remove();
@@ -2248,7 +2220,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			// add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
 			// Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
 			if ( $('#input-content').val() ) {
-				$('#input-content').val(($.trim($('#input-content').val())+'.').replace(/([\.\!\?])\.+$/, '$1'));
+				$('#input-content')
+					.val(($.trim($('#input-content').val())+'.')
+					// eslint-disable-next-line no-useless-escape
+					.replace(/([\.\!\?])\.+$/, '$1'));
 			}
 
 			// remove trailing period from price and address block
@@ -2324,7 +2299,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					format: 'json',
 					'text': text,
 				}),
-				error: function (jqXHR, txt) {
+				error: function () {
 					$('#listing-preview').hide();
 				},
 				success: function (data) {
@@ -2380,7 +2355,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		 * processing required for adds (as opposed to edits), returning an
 		 * appropriate edit summary string.
 		 */
-		var updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText, listing) {
+		var updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText) {
 			var summary = originalEditSummary;
 			summary += Config.TRANSLATIONS.added;
 			// add the new listing to the end of the section. if there are
@@ -2399,7 +2374,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			return summary;
 		};
 
-		var updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing) {
+		var updateSectionTextWithAddedListingIt = function (summary, listingWikiText, listing) {
 			sectionText = restoreComments(sectionText, true);
 			summary += Config.TRANSLATIONS.added;
 			//Creo un listing commentato dello stesso tipo di quello che aggiungerò.
@@ -2542,7 +2517,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			api.postWithToken(
 				"csrf",
 				editPayload
-			).done(function(data, jqXHR) {
+			).done(function(data) {
 				if (data && data.edit && data.edit.result == 'Success') {
 					// since the listing editor can be used on diff pages, redirect
 					// to the canonical URL if it is different from the current URL
@@ -2601,11 +2576,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				$(CAPTCHA_FORM_SELECTOR).dialog('destroy').remove();
 			}
 			var captcha = $('<div id="captcha-dialog">').text(Config.TRANSLATIONS.externalLinks);
-			var image = $('<img class="fancycaptcha-image">')
+			$('<img class="fancycaptcha-image">')
 					.attr('src', captchaImgSrc)
 					.appendTo(captcha);
-			var label = $('<label for="input-captcha">').text(Config.TRANSLATIONS.enterCaptcha).appendTo(captcha);
-			var input = $('<input id="input-captcha" type="text">').appendTo(captcha);
+			$('<label for="input-captcha">').text(Config.TRANSLATIONS.enterCaptcha).appendTo(captcha);
+			$('<input id="input-captcha" type="text">').appendTo(captcha);
 			captcha.dialog({
 				modal: true,
 				title: Config.TRANSLATIONS.enterCaptcha,
@@ -2711,7 +2686,17 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		 */
 		var parseDMS = function(input) {
 			// Uniform alternative notation, into one common notation DD° MM' SS" [NSEW], then the DMS components are splitted into its 4 atomic component
-			var parts = input.toString().replace(/[‘’′]/g, "'").replace(/[“”″]/g, '"').replace(/''/g, '"').replace(/−/g, '-').replace(/[_/\t\n\r]/g, " ").replace(/\s/g, '').replace(/([°'"])/g,"$1 ").replace(/([NSEW])/gi, function(v) { return ' '+v.toUpperCase(); }).replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
+			var parts = input.toString()
+				.replace(/[‘’′]/g, "'")
+				.replace(/[“”″]/g, '"')
+				.replace(/''/g, '"')
+				.replace(/−/g, '-')
+				.replace(/[_/\t\n\r]/g, " ")
+				.replace(/\s/g, '')
+				.replace(/([°'"])/g,"$1 ")
+				.replace(/([NSEW])/gi, function(v) { return ' '+v.toUpperCase(); })
+				// eslint-disable-next-line no-useless-escape
+				.replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
 			for (var i=0; i<4; i++)
 				if( !parts[i] )
 					parts[i] = '';

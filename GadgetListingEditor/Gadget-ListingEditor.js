@@ -32,7 +32,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			return '{{IATA|' + value + '}}';
 		},
 		listingTypeRegExp: function ( content ) {
-			return '({{\\s*(' + regex.join('|') + ')\\b)(\\s*[\\|}])','({{\\s*(' + content + ')\\b)(\\s*[\\|}])';
+			return '({{\\s*(' + content + ')\\b)(\\s*[\\|}])';
 		},
 		REPLACE_NEW_LINE_CHARS: true,
 		LISTING_TEMPLATES_OMIT: [],

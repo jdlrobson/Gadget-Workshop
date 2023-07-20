@@ -2387,7 +2387,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			return summary;
 		};
 
-		var updateSectionTextWithAddedListingIt = function (summary, listingWikiText, listing) {
+		var updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing) {
+			var summary = originalEditSummary;
 			sectionText = restoreComments(sectionText, true);
 			summary += Config.TRANSLATIONS.added;
 			//Creo un listing commentato dello stesso tipo di quello che aggiungerò.

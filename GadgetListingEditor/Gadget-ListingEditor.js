@@ -31,6 +31,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		iata: function ( value ) {
 			return '{{IATA|' + value + '}}';
 		},
+		listingTypeRegExp: function ( content ) {
+			return '({{\\s*(' + regex.join('|') + ')\\b)(\\s*[\\|}])','({{\\s*(' + content + ')\\b)(\\s*[\\|}])';
+		},
 		LISTING_TEMPLATES_OMIT: [],
 		VALIDATE_CALLBACKS_EMAIL: false,
 		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
@@ -96,6 +99,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	var PROJECT_CONFIG_ITWIKIVOYAGE = {
 		iata: function ( value ) {
 			return 'IATA:' + value
+		},
+		listingTypeRegExp: function ( content ) {
+			return '({{\\s*(' + content + ')\\b)\\s*([\\|}])';
 		},
 		VALIDATE_CALLBACKS_EMAIL: false,
 		LISTING_TYPE_PARAMETER: 'tipo',
@@ -1829,7 +1835,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			for (var key in Config.LISTING_TEMPLATES) {
 				regex.push(key);
 			}
-			return new RegExp('({{\\s*(' + regex.join('|') + ')\\b)(\\s*[\\|}])','ig');
+			return new RegExp( PROJECT_CONFIG.listingTypeRegExp( regex.join( '|' ) ), 'ig' );
 		};
 
 		/**

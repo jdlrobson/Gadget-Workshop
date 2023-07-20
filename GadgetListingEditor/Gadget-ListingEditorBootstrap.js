@@ -178,8 +178,9 @@ $(function() {
 		var editButton = $('<span class="vcard-edit-button noprint">')
 			.html('<a href="javascript:" class="listingeditor-edit">'+TRANSLATIONS.edit+'</a>' )
 			.on('click', function() {
+				var $this = $(this);
 				loadMain().then( function ( core ) {
-					core.initListingEditorDialog(MODE_EDIT, $(this));
+					core.initListingEditorDialog(MODE_EDIT, $this);
 				} );
 			});
 		// if there is already metadata present add a separator

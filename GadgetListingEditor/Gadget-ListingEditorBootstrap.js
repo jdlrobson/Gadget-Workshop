@@ -58,9 +58,17 @@ $(function() {
 		4, //Wikivoyage
 	];
 
+	var DB_NAME = mw.config.get( 'wgDBname' );
 	// If any of these patterns are present on a page then no 'add listing'
 	// buttons will be added to the page
-	var DISALLOW_ADD_LISTING_IF_PRESENT = ['#Cities', '#Other_destinations', '#Islands', '#print-districts' ];
+	var DISALLOW_ADD_LISTING_IF_PRESENT = ( function () {
+		switch ( DB_NAME ) {
+			case 'itwikivoyage':
+				return  ['#Centri_urbani', '#Altre_destinazioni'];
+			default:
+				return ['#Cities', '#Other_destinations', '#Islands', '#print-districts' ];
+		}
+	} () );
 
 	/**
 	 * Determine if the specified DOM element contains only whitespace or

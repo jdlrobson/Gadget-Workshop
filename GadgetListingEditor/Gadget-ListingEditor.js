@@ -293,7 +293,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	);
 
 	var DB_NAME = mw.config.get( 'wgDBname' );
-	var PROJECT_CONFIG = Object.assign( {}, PROJECT_CONFIG_ENWIKIVOYAGE, PROJECT_CONFIG_DIRECTORY[ DB_NAME ] )
+	var PROJECT_CONFIG = PROJECT_CONFIG_DIRECTORY[ DB_NAME ] || PROJECT_CONFIG_ENWIKIVOYAGE;
 
 	var Config = function( ALLOWED_NAMESPACE ) {
 		var PAGE_VIEW_LANGUAGE = mw.config.get( 'wgPageViewLanguage' );

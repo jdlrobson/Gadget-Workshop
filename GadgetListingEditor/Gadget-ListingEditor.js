@@ -28,6 +28,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	'use strict';
 
 	var PROJECT_CONFIG_ENWIKIVOYAGE = {
+		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'go', 'sleep' ],
 		iata: function ( value ) {
 			return '{{IATA|' + value + '}}';
 		},
@@ -98,6 +99,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	};
 
 	var PROJECT_CONFIG_ITWIKIVOYAGE = {
+		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'sleep' ],
 		iata: function ( value ) {
 			return 'IATA:' + value
 		},
@@ -365,22 +367,23 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		//	- newline: Append a newline after the parameter in the listing
 		//	  template syntax when the article is saved.
 		var LISTING_TEMPLATE_PARAMETERS = PROJECT_CONFIG.LISTING_TEMPLATE_PARAMETERS;
-		// override the default settings for "sleep" listings since that
-		// listing type uses "checkin"/"checkout" instead of "hours"
-		var SLEEP_TEMPLATE_PARAMETERS = $.extend(true, {}, LISTING_TEMPLATE_PARAMETERS, PROJECT_CONFIG.SLEEP_TEMPLATE_PARAMETERS );
-
 		// map the template name to configuration information needed by the listing
 		// editor
-		var LISTING_TEMPLATES = {
-			'listing': LISTING_TEMPLATE_PARAMETERS,
-			'see': LISTING_TEMPLATE_PARAMETERS,
-			'do': LISTING_TEMPLATE_PARAMETERS,
-			'buy': LISTING_TEMPLATE_PARAMETERS,
-			'eat': LISTING_TEMPLATE_PARAMETERS,
-			'drink': LISTING_TEMPLATE_PARAMETERS,
-			'go': LISTING_TEMPLATE_PARAMETERS,
-			'sleep': SLEEP_TEMPLATE_PARAMETERS
-		};
+		var LISTING_TEMPLATES = {};
+
+		Object.keys( PROJECT_CONFIG.SUPPORTED_SECTIONS ).forEach( function ( key ) {
+			if ( key === 'sleep' ) {
+				// override the default settings for "sleep" listings since that
+				// listing type uses "checkin"/"checkout" instead of "hours"
+				LISTING_TEMPLATES[ key ] = $.extend(
+					true, {},
+					LISTING_TEMPLATE_PARAMETERS,
+					PROJECT_CONFIG.SLEEP_TEMPLATE_PARAMETERS
+				);
+			} else {
+				LISTING_TEMPLATES[ key ] = LISTING_TEMPLATE_PARAMETERS;
+			}
+		} );
 
 		( PROJECT_CONFIG.LISTING_TEMPLATES_OMIT || [] ).forEach( function ( key ) {
 			delete LISTING_TEMPLATES[ key ];

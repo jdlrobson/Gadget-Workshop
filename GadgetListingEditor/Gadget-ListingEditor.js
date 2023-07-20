@@ -34,6 +34,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		listingTypeRegExp: function ( content ) {
 			return '({{\\s*(' + regex.join('|') + ')\\b)(\\s*[\\|}])','({{\\s*(' + content + ')\\b)(\\s*[\\|}])';
 		},
+		REPLACE_NEW_LINE_CHARS: true,
 		LISTING_TEMPLATES_OMIT: [],
 		VALIDATE_CALLBACKS_EMAIL: false,
 		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
@@ -103,6 +104,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		listingTypeRegExp: function ( content ) {
 			return '({{\\s*(' + content + ')\\b)\\s*([\\|}])';
 		},
+		REPLACE_NEW_LINE_CHARS: false,
 		VALIDATE_CALLBACKS_EMAIL: false,
 		LISTING_TYPE_PARAMETER: 'tipo',
 		LISTING_CONTENT_PARAMETER: 'descrizione',
@@ -2222,7 +2224,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				return false;
 			}
 			// newlines in listing content won't render properly in lists, so replace them with <br> tags
-			$('#input-content').val($.trim($('#input-content').val()).replace(/\n/g, '<br />'));
+			if ( PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS ) {
+				$('#input-content').val($.trim($('#input-content').val()).replace(/\n/g, '<br />'));
+			}
 			// add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
 			// Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
 			if ( $('#input-content').val() ) {

@@ -302,7 +302,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var COMMONS_URL = '//commons.wikimedia.org';
 		var WIKIDATA_URL = '//www.wikidata.org';
 		var WIKIPEDIA_URL = '//' + PAGE_VIEW_LANGUAGE + '.wikipedia.org';
-		var WIKIDATA_SITELINK_WIKIPEDIA = LANG + 'wiki';
+		var WIKIDATA_SITELINK_WIKIPEDIA = PAGE_VIEW_LANGUAGE + 'wiki';
 
 		var lookupField = function ( property ) {
 			return TRANSLATIONS['property' + property] || [];

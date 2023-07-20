@@ -371,7 +371,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		// editor
 		var LISTING_TEMPLATES = {};
 
-		Object.keys( PROJECT_CONFIG.SUPPORTED_SECTIONS ).forEach( function ( key ) {
+		PROJECT_CONFIG.SUPPORTED_SECTIONS.forEach( function ( key ) {
 			if ( key === 'sleep' ) {
 				// override the default settings for "sleep" listings since that
 				// listing type uses "checkin"/"checkout" instead of "hours"

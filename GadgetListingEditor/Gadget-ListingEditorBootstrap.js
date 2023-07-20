@@ -8,44 +8,53 @@ $(function() {
 	// UPDATE THE FOLLOWING TO MATCH WIKIVOYAGE ARTICLE SECTION NAMES
 	// --------------------------------------------------------------------
 
+	var DB_NAME = mw.config.get( 'wgDBname' );
 	// map section heading ID to the listing template to use for that section
-	var SECTION_TO_TEMPLATE_TYPE = {
-		'Cosa_vedere': 'see',
-		'Cosa_fare': 'do',
-		'Acquisti': 'buy',
-		'Dove_mangiare': 'eat',
-		'Come_divertirsi': 'drink',
-		'Dove_alloggiare': 'sleep',
-		'Eventi_e_feste': 'listing',
-		'Come arrivare': 'listing',
-		'Come spostarsi': 'listing',
-		'See': 'see',
-		'Do': 'do',
-		'Buy': 'buy',
-		'Eat': 'eat',
-		'Drink': 'drink',
-		'Sleep': 'sleep',
-		'Connect': 'listing',
-		'Wait': 'see',
-		'See_and_do': 'see',
-		'Eat_and_drink': 'eat',
-		'Get_in': 'go',
-		'Get_around': 'go',
-		'Anreise': 'station', // go
-		'Mobilität': 'public transport', // go
-		'Sehenswürdigkeiten': 'monument', // see
-		'Aktivitäten': 'sports', // do
-		'Einkaufen': 'shop', // buy
-		'Küche': 'restaurant', // eat
-		'Nachtleben': 'bar', // drink
-		// dummy line (es) // drink and night life
-		'Unterkunft': 'hotel', // sleep
-		'Lernen': 'education', // education
-		'Arbeiten': 'administration', // work
-		'Sicherheit': 'administration', // security
-		'Gesundheit': 'health', // health
-		'Praktische_Hinweise': 'office' // practicalities
-	};
+	var SECTION_TO_TEMPLATE_TYPE = ( function () {
+		switch ( DB_NAME ) {
+			case 'itwikivoyage':
+				return {
+					'Cosa_vedere': 'see',
+					'Cosa_fare': 'do',
+					'Acquisti': 'buy',
+					'Dove_mangiare': 'eat',
+					'Come_divertirsi': 'drink',
+					'Dove_alloggiare': 'sleep',
+					'Eventi_e_feste': 'listing',
+					'Come arrivare': 'listing',
+					'Come spostarsi': 'listing'
+				};
+			default:
+				return {
+					'See': 'see',
+					'Do': 'do',
+					'Buy': 'buy',
+					'Eat': 'eat',
+					'Drink': 'drink',
+					'Sleep': 'sleep',
+					'Connect': 'listing',
+					'Wait': 'see',
+					'See_and_do': 'see',
+					'Eat_and_drink': 'eat',
+					'Get_in': 'go',
+					'Get_around': 'go',
+					'Anreise': 'station', // go
+					'Mobilität': 'public transport', // go
+					'Sehenswürdigkeiten': 'monument', // see
+					'Aktivitäten': 'sports', // do
+					'Einkaufen': 'shop', // buy
+					'Küche': 'restaurant', // eat
+					'Nachtleben': 'bar', // drink
+					// dummy line (es) // drink and night life
+					'Unterkunft': 'hotel', // sleep
+					'Lernen': 'education', // education
+					'Arbeiten': 'administration', // work
+					'Sicherheit': 'administration', // security
+					'Gesundheit': 'health', // health
+					'Praktische_Hinweise': 'office' // practicalities
+				};
+		}
+	}() );
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
 	var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
@@ -58,7 +67,6 @@ $(function() {
 		4, //Wikivoyage
 	];
 
-	var DB_NAME = mw.config.get( 'wgDBname' );
 	// If any of these patterns are present on a page then no 'add listing'
 	// buttons will be added to the page
 	var DISALLOW_ADD_LISTING_IF_PRESENT = ( function () {

@@ -225,8 +225,9 @@ $(function() {
 			}
 		}
 		$('.listingeditor-add').on('click', function() {
+			var $this = $(this);
 			loadMain().then( function ( core ) {
-				core.initListingEditorDialog(core.MODE_ADD, $(this));
+				core.initListingEditorDialog(core.MODE_ADD, $this);
 			} );
 		});
 	};

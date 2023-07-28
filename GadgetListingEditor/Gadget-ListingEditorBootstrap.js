@@ -104,7 +104,7 @@ $(function() {
 			edit: 'modifica'
 		}
 	};
-	var TRANSLATIONS = Object.assign(
+	var TRANSLATIONS = $.extend( true,
 		{},
 		TRANSLATIONS_ALL.en,
 		TRANSLATIONS_ALL[ mw.config.get( 'wgUserLanguage' ) ]

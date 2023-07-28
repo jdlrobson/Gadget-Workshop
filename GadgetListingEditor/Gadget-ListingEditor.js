@@ -106,6 +106,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		listingTypeRegExp: function ( content ) {
 			return '({{\\s*(' + content + ')\\b)\\s*([\\|}])';
 		},
+		DEFAULT_LISTING_TEMPLATE: 'listing',
 		REPLACE_NEW_LINE_CHARS: false,
 		VALIDATE_CALLBACKS_EMAIL: false,
 		LISTING_TYPE_PARAMETER: 'tipo',
@@ -113,6 +114,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		SPECIAL_CHARS: [ 'È', 'è', 'é' ],
 		WIKIDATAID: '24237997',
 		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: false,
+		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
 		LISTING_TEMPLATES_OMIT: [ 'go' ],
 		SLEEP_TEMPLATE_PARAMETERS: {
 			orari: { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
@@ -169,6 +171,19 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		itwikivoyage: PROJECT_CONFIG_ITWIKIVOYAGE,
 		enwikivoyage: PROJECT_CONFIG_ENWIKIVOYAGE
 	};
+	// check project has been setup correctly with no missing keys.
+	Object.keys( PROJECT_CONFIG_ENWIKIVOYAGE ).forEach( function ( key ) {
+		// check the key is present in all the other configurations
+		Object.keys( PROJECT_CONFIG_DIRECTORY ).forEach( function ( projectKey ) {
+			if ( projectKey === 'enwikivoyage' ) {
+				return; // no need to check against itself
+			} else {
+				if ( PROJECT_CONFIG_DIRECTORY[ projectKey ][ key ] === undefined ) {
+					throw new Error( 'Project ' + projectKey + ' must define project setting ' + key );
+				}
+			}
+		} );
+	} );
 
 	var TRANSLATIONS_ALL = {
 		en: {

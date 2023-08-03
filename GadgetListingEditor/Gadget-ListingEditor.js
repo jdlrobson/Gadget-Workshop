@@ -300,7 +300,47 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			minorLabel: 'modifica minore?',
 			syncWikidata: 'qni con Wikidata',
 			syncWikidataTitle: 'Questo semplicemente prende i valori da Wikidata sostituendoli a quelli locali. Utile per i nuovi listings.',
-			syncWikidataLabel: '(inserimento rapido)'
+			syncWikidataLabel: '(inserimento rapido)',
+			externalLinks: 'La tua modifica include nuovi collegamenti esterni.',
+			addTitle: 'Aggiungi un nuovo elemento',
+			editTitle: "Modifica l'elemento esistente",
+			syncTitle: 'Wikidata Sync',
+			saving: 'Salvataggio...',
+			submit: 'Salva',
+			cancel: 'Annulla',
+			cancelAll: 'Annulla tutto',
+			previewOff: 'Niente anteprima',
+			refresh: '↺', // \ue031 not yet working
+			refreshTitle: 'Aggiorna anteprima',
+			selectAll: 'Seleziona tutto',
+			selectAlternatives: 'Seleziona tutti i valori dove l\'alternativa è vuota.',
+			validationEmptyListing: "Inserisci almeno un'informazione tra nome o indirizzo",
+			validationEmail: "Assicurati che l'indirizzo mail sia valido",
+			validationWikipedia: "Inserisci solo il titolo della voce su Wikipedia e non l'indirizzo internet",
+			validationImage: "Inserisci solo il titolo dell'immagine su Commons senza alcun prefisso",
+			added: 'Aggiunto elemento: ',
+			updated: 'Aggiornato elemento: ',
+			removed: 'Rimosso elemento: ',
+			helpPage: '//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor',
+			enterCaptcha: 'Inserisci il CAPTCHA',
+			licenseText: 'Facendo click su "Salva", accetti espressamente i <a class="external" target="_blank" href="http://wikimediafoundation.org/wiki/Terms_of_Use/it">Termini d\'uso</a>, e accetti irrevocabilmente a rilasciare il tuo contributo sotto la <a class="external" target="_blank" href="http://en.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license">licenza CC-BY-SA 3.0</a>.',
+			ajaxInitFailure: 'Errore: Impossibile inizializzare il listing editor',
+			sharedWikipedia: 'wikipedia',
+			synchronized: '- campo sincronizzato.',
+			submitApiError: "Errore: Il server ha restituito un errore durante il salvataggio dell'elemento, per favore, prova ancora",
+			submitBlacklistError: 'Errore: Un valore nei dati inviati è in "blacklist", per favore rimuovilo e prova ancora',
+			submitUnknownError: "Errore: Un errore sconosciuto si è verificato durante il salvataggio dell'elemento, per favore, prova ancora",
+			submitHttpError: "Errore: Il server ha risposto con un errore HTTP durante il salvataggio dell'elemento, per favore, prova ancora",
+			submitEmptyError: "Errore: Il server ha restituito una risposta vuota durante il salvataggio dell'elemento, per favore, prova ancora",
+			viewCommonsPage: "Vedi l'immagine su Commons",
+			viewWikidataPage: "Vedi l'istanza su Wikidata",
+			viewWikipediaPage: 'Vedi la voce su Wikipedia',
+			wikidataSharedMatch: 'Nessuna differenza trovata tra i valori locali e quelli su Wikidata',
+			wikidataShared: 'I seguenti dati sono stati trovati su Wikidata. Aggiorno i relativi campi con questi valori?',
+			wikidataSharedNotFound: 'Nessun dato è stato recuperato da Wikidata',
+			wikidataSyncBlurb: 'Il valore selezionato cambierà in entrambi i siti Web in modo che corrispondano (selezionando un valore vuoto verrà eliminato da entrambi). Non selezionare nessuno dei due, non comporterà alcuna modifica. Si prega rischiare di sbagliare scegliendo uno dei valori piuttosto che non fare niente - ci sono alcuni casi in cui è preferibile avere intenzionalmente un valore diverso tra i due siti. <p> Sei incoraggiato ad andare nell\'elemento Wikidata per aggiungere i riferimenti di un qualsiasi dato che cambi.',
+			natlCurrencyTitle: 'Simboli della valuta nazionale',
+			intlCurrenciesTitle: 'Simboli di valute internazionali'
 		}
 	};
 
@@ -309,6 +349,19 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		TRANSLATIONS_ALL.en,
 		TRANSLATIONS_ALL[ mw.config.get( 'wgUserLanguage' ) ]
 	);
+
+	Object.keys( TRANSLATIONS_ALL.en ).forEach( function ( key ) {
+		// check the key is present in all the other configurations
+		Object.keys( TRANSLATIONS_ALL ).forEach( function ( lang ) {
+			if ( lang === 'en' ) {
+				return; // no need to check against itself
+			} else {
+				if ( TRANSLATIONS_ALL[ lang ][ key ] === undefined ) {
+					mw.log.warn( 'Language missing translation ' + key + ' will fall back to English.' );
+				}
+			}
+		} );
+	} );
 
 	var translate = function ( key ) {
 		var msg =  Config.TRANSLATIONS[ key ];

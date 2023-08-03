@@ -28,6 +28,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	'use strict';
 
 	var PROJECT_CONFIG_ENWIKIVOYAGE = {
+		SHOW_LAST_EDITED_FIELD: true,
 		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'go', 'sleep' ],
 		iata: function ( value ) {
 			return '{{IATA|' + value + '}}';
@@ -99,6 +100,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	};
 
 	var PROJECT_CONFIG_ITWIKIVOYAGE = {
+		SHOW_LAST_EDITED_FIELD: false,
 		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'sleep' ],
 		iata: function ( value ) {
 			return 'IATA:' + value
@@ -264,7 +266,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			listingTooltip: 'Check the box if the business is no longer in operation or if the listing should be deleted for some other reason, and it will be removed from this article',
 			listingLabel: 'delete this listing?',
 			listingUpdatedTooltip: 'Check the box if the information in this listing has been verified to be current and accurate, and the last updated date will be changed to the current date',
-			listingUpdatedLabel: 'mark the listing as up-to-date?'
+			listingUpdatedLabel: 'mark the listing as up-to-date?',
+			natlCurrencyTitle: '',
+			intlCurrenciesTitle: ''
 		},
 		it: {
 			budget: 'Prezzi modici',
@@ -663,10 +667,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					'</span>' +
 					// update the Callbacks.updateLastEditDate
 					// method if the last edit input is removed or modified
-					'<span id="span-last-edit">' +
+					( PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD ? '<span id="span-last-edit">' +
 						'<input type="checkbox" id="input-last-edit" />' +
 						'<label for="input-last-edit" class="listing-tooltip" title="' + translate( 'listingUpdatedTooltip' ) + '">' + translate( 'listingUpdatedLabel' ) + '</label>' +
-					'</span>' +
+					'</span>' : '' ) +
 				'</div>' +
 			'</div>' +
 			// update the Callbacks.hideEditOnlyFields method if

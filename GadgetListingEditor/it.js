@@ -1,347 +1,120 @@
-/******************************************************************
-Listing Editor v3.0.0alpha
-	Source code: https://github.com/jdlrobson/-Gadget-Workshop
-	Original author:
-	- torty3
-	Additional contributors:
-	- Andyrom75
-	- ARR8
-	- RolandUnger
-	- Wrh2
-	- Jdlrobson
-	Changelog: https://en.wikivoyage.org/wiki/Wikivoyage:Listing_editor#Changelog
-
-	TODO
-	- Add support for mobile devices.
-	- wrapContent is breaking the expand/collapse logic on the VFD page.
-	- populate the input-type select list from LISTING_TEMPLATES
-	- Allow syncing Wikipedia link back to Wikidata with wbsetsitelink
-	- Allow hierarchy of preferred sources, rather than just one source, for Wikidata sync
-		- E.g. get URL with language of work = english before any other language version if exists
-		- E.g. get fall back to getting coordinate of headquarters if geographic coordinates unavailable. Prioritize getting coordinates of entrance before any other coordinates if all present
-		- E.g. Can use multiple sources to fetch address
-		- Figure out how to get this to upload properly
+/***********************************************************<nowiki>
+	Listing Editor v1.4.2 (torty3)
+	Listing Editor v2.1 (Wrh2)
+	Listing Editor v2.2 (ARR8 & RolandUnger)
+	Listing Editor v2.3, 2.4 (Andyrom75)
+	Personalizzazione italiana (Andyrom75)
 ********************************************************************/
-//<nowiki>
 
-module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
+var ListingEditor = ( function ( mw, $ ) {
 	'use strict';
-
-	var PROJECT_CONFIG_ENWIKIVOYAGE = {
-		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'go', 'sleep' ],
-		iata: function ( value ) {
-			return '{{IATA|' + value + '}}';
-		},
-		listingTypeRegExp: function ( content ) {
-			return '({{\\s*(' + content + ')\\b)(\\s*[\\|}])';
-		},
-		REPLACE_NEW_LINE_CHARS: true,
-		LISTING_TEMPLATES_OMIT: [],
-		VALIDATE_CALLBACKS_EMAIL: false,
-		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
-		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: true,
-		LISTING_TYPE_PARAMETER: 'type',
-		LISTING_CONTENT_PARAMETER: 'content',
-		DEFAULT_LISTING_TEMPLATE: 'listing',
-		DEFAULT_PLACEHOLDERS: {
-			'name':				'name of place',
-			'alt':				'also known as',
-			'url':				'https://www.example.com',
-			'address':			'address of place',
-			'directions':		'how to get here',
-			'phone':			'+55 555 555 5555',
-			'tollfree':			'+1 800 100 1000',
-			'fax':				'+55 555 555 555',
-			'email':			'info@example.com',
-			'lastedit':			'2020-01-15',
-			'lat':				'11.11111',
-			'long':				'111.11111',
-			'hours':			'9AM-5PM or 09:00-17:00',
-			'checkin':			'check in time',
-			'checkout':			'check out time',
-			'price':			'entry or service price',
-			'wikidata-label':	'wikidata record',
-			'wikipedia':		'wikipedia article',
-			'image':			'image of place',
-			'content':			'description of place',
-			'summary':			'reason listing was changed'
-		},
-		SLEEP_TEMPLATE_PARAMETERS: {
-			'hours': { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
-			'checkin': { hideDivIfEmpty: null, skipIfEmpty: false },
-			'checkout': { hideDivIfEmpty: null, skipIfEmpty: false }
-		},
-		LISTING_TEMPLATE_PARAMETERS: {
-			'type': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
-			'name': { id:'input-name' },
-			'alt': { id:'input-alt' },
-			'url': { id:'input-url' },
-			'email': { id:'input-email', newline: true },
-			'address': { id:'input-address' },
-			'lat': { id:'input-lat' },
-			'long': { id:'input-long' },
-			'directions': { id:'input-directions', newline: true },
-			'phone': { id:'input-phone' },
-			'tollfree': { id:'input-tollfree' },
-			'fax': { id:'input-fax', hideDivIfEmpty: 'div_fax', newline: true, skipIfEmpty: true },
-			'hours': { id:'input-hours' },
-			'checkin': { id:'input-checkin', hideDivIfEmpty: 'div_checkin', skipIfEmpty: true },
-			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
-			'price': { id:'input-price', newline: true },
-			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
-			'image': { id:'input-image', skipIfEmpty: true },
-			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
-			'lastedit': { id:'input-lastedit', newline: true, skipIfEmpty: true },
-			'content': { id:'input-content', newline: true }
-		},
-		WIKIDATAID: '19826574',
-		SPECIAL_CHARS: []
-	};
-
-	var PROJECT_CONFIG_ITWIKIVOYAGE = {
-		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'sleep' ],
-		iata: function ( value ) {
-			return 'IATA:' + value
-		},
-		listingTypeRegExp: function ( content ) {
-			return '({{\\s*(' + content + ')\\b)\\s*([\\|}])';
-		},
-		DEFAULT_LISTING_TEMPLATE: 'listing',
-		REPLACE_NEW_LINE_CHARS: false,
-		VALIDATE_CALLBACKS_EMAIL: false,
-		LISTING_TYPE_PARAMETER: 'tipo',
-		LISTING_CONTENT_PARAMETER: 'descrizione',
-		SPECIAL_CHARS: [ 'È', 'è', 'é' ],
-		WIKIDATAID: '24237997',
-		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: false,
-		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
-		LISTING_TEMPLATES_OMIT: [ 'go' ],
-		SLEEP_TEMPLATE_PARAMETERS: {
-			orari: { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
-			checkin: { hideDivIfEmpty: null, skipIfEmpty: false },
-			checkout: { hideDivIfEmpty: null, skipIfEmpty: false }
-		},
-		LISTING_TEMPLATE_PARAMETERS: {
-			'tipo': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
-			'nome': { id:'input-name' },
-			'alt': { id:'input-alt' },
-			'sito': { id:'input-url' },
-			'email': { id:'input-email', newline: true },
-			'indirizzo': { id:'input-address' },
-			'lat': { id:'input-lat' },
-			'long': { id:'input-long' },
-			'indicazioni': { id:'input-directions', newline: true },
-			'tel': { id:'input-phone' },
-			'numero verde': { id:'input-tollfree' },
-			'fax': { id:'input-fax', newline: true },
-			'orari': { id:'input-hours' },
-			'checkin': { id:'input-checkin', hideDivIfEmpty: 'div_checkin', skipIfEmpty: true },
-			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
-			'prezzo': { id:'input-price', newline: true },
-			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
-			'immagine': { id:'input-image', skipIfEmpty: true },
-			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
-			'descrizione': { id:'input-content', newline: true }
-		},
-		DEFAULT_PLACEHOLDERS: {
-			'name':				'nome del posto',
-			'alt':				'noto anche come',
-			'url':				'https://www.esempio.com',
-			'address':			'indirizzo del posto',
-			'directions':		'come arrivare qui',
-			'phone':			'+55 555 555 5555',
-			'tollfree':			'+1 800 100 1000',
-			'fax':				'+55 555 555 555',
-			'email':			'info@esempio.com',
-			'lat':				'11.11111',
-			'long':				'111.11111',
-			'hours':			'Lun-Ven 9:00-17:00',
-			'checkin':			'orario di check in',
-			'checkout':			'orario di check out',
-			'price':			'prezzo e riferimento temporale (mese anno)',
-			'wikidata-label':	'istanza wikidata',
-			'wikipedia':		'voce wikipedia',
-			'image':			'immagine del luogo',
-			'content':			'descrizione del posto',
-			'summary':			'Motivo di modifica dell\'elemento',
-		}
-	};
-
-	var PROJECT_CONFIG_DIRECTORY = {
-		itwikivoyage: PROJECT_CONFIG_ITWIKIVOYAGE,
-		enwikivoyage: PROJECT_CONFIG_ENWIKIVOYAGE
-	};
-	// check project has been setup correctly with no missing keys.
-	Object.keys( PROJECT_CONFIG_ENWIKIVOYAGE ).forEach( function ( key ) {
-		// check the key is present in all the other configurations
-		Object.keys( PROJECT_CONFIG_DIRECTORY ).forEach( function ( projectKey ) {
-			if ( projectKey === 'enwikivoyage' ) {
-				return; // no need to check against itself
-			} else {
-				if ( PROJECT_CONFIG_DIRECTORY[ projectKey ][ key ] === undefined ) {
-					throw new Error( 'Project ' + projectKey + ' must define project setting ' + key );
-				}
-			}
-		} );
-	} );
-
-	var TRANSLATIONS_ALL = {
-		en: {
-			propertyP625: ['lat', 'long'],
-			propertyP856: ['url'],
-			propertyP968: ['email'],
-			propertyP238: ['alt'],
-			propertyP18: ['image'],
-			addTitle: 'Add New Listing',
-			editTitle: 'Edit Existing Listing',
-			syncTitle: 'Wikidata Sync',
-			saving: 'Saving...',
-			submit: 'Submit',
-			cancel: 'Cancel',
-			cancelAll: 'Clear all',
-			preview: 'Preview',
-			previewOff: 'Preview off',
-			refresh: '↺', // \ue031 not yet working
-			refreshTitle: 'Refresh preview',
-			selectAll: 'Select all',
-			selectAlternatives: 'Select all values where the alternative is empty.',
-			validationEmptyListing: 'Please enter either a name or an address',
-			validationEmail: 'Please ensure the email address is valid',
-			validationWikipedia: 'Please insert the Wikipedia page title only; not the full URL address',
-			validationImage: 'Please insert the Commons image title only without any prefix',
-			added: 'Added listing for ',
-			updated: 'Updated listing for ',
-			removed: 'Deleted listing for ',
-			helpPage: '//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor',
-			enterCaptcha: 'Enter CAPTCHA',
-			externalLinks: 'Your edit includes new external links.',
-			// license text should match MediaWiki:Wikimedia-copyrightwarning
-			licenseText: 'By clicking "Submit", you agree to the <a class="external" target="_blank" href="//wikimediafoundation.org/wiki/Terms_of_use">Terms of use</a>, and you irrevocably agree to release your contribution under the <a class="external" target="_blank" href="//en.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license">CC-BY-SA 3.0 License</a>. You agree that a hyperlink or URL is sufficient attribution under the Creative Commons license.',
-			ajaxInitFailure: 'Error: Unable to initialize the listing editor',
-			sharedWikipedia: 'wikipedia',
-			synchronized: 'synchronized.',
-			submitApiError: 'Error: The server returned an error while attempting to save the listing, please try again',
-			submitBlacklistError: 'Error: A value in the data submitted has been blacklisted, please remove the blacklisted pattern and try again',
-			submitUnknownError: 'Error: An unknown error has been encountered while attempting to save the listing, please try again',
-			submitHttpError: 'Error: The server responded with an HTTP error while attempting to save the listing, please try again',
-			submitEmptyError: 'Error: The server returned an empty response while attempting to save the listing, please try again',
-			viewCommonsPage: 'view Commons page',
-			viewWikidataPage: 'view Wikidata record',
-			viewWikipediaPage: 'view Wikipedia page',
-			wikidataSharedMatch: 'No differences found between local and Wikidata values',
-			wikidataShared: 'The following data was found in the shared Wikidata record. Update shared fields using these values?',
-			wikidataSharedNotFound: 'No shared data found in the Wikidata repository',
-			wikidataSyncBlurb: 'Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally.<p>You are encouraged to go to the Wikidata item and add references for any data you change.',
-			editSummary: 'Edit Summary',
-			name: 'Name',
-			alt: 'Alt',
-			website: 'Website',
-			address: 'Address',
-			directions: 'Directions',
-			phone: 'Phone',
-			tollfree: 'Tollfree',
-			fax: 'Fax',
-			lastUpdated: 'Last Updated',
-			syncWikidata: 'Sync shared fields to/from Wikidata',
-			syncWikidataTitle: 'This simply gets the values from Wikidata and replaces the local values. Useful for new listings.',
-			syncWikidataLabel: '(quick fetch)',
-			content: 'Content',
-			minorTitle: 'Check the box if the change to the listing is minor, such as a typo correction',
-			minorLabel: 'minor change?',
-			email: 'Email',
-			type: 'Type',
-			latitude: 'Latitude',
-			longitude: 'Longitude',
-			findOnMap: 'find on map',
-			hours: 'Hours',
-			checkin: 'Check-in',
-			checkout: 'Check-out',
-			price: 'Price',
-			wpWd: 'Get ID from Wikipedia article',
-			wikidataRemoveTitle: 'Delete the Wikidata entry from this listing',
-			wikidataRemoveLabel: 'remove',
-			image: 'Image',
-			listingTooltip: 'Check the box if the business is no longer in operation or if the listing should be deleted for some other reason, and it will be removed from this article',
-			listingLabel: 'delete this listing?',
-			listingUpdatedTooltip: 'Check the box if the information in this listing has been verified to be current and accurate, and the last updated date will be changed to the current date',
-			listingUpdatedLabel: 'mark the listing as up-to-date?'
-		},
-		it: {
-			editSummary: 'Oggetto della modifica',
-			name: 'Nome',
-			alt: 'Altro nome',
-			website: 'Sito web',
-			address: 'Indirizzo',
-			directions: 'Indicazioni',
-			phone: 'Telefono',
-			tollfree: 'Numero verde',
-			fax: 'Fax',
-			content: 'Descrizione',
-			preview: 'Anteprima',
-			email: 'Email',
-			type: 'Tipo',
-			latitude: 'Latitudine',
-			longitude: 'Longitudine',
-			findOnMap: 'localizza su geomap',
-			hours: 'Orari',
-			checkin: 'Check-in',
-			checkout: 'Check-out',
-			price: 'Prezzo',
-			wpWd: 'Ottieni l\'ID dalla voce Wikipedia',
-			wikidataRemoveTitle: 'Cancella l\'istanza Wikidata da questo elemento',
-			wikidataRemoveLabel: 'rimuovi',
-			image: 'Immagine',
-			listingTooltip: 'Spunta il riquadro se l\'attività non è più operativa, al fine di rimuoverla da questo articolo',
-			listingLabel: 'Cancello?',
-			minorTitle: 'Spunta il riquadro se la modifica dell\'elemento non è rilevante, come la correzione di un refuso',
-			minorLabel: 'modifica minore?',
-			syncWikidata: 'qni con Wikidata',
-			syncWikidataTitle: 'Questo semplicemente prende i valori da Wikidata sostituendoli a quelli locali. Utile per i nuovi listings.',
-			syncWikidataLabel: '(inserimento rapido)'
-		}
-	};
-
-	var TRANSLATIONS = Object.assign(
-		{},
-		TRANSLATIONS_ALL.en,
-		TRANSLATIONS_ALL[ mw.config.get( 'wgUserLanguage' ) ]
-	);
-
-	var translate = function ( key ) {
-		var msg =  Config.TRANSLATIONS[ key ];
-		if ( !msg ) {
-			throw new Error( 'Could not find undefined message ' + key );
-		} else {
-			return msg;
-		}
+	// only run on supported skins
+	// (on mobile this breaks section collapsing)
+	if ( mw.config.get( 'skin' ) === 'minerva' ) {
+		return;
 	}
 
-	var DB_NAME = mw.config.get( 'wgDBname' );
-	var PROJECT_CONFIG = PROJECT_CONFIG_DIRECTORY[ DB_NAME ] || PROJECT_CONFIG_ENWIKIVOYAGE;
+	/* ***********************************************************************
+	 * CUSTOMIZATION INSTRUCTIONS:
+	 *
+	 * Different Wikivoyage language versions have different implementations of
+	 * the listing template, so this module must be customized for each. The
+	 * Config and Callbacks modules should be the
+	 * ONLY code that requires customization - Core should be
+	 * shared across all language versions. If for some reason the Core module
+	 * must be modified, ideally the module should be modified for all language
+	 * versions so that the code can stay in sync.
+	 * ***********************************************************************/
 
-	var Config = function( ALLOWED_NAMESPACE ) {
-		var PAGE_VIEW_LANGUAGE = mw.config.get( 'wgPageViewLanguage' );
-		var LANG = mw.config.get( 'wgUserLanguage', 'en' );
-		var WIKIDATAID = PROJECT_CONFIG.WIKIDATAID;
+	// see http://toddmotto.com/mastering-the-module-pattern/ for an overview
+	// of the module design pattern being used in this gadget
+
+	/* ***********************************************************************
+	 * Config contains properties that will likely need to be
+	 * modified for each Wikivoyage language version. Properties in this
+	 * module will be referenced from the other ListingEditor modules.
+	 * ***********************************************************************/
+	var Config = function() {
+
+		// --------------------------------------------------------------------
+		// TRANSLATE THE FOLLOWING BASED ON THE WIKIVOYAGE LANGUAGE IN USE
+		// --------------------------------------------------------------------
+
+		var LANG = 'it';
+		var WIKIDATAID = '24237997'; // wikidata ID of this wikivoyage edition
 		var COMMONS_URL = '//commons.wikimedia.org';
 		var WIKIDATA_URL = '//www.wikidata.org';
-		var WIKIPEDIA_URL = '//' + PAGE_VIEW_LANGUAGE + '.wikipedia.org';
-		var WIKIDATA_SITELINK_WIKIPEDIA = PAGE_VIEW_LANGUAGE + 'wiki';
-
-		var lookupField = function ( property ) {
-			return TRANSLATIONS['property' + property] || [];
+		var WIKIPEDIA_URL = '//it.wikipedia.org';
+		var WIKIDATA_SITELINK_WIKIPEDIA = 'itwiki';
+		var TRANSLATIONS = {
+			'addTitle' : 'Aggiungi un nuovo elemento',
+			'editTitle' : "Modifica l'elemento esistente",
+			'syncTitle' : 'Wikidata Sync',
+			'add': 'aggiungi elemento',
+			'edit': 'modifica',
+			'saving': 'Salvataggio...',
+			'submit': 'Salva',
+			'cancel': 'Annulla',
+			'cancelAll': 'Annulla tutto',
+			'preview': 'Anteprima',
+			'previewOff': 'Niente anteprima',
+			'refresh': '↺', // \ue031 not yet working
+			'refreshTitle': 'Aggiorna anteprima',
+			'selectAll': 'Seleziona tutto',
+			'selectAlternatives': 'Seleziona tutti i valori dove l\'alternativa è vuota.',
+			'validationEmptyListing': "Inserisci almeno un'informazione tra nome o indirizzo",
+			'validationEmail': "Assicurati che l'indirizzo mail sia valido",
+			'validationWikipedia': "Inserisci solo il titolo della voce su Wikipedia e non l'indirizzo internet",
+			'validationImage': "Inserisci solo il titolo dell'immagine su Commons senza alcun prefisso",
+			'image': "immagine", //Local prefix for Image (or File)
+			'added': 'Aggiunto elemento: ',
+			'updated': 'Aggiornato elemento: ',
+			'removed': 'Rimosso elemento: ',
+			'helpPage': '//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor',
+			'enterCaptcha': 'Inserisci il CAPTCHA',
+			'externalLinks': 'La tua modifica include nuovi collegamenti esterni.',
+			'budget': 'Prezzi modici',
+			'midrange': 'Prezzi medi',
+			'splurge': 'Prezzi elevati',
+			// license text should match MediaWiki:Wikimedia-copyrightwarning
+			'licenseText': 'Facendo click su "Salva", accetti espressamente i <a class="external" target="_blank" href="http://wikimediafoundation.org/wiki/Terms_of_Use/it">Termini d\'uso</a>, e accetti irrevocabilmente a rilasciare il tuo contributo sotto la <a class="external" target="_blank" href="http://en.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license">licenza CC-BY-SA 3.0</a>.',
+			'ajaxInitFailure': 'Errore: Impossibile inizializzare il listing editor',
+			'sharedWikipedia': 'wikipedia',
+			'synchronized': '- campo sincronizzato.',
+			'submitApiError': "Errore: Il server ha restituito un errore durante il salvataggio dell'elemento, per favore, prova ancora",
+			'submitBlacklistError': 'Errore: Un valore nei dati inviati è in "blacklist", per favore rimuovilo e prova ancora',
+			'submitUnknownError': "Errore: Un errore sconosciuto si è verificato durante il salvataggio dell'elemento, per favore, prova ancora",
+			'submitHttpError': "Errore: Il server ha risposto con un errore HTTP durante il salvataggio dell'elemento, per favore, prova ancora",
+			'submitEmptyError': "Errore: Il server ha restituito una risposta vuota durante il salvataggio dell'elemento, per favore, prova ancora",
+			'viewCommonsPage' : "Vedi l'immagine su Commons",
+			'viewWikidataPage' : "Vedi l'istanza su Wikidata",
+			'viewWikipediaPage' : 'Vedi la voce su Wikipedia',
+			'wikidataSharedMatch': 'Nessuna differenza trovata tra i valori locali e quelli su Wikidata',
+			'wikidataShared': 'I seguenti dati sono stati trovati su Wikidata. Aggiorno i relativi campi con questi valori?',
+			'wikidataSharedNotFound': 'Nessun dato è stato recuperato da Wikidata',
+			'wikidataSyncBlurb': 'Il valore selezionato cambierà in entrambi i siti Web in modo che corrispondano (selezionando un valore vuoto verrà eliminato da entrambi). Non selezionare nessuno dei due, non comporterà alcuna modifica. Si prega rischiare di sbagliare scegliendo uno dei valori piuttosto che non fare niente - ci sono alcuni casi in cui è preferibile avere intenzionalmente un valore diverso tra i due siti. <p> Sei incoraggiato ad andare nell\'elemento Wikidata per aggiungere i riferimenti di un qualsiasi dato che cambi.',
+			'natlCurrencyTitle': 'Simboli della valuta nazionale',
+			'intlCurrenciesTitle': 'Simboli di valute internazionali',
 		};
 
+		// --------------------------------------------------------------------
+		// TRANSLATE AND CONFIGURE
+		// --------------------------------------------------------------------
+		// - doNotUpload: hide upload option
+		// - remotely_sync: for fields which can auto-acquire values, leave the local value blank when syncing
 
-		//	- doNotUpload: hide upload option
-		//	- remotely_sync: for fields which can auto-acquire values, leave the local value blank when syncing
 		var WIKIDATA_CLAIMS = {
-			'coords':		{ 'p': 'P625', 'label': 'coordinates', 'fields': lookupField( 'P625'), 'remotely_sync': false, },
-			'url':			{ 'p': 'P856', 'label': 'website', 'fields': lookupField( 'P856') }, // link
-			'email':		{ 'p': 'P968', 'label': 'e-mail', 'fields': lookupField( 'P968') },
-			'iata':			{ 'p': 'P238', 'label': 'IATA code (if Alt is empty)', 'fields': lookupField( 'P238'), 'doNotUpload': true, },
-			'image':		{ 'p': 'P18', 'label': 'image', 'fields': lookupField( 'P18'), 'remotely_sync': true, }
+			'coords':		{ 'p': 'P625', 'label': 'coordinate', 'fields': ['lat', 'long'], 'remotely_sync': false, },
+			'url':			{ 'p': 'P856', 'label': 'sito', 'fields': ['sito'], }, // link
+			'email':		{ 'p': 'P968', 'label': 'email', 'fields': ['email'], },
+			'iata':			{ 'p': 'P238', 'label': 'codice IATA (se Alt è vuoto)', 'fields': ['alt'], 'doNotUpload': true, },
+			'image':		{ 'p': 'P18', 'label': 'immagine', 'fields': ['immagine'], 'remotely_sync': true, },
+			//'directions':	{ 'p': 'P2795', 'label': 'indicazioni', 'fields': ['indicazioni'], },
 		};
+
+		// --------------------------------------------------------------------
+		// CONFIGURE THE FOLLOWING BASED ON WIKIVOYAGE COMMUNITY PREFERENCES
+		// --------------------------------------------------------------------
 
 		// if the browser window width is less than MAX_DIALOG_WIDTH (pixels), the
 		// listing editor dialog will fill the available space, otherwise it will
@@ -352,13 +125,47 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		// LISTING_TEMPLATES parameter arrays (such as wikipedia, phoneextra, etc).
 		// if the flag is set to true then unrecognized parameters will be allowed
 		// as long as they have a non-empty value.
-		var ALLOW_UNRECOGNIZED_PARAMETERS = PROJECT_CONFIG.ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP;
+		var ALLOW_UNRECOGNIZED_PARAMETERS = false;
+
+		// --------------------------------------------------------------------
+		// UPDATE THE FOLLOWING TO MATCH WIKIVOYAGE ARTICLE SECTION NAMES
+		// --------------------------------------------------------------------
+
+		// map section heading ID to the listing template to use for that section
+		var SECTION_TO_TEMPLATE_TYPE = {
+			'Cosa_vedere': 'see',
+			'Cosa_fare': 'do',
+			'Acquisti': 'buy',
+			'Dove_mangiare': 'eat',
+			'Come_divertirsi': 'drink',
+			'Dove_alloggiare': 'sleep',
+			'Eventi_e_feste': 'listing',
+			'Come arrivare': 'listing',
+			'Come spostarsi': 'listing',
+		};
+		// If any of these patterns are present on a page then no 'add listing'
+		// buttons will be added to the page
+		var DISALLOW_ADD_LISTING_IF_PRESENT = ['#Centri_urbani', '#Altre_destinazioni'];
+
+		// List of namespaces where the editor is allowed
+		var ALLOWED_NAMESPACE = [
+			0, //Main
+			2, //User
+			4, //Wikivoyage
+			];
+		
+		// --------------------------------------------------------------------
+		// CONFIGURE THE FOLLOWING TO MATCH THE LISTING TEMPLATE PARAMS & OUTPUT
+		// --------------------------------------------------------------------
 
 		// name of the generic listing template to use when a more specific
 		// template ("see", "do", etc) is not appropriate
-		var DEFAULT_LISTING_TEMPLATE = PROJECT_CONFIG.DEFAULT_LISTING_TEMPLATE;
-		var LISTING_TYPE_PARAMETER = PROJECT_CONFIG.LISTING_TYPE_PARAMETER;
-		var LISTING_CONTENT_PARAMETER = PROJECT_CONFIG.LISTING_CONTENT_PARAMETER;
+		var DEFAULT_LISTING_TEMPLATE = 'listing';
+		var LISTING_TYPE_PARAMETER = 'tipo';
+		var LISTING_CONTENT_PARAMETER = 'descrizione';
+		// selector that identifies the HTML elements into which the 'edit' link
+		// for each listing will be placed
+		var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
 		// The arrays below must include entries for each listing template
 		// parameter in use for each Wikivoyage language version - for example
 		// "name", "address", "phone", etc. If all listing template types use
@@ -390,28 +197,51 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		//	  in the listing template syntax unless it has a value.
 		//	- newline: Append a newline after the parameter in the listing
 		//	  template syntax when the article is saved.
-		var LISTING_TEMPLATE_PARAMETERS = PROJECT_CONFIG.LISTING_TEMPLATE_PARAMETERS;
+		var LISTING_TEMPLATE_PARAMETERS = {
+			'tipo': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
+			'nome': { id:'input-name' },
+			'alt': { id:'input-alt' },
+			'sito': { id:'input-url' },
+			'email': { id:'input-email', newline: true },
+			'indirizzo': { id:'input-address' },
+			'lat': { id:'input-lat' },
+			'long': { id:'input-long' },
+			'indicazioni': { id:'input-directions', newline: true },
+			'tel': { id:'input-phone' },
+			'numero verde': { id:'input-tollfree' },
+			'fax': { id:'input-fax', newline: true },
+			'orari': { id:'input-hours' },
+			'checkin': { id:'input-checkin', hideDivIfEmpty: 'div_checkin', skipIfEmpty: true },
+			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
+			'prezzo': { id:'input-price', newline: true },
+			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
+			'immagine': { id:'input-image', skipIfEmpty: true },
+			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
+			'descrizione': { id:'input-content', newline: true }
+		};
+		// override the default settings for "sleep" listings since that
+		// listing type uses "checkin"/"checkout" instead of "hours"
+		var SLEEP_TEMPLATE_PARAMETERS = $.extend(true, {}, LISTING_TEMPLATE_PARAMETERS, {
+			'orari': { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
+			'checkin': { hideDivIfEmpty: null, skipIfEmpty: false },
+			'checkout': { hideDivIfEmpty: null, skipIfEmpty: false }
+		});
 		// map the template name to configuration information needed by the listing
 		// editor
-		var LISTING_TEMPLATES = {};
+		var LISTING_TEMPLATES = {
+			'listing': LISTING_TEMPLATE_PARAMETERS,
+			'see': LISTING_TEMPLATE_PARAMETERS,
+			'do': LISTING_TEMPLATE_PARAMETERS,
+			'buy': LISTING_TEMPLATE_PARAMETERS,
+			'eat': LISTING_TEMPLATE_PARAMETERS,
+			'drink': LISTING_TEMPLATE_PARAMETERS,
+			//'go': LISTING_TEMPLATE_PARAMETERS,
+			'sleep': SLEEP_TEMPLATE_PARAMETERS
+		};
 
-		PROJECT_CONFIG.SUPPORTED_SECTIONS.forEach( function ( key ) {
-			if ( key === 'sleep' ) {
-				// override the default settings for "sleep" listings since that
-				// listing type uses "checkin"/"checkout" instead of "hours"
-				LISTING_TEMPLATES[ key ] = $.extend(
-					true, {},
-					LISTING_TEMPLATE_PARAMETERS,
-					PROJECT_CONFIG.SLEEP_TEMPLATE_PARAMETERS
-				);
-			} else {
-				LISTING_TEMPLATES[ key ] = LISTING_TEMPLATE_PARAMETERS;
-			}
-		} );
-
-		( PROJECT_CONFIG.LISTING_TEMPLATES_OMIT || [] ).forEach( function ( key ) {
-			delete LISTING_TEMPLATES[ key ];
-		} );
+		// --------------------------------------------------------------------
+		// CONFIGURE THE FOLLOWING TO IMPLEMENT THE UI FOR THE LISTING EDITOR
+		// --------------------------------------------------------------------
 
 		// these selectors should match a value defined in the EDITOR_FORM_HTML
 		// if the selector refers to a field that is not used by a Wikivoyage
@@ -427,9 +257,30 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var SYNC_FORM_SELECTOR = '#listing-editor-sync';
 		
 		var INTL_CURRENCIES = [ '€', '$', '£', '¥', '₩' ];
-		var SPECIAL_CHARS = PROJECT_CONFIG.SPECIAL_CHARS;
+		var SPECIAL_CHARS = [ 'È', 'è', 'é' ];
 		
-		var DEFAULT_PLACEHOLDERS = PROJECT_CONFIG.DEFAULT_PLACEHOLDERS;
+		var DEFAULT_PLACEHOLDERS = {
+			'name':				'nome del posto', 
+			'alt':				'noto anche come', 
+			'url':				'https://www.esempio.com', 
+			'address':			'indirizzo del posto', 
+			'directions':		'come arrivare qui', 
+			'phone':			'+55 555 555 5555', 
+			'tollfree':			'+1 800 100 1000', 
+			'fax':				'+55 555 555 555', 
+			'email':			'info@esempio.com', 
+			'lat':				'11.11111', 
+			'long':				'111.11111', 
+			'hours':			'Lun-Ven 9:00-17:00', 
+			'checkin':			'orario di check in', 
+			'checkout':			'orario di check out', 
+			'price':			'prezzo e riferimento temporale (mese anno)', 
+			'wikidata-label':	'istanza wikidata', 
+			'wikipedia':		'voce wikipedia', 
+			'image':			'immagine del luogo', 
+			'content':			'descrizione del posto', 
+			'summary':			'Motivo di modifica dell\'elemento', 
+		};
 
 		// the below HTML is the UI that will be loaded into the listing editor
 		// dialog box when a listing is added or edited. EACH WIKIVOYAGE
@@ -441,150 +292,156 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var EDITOR_FORM_HTML = '<form id="listing-editor">' +
 			'<div class="listing-col">' +
 				'<div class="editor-fullwidth">' +
-				'<div id="div_name" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-name">' + TRANSLATIONS.name + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-name"></div>' +
-				'</div>' +
-				'<div id="div_alt" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-alt">' + TRANSLATIONS.alt + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-alt"></div>' +
-				'</div>' +
-				'<div id="div_url" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-url">' + TRANSLATIONS.website + '<span class="wikidata-update"></span></label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-url"></div>' +
-				'</div>' +
-				'<div id="div_address" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-address">' + TRANSLATIONS.address + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-address"></div>' +
-				'</div>' +
-				'<div id="div_directions" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-directions">' + TRANSLATIONS.directions + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-directions"></div>' +
-				'</div>' +
-				'<div id="div_phone" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-phone">' + TRANSLATIONS.phone + '</label></div>' +
-					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-phone"><div class="input-cc" data-for="input-phone"></div></div>' +
-				'</div>' +
-				'<div id="div_tollfree" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-tollfree">' + TRANSLATIONS.tollfree + '</label></div>' +
-					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-tollfree"><div class="input-cc" data-for="input-tollfree"></div></div>' +
-				'</div>' +
-				'<div id="div_fax" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-fax">' + TRANSLATIONS.fax + '</label></div>' +
-					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax"><div class="input-cc" data-for="input-fax"></div></div>' +
-				'</div>' +
-				'<div id="div_email" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-email">' + TRANSLATIONS.email + '<span class="wikidata-update"></span></label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-email"></div>' +
-				'</div>' +
-				'<div id="div_lastedit" style="display: none;">' +
-					'<div class="editor-label-col"><label for="input-lastedit">' + TRANSLATIONS.lastUpdated + '</label></div>' +
-					'<div><input type="text" size="10" id="input-lastedit"></div>' +
-				'</div>' +
-				'<div id="div_wikidata_update" style="display: none">' +
-					'<div class="editor-label-col">&#160;</div>' +
-					'<div><span class="wikidata-update"></span><a href="javascript:" id="wikidata-shared">' + TRANSLATIONS.syncWikidata + '</a><small>&nbsp;<a href="javascript:" title="' + TRANSLATIONS.syncWikidataTitle + '" class="listing-tooltip" id="wikidata-shared-quick">' + TRANSLATIONS.syncWikidataLabel + '</a></small></div>' +
-				'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="listing-col">' +
-				'<div class="editor-fullwidth">' +
-				'<div id="div_type" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-type">' + TRANSLATIONS.type + '</label></div>' +
-					'<div>' +
-						'<select id="input-type">' +
-							'<option value="listing">listing</option>' +
-							'<option value="see">see</option>' +
-							'<option value="do">do</option>' +
-							'<option value="buy">buy</option>' +
-							'<option value="eat">eat</option>' +
-							'<option value="drink">drink</option>' +
-							'<option value="go">go</option>' +
-							'<option value="sleep">sleep</option>' +
-						'</select>' +
+					'<div id="div_name" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-name">Nome</label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-name"></div>' +
 					'</div>' +
-				'</div>' +
-				'<div id="div_lat" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-lat">' + TRANSLATIONS.latitude + '<span class="wikidata-update"></span></label></div>' +
-					'<div>' +
-						'<input type="text" class="editor-partialwidth" id="input-lat">' +
-						// update the Callbacks.initFindOnMapLink
-						// method if this field is removed or modified
-						'<div class="input-other"><a id="geomap-link" target="_blank" href="https://wikivoyage.toolforge.org/w/geomap.php">' + TRANSLATIONS.findOnMap + '</a></div>' +
+					'<div id="div_alt" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-alt">Altro nome</label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-alt"></div>' +
 					'</div>' +
-				'</div>' +
-				'<div id="div_long" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-long">' + TRANSLATIONS.longitude + '<span class="wikidata-update"></span></label></div>' +
-					'<div>' +
-						'<input type="text" class="editor-partialwidth" id="input-long">' +
+					'<div id="div_address" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-address">Indirizzo</label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-address"></div>' +
 					'</div>' +
-				'</div>' +
-				'<div id="div_hours" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-hours">' + TRANSLATIONS.hours + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-hours"></div>' +
-				'</div>' +
-				'<div id="div_checkin" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-checkin">' + TRANSLATIONS.checkin + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-checkin"></div>' +
-				'</div>' +
-				'<div id="div_checkout" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-checkout">' + TRANSLATIONS.checkout + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-checkout"></div>' +
-				'</div>' +
-				'<div id="div_price" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-price">' + TRANSLATIONS.price + '</label></div>' +
-					// update the Callbacks.initStringFormFields
-					// method if the currency symbols are removed or modified
-					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">' +
-						'<div class="input-price">' +
-							'<span id="span_natl_currency" title="' + TRANSLATIONS.natlCurrencyTitle + '"></span>' +
-							'<span id="span_intl_currencies" title="' + TRANSLATIONS.intlCurrenciesTitle + '">';
+					'<div id="div_directions" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-directions">Indicazioni</label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-directions"></div>' +
+					'</div>' +
+					'<div id="div_phone" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-phone">Telefono</label></div>' +
+						'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-phone"><div class="input-cc" data-for="input-phone"></div></div>' +
+					'</div>' +
+					'<div id="div_tollfree" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-tollfree">Numero verde</label></div>' +
+						'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-tollfree"><div class="input-cc" data-for="input-tollfree"></div></div>' +
+					'</div>' +
+					'<div id="div_fax" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-fax">Fax</label></div>' +
+						'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax"><div class="input-cc" data-for="input-fax"></div></div>' +
+					'</div>' +
+					'<div id="div_hours" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-hours">Orari</label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-hours"></div>' +
+					'</div>' +
+					'<div id="div_checkin" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-checkin">Check-in</label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-checkin"></div>' +
+					'</div>' +
+					'<div id="div_checkout" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-checkout">Check-out</label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-checkout"></div>' +
+					'</div>' +
+					'<div id="div_price" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-price">Prezzo</label></div>' +
+						// update the Callbacks.initStringFormFields
+						// method if the currency symbols are removed or modified
+						'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">' +
+							'<div class="input-price">' +
+								'<span id="span_natl_currency" title="' + TRANSLATIONS.natlCurrencyTitle + '"></span>' +
+								'<span id="span_intl_currencies" title="' + TRANSLATIONS.intlCurrenciesTitle + '">';
 
 		for (var i = 0; i < INTL_CURRENCIES.length; i++) {
 			EDITOR_FORM_HTML +=	'<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">' + INTL_CURRENCIES[i] + '</a></span>';
 		}
 
 		EDITOR_FORM_HTML +=					
+								'</span>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</div>' +
+			'<div class="listing-col">' +
+				'<div class="editor-fullwidth">' +
+					'<div id="div_type" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-type">Tipo</label></div>' +
+						'<div>' + //must be style block to not collapse. See CSS 
+							'<div>' + //must be style flex to stay in the same line. See CSS 
+								'<div>' +
+									'<select id="input-type">' +
+										'<option value="listing">listing</option>' +
+										'<option value="see">see</option>' +
+										'<option value="do">do</option>' +
+										'<option value="buy">buy</option>' +
+										'<option value="eat">eat</option>' +
+										'<option value="drink">drink</option>' +
+										//'<option value="go">go</option>' +
+										'<option value="sleep">sleep</option>' +
+									'</select>' +
+								'</div>' +
+								'<div id="div_status" class="editor-fullwidth">' +
+									'<span id="span-closed">' +
+										'<input type="checkbox" id="input-closed">' +
+										'<label for="input-closed" class="listing-tooltip" title="Spunta il riquadro se l\'attività non è più operativa, al fine di rimuoverla da questo articolo">Cancello?</label>' +
+									'</span>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+					'<div id="div_url" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-url">Sito web<span class="wikidata-update"></span></label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-url"></div>' +
+					'</div>' +
+					'<div id="div_email" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-email">Email<span class="wikidata-update"></span></label></div>' +
+						'<div><input type="text" class="editor-fullwidth" id="input-email"></div>' +
+					'</div>' +
+					'<div id="div_lat" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-lat">Latitudine<span class="wikidata-update"></span></label></div>' +
+						'<div>' +
+							'<input type="text" class="editor-partialwidth" id="input-lat">' +
+							// update the Callbacks.initFindOnMapLink
+							// method if this field is removed or modified
+							'<div class="input-other"><a id="geomap-link" target="_blank" href="https://wikivoyage.toolforge.org/w/geomap.php">localizza su geomap</a></div>' +
+						'</div>' +
+					'</div>' +
+					'<div id="div_long" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-long">Longitudine<span class="wikidata-update"></span></label></div>' +
+						'<div>' +
+							'<input type="text" class="editor-partialwidth" id="input-long">' +
+						'</div>' +
+					'</div>' +
+					'<div id="div_wikidata" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>' +
+						'<div>' +
+							'<input type="text" class="editor-partialwidth" id="input-wikidata-label">' +
+							'<input type="hidden" id="input-wikidata-value">' +
+							'<a href="javascript:" id="wp-wd" title="Ottieni l\'ID dalla voce Wikipedia" style="display:none"><small>&#160;WP</small></a>' +
+							'<span id="wikidata-value-display-container" style="display:none">' +
+								'<small>' +
+								'&#160;<span id="wikidata-value-link"></span>' +
+								'&#160;|&#160;<a href="javascript:" id="wikidata-remove" title="Cancella l\'istanza Wikidata da questo elemento">rimuovi</a>' +
+								'</small>' +
+							'</span>' +
+						'</div>' +
+					'</div>' +
+					'<div id="div_wikidata_update" class="editor-row" style="display: none">' +
+						'<div class="editor-label-col">&#160;</div>' +
+						'<div><span class="wikidata-update"></span><a href="javascript:" id="wikidata-shared">Uniforma le informazioni con Wikidata</a><small>&nbsp;<a href="javascript:" title="Questo semplicemente prende i valori da Wikidata sostituendoli a quelli locali. Utile per i nuovi listings." class="listing-tooltip" id="wikidata-shared-quick">(inserimento rapido)</a></small></div>' +
+					'</div>' +
+					'<div id="div_wikipedia" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label></div>' +
+						'<div>' +
+							'<input type="text" class="editor-partialwidth" id="input-wikipedia">' +
+							'<span id="wikipedia-value-display-container" style="display:none">' +
+								'<small>&#160;<span id="wikipedia-value-link"></span></small>' +
+							'</span>' +
+						'</div>' +
+					'</div>' +
+					'<div id="div_image" class="editor-row">' +
+						'<div class="editor-label-col"><label for="input-image">Immagine<span class="wikidata-update"></span></label></div>' +
+						'<div>' +
+							'<input type="text" class="editor-partialwidth" id="input-image">' +
+							'<span id="image-value-display-container" style="display:none">' +
+								'<small>&#160;<span id="image-value-link"></span></small>' +
 							'</span>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-				'<div id="div_wikidata" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>' +
-					'<div>' +
-						'<input type="text" class="editor-partialwidth" id="input-wikidata-label">' +
-						'<input type="hidden" id="input-wikidata-value">' +
-						'<a href="javascript:" id="wp-wd" title="' + TRANSLATIONS.wpWd + '" style="display:none"><small>&#160;WP</small></a>' +
-						'<span id="wikidata-value-display-container" style="display:none">' +
-							'<small>' +
-							'&#160;<span id="wikidata-value-link"></span>' +
-							'&#160;|&#160;<a href="javascript:" id="wikidata-remove" title="' + TRANSLATIONS.wikidataRemoveTitle + '">' + TRANSLATIONS.wikidataRemoveLabel + '</a>' +
-							'</small>' +
-						'</span>' +
-					'</div>' +
-				'</div>' +
-				'<div id="div_wikipedia" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label></div>' +
-					'<div>' +
-						'<input type="text" class="editor-partialwidth" id="input-wikipedia">' +
-						'<span id="wikipedia-value-display-container" style="display:none">' +
-							'<small>&#160;<span id="wikipedia-value-link"></span></small>' +
-						'</span>' +
-					'</div>' +
-				'</div>' +
-				'<div id="div_image" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-image">' + TRANSLATIONS.image + '<span class="wikidata-update"></span></label></div>' +
-					'<div>' +
-						'<input type="text" class="editor-partialwidth" id="input-image">' +
-						'<spaqn id="image-value-display-container" style="display:none">' +
-							'<small>&#160;<span id="image-value-link"></span></small>' +
-						'</span>' +
-					'</div>' +
-				'</div>' +
-				'</div>' +
 			'</div>' +
 			'<div id="div_content" class="editor-row">' +
-				'<div class="editor-label-col"><label for="input-content">' + TRANSLATIONS.content;
+				'<div class="editor-label-col"><label for="input-content">Descrizione';
 		if (SPECIAL_CHARS.length){
 			EDITOR_FORM_HTML +=	'<br />(';
 			for (i = 0; i < SPECIAL_CHARS.length; i++) {
@@ -593,46 +450,30 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			EDITOR_FORM_HTML +=	'&nbsp;)';
 		}
 		EDITOR_FORM_HTML +=
-				'</label></div>' +
-				'<div><textarea rows="8" class="editor-fullwidth" id="input-content"></textarea></div>' +
-			'</div>' +
-			// update the Callbacks.hideEditOnlyFields method if
-			// the status row is removed or modified
-			'<div id="div_status" class="editor-fullwidth">' +
-				'<div class="editor-label-col"><label>Status</label></div>' +
-				'<div>' +
-					'<span id="span-closed">' +
-						'<input type="checkbox" id="input-closed">' +
-						'<label for="input-closed" class="listing-tooltip" title="' + TRANSLATIONS.listingTooltip + '">' + TRANSLATIONS.listinglLabel + '</label>' +
-					'</span>' +
-					// update the Callbacks.updateLastEditDate
-					// method if the last edit input is removed or modified
-					'<span id="span-last-edit">' +
-						'<input type="checkbox" id="input-last-edit" />' +
-						'<label for="input-last-edit" class="listing-tooltip" title="' + TRANSLATIONS.listingUpdatedTooltip + '">' + TRANSLATIONS.listingUpdatedLabel + '</label>' +
-					'</span>' +
+							'</label>' +
+						'</div>' +
+						'<div><textarea rows="8" class="editor-fullwidth" id="input-content"></textarea></div>' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
-			// update the Callbacks.hideEditOnlyFields method if
-			// the summary table is removed or modified
 			'<div id="div_summary" class="editor-fullwidth">' +
 				'<div class="listing-divider"></div>' +
 				'<div class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-summary">' + TRANSLATIONS.editSummary + '</label></div>' +
+					'<div class="editor-label-col"><label for="input-summary">Oggetto della modifica</label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-summary">' +
-						'<span id="span-minor"><input type="checkbox" id="input-minor"><label for="input-minor" class="listing-tooltip" title="' + TRANSLATIONS.minorTitle + '">' + TRANSLATIONS.minorLabel + '</label></span>' +
+						'<span id="span-minor"><input type="checkbox" id="input-minor"><label for="input-minor" class="listing-tooltip" title="Spunta il riquadro se la modifica dell\'elemento non è rilevante, come la correzione di un refuso">modifica minore?</label></span>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
 			'<div id="listing-preview" style="display: none;">' +
 				'<div class="listing-divider"></div>' +
 				'<div class="editor-row">' +
-					'<div title="Preview">' + TRANSLATIONS.preview + '</div>' +
+					'<div title="Preview">Anteprima</div>' +
 					'<div id="listing-preview-text"></div>' +
 				'</div>' +
 			'</div>' +
-			'</form>';
+		'</form>';
 
 		// expose public members
 		return {
@@ -640,15 +481,17 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			WIKIDATAID: WIKIDATAID,
 			COMMONS_URL: COMMONS_URL,
 			WIKIDATA_URL: WIKIDATA_URL,
-			WIKIDATA_CLAIMS: WIKIDATA_CLAIMS,
 			WIKIPEDIA_URL: WIKIPEDIA_URL,
+			WIKIDATA_CLAIMS: WIKIDATA_CLAIMS,
 			WIKIDATA_SITELINK_WIKIPEDIA: WIKIDATA_SITELINK_WIKIPEDIA,
 			TRANSLATIONS: TRANSLATIONS,
 			MAX_DIALOG_WIDTH: MAX_DIALOG_WIDTH,
+			DISALLOW_ADD_LISTING_IF_PRESENT: DISALLOW_ADD_LISTING_IF_PRESENT,
 			ALLOWED_NAMESPACE: ALLOWED_NAMESPACE,
 			DEFAULT_LISTING_TEMPLATE: DEFAULT_LISTING_TEMPLATE,
 			LISTING_TYPE_PARAMETER: LISTING_TYPE_PARAMETER,
 			LISTING_CONTENT_PARAMETER: LISTING_CONTENT_PARAMETER,
+			EDIT_LINK_CONTAINER_SELECTOR: EDIT_LINK_CONTAINER_SELECTOR,
 			ALLOW_UNRECOGNIZED_PARAMETERS: ALLOW_UNRECOGNIZED_PARAMETERS,
 			SECTION_TO_TEMPLATE_TYPE: SECTION_TO_TEMPLATE_TYPE,
 			LISTING_TEMPLATES: LISTING_TEMPLATES,
@@ -660,7 +503,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			SYNC_FORM_SELECTOR: SYNC_FORM_SELECTOR,
 			EDITOR_FORM_HTML: EDITOR_FORM_HTML
 		};
-	}( ALLOWED_NAMESPACE );
+	}();
 
 	/* ***********************************************************************
 	 * Callbacks implements custom functionality that may be
@@ -695,9 +538,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		 * Add listeners to specific strings so that clicking on a string
 		 * will insert it into the associated input.
 		 */
-		var initStringFormFields = function(form) {
+		var initStringFormFields = function(form, mode) {
 			var STRING_SELECTOR = '.listing-charinsert';
-			$(STRING_SELECTOR, form).on( 'click', function() {
+			$(STRING_SELECTOR, form).click(function() {
 				var target = $(this).attr('data-for');
 				var fieldInput = $('#'+target);
 				var caretPos = fieldInput[0].selectionStart;
@@ -715,12 +558,25 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		/**
 		 * Add listeners on various fields to update the "find on map" link.
 		 */
-		var initFindOnMapLink = function(form) {
+		var initFindOnMapLink = function(form, mode) {
 			var latlngStr = '?lang=' + Config.LANG;
 			//*****
 			// page & location cause the geomap-link crash
 			// to investigate if it's a geomap-link bug/limitation or if those parameters shall not be used
 			//*****
+			//latlngStr += '&page=' + encodeURIComponent(mw.config.get('wgTitle'));
+			/*if ($('#input-address', form).val() !== '') {
+				latlngStr += '&location=' + encodeURIComponent($('#input-address', form).val());
+			} else if ($('#input-name', form).val() !== '') {
+				latlngStr += '&location=' + encodeURIComponent($('#input-name', form).val());
+			}
+			$('#input-address', form).change( function () {
+				var link = $('#geomap-link').attr('href');
+				var index = link.indexOf('&location');
+				if (index < 0) index = link.length;
+				$('#geomap-link').attr('href', link.substr(0,index) + '&location='
+						+ encodeURIComponent($('#input-address').val()));
+			});*/
 			// try to find and collect the best available coords
 			if ( $('#input-lat', form).val() && $('#input-long', form).val() ) {
 				// listing specific coords
@@ -826,7 +682,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var changeColor = function(color, form) {
 			$('#input-type', form).css( 'box-shadow', '-20px 0 0 0 #' + color + ' inset' );
 		};
-		var initColor = function(form) {
+		var initColor = function(form, mode) {
 			typeToColor( $('#input-type', form).val(), form );
 			$('#input-type', form).on('change', function () {
 				typeToColor(this.value, form);
@@ -837,7 +693,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var isRTL = function (s){ // based on https://stackoverflow.com/questions/12006095/javascript-how-to-check-if-character-is-rtl
 			var ltrChars = 'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02B8\u0300-\u0590\u0800-\u1FFF'+'\u2C00-\uFB1C\uFDFE-\uFE6F\uFEFD-\uFFFF',
 			rtlChars = '\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC',
-			// eslint-disable-next-line no-misleading-character-class
 			rtlDirCheck = new RegExp('^[^'+ltrChars+']*['+rtlChars+']');
 			return rtlDirCheck.test(s);
 		};
@@ -865,8 +720,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			}
 		};
 		CREATE_FORM_CALLBACKS.push(setDefaultPlaceholders);
-
-		var wikidataLookup = function(form) {
+		
+		var wikidataLookup = function(form, mode) {
 			// get the display value for the pre-existing wikidata record ID
 			var value = $("#input-wikidata-value", form).val();
 			if (value) {
@@ -914,7 +769,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				return $("<li>").data('ui-autocomplete-item', item).append($("<a>").html(label)).appendTo(ul);
 			};
 			// add a listener to the "remove" button so that links can be deleted
-			$('#wikidata-remove', form).on( 'click', function() {
+			$('#wikidata-remove', form).click(function() {
 				wikidataRemove(form);
 			});
 			$('#input-wikidata-label', form).change(function() {
@@ -928,15 +783,15 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				$("#wikidata-value-display-container", form).hide();
 				$('#div_wikidata_update', form).hide();
 			};
-			$('#wp-wd', form).on( 'click', function() {
+			$('#wp-wd', form).click(function() {
 				var wikipediaLink = $("#input-wikipedia", form).val();
 				getWikidataFromWikipedia(wikipediaLink, form);
 			});
-			$('#wikidata-shared', form).on( 'click', function() {
+			$('#wikidata-shared', form).click(function() {
 				var wikidataRecord = $("#input-wikidata-value", form).val();
 				updateWikidataSharedFields(wikidataRecord);
 			});
-			$('#wikidata-shared-quick', form).on( 'click', function() {
+			$('#wikidata-shared-quick', form).click(function() {
 				var wikidataRecord = $("#input-wikidata-value", form).val();
 				quickUpdateWikidataSharedFields(wikidataRecord);
 			});
@@ -967,7 +822,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				containerSelector: '#wikipedia-value-display-container',
 				linkContainerSelector: '#wikipedia-value-link',
 				href: Config.WIKIPEDIA_URL + '/wiki/' + mw.util.wikiUrlencode(value),
-				linkTitle: translate( 'viewWikipediaPage' )
+				linkTitle: Config.TRANSLATIONS.viewWikipediaPage
 			};
 			sisterSiteLinkDisplay(wikipediaSiteLinkData, form);
 			$("#wp-wd", form).show();
@@ -979,7 +834,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				containerSelector: '#image-value-display-container',
 				linkContainerSelector: '#image-value-link',
 				href: Config.COMMONS_URL + '/wiki/' + mw.util.wikiUrlencode('File:' + value),
-				linkTitle: translate( 'viewCommonsPage' )
+				linkTitle: Config.TRANSLATIONS.viewCommonsPage
 			};
 			sisterSiteLinkDisplay(commonsSiteLinkData, form);
 		};
@@ -1023,13 +878,13 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					res[key] = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p);
 					if (res[key]) {
 						if (key === 'coords') { //WD coords already stored in DD notation; no need to apply any conversion
-							res[key].latitude = Core.trimDecimal(res[key].latitude, 6);
+							res[key].latitude = Core.trimDecimal(res[key].latitude, 6); 
 							res[key].longitude = Core.trimDecimal(res[key].longitude, 6);
 							msg += '\n' + Config.WIKIDATA_CLAIMS[key].label + ': ' + res[key].latitude + ' ' + res[key].longitude;
 						}
 						else if (key === 'iata') {
 							msg += '\n' + Config.WIKIDATA_CLAIMS[key].label + ': ' + res[key];
-							res[key] = PROJECT_CONFIG.iata( res[key] );
+							res[key] = 'IATA: '+res[key];
 						}
 						else if (key === 'email') {
 							res[key] = res[key].replace('mailto:', '');
@@ -1040,11 +895,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				}
 				var wikipedia = SisterSite.wikidataWikipedia(jsonObj, wikidataRecord);
 				if (wikipedia) {
-					msg += '\n' + translate( 'sharedWikipedia' ) + ': ' + wikipedia;
+					msg += '\n' + Config.TRANSLATIONS.sharedWikipedia + ': ' + wikipedia;
 				}
 
 				if (msg) {
-					if ( confirm( translate( 'wikidataShared' ) + '\n' + msg)) {
+					if (confirm(Config.TRANSLATIONS.wikidataShared + '\n' + msg)) {
 						for (key in res) {
 							if (res[key]) {
 								var editorField = [];
@@ -1068,7 +923,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 						}
 					}
 				} else {
-					alert( translate( 'wikidataSharedNotFound' ) );
+					alert(Config.TRANSLATIONS.wikidataSharedNotFound);
 				}
 			};
 			SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
@@ -1082,16 +937,16 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			};
 			var ajaxSuccess = function (jsonObj) {
 				var msg = '<form id="listing-editor-sync">' +
-					translate( 'wikidataSyncBlurb' ) +
+					Config.TRANSLATIONS.wikidataSyncBlurb +
 					'<p>' +
 					'<fieldset>' +
 						'<span>' +
 							'<span class="wikidata-update"></span>' +
-							'<a href="javascript:" class="syncSelect" name="wd" title="' + translate( 'selectAll' ) + '">Wikidata</a>' +
+							'<a href="javascript:" class="syncSelect" name="wd" title="' + Config.TRANSLATIONS.selectAll + '">Wikidata</a>' +
 						'</span>' +
-						'<a href="javascript:" id="autoSelect" class="listing-tooltip" title="' + translate( 'selectAlternatives' ) + '">Auto</a>' +
+						'<a href="javascript:" id="autoSelect" class="listing-tooltip" title="' + Config.TRANSLATIONS.selectAlternatives + '">Auto</a>' +
 						'<span>' +
-							'<a href="javascript:" class="syncSelect" name="wv" title="' + translate( 'selectAll' ) + '">Wikivoyage</a>' +
+							'<a href="javascript:" class="syncSelect" name="wv" title="' + Config.TRANSLATIONS.selectAll + '">Wikivoyage</a>' +
 							'<span class="wikivoyage-update"></span>' +
 						'</span>' +
 					'</fieldset>' +
@@ -1103,9 +958,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					res[key].value = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p);
 					res[key].guidObj = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p, true);
 					if (key === 'iata') {
-						if( res[key].value ) {
-							res[key].value = PROJECT_CONFIG.iata( res[key].value );
-						}
+						if( res[key].value ) { res[key].value = 'IATA: '+res[key].value; }
 						msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 					}
 					else if (key === 'email') {
@@ -1123,32 +976,26 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					else msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 				}
 				var wikipedia = SisterSite.wikidataWikipedia(jsonObj, wikidataRecord);
-				msg += createRadio( {
-					label: translate( 'sharedWikipedia' ),
-					fields: ['wikipedia'],
-					doNotUpload: true,
-					'remotely_sync': true
-				}, [wikipedia], $('#input-wikidata-value').val());
+				msg += createRadio({'label': Config.TRANSLATIONS.sharedWikipedia, 'fields': ['wikipedia'], 'doNotUpload': true, 'remotely_sync': true}, [wikipedia], $('#input-wikidata-value').val());
 
-				msg += '</div><p><small><a href="javascript:" class="clear">' + translate( 'cancelAll' ) + '</a></small>';
+				msg += '</div><p><small><a href="javascript:" class="clear">' + Config.TRANSLATIONS.cancelAll + '</a></small>';
 				msg += '</form>';
 
 				// copied from dialog above. ideally should be global variable TODO
 				var windowWidth = $(window).width();
 				var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? (0.85*Config.MAX_DIALOG_WIDTH) : 'auto';
 				$(msg).dialog({
-					title: translate( 'syncTitle' ),
+					title: Config.TRANSLATIONS.syncTitle,
 					width: dialogWidth,
 					dialogClass: 'listing-editor-dialog',
 
 					buttons: [
 						{
-							text: translate( 'submit' ),
+							text: Config.TRANSLATIONS.submit,
 							click: submitFunction,
 						},
 						{
-							text: translate( 'cancel' ),
-							click: function() {
+							text: Config.TRANSLATIONS.cancel, click: function() {
 								$(this).dialog('close');
 							}
 						},
@@ -1168,19 +1015,19 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				if($(msg).find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
 					submitFunction();
 					$(Config.SYNC_FORM_SELECTOR).dialog('close');
-					alert( translate( 'wikidataSharedMatch' ) );
+					alert(Config.TRANSLATIONS.wikidataSharedMatch);
 				}
 				wikidataLink("", $("#input-wikidata-value").val()); // called to append the Wikidata link to the dialog title
 
-				$('.clear').on( 'click',  function() {
+				$('.clear').click( function() {
 					$(Config.SYNC_FORM_SELECTOR).find('input:radio:not([id]):enabled').prop('checked', true);
 				});
-				$('.syncSelect').on( 'click',  function() {
+				$('.syncSelect').click( function() {
 					var field = $(this).attr('name'); // wv or wd
 					$(Config.SYNC_FORM_SELECTOR + ' input[type=radio]').prop('checked', false);
 					$(Config.SYNC_FORM_SELECTOR + ' input[id$='+field+']').prop('checked', true);
 				});
-				$('#autoSelect').on( 'click',  function() { // auto select non-empty values
+				$('#autoSelect').click( function() { // auto select non-empty values
 					$(Config.SYNC_FORM_SELECTOR).find('.choose-row').each(function () {
 						var WD_value = $(this).find('label:first').text().trim().length;
 						var WV_value = $(this).find('label:last').text().trim().length;
@@ -1232,6 +1079,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			if ( (field.remotely_sync === true) && ( j === claimValue.length || ( ( $(editorField[0]).val() === '' ) && ( ($(editorField[1]).val() === '' ) || ($(editorField[1]).val() === undefined) ) ) ) ) { remoteFlag = true; }
 			if ( remoteFlag === true )
 			{
+				// html += '<div><i>' + field.label + ' ' + Config.TRANSLATIONS.synchronized + '</i></div>';
 				html += '<div class="choose-row" style="display:none">';
 			}else { html += '<div class="sync_label">' + field.label + '</div><div class="choose-row">'; } // usual case, create heading
 				html += '<div>' +
@@ -1289,7 +1137,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
 					var DDValue = [];
-					for ( i = 0; i < editorField.length; i++) {
+					for ( i = 0; i < editorField.length; i++) { 
 						DDValue[i] = syncedValue[i] ? Core.trimDecimal(Core.parseDMS(syncedValue[i]), 6) : '';
 						updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync); 
 					}
@@ -1321,7 +1169,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					props: 'datatype',
 				};
 				var ajaxSuccess = function(jsonObj) {
-					//if ( TODO: add logic for detecting Wikipedia and not doing this test. Otherwise get an error trying to find undefined. Keep in mind that we would in the future call sitelink changing here maybe. Not urgent, error harmless ) { }
+					//if ( TODO: add logic for detecting Wikipedia and not doing this test. Otherwise get an error trying to find undefined. Keep in mind that we would in the future call sitelink changing here maybe. Not urgent, error harmless )
 					/*else*/ if ( jsonObj.entities[field.p].datatype === 'monolingualtext' ) { syncedValue = '{"text": ' + syncedValue + ', "language": "' + Config.LANG + '"}'; }
 					if ( guidObj === "null" ) { // no value on Wikidata, string "null" gets saved in hidden field. There should be no cases in which there is no Wikidata item but this string does not equal "null"
 						if (syncedValue !== '') { SisterSite.sendToWikidata(field.p , syncedValue, 'value'); }
@@ -1410,7 +1258,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			var link = $("<a />", {
 				target: "_new",
 				href: Config.WIKIDATA_URL + '/wiki/' + mw.util.wikiUrlencode(value),
-				title: translate( 'viewWikidataPage' ),
+				title: Config.TRANSLATIONS.viewWikidataPage,
 				text: value
 			});
 			$("#wikidata-value-link", form).html(link);
@@ -1420,49 +1268,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		};
 		CREATE_FORM_CALLBACKS.push(wikidataLookup);
 
-		// --------------------------------------------------------------------
-		// LISTING EDITOR FORM SUBMISSION CALLBACKS
-		// --------------------------------------------------------------------
-
-		/**
-		 * Return the current date in the format "2015-01-15".
-		 */
-		var currentLastEditDate = function() {
-			var d = new Date();
-			var year = d.getFullYear();
-			// Date.getMonth() returns 0-11
-			var month = d.getMonth() + 1;
-			if (month < 10) month = '0' + month;
-			var day = d.getDate();
-			if (day < 10) day = '0' + day;
-			return year + '-' + month + '-' + day;
-		};
-
-		/**
-		 * Only update last edit date if this is a new listing or if the
-		 * "information up-to-date" box checked.
-		 */
-		var updateLastEditDate = function(listing, mode) {
-			var LISTING_LAST_EDIT_PARAMETER = 'lastedit';
-			var EDITOR_LAST_EDIT_SELECTOR = '#input-last-edit';
-			if (mode == Core.MODE_ADD || $(EDITOR_LAST_EDIT_SELECTOR).is(':checked')) {
-				listing[LISTING_LAST_EDIT_PARAMETER] = currentLastEditDate();
-			}
-		};
-		if ( PROJECT_CONFIG.SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT ) {
-			SUBMIT_FORM_CALLBACKS.push(updateLastEditDate);
-		}
-
-		// --------------------------------------------------------------------
-		// LISTING EDITOR FORM VALIDATION CALLBACKS
-		// --------------------------------------------------------------------
-
 		/**
 		 * Verify all listings have at least a name, address or alt value.
 		 */
 		var validateListingHasData = function(validationFailureMessages) {
 			if ($('#input-name').val() === '' && $('#input-address').val() === '' && $('#input-alt').val() === '') {
-				validationFailureMessages.push( translate( 'validationEmptyListing' ) );
+				validationFailureMessages.push(Config.TRANSLATIONS.validationEmptyListing);
 			}
 		};
 		VALIDATE_FORM_CALLBACKS.push(validateListingHasData);
@@ -1475,33 +1286,30 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		 */
 		var validateEmail = function(validationFailureMessages) {
 			var VALID_EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-			_validateFieldAgainstRegex(
-				validationFailureMessages,
-				VALID_EMAIL_REGEX, '#input-email',
-				translate( 'validationEmail' )
-			);
+			_validateFieldAgainstRegex(validationFailureMessages, VALID_EMAIL_REGEX, '#input-email', Config.TRANSLATIONS.validationEmail);
 		};
-		if ( PROJECT_CONFIG.VALIDATE_CALLBACKS_EMAIL ) {
-			VALIDATE_FORM_CALLBACKS.push(validateEmail);
-		}
+		//VALIDATE_FORM_CALLBACKS.push(validateEmail);
 
 		/**
-		 * Implement SIMPLE validation on Wikipedia field to verify that the
-		 * user is entering the article title and not a URL.
+		 * Implement SIMPLE validation on Wikipedia field. Not existing 
+		 * Wikipedia page can still get through, but this method implements the
+		 * validation in order to avoid users to insert the URL instead of title
 		 */
 		var validateWikipedia = function(validationFailureMessages) {
 			var VALID_WIKIPEDIA_REGEX = new RegExp('^(?!https?://)', 'i');
-			_validateFieldAgainstRegex(validationFailureMessages, VALID_WIKIPEDIA_REGEX, '#input-wikipedia', translate( 'validationWikipedia' ) );
+			_validateFieldAgainstRegex(validationFailureMessages, VALID_WIKIPEDIA_REGEX, '#input-wikipedia', Config.TRANSLATIONS.validationWikipedia);
 		};
 		VALIDATE_FORM_CALLBACKS.push(validateWikipedia);
 
 		/**
-		 * Implement SIMPLE validation on the Commons field to verify that the
-		 * user has not included a "File" or "Image" namespace.
+		 * Implement SIMPLE validation on Image field. Not existing images can
+		 * still get through, but this method implements the validation in
+		 * order to avoid users to add the image prefix before the image name
 		 */
 		var validateImage = function(validationFailureMessages) {
-			var VALID_IMAGE_REGEX = new RegExp('^(?!(file|image|' + translate( 'image' ) + '):)', 'i');
-			_validateFieldAgainstRegex(validationFailureMessages, VALID_IMAGE_REGEX, '#input-image', translate( 'validationImage' ) );
+			//In this case VALID_IMAGE_REGEX find and INvalid entry
+			var VALID_IMAGE_REGEX = new RegExp('^(?!(file|image|' + Config.TRANSLATIONS.image + '):)', 'i');
+			_validateFieldAgainstRegex(validationFailureMessages, VALID_IMAGE_REGEX, '#input-image', Config.TRANSLATIONS.validationImage);
 		};
 		VALIDATE_FORM_CALLBACKS.push(validateImage);
 
@@ -1511,7 +1319,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				validationFailureMessages.push(failureMsg);
 			}
 		};
-
+		
 		// expose public members
 		return {
 			CREATE_FORM_CALLBACKS: CREATE_FORM_CALLBACKS,
@@ -1548,8 +1356,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				var titleResults = $(jsonObj[1]);
 				for (var i=0; i < titleResults.length; i++) {
 					var result = titleResults[i];
-					var valueWithoutFileNamespace = (result.indexOf("File:") != -1) ? result.substring("File:".length) : result;
-					var titleResult = { value: valueWithoutFileNamespace, label: result, description: $(jsonObj[2])[i], link: $(jsonObj[3])[i] };
+					var valueWithoutFileNamespace = (titleResults[i].indexOf("File:") != -1) ? titleResults[i].substring("File:".length) : titleResults[i];
+					var titleResult = { value: valueWithoutFileNamespace, label: titleResults[i], description: $(jsonObj[2])[i], link: $(jsonObj[3])[i] };
 					results.push(titleResult);
 				}
 				return results;
@@ -1655,8 +1463,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				action: 'wbremoveclaims',
 				claim: guidObj,
 			};
+			var ajaxSuccess = function(jsonObj) {
+				//console.log(jsonObj);
+			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, { async: false } );
+			api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
 		};
 		var _changeOnWikidata = function(guidObj, prop, value, snaktype) {
 			var ajaxData = {
@@ -1692,8 +1503,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				snaks: '{"'+WIKIDATA_PROP_WMURL+'":[{"snaktype":"value","property":"'+WIKIDATA_PROP_WMURL+'","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":"' + Config.WIKIDATAID + '"}}}],' +
 					'"'+WIKIDATA_PROP_WMPRJ+'": [{"snaktype":"value","property":"'+WIKIDATA_PROP_WMPRJ+'","datavalue":{"type":"string","value":"' + revUrl + '"}}]}',
 			};
+			var ajaxSuccess = function(jsonObj) {
+				//console.log(jsonObj);
+			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, { async: false } );
+			api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
 		};
 		var _unreferenceWikidata = function(statement, references) {
 			var ajaxData = {
@@ -1701,8 +1515,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				statement: statement,
 				references: references,
 			};
+			var ajaxSuccess = function(jsonObj) {
+				//console.log(jsonObj);
+			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, { async: false } );
+			api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
 		};
 		// expose public members
 		return {
@@ -1726,7 +1543,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	/* ***********************************************************************
 	 * Core contains code that should be shared across different
 	 * Wikivoyage languages. This code uses the custom configurations in the
-	 * Config and Callback modules to initialize
+	 * Config and Callbacks modules to initialize
 	 * the listing editor and process add and update requests for listings.
 	 * ***********************************************************************/
 	var Core = function() {
@@ -1744,6 +1561,24 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var CC_SELECTOR = '.input-cc'; // Country calling code
 		var CC = '';
 		var LC = '';
+
+		/**
+		 * Return false if the current page should not enable the listing editor.
+		 * Examples where the listing editor should not be enabled include talk
+		 * pages, edit pages, history pages, etc.
+		 */
+		var listingEditorAllowedForCurrentPage = function() {
+			var namespace = mw.config.get( 'wgNamespaceNumber' );
+			if (Config.ALLOWED_NAMESPACE.indexOf(namespace)<0) {
+				return false;
+			}
+			if ( mw.config.get('wgAction') != 'view' || $('#mw-revision-info').length
+					|| mw.config.get('wgCurRevisionId') != mw.config.get('wgRevisionId')
+					|| $('#ca-viewsource').length ) {
+				return false;
+			}
+			return true;
+		};
 
 		/**
 		 * Generate the form UI for the listing editor. If editing an existing
@@ -1788,6 +1623,76 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				Callbacks.CREATE_FORM_CALLBACKS[i](form, mode);
 			}
 			return form;
+		};
+
+		/**
+		 * Wrap the h2/h3 heading tag and everything up to the next section
+		 * (including sub-sections) in a div to make it easier to traverse the DOM.
+		 * This change introduces the potential for code incompatibility should the
+		 * div cause any CSS or UI conflicts.
+		 */
+		var wrapContent = function() {
+			$('#bodyContent h2').each(function(){
+				$(this).nextUntil("h1, h2").addBack().wrapAll('<div class="mw-h2section" />');
+			});
+			$('#bodyContent h3').each(function(){
+				$(this).nextUntil("h1, h2, h3").addBack().wrapAll('<div class="mw-h3section" />');
+			});
+		};
+
+		/**
+		 * Place an "add listing" link at the top of each section heading next to
+		 * the "edit" link in the section heading.
+		 */
+		var addListingButtons = function() {
+			if ($(Config.DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
+				return false;
+			}
+			for (var sectionId in Config.SECTION_TO_TEMPLATE_TYPE) {
+				// do not search using "#id" for two reasons. one, the article might
+				// re-use the same heading elsewhere and thus have two of the same ID.
+				// two, unicode headings are escaped ("è" becomes ".C3.A8") and the dot
+				// is interpreted by JQuery to indicate a child pattern unless it is
+				// escaped
+				var topHeading = $('h2 [id="' + sectionId + '"]');
+				if (topHeading.length) {
+					insertAddListingPlaceholder(topHeading);
+					var parentHeading = topHeading.closest('div.mw-h2section');
+					$('h3 .mw-headline', parentHeading).each(function() {
+						insertAddListingPlaceholder(this);
+					});
+				}
+			}
+			$('.listingeditor-add').click(function() {
+				initListingEditorDialog(MODE_ADD, $(this));
+			});
+		};
+
+		/**
+		 * Utility function for appending the "add listing" link text to a heading.
+		 */
+		var insertAddListingPlaceholder = function(parentHeading) {
+			var editSection = $(parentHeading).next('.mw-editsection');
+			editSection.append('<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">'+Config.TRANSLATIONS.add+'</a><span class="mw-editsection-bracket">]</span>');
+		};
+
+		/**
+		 * Place an "edit" link next to all existing listing tags.
+		 */
+		var addEditButtons = function() {
+			var editButton = $('<span class="vcard-edit-button noprint">')
+				.html('<a href="javascript:" class="listingeditor-edit">'+Config.TRANSLATIONS.edit+'</a>' )
+				.click(function() {
+					initListingEditorDialog(MODE_EDIT, $(this));
+				});
+			// if there is already metadata present add a separator
+			$(Config.EDIT_LINK_CONTAINER_SELECTOR).each(function() {
+				if (!isElementEmpty(this)) {
+					$(this).append('&nbsp;|&nbsp;');
+				}
+			});
+			// append the edit link
+			$(Config.EDIT_LINK_CONTAINER_SELECTOR).append( editButton );
 		};
 
 		/**
@@ -1873,7 +1778,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			for (var key in Config.LISTING_TEMPLATES) {
 				regex.push(key);
 			}
-			return new RegExp( PROJECT_CONFIG.listingTypeRegExp( regex.join( '|' ) ), 'ig' );
+			return new RegExp('({{\\s*(' + regex.join('|') + ')\\b)\\s*([\\|}])','ig');
 		};
 
 		/**
@@ -1891,6 +1796,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			var listingSyntax, regexResult, listingMatchIndex;
 			for (var i = 0; i <= listingIndex; i++) {
 				regexResult = listingRegex.exec(sectionText);
+				console.log(listingRegEx, sectionText, regexResult );
 				listingMatchIndex = regexResult.index;
 				listingSyntax = regexResult[1];
 			}
@@ -1976,8 +1882,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		 * Split the raw template wikitext into an array of params. The pipe
 		 * symbol delimits template params, but this method will also inspect the
 		 * content to deal with nested templates or wikilinks that might contain
-		 * pipe characters that should not be used as delimiters.
-		 */
+		 * pipe characters that should not be used as delimiters.		 */
 		var listingTemplateToParamsArray = function(listingTemplateWikiSyntax) {
 			var results = [];
 			var paramValue = '';
@@ -2072,11 +1977,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				url: mw.util.wikiScript(''),
 				data: { title: mw.config.get('wgPageName'), action: 'raw', section: sectionIndex },
 				cache: false // required
-			}).done(function(data) {
+			}).done(function(data, textStatus, jqXHR) {
 				sectionText = data;
 				openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
-			}).fail(function( _jqXHR, textStatus, errorThrown ) {
-				alert( translate( 'ajaxInitFailure' ) + ': ' + textStatus + ' ' + errorThrown);
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				alert(Config.TRANSLATIONS.ajaxInitFailure + ': ' + textStatus + ' ' + errorThrown);
 			});
 		};
 
@@ -2116,20 +2021,16 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					modal: true,
 					height: 'auto',
 					width: dialogWidth,
-					title: (mode == MODE_ADD) ?
-						translate( 'addTitle' ) : translate( 'editTitle' ),
+					title: (mode == MODE_ADD) ? Config.TRANSLATIONS.addTitle : Config.TRANSLATIONS.editTitle,
 					dialogClass: 'listing-editor-dialog',
 					buttons: [
 					{
 						text: '?',
 						id: 'listing-help',
-						click: function() {
-							window.open( translate( 'helpPage' ) );
-						}
+						click: function() { window.open(Config.TRANSLATIONS.helpPage);}
 					},
 					{
-						text: translate( 'submit' ),
-						click: function() {
+						text: Config.TRANSLATIONS.submit, click: function() {
 							if ($(Config.EDITOR_CLOSED_SELECTOR).is(':checked')) {
 								// no need to validate the form upon deletion request
 								formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
@@ -2150,16 +2051,16 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 						}
 					},
 					{
-						text: translate( 'preview' ),
-						title: translate( 'preview' ),
+						text: Config.TRANSLATIONS.preview,
+						title: Config.TRANSLATIONS.preview,
 						id: 'listing-preview-button',
 						click: function() {
 							formToPreview(listingTemplateAsMap);
 						}
 					},
 					{
-						text: translate( 'previewOff' ),
-						title: translate( 'previewOff' ),
+						text: Config.TRANSLATIONS.previewOff,
+						title: Config.TRANSLATIONS.previewOff,
 						id: 'listing-previewOff',
 						style: 'display: none',
 						click: function() {
@@ -2167,8 +2068,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 						}
 					},
 					{
-						text: translate( 'refresh' ),
-						title: translate( 'refreshTitle' ),
+						text: Config.TRANSLATIONS.refresh,
+						title: Config.TRANSLATIONS.refreshTitle,
 						icon: 'ui-icon-refresh',
 						id: 'listing-refresh',
 						style: 'display: none',
@@ -2177,7 +2078,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 						}
 					},
 					{
-						text: translate( 'cancel' ),
+						text: Config.TRANSLATIONS.cancel,
 						click: function() {
 							$(this).dialog('destroy').remove();
 							// if a sync editor dialog is open, get rid of it
@@ -2188,8 +2089,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					}
 					],
 					create: function() {
-						$('.ui-dialog-buttonpane').append('<div class="listing-license">' + translate( 'licenseText' ) + '</div>');
-						$('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
+						$('.ui-dialog-buttonpane').append('<div class="listing-license">' + Config.TRANSLATIONS.licenseText + '</div>');
+						$('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function(event) { //if closed with X buttons
 							// if a sync editor dialog is open, get rid of it
 							if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
 								$(Config.SYNC_FORM_SELECTOR).dialog('destroy').remove();
@@ -2264,18 +2165,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				return false;
 			}
 			// newlines in listing content won't render properly in lists, so replace them with <br> tags
-			if ( PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS ) {
-				$('#input-content').val($.trim($('#input-content').val()).replace(/\n/g, '<br />'));
-			}
+			//$('#input-content').val($.trim($('#input-content').val()).replace(/\n+/g, '<br /><br />'));
 			// add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
 			// Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
 			if ( $('#input-content').val() ) {
-				$('#input-content')
-					.val(($.trim($('#input-content').val())+'.')
-					// eslint-disable-next-line no-useless-escape
-					.replace(/([\.\!\?])\.+$/, '$1'));
+				$('#input-content').val(($.trim($('#input-content').val())+'.').replace(/([\.\!\?])\.+$/, '$1'));
 			}
-
 			// remove trailing period from price and address block
 			$('#input-price').val($.trim($('#input-price').val()).replace(/\.$/, ''));
 			$('#input-address').val($.trim($('#input-address').val()).replace(/\.$/, ''));
@@ -2349,7 +2244,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					format: 'json',
 					'text': text,
 				}),
-				error: function () {
+				error: function (jqXHR, txt) {
 					$('#listing-preview').hide();
 				},
 				success: function (data) {
@@ -2387,13 +2282,16 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		};
 
 		/**
-		 * Begin building the edit summary by trying to find the section name.
+		 * Begin building the edit summary using the section name found.
 		 */
 		var editSummarySection = function() {
 			var sectionName = getSectionName();
-			return (sectionName.length) ? '/* ' + sectionName + ' */ ' : "";
+			return (sectionName.lenght) ? '/* ' + sectionName + ' */ ' : "";
 		};
 
+		/**
+		 * Try to find the section name.
+		 */
 		var getSectionName = function() {
 			var HEADING_REGEX = /^=+\s*([^=]+)\s*=+\s*\n/;
 			var result = HEADING_REGEX.exec(sectionText);
@@ -2405,29 +2303,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		 * processing required for adds (as opposed to edits), returning an
 		 * appropriate edit summary string.
 		 */
-		var updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText) {
+		var updateSectionTextWithAddedListing = function(originalEditSummary, listingWikiText, listing) {
 			var summary = originalEditSummary;
-			summary += translate( 'added' );
-			// add the new listing to the end of the section. if there are
-			// sub-sections, add it prior to the start of the sub-sections.
-			var index = sectionText.indexOf('===');
-			if (index === 0) {
-				index = sectionText.indexOf('====');
-			}
-			if (index > 0) {
-				sectionText = sectionText.substr(0, index) + '* ' + listingWikiText
-						+ '\n' + sectionText.substr(index);
-			} else {
-				sectionText += '\n'+ '* ' + listingWikiText;
-			}
+/* +++ BEGIN IT CUSTOM LOGIC +++ */
 			sectionText = restoreComments(sectionText, true);
-			return summary;
-		};
-
-		var updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing) {
-			var summary = originalEditSummary;
-			sectionText = restoreComments(sectionText, true);
-			summary += translate( 'added' );
+			summary += Config.TRANSLATIONS.added;
 			//Creo un listing commentato dello stesso tipo di quello che aggiungerò.
 			//Se nella sezione in cui andrò a scrivere troverò questo listing commentato, lo rimpiazzerò col nuovo.
 			var commentedListing = "<!--* {{" + listing[Config.LISTING_TYPE_PARAMETER]+ "\n| nome= | alt= | sito= | email=\n| indirizzo= | lat= | long= | indicazioni=\n| tel= | numero verde= | fax=\n|";
@@ -2441,10 +2321,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			var index1 = sectionText.indexOf('===');
 			var index2 = sectionText.indexOf('<!--===');
 			var index3 = sectionText.indexOf('====');
-			var index4 = sectionText.indexOf('=== ' + translate( 'budget' ) + ' ===');
-			var index5 = sectionText.indexOf('<!--=== ' + translate( 'midrange' ) + ' ===-->');
-			var index6 = sectionText.indexOf('=== ' + translate( 'splurge' ) + ' ===');
-			var index7 = sectionText.indexOf('<!--=== ' + translate( 'splurge' ) + ' ===');
+			var index4 = sectionText.indexOf('=== ' + Config.TRANSLATIONS.budget + ' ===');
+			var index5 = sectionText.indexOf('<!--=== ' + Config.TRANSLATIONS.midrange + ' ===-->');
+			var index6 = sectionText.indexOf('=== ' + Config.TRANSLATIONS.splurge + ' ===');
+			var index7 = sectionText.indexOf('<!--=== ' + Config.TRANSLATIONS.splurge + ' ===');
 			var splurgeOffset = 0;
 			if (index7 > 0) {
 				splurgeOffset = 4;
@@ -2472,7 +2352,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 						//Mi assicuro di essere in Dove mangiare/dormire (le uniche divise per fascia di prezzo)
 						if ( index5 > 0) {
 							//Il primo elemento viene aggiunto nella sottosezione "Prezzi medi" (rimuovendone il commento)
-							sectionText = sectionText.substr(0, index6-splurgeOffset).replace('<!--=== ' + translate( 'midrange' ) + ' ===-->\n' + commentedListing,'=== ' + translate( 'midrange' ) + ' ===\n') + '* ' + listingWikiText + '\n\n' + sectionText.substr(index6-splurgeOffset);
+							sectionText = sectionText.substr(0, index6-splurgeOffset).replace('<!--=== ' + Config.TRANSLATIONS.midrange + ' ===-->\n' + commentedListing,'=== ' + Config.TRANSLATIONS.midrange + ' ===\n') + '* ' + listingWikiText + '\n\n' + sectionText.substr(index6-splurgeOffset);
 						} else {
 							//I successivi elementi vengono accodati nella sottosezione "Prezzi medi" (già priva di commento)
 							sectionText = sectionText.substr(0, index6-splurgeOffset).replace(/\n+$/,'\n') + '* ' + listingWikiText + '\n\n' + sectionText.substr(index6-splurgeOffset);
@@ -2494,15 +2374,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				}
 			}
 			return summary;
-		};
-
-		var updateSectionTextWithAddedListing = function (originalEditSummary, listingWikiText, listing) {
-			switch ( DB_NAME ) {
-				case 'itwikivoyage':
-					return updateSectionTextWithAddedListingIt(originalEditSummary, listingWikiText, listing);
-				default:
-					return updateSectionTextWithAddedListingDefault(originalEditSummary, listingWikiText, listing);
-			}
+/* +++ END IT CUSTOM LOGIC +++ */
 		};
 
 		/**
@@ -2515,12 +2387,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			listingWikiText = listingWikiText.replace( /\$&/g, '&#36;&');
 			if ($(Config.EDITOR_CLOSED_SELECTOR).is(':checked')) {
 				listingWikiText = '';
-				editSummary += translate( 'removed' );
+				editSummary += Config.TRANSLATIONS.removed;
 				// TODO: RegEx change to delete the complete row when listing is preceeded by templates showing just icons
 				var listRegex = new RegExp('(\\n+[\\:\\*\\#]*)?\\s*' + replaceSpecial(listingTemplateWikiSyntax));
 				sectionText = sectionText.replace(listRegex, listingWikiText);
 			} else {
-				editSummary += translate( 'updated' );
+				editSummary += Config.TRANSLATIONS.updated;
 				sectionText = sectionText.replace(listingTemplateWikiSyntax, listingWikiText);
 			}
 			sectionText = restoreComments(sectionText, true);
@@ -2537,7 +2409,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			if ($(SAVE_FORM_SELECTOR).length > 0) {
 				$(SAVE_FORM_SELECTOR).dialog('destroy').remove();
 			}
-			var progress = $('<div id="progress-dialog">' + translate( 'saving' ) + '</div>');
+			var progress = $('<div id="progress-dialog">' + Config.TRANSLATIONS.saving + '</div>');
 			progress.dialog({
 				modal: true,
 				height: 100,
@@ -2568,7 +2440,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			api.postWithToken(
 				"csrf",
 				editPayload
-			).done(function(data) {
+			).done(function(data, jqXHR) {
 				if (data && data.edit && data.edit.result == 'Success') {
 					// since the listing editor can be used on diff pages, redirect
 					// to the canonical URL if it is different from the current URL
@@ -2584,22 +2456,22 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 						window.location.reload();
 					}
 				} else if (data && data.error) {
-					saveFailed(translate( 'submitApiError' ) + ' "' + data.error.code + '": ' + data.error.info );
+					saveFailed(Config.TRANSLATIONS.submitApiError + ' "' + data.error.code + '": ' + data.error.info );
 				} else if (data && data.edit.spamblacklist) {
-					saveFailed(translate( 'submitBlacklistError' ) + ': ' + data.edit.spamblacklist );
+					saveFailed(Config.TRANSLATIONS.submitBlacklistError + ': ' + data.edit.spamblacklist );
 				} else if (data && data.edit.captcha) {
 					$(SAVE_FORM_SELECTOR).dialog('destroy').remove();
 					captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id);
 				} else {
-					saveFailed(translate( 'submitUnknownError' ));
+					saveFailed(Config.TRANSLATIONS.submitUnknownError);
 				}
 			}).fail(function(code, result) {
 				if (code === "http") {
-					saveFailed(translate( 'submitHttpError' ) + ': ' + result.textStatus );
+					saveFailed(Config.TRANSLATIONS.submitHttpError + ': ' + result.textStatus );
 				} else if (code === "ok-but-empty") {
-					saveFailed(translate( 'submitEmptyError' ));
+					saveFailed(Config.TRANSLATIONS.submitEmptyError);
 				} else {
-					saveFailed(translate( 'submitUnknownError' ) + ': ' + code );
+					saveFailed(Config.TRANSLATIONS.submitUnknownError + ': ' + code );
 				}
 			});
 			savingForm();
@@ -2626,24 +2498,24 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			if ($(CAPTCHA_FORM_SELECTOR).length > 0) {
 				$(CAPTCHA_FORM_SELECTOR).dialog('destroy').remove();
 			}
-			var captcha = $('<div id="captcha-dialog">').text(translate( 'externalLinks' ));
-			$('<img class="fancycaptcha-image">')
+			var captcha = $('<div id="captcha-dialog">').text(Config.TRANSLATIONS.externalLinks);
+			var image = $('<img class="fancycaptcha-image">')
 					.attr('src', captchaImgSrc)
 					.appendTo(captcha);
-			$('<label for="input-captcha">').text(translate( 'enterCaptcha' )).appendTo(captcha);
-			$('<input id="input-captcha" type="text">').appendTo(captcha);
+			var label = $('<label for="input-captcha">').text(Config.TRANSLATIONS.enterCaptcha).appendTo(captcha);
+			var input = $('<input id="input-captcha" type="text">').appendTo(captcha);
 			captcha.dialog({
 				modal: true,
-				title: translate( 'enterCaptcha' ),
+				title: Config.TRANSLATIONS.enterCaptcha,
 				buttons: [
 					{
-						text: translate( 'submit' ), click: function() {
+						text: Config.TRANSLATIONS.submit, click: function() {
 							saveForm(summary, minor, sectionNumber, captchaId, $('#input-captcha').val());
 							$(this).dialog('destroy').remove();
 						}
 					},
 					{
-						text: translate( 'cancel' ), click: function() {
+						text: Config.TRANSLATIONS.cancel, click: function() {
 							$(this).dialog('destroy').remove();
 						}
 					}
@@ -2662,7 +2534,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				saveStr += Config.DEFAULT_LISTING_TEMPLATE;
 				saveStr += ' | ' + Config.LISTING_TYPE_PARAMETER + '=' + listingType;
 			} else {
-				saveStr += listingType;
+				saveStr += listingType; // Nella versione italiana la tipologia di listing è insita nel nome del template
 			}
 			if (!inlineListing && listingParameters[Config.LISTING_TYPE_PARAMETER].newline) {
 				saveStr += '\n';
@@ -2709,6 +2581,18 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		};
 
 		/**
+		 * Determine if the specified DOM element contains only whitespace or
+		 * whitespace HTML characters (&nbsp;).
+		 */
+		var isElementEmpty = function(element) {
+			var text = $(element).text();
+			if (!text.trim()) {
+				return true;
+			}
+			return (text.trim() == '&nbsp;');
+		};
+
+		/**
 		 * Trim whitespace at the end of a string.
 		 */
 		var rtrim = function(str) {
@@ -2727,27 +2611,30 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		};
 
 		/**
+		 * Called on DOM ready, this method initializes the listing editor and
+		 * adds the "add/edit listing" links to sections and existing listings.
+		 */
+		var initListingEditor = function() {
+			if (!listingEditorAllowedForCurrentPage()) {
+				return;
+			}
+			wrapContent();
+			mw.hook( 'wikipage.content' ).add( addListingButtons.bind( this ) );
+			addEditButtons();
+		};
+
+		/**
 		 * Parse coordinates in DMS notation, to convert it into DD notation in Wikidata format (i.e. without "°" symbol).
 		 * If the input is already in DD notation, input value is returned unchanged.
 		 * Notes:
 		 * 1) Common notation is use as a proforma for potential future use because the split currently works to be more flexible skipping any char that is not a number, a minus, a dot or a cardinal point
 		 * 2) Missing parts are forced to be empty to use a common approach, altough M & S could be also "0" in fact North America coords 48°N 100°W are equivalent to 48° 0' 0" N, 100° 0' 0" W,
-		 *    but for compatibility with the DD notation where there is no alternative way to write it (i.e. 48° -100°), so the following parts are just empty, not 0
+		 *	  but for compatibility with the DD notation where there is no alternative way to write it (i.e. 48° -100°), so the following parts are just empty, not 0
 		 * 3) The parsed parts could have also erroneous data if the input is badly formatted (e.g. 48°EE'00"N 100°00'4000""W"), but these checks will be performed inside convertDMS2DD
 		 */
 		var parseDMS = function(input) {
 			// Uniform alternative notation, into one common notation DD° MM' SS" [NSEW], then the DMS components are splitted into its 4 atomic component
-			var parts = input.toString()
-				.replace(/[‘’′]/g, "'")
-				.replace(/[“”″]/g, '"')
-				.replace(/''/g, '"')
-				.replace(/−/g, '-')
-				.replace(/[_/\t\n\r]/g, " ")
-				.replace(/\s/g, '')
-				.replace(/([°'"])/g,"$1 ")
-				.replace(/([NSEW])/gi, function(v) { return ' '+v.toUpperCase(); })
-				// eslint-disable-next-line no-useless-escape
-				.replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
+			var parts = input.toString().replace(/[‘’′]/g, "'").replace(/[“”″]/g, '"').replace(/''/g, '"').replace(/−/g, '-').replace(/[_/\t\n\r]/g, " ").replace(/\s/g, '').replace(/([°'"])/g,"$1 ").replace(/([NSEW])/gi, function(v) { return ' '+v.toUpperCase(); }).replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
 			for (var i=0; i<4; i++)
 				if( !parts[i] )
 					parts[i] = '';
@@ -2798,16 +2685,19 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 
 		// expose public members
 		return {
-			initListingEditorDialog: initListingEditorDialog,
 			MODE_ADD: MODE_ADD,
 			MODE_EDIT: MODE_EDIT,
 			trimDecimal: trimDecimal,
-			parseDMS: parseDMS
+			parseDMS: parseDMS,
+			init: initListingEditor
 		};
 	}();
 
-	return Core;
+	$(document).ready(function() {
+		Core.init();
+	});
 
-} );
+} ( mediaWiki, jQuery ) );
 
 //</nowiki>
+

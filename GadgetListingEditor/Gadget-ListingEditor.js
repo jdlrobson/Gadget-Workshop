@@ -267,6 +267,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			listingUpdatedLabel: 'mark the listing as up-to-date?'
 		},
 		it: {
+			budget: 'Prezzi modici',
+			midrange: 'Prezzi medi',
+			splurge: 'Prezzi elevati',
 			editSummary: 'Oggetto della modifica',
 			name: 'Nome',
 			alt: 'Altro nome',

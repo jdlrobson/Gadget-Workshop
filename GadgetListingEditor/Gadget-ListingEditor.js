@@ -538,6 +538,31 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					'<div class="editor-label-col"><label for="input-fax">' + translate( 'fax' ) + '</label></div>' +
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax"><div class="input-cc" data-for="input-fax"></div></div>' +
 				'</div>' +
+				'<div id="div_hours" class="editor-row">' +
+					'<div class="editor-label-col"><label for="input-hours">' + translate( 'hours' ) + '</label></div>' +
+					'<div><input type="text" class="editor-fullwidth" id="input-hours"></div>' +
+				'</div>' +
+				'<div id="div_checkin" class="editor-row">' +
+					'<div class="editor-label-col"><label for="input-checkin">' + translate( 'checkin' ) + '</label></div>' +
+					'<div><input type="text" class="editor-fullwidth" id="input-checkin"></div>' +
+				'</div>' +
+				'<div id="div_checkout" class="editor-row">' +
+					'<div class="editor-label-col"><label for="input-checkout">' + translate( 'checkout' ) + '</label></div>' +
+					'<div><input type="text" class="editor-fullwidth" id="input-checkout"></div>' +
+				'</div>' +
+				'<div id="div_price" class="editor-row">' +
+					'<div class="editor-label-col"><label for="input-price">' + translate( 'price' ) + '</label></div>' +
+					// update the Callbacks.initStringFormFields
+					// method if the currency symbols are removed or modified
+					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">' +
+						'<div class="input-price">' +
+							'<span id="span_natl_currency" title="' + translate( 'natlCurrencyTitle' ) + '"></span>' +
+							'<span id="span_intl_currencies" title="' + translate( 'intlCurrenciesTitle' ) + '">' +
+								CURRENCY_CHOICES +
+							'</span>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
 				'<div id="div_lastedit" style="display: none;">' +
 					'<div class="editor-label-col"><label for="input-lastedit">' + translate( 'lastUpdated' ) + '</label></div>' +
 					'<div><input type="text" size="10" id="input-lastedit"></div>' +
@@ -586,31 +611,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					'<div class="editor-label-col"><label for="input-long">' + translate( 'longitude' ) + '<span class="wikidata-update"></span></label></div>' +
 					'<div>' +
 						'<input type="text" class="editor-partialwidth" id="input-long">' +
-					'</div>' +
-				'</div>' +
-				'<div id="div_hours" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-hours">' + translate( 'hours' ) + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-hours"></div>' +
-				'</div>' +
-				'<div id="div_checkin" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-checkin">' + translate( 'checkin' ) + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-checkin"></div>' +
-				'</div>' +
-				'<div id="div_checkout" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-checkout">' + translate( 'checkout' ) + '</label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-checkout"></div>' +
-				'</div>' +
-				'<div id="div_price" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-price">' + translate( 'price' ) + '</label></div>' +
-					// update the Callbacks.initStringFormFields
-					// method if the currency symbols are removed or modified
-					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">' +
-						'<div class="input-price">' +
-							'<span id="span_natl_currency" title="' + translate( 'natlCurrencyTitle' ) + '"></span>' +
-							'<span id="span_intl_currencies" title="' + translate( 'intlCurrenciesTitle' ) + '">' +
-								CURRENCY_CHOICES +
-							'</span>' +
-						'</div>' +
 					'</div>' +
 				'</div>' +
 				'<div id="div_wikidata" class="editor-row">' +

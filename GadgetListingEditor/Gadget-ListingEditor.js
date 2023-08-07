@@ -509,10 +509,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					'<div class="editor-label-col"><label for="input-alt">' + translate( 'alt' ) + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-alt"></div>' +
 				'</div>' +
-				'<div id="div_url" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-url">' + translate( 'website' ) + '<span class="wikidata-update"></span></label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-url"></div>' +
-				'</div>' +
 				'<div id="div_address" class="editor-row">' +
 					'<div class="editor-label-col"><label for="input-address">' + translate( 'address' ) + '</label></div>' +
 					'<div><input type="text" class="editor-fullwidth" id="input-address"></div>' +
@@ -532,10 +528,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				'<div id="div_fax" class="editor-row">' +
 					'<div class="editor-label-col"><label for="input-fax">' + translate( 'fax' ) + '</label></div>' +
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax"><div class="input-cc" data-for="input-fax"></div></div>' +
-				'</div>' +
-				'<div id="div_email" class="editor-row">' +
-					'<div class="editor-label-col"><label for="input-email">' + translate( 'email' ) + '<span class="wikidata-update"></span></label></div>' +
-					'<div><input type="text" class="editor-fullwidth" id="input-email"></div>' +
 				'</div>' +
 				'<div id="div_lastedit" style="display: none;">' +
 					'<div class="editor-label-col"><label for="input-lastedit">' + translate( 'lastUpdated' ) + '</label></div>' +
@@ -563,6 +555,14 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 							'<option value="sleep">sleep</option>' +
 						'</select>' +
 					'</div>' +
+				'</div>' +
+				'<div id="div_url" class="editor-row">' +
+					'<div class="editor-label-col"><label for="input-url">' + translate( 'website' ) + '<span class="wikidata-update"></span></label></div>' +
+					'<div><input type="text" class="editor-fullwidth" id="input-url"></div>' +
+				'</div>' +
+				'<div id="div_email" class="editor-row">' +
+					'<div class="editor-label-col"><label for="input-email">' + translate( 'email' ) + '<span class="wikidata-update"></span></label></div>' +
+					'<div><input type="text" class="editor-fullwidth" id="input-email"></div>' +
 				'</div>' +
 				'<div id="div_lat" class="editor-row">' +
 					'<div class="editor-label-col"><label for="input-lat">' + translate( 'latitude' ) + '<span class="wikidata-update"></span></label></div>' +

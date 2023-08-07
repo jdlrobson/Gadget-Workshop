@@ -490,6 +490,15 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var SPECIAL_CHARS = PROJECT_CONFIG.SPECIAL_CHARS;
 		
 		var DEFAULT_PLACEHOLDERS = PROJECT_CONFIG.DEFAULT_PLACEHOLDERS;
+		var CURRENCY_CHOICES = INTL_CURRENCIES.map( function ( c ) {
+			return '<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">' + c + '</a></span>';
+		} ).join( '' );
+		var SPECIAL_CHARS_STRING = SPECIAL_CHARS.map( function ( char ) {
+			return '<span class="listing-charinsert" data-for="input-content"> <a href="javascript:">' + char + '</a></span>';
+		} ).join( '\n' );
+		if (SPECIAL_CHARS.length) {
+			SPECIAL_CHARS_STRING = '<br />(' + SPECIAL_CHARS_STRING + '&nbsp;)';
+		}
 
 		// the below HTML is the UI that will be loaded into the listing editor
 		// dialog box when a listing is added or edited. EACH WIKIVOYAGE
@@ -598,13 +607,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					'<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">' +
 						'<div class="input-price">' +
 							'<span id="span_natl_currency" title="' + translate( 'natlCurrencyTitle' ) + '"></span>' +
-							'<span id="span_intl_currencies" title="' + translate( 'intlCurrenciesTitle' ) + '">';
-
-		for (var i = 0; i < INTL_CURRENCIES.length; i++) {
-			EDITOR_FORM_HTML +=	'<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">' + INTL_CURRENCIES[i] + '</a></span>';
-		}
-
-		EDITOR_FORM_HTML +=					
+							'<span id="span_intl_currencies" title="' + translate( 'intlCurrenciesTitle' ) + '">' +
+								CURRENCY_CHOICES +
 							'</span>' +
 						'</div>' +
 					'</div>' +
@@ -644,15 +648,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				'</div>' +
 			'</div>' +
 			'<div id="div_content" class="editor-row">' +
-				'<div class="editor-label-col"><label for="input-content">' + translate( 'content' );
-		if (SPECIAL_CHARS.length){
-			EDITOR_FORM_HTML +=	'<br />(';
-			for (i = 0; i < SPECIAL_CHARS.length; i++) {
-				EDITOR_FORM_HTML +=	'<span class="listing-charinsert" data-for="input-content"> <a href="javascript:">' + SPECIAL_CHARS[i] + '</a></span>';
-			}
-			EDITOR_FORM_HTML +=	'&nbsp;)';
-		}
-		EDITOR_FORM_HTML +=
+				'<div class="editor-label-col"><label for="input-content">' + translate( 'content' ) +
+				SPECIAL_CHARS_STRING +
 				'</label></div>' +
 				'<div><textarea rows="8" class="editor-fullwidth" id="input-content"></textarea></div>' +
 			'</div>' +
@@ -693,7 +690,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				'</div>' +
 			'</div>' +
 			'</form>';
-
 		// expose public members
 		return {
 			LANG: LANG,

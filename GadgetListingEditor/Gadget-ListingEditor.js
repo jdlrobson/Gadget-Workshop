@@ -369,7 +369,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 
 	var translate = function ( key ) {
 		var msg =  TRANSLATIONS[ key ];
-		if ( !msg ) {
+		if ( msg === undefined ) {
 			throw new Error( 'Could not find undefined message ' + key );
 		} else {
 			return msg;

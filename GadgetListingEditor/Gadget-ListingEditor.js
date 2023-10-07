@@ -72,6 +72,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			'checkin': { hideDivIfEmpty: null, skipIfEmpty: false },
 			'checkout': { hideDivIfEmpty: null, skipIfEmpty: false }
 		},
+		// @todo: Does this need to be project specific? Does it vary?
 		LISTING_TEMPLATE_PARAMETERS: {
 			'type': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
 			'name': { id:'input-name' },
@@ -127,12 +128,18 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			'tipo': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
 			'nome': { id:'input-name' },
 			'alt': { id:'input-alt' },
+			// @todo: Is this needed?
 			'sito': { id:'input-url' },
+			'url': { id:'input-url' },
 			'email': { id:'input-email', newline: true },
+			// @todo: Is this needed?
 			'indirizzo': { id:'input-address' },
+			'address': { id:'input-address' },
 			'lat': { id:'input-lat' },
 			'long': { id:'input-long' },
+			// @todo: Is this needed?
 			'indicazioni': { id:'input-directions', newline: true },
+			'directions': { id:'input-directions', newline: true },
 			'tel': { id:'input-phone' },
 			'numero verde': { id:'input-tollfree' },
 			'fax': { id:'input-fax', newline: true },
@@ -141,7 +148,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
 			'prezzo': { id:'input-price', newline: true },
 			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
+			// @todo: Is this needed?
 			'immagine': { id:'input-image', skipIfEmpty: true },
+			'image': { id:'input-image', skipIfEmpty: true },
 			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
 			'descrizione': { id:'input-content', newline: true }
 		},
@@ -1257,12 +1266,18 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		};
 		var createRadio = function(field, claimValue, guid) {
 			var j = 0;
-			for (j = 0; j < claimValue.length; j++) { if( claimValue[j] === null ) { claimValue[j] = ''; } }
+			for (j = 0; j < claimValue.length; j++) {
+				if( claimValue[j] === null ) {
+					claimValue[j] = '';
+				}
+			}
 			field.label = field.label.split(/(\s+)/)[0]; // take first word
 			var html = '';
 			var editorField = [];
 			var remoteFlag = false;
-			for ( var i = 0; i < field.fields.length; i++ ) { editorField[i] = '#'+Config.LISTING_TEMPLATES.listing[field.fields[i]].id; }
+			for ( var i = 0; i < field.fields.length; i++ ) {
+				editorField[i] = '#'+Config.LISTING_TEMPLATES.listing[field.fields[i]].id;
+			}
 			// NOTE: this assumes a standard listing type. If ever a field in a nonstandard listing type is added to Wikidata sync, this must be changed
 
 			for (j = 0; j < claimValue.length; j++) {

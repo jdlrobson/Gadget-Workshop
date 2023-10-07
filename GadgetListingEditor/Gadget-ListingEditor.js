@@ -1,6 +1,7 @@
 /******************************************************************
 Listing Editor v3.0.0alpha
 	Source code: https://github.com/jdlrobson/-Gadget-Workshop
+	Wiki: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023Main.js
 	Original author:
 	- torty3
 	Additional contributors:

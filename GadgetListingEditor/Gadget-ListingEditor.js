@@ -567,10 +567,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					'<div class="editor-label-col"><label for="input-lastedit">' + translate( 'lastUpdated' ) + '</label></div>' +
 					'<div><input type="text" size="10" id="input-lastedit"></div>' +
 				'</div>' +
-				'<div id="div_wikidata_update" style="display: none">' +
-					'<div class="editor-label-col">&#160;</div>' +
-					'<div><span class="wikidata-update"></span><a href="javascript:" id="wikidata-shared">' + translate( 'syncWikidata' ) + '</a><small>&nbsp;<a href="javascript:" title="' + translate( 'syncWikidataTitle' ) + '" class="listing-tooltip" id="wikidata-shared-quick">' + translate( 'syncWikidataLabel' ) + '</a></small></div>' +
-				'</div>' +
 				'</div>' +
 			'</div>' +
 			'<div class="listing-col">' +
@@ -632,6 +628,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 							'</small>' +
 						'</span>' +
 					'</div>' +
+				'</div>' +
+				'<div id="div_wikidata_update" style="display: none">' +
+					'<div class="editor-label-col">&#160;</div>' +
+					'<div><span class="wikidata-update"></span><a href="javascript:" id="wikidata-shared">' + translate( 'syncWikidata' ) + '</a><small>&nbsp;<a href="javascript:" title="' + translate( 'syncWikidataTitle' ) + '" class="listing-tooltip" id="wikidata-shared-quick">' + translate( 'syncWikidataLabel' ) + '</a></small></div>' +
 				'</div>' +
 				'<div id="div_wikipedia" class="editor-row">' +
 					'<div class="editor-label-col"><label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label></div>' +

@@ -589,6 +589,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 							'<option value="sleep">sleep</option>' +
 						'</select>' +
 					'</div>' +
+					'<div class="editor-fullwidth">' +
+						'<span id="span-closed">' +
+							'<input type="checkbox" id="input-closed">' +
+							'<label for="input-closed" class="listing-tooltip" title="' + translate( 'listingTooltip' ) + '">' + translate( 'listingLabel' ) + '</label>' +
+						'</span>' +
+					'</div>' +
 				'</div>' +
 				'<div id="div_url" class="editor-row">' +
 					'<div class="editor-label-col"><label for="input-url">' + translate( 'website' ) + '<span class="wikidata-update"></span></label></div>' +
@@ -658,10 +664,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			'<div id="div_status" class="editor-fullwidth">' +
 				'<div class="editor-label-col"><label>Status</label></div>' +
 				'<div>' +
-					'<span id="span-closed">' +
-						'<input type="checkbox" id="input-closed">' +
-						'<label for="input-closed" class="listing-tooltip" title="' + translate( 'listingTooltip' ) + '">' + translate( 'listingLabel' ) + '</label>' +
-					'</span>' +
 					// update the Callbacks.updateLastEditDate
 					// method if the last edit input is removed or modified
 					( PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD ? '<span id="span-last-edit">' +

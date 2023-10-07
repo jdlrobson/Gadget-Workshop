@@ -302,7 +302,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			listingLabel: 'Cancello?',
 			minorTitle: 'Spunta il riquadro se la modifica dell\'elemento non è rilevante, come la correzione di un refuso',
 			minorLabel: 'modifica minore?',
-			syncWikidata: 'qni con Wikidata',
+			syncWikidata: 'Uniforma le informazioni con Wikidata',
 			syncWikidataTitle: 'Questo semplicemente prende i valori da Wikidata sostituendoli a quelli locali. Utile per i nuovi listings.',
 			syncWikidataLabel: '(inserimento rapido)',
 			externalLinks: 'La tua modifica include nuovi collegamenti esterni.',

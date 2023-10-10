@@ -129,18 +129,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			'tipo': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
 			'nome': { id:'input-name' },
 			'alt': { id:'input-alt' },
-			// @todo: Is this needed?
 			'sito': { id:'input-url' },
-			'url': { id:'input-url' },
 			'email': { id:'input-email', newline: true },
-			// @todo: Is this needed?
 			'indirizzo': { id:'input-address' },
-			'address': { id:'input-address' },
 			'lat': { id:'input-lat' },
 			'long': { id:'input-long' },
-			// @todo: Is this needed?
 			'indicazioni': { id:'input-directions', newline: true },
-			'directions': { id:'input-directions', newline: true },
 			'tel': { id:'input-phone' },
 			'numero verde': { id:'input-tollfree' },
 			'fax': { id:'input-fax', newline: true },
@@ -149,9 +143,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
 			'prezzo': { id:'input-price', newline: true },
 			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
-			// @todo: Is this needed?
 			'immagine': { id:'input-image', skipIfEmpty: true },
-			'image': { id:'input-image', skipIfEmpty: true },
 			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
 			'descrizione': { id:'input-content', newline: true }
 		},
@@ -281,6 +273,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			intlCurrenciesTitle: ''
 		},
 		it: {
+			propertyP856: ['sito'],
+			propertyP18: ['immagine'],
 			budget: 'Prezzi modici',
 			midrange: 'Prezzi medi',
 			splurge: 'Prezzi elevati',
@@ -1956,6 +1950,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		 * template invocation, 1 returns the second, etc.
 		 */
 		var getListingWikitextBraces = function(listingIndex) {
+
 			sectionText = sectionText.replace(/[^\S\n]+/g,' ');
 			// find the listing wikitext that matches the same index as the listing index
 			var listingRegex = getListingTypesRegex();
@@ -1963,6 +1958,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			// wikitext, returning the nth match, where 'n' is equal to the index of the
 			// edit link that was clicked
 			var listingSyntax, regexResult, listingMatchIndex;
+
 			for (var i = 0; i <= listingIndex; i++) {
 				regexResult = listingRegex.exec(sectionText);
 				listingMatchIndex = regexResult.index;
@@ -2742,6 +2738,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				saveStr += '\n';
 			}
 			for (var parameter in listingParameters) {
+				var l = listingParameters[parameter];
 				if (parameter === Config.LISTING_TYPE_PARAMETER) {
 					// "type" parameter was handled previously
 					continue;
@@ -2750,11 +2747,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					// processed last
 					continue;
 				}
-				if (listing[parameter] !== '' || (!listingParameters[parameter].skipIfEmpty && !inlineListing)) {
+				if (listing[parameter] !== '' || (!l.skipIfEmpty && !inlineListing)) {
 					saveStr += '| ' + parameter + '=' + listing[parameter];
 				}
 				if (!saveStr.match(/\n$/)) {
-					if (!inlineListing && listingParameters[parameter].newline) {
+					if (!inlineListing && l.newline) {
 						saveStr = rtrim(saveStr) + '\n';
 					} else if (!saveStr.match(/ $/)) {
 						saveStr += ' ';

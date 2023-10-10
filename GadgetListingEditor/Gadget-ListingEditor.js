@@ -2640,6 +2640,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 				editPayload
 			).done(function(data) {
 				if (data && data.edit && data.edit.result == 'Success') {
+					if ( data.edit.nochange !== undefined ) {
+						alert( 'Save skipped as there was no change to the content!' );
+						$(SAVE_FORM_SELECTOR).dialog('destroy').remove();
+						return;
+					}
 					// since the listing editor can be used on diff pages, redirect
 					// to the canonical URL if it is different from the current URL
 					var canonicalUrl = $("link[rel='canonical']").attr("href");

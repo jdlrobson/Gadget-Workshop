@@ -31,12 +31,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	var PROJECT_CONFIG_ENWIKIVOYAGE = {
 		SHOW_LAST_EDITED_FIELD: true,
 		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'go', 'sleep' ],
-		iata: function ( value ) {
-			return '{{IATA|' + value + '}}';
-		},
-		listingTypeRegExp: function ( content ) {
-			return '({{\\s*(' + content + ')\\b)(\\s*[\\|}])';
-		},
+		iata: '{{IATA|%s}}',
+		listingTypeRegExp: '({{\\s*(%s)\\b)(\\s*[\\|}])',
 		REPLACE_NEW_LINE_CHARS: true,
 		LISTING_TEMPLATES_OMIT: [],
 		VALIDATE_CALLBACKS_EMAIL: false,
@@ -81,12 +77,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	var PROJECT_CONFIG_ITWIKIVOYAGE = {
 		SHOW_LAST_EDITED_FIELD: false,
 		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'sleep' ],
-		iata: function ( value ) {
-			return 'IATA:' + value
-		},
-		listingTypeRegExp: function ( content ) {
-			return '({{\\s*(' + content + ')\\b)\\s*([\\|}])';
-		},
+		iata: 'IATA:$1',
+		listingTypeRegExp: '({{\\s*%s\\b)\\s*([\\|}])',
 		DEFAULT_LISTING_TEMPLATE: 'listing',
 		REPLACE_NEW_LINE_CHARS: false,
 		VALIDATE_CALLBACKS_EMAIL: false,
@@ -1107,7 +1099,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 						}
 						else if (key === 'iata') {
 							msg += '\n' + Config.WIKIDATA_CLAIMS[key].label + ': ' + res[key];
-							res[key] = PROJECT_CONFIG.iata( res[key] );
+							res[key] = PROJECT_CONFIG.iata.replace( '%s', res[key] );
 						}
 						else if (key === 'email') {
 							res[key] = res[key].replace('mailto:', '');
@@ -1182,7 +1174,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 					res[key].guidObj = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p, true);
 					if (key === 'iata') {
 						if( res[key].value ) {
-							res[key].value = PROJECT_CONFIG.iata( res[key].value );
+							res[key].value = PROJECT_CONFIG.iata.replace( '%s', res[key].value );
 						}
 						msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 					}
@@ -1957,7 +1949,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			for (var key in Config.LISTING_TEMPLATES) {
 				regex.push(key);
 			}
-			return new RegExp( PROJECT_CONFIG.listingTypeRegExp( regex.join( '|' ) ), 'ig' );
+			return new RegExp( PROJECT_CONFIG.listingTypeRegExp.replace( '%s', regex.join( '|' ) ), 'ig' );
 		};
 
 		/**

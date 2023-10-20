@@ -45,29 +45,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		LISTING_TYPE_PARAMETER: 'type',
 		LISTING_CONTENT_PARAMETER: 'content',
 		DEFAULT_LISTING_TEMPLATE: 'listing',
-		DEFAULT_PLACEHOLDERS: {
-			'name':				'name of place',
-			'alt':				'also known as',
-			'url':				'https://www.example.com',
-			'address':			'address of place',
-			'directions':		'how to get here',
-			'phone':			'+55 555 555 5555',
-			'tollfree':			'+1 800 100 1000',
-			'fax':				'+55 555 555 555',
-			'email':			'info@example.com',
-			'lastedit':			'2020-01-15',
-			'lat':				'11.11111',
-			'long':				'111.11111',
-			'hours':			'9AM-5PM or 09:00-17:00',
-			'checkin':			'check in time',
-			'checkout':			'check out time',
-			'price':			'entry or service price',
-			'wikidata-label':	'wikidata record',
-			'wikipedia':		'wikipedia article',
-			'image':			'image of place',
-			'content':			'description of place',
-			'summary':			'reason listing was changed'
-		},
 		SLEEP_TEMPLATE_PARAMETERS: {
 			'hours': { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
 			'checkin': { hideDivIfEmpty: null, skipIfEmpty: false },
@@ -146,28 +123,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			'immagine': { id:'input-image', skipIfEmpty: true },
 			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
 			'descrizione': { id:'input-content', newline: true }
-		},
-		DEFAULT_PLACEHOLDERS: {
-			'name':				'nome del posto',
-			'alt':				'noto anche come',
-			'url':				'https://www.esempio.com',
-			'address':			'indirizzo del posto',
-			'directions':		'come arrivare qui',
-			'phone':			'+55 555 555 5555',
-			'tollfree':			'+1 800 100 1000',
-			'fax':				'+55 555 555 555',
-			'email':			'info@esempio.com',
-			'lat':				'11.11111',
-			'long':				'111.11111',
-			'hours':			'Lun-Ven 9:00-17:00',
-			'checkin':			'orario di check in',
-			'checkout':			'orario di check out',
-			'price':			'prezzo e riferimento temporale (mese anno)',
-			'wikidata-label':	'istanza wikidata',
-			'wikipedia':		'voce wikipedia',
-			'image':			'immagine del luogo',
-			'content':			'descrizione del posto',
-			'summary':			'Motivo di modifica dell\'elemento',
 		}
 	};
 
@@ -191,6 +146,27 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 
 	var TRANSLATIONS_ALL = {
 		en: {
+			'placeholder-name': 'name of place',
+			'placeholder-alt': 'also known as',
+			'placeholder-url': 'https://www.example.com',
+			'placeholder-address': 'address of place',
+			'placeholder-directions':		'how to get here',
+			'placeholder-phone': '+55 555 555 5555',
+			'placeholder-tollfree': '+1 800 100 1000',
+			'placeholder-fax': '+55 555 555 555',
+			'placeholder-email': 'info@example.com',
+			'placeholder-lastedit': '2020-01-15',
+			'placeholder-lat': '11.11111',
+			'placeholder-long': '111.11111',
+			'placeholder-hours': '9AM-5PM or 09:00-17:00',
+			'placeholder-checkin': 'check in time',
+			'placeholder-checkout': 'check out time',
+			'placeholder-price': 'entry or service price',
+			'placeholder-wikidata-label': 'wikidata record',
+			'placeholder-wikipedia': 'wikipedia article',
+			'placeholder-image': 'image of place',
+			'placeholder-content': 'description of place',
+			'placeholder-summary': 'reason listing was changed',
 			propertyP625: ['lat', 'long'],
 			propertyP856: ['url'],
 			propertyP968: ['email'],
@@ -273,6 +249,26 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			intlCurrenciesTitle: ''
 		},
 		it: {
+			'placeholder-name': 'nome del posto',
+			'placeholder-alt': 'noto anche come',
+			'placeholder-url': 'https://www.esempio.com',
+			'placeholder-address': 'indirizzo del posto',
+			'placeholder-directions': 'come arrivare qui',
+			'placeholder-phone': '+55 555 555 5555',
+			'placeholder-tollfree': '+1 800 100 1000',
+			'placeholder-fax': '+55 555 555 555',
+			'placeholder-email': 'info@esempio.com',
+			'placeholder-lat': '11.11111',
+			'placeholder-long': '111.11111',
+			'placeholder-hours': 'Lun-Ven 9:00-17:00',
+			'placeholder-checkin': 'orario di check in',
+			'placeholder-checkout': 'orario di check out',
+			'placeholder-price': 'prezzo e riferimento temporale (mese anno)',
+			'placeholder-wikidata-label': 'istanza wikidata',
+			'placeholder-wikipedia': 'voce wikipedia',
+			'placeholder-image': 'immagine del luogo',
+			'placeholder-content': 'descrizione del posto',
+			'placeholder-summary': 'Motivo di modifica dell\'elemento',
 			propertyP856: ['sito'],
 			propertyP18: ['immagine'],
 			budget: 'Prezzi modici',
@@ -493,7 +489,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var INTL_CURRENCIES = [ '€', '$', '£', '¥', '₩' ];
 		var SPECIAL_CHARS = PROJECT_CONFIG.SPECIAL_CHARS;
 		
-		var DEFAULT_PLACEHOLDERS = PROJECT_CONFIG.DEFAULT_PLACEHOLDERS;
 		var CURRENCY_CHOICES = INTL_CURRENCIES.map( function ( c ) {
 			return '<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">' + c + '</a></span>';
 		} ).join( '' );
@@ -714,7 +709,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 			ALLOW_UNRECOGNIZED_PARAMETERS: ALLOW_UNRECOGNIZED_PARAMETERS,
 			SECTION_TO_TEMPLATE_TYPE: SECTION_TO_TEMPLATE_TYPE,
 			LISTING_TEMPLATES: LISTING_TEMPLATES,
-			DEFAULT_PLACEHOLDERS: DEFAULT_PLACEHOLDERS,
 			EDITOR_FORM_SELECTOR: EDITOR_FORM_SELECTOR,
 			EDITOR_CLOSED_SELECTOR: EDITOR_CLOSED_SELECTOR,
 			EDITOR_SUMMARY_SELECTOR: EDITOR_SUMMARY_SELECTOR,
@@ -922,9 +916,31 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		CREATE_FORM_CALLBACKS.push(autoDirParameters);
 
 		var setDefaultPlaceholders = function(form) {
-			for (var key in Config.DEFAULT_PLACEHOLDERS){
-				$("#input-" + key,form).attr( 'placeholder', Config.DEFAULT_PLACEHOLDERS[key] );
-			}
+			[
+				'name',
+				'alt',
+				'url',
+				'address',
+				'directions',
+				'phone',
+				'tollfree',
+				'fax',
+				'email',
+				'lastedit',
+				'lat',
+				'long',
+				'hours',
+				'checkin',
+				'checkout',
+				'price',
+				'wikidata-label',
+				'wikipedia',
+				'image',
+				'content',
+				'summary'
+			].forEach( function ( key ) {
+				$("#input-" + key, form).attr( 'placeholder', translate('placeholder-' + key ) );
+			} );
 		};
 		CREATE_FORM_CALLBACKS.push(setDefaultPlaceholders);
 
@@ -1048,7 +1064,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 		var sisterSiteLinkDisplay = function(siteLinkData, form) {
 			var value = $(siteLinkData.inputSelector, form).val();
 			var placeholderWD = $(siteLinkData.inputSelector, form).attr('placeholder');
-			var placeholderDef = Config.DEFAULT_PLACEHOLDERS[siteLinkData.inputSelector.substring(7)]; //skip #input-
+			var placeholderDef = translate( 'placeholder-' + siteLinkData.inputSelector.substring(7) ); //skip #input-
 			if ( !placeholderWD || !value && (placeholderDef == placeholderWD) ) {
 				$(siteLinkData.containerSelector, form).hide();
 			} else {

@@ -1,0 +1,121 @@
+{
+    "SHOW_LAST_EDITED_FIELD": false,
+    "SUPPORTED_SECTIONS": [
+        "listing",
+        "see",
+        "do",
+        "buy",
+        "eat",
+        "drink",
+        "sleep"
+    ],
+    "iata": "IATA:$1",
+    "listingTypeRegExp": "({{\\s*%s\\b)\\s*([\\|}])",
+    "DEFAULT_LISTING_TEMPLATE": "listing",
+    "REPLACE_NEW_LINE_CHARS": false,
+    "VALIDATE_CALLBACKS_EMAIL": false,
+    "LISTING_TYPE_PARAMETER": "tipo",
+    "LISTING_CONTENT_PARAMETER": "descrizione",
+    "SPECIAL_CHARS": [
+        "È",
+        "è",
+        "é"
+    ],
+    "WIKIDATAID": "24237997",
+    "ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP": false,
+    "SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT": true,
+    "LISTING_TEMPLATES_OMIT": [
+        "go"
+    ],
+    "SLEEP_TEMPLATE_PARAMETERS": {
+        "orari": {
+            "hideDivIfEmpty": "div_hours",
+            "skipIfEmpty": true
+        },
+        "checkin": {
+            "hideDivIfEmpty": null,
+            "skipIfEmpty": false
+        },
+        "checkout": {
+            "hideDivIfEmpty": null,
+            "skipIfEmpty": false
+        }
+    },
+    "LISTING_TEMPLATE_PARAMETERS": {
+        "tipo": {
+            "id": "input-type",
+            "hideDivIfEmpty": "div_type",
+            "newline": true
+        },
+        "nome": {
+            "id": "input-name"
+        },
+        "alt": {
+            "id": "input-alt"
+        },
+        "sito": {
+            "id": "input-url"
+        },
+        "email": {
+            "id": "input-email",
+            "newline": true
+        },
+        "indirizzo": {
+            "id": "input-address"
+        },
+        "lat": {
+            "id": "input-lat"
+        },
+        "long": {
+            "id": "input-long"
+        },
+        "indicazioni": {
+            "id": "input-directions",
+            "newline": true
+        },
+        "tel": {
+            "id": "input-phone"
+        },
+        "numero verde": {
+            "id": "input-tollfree"
+        },
+        "fax": {
+            "id": "input-fax",
+            "newline": true
+        },
+        "orari": {
+            "id": "input-hours"
+        },
+        "checkin": {
+            "id": "input-checkin",
+            "hideDivIfEmpty": "div_checkin",
+            "skipIfEmpty": true
+        },
+        "checkout": {
+            "id": "input-checkout",
+            "hideDivIfEmpty": "div_checkout",
+            "skipIfEmpty": true
+        },
+        "prezzo": {
+            "id": "input-price",
+            "newline": true
+        },
+        "wikipedia": {
+            "id": "input-wikipedia",
+            "skipIfEmpty": true
+        },
+        "immagine": {
+            "id": "input-image",
+            "skipIfEmpty": true
+        },
+        "wikidata": {
+            "id": "input-wikidata-value",
+            "newline": true,
+            "skipIfEmpty": true
+        },
+        "descrizione": {
+            "id": "input-content",
+            "newline": true
+        }
+    }
+}

@@ -159,15 +159,20 @@ $(function() {
 				} );
 			} else {
 				// use the local gadget
-				return mw.loader.using( 'ext.gadget.ListingEditorMain' );
+				return mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( () => mw.loader.require );
 			}
 		}
 	}
 
 	function loadMain() {
-		return importForeignModule().then( function ( req ) {
+		return Promise.all( [
+			importForeignModule(),
+			mw.loader.using( 'ext.gadget.ListingEditorConfig' )
+		] ).then( function ( args ) {
+			var req = args[ 1 ];
+			var config = req( 'ext.gadget.ListingEditorConfig' );
 			var module = req( 'ext.gadget.ListingEditorMain' );
-			return module( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE );
+			return module( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, config );
 		} );
 	}
 

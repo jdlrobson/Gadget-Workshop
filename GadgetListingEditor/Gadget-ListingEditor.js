@@ -25,115 +25,24 @@ Listing Editor v3.0.0alpha
 ********************************************************************/
 //<nowiki>
 
-module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
+module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
 
-	var PROJECT_CONFIG_ENWIKIVOYAGE = {
-		SHOW_LAST_EDITED_FIELD: true,
-		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'go', 'sleep' ],
-		iata: '{{IATA|%s}}',
-		listingTypeRegExp: '({{\\s*(%s)\\b)(\\s*[\\|}])',
-		REPLACE_NEW_LINE_CHARS: true,
-		LISTING_TEMPLATES_OMIT: [],
-		VALIDATE_CALLBACKS_EMAIL: false,
-		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
-		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: true,
-		LISTING_TYPE_PARAMETER: 'type',
-		LISTING_CONTENT_PARAMETER: 'content',
-		DEFAULT_LISTING_TEMPLATE: 'listing',
-		SLEEP_TEMPLATE_PARAMETERS: {
-			'hours': { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
-			'checkin': { hideDivIfEmpty: null, skipIfEmpty: false },
-			'checkout': { hideDivIfEmpty: null, skipIfEmpty: false }
-		},
-		// @todo: Does this need to be project specific? Does it vary?
-		LISTING_TEMPLATE_PARAMETERS: {
-			'type': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
-			'name': { id:'input-name' },
-			'alt': { id:'input-alt' },
-			'url': { id:'input-url' },
-			'email': { id:'input-email', newline: true },
-			'address': { id:'input-address' },
-			'lat': { id:'input-lat' },
-			'long': { id:'input-long' },
-			'directions': { id:'input-directions', newline: true },
-			'phone': { id:'input-phone' },
-			'tollfree': { id:'input-tollfree' },
-			'fax': { id:'input-fax', hideDivIfEmpty: 'div_fax', newline: true, skipIfEmpty: true },
-			'hours': { id:'input-hours' },
-			'checkin': { id:'input-checkin', hideDivIfEmpty: 'div_checkin', skipIfEmpty: true },
-			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
-			'price': { id:'input-price', newline: true },
-			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
-			'image': { id:'input-image', skipIfEmpty: true },
-			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
-			'lastedit': { id:'input-lastedit', newline: true, skipIfEmpty: true },
-			'content': { id:'input-content', newline: true }
-		},
-		WIKIDATAID: '19826574',
-		SPECIAL_CHARS: []
-	};
+	var PROJECT_CONFIG_KEYS = [
+		'SHOW_LAST_EDITED_FIELD', 'SUPPORTED_SECTIONS', 'iata',
+		'listingTypeRegExp', 'REPLACE_NEW_LINE_CHARS', 'LISTING_TEMPLATES_OMIT',
+		'VALIDATE_CALLBACKS_EMAIL', 'SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT',
+		'ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP',
+		'LISTING_TYPE_PARAMETER', 'LISTING_CONTENT_PARAMETER',
+		'DEFAULT_LISTING_TEMPLATE', 'SLEEP_TEMPLATE_PARAMETERS',
+		'LISTING_TEMPLATE_PARAMETERS', 'WIKIDATAID', 'SPECIAL_CHARS'
+	];;
 
-	var PROJECT_CONFIG_ITWIKIVOYAGE = {
-		SHOW_LAST_EDITED_FIELD: false,
-		SUPPORTED_SECTIONS: [ 'listing', 'see', 'do', 'buy', 'eat', 'drink', 'sleep' ],
-		iata: 'IATA:$1',
-		listingTypeRegExp: '({{\\s*%s\\b)\\s*([\\|}])',
-		DEFAULT_LISTING_TEMPLATE: 'listing',
-		REPLACE_NEW_LINE_CHARS: false,
-		VALIDATE_CALLBACKS_EMAIL: false,
-		LISTING_TYPE_PARAMETER: 'tipo',
-		LISTING_CONTENT_PARAMETER: 'descrizione',
-		SPECIAL_CHARS: [ 'È', 'è', 'é' ],
-		WIKIDATAID: '24237997',
-		ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP: false,
-		SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT: true,
-		LISTING_TEMPLATES_OMIT: [ 'go' ],
-		SLEEP_TEMPLATE_PARAMETERS: {
-			orari: { hideDivIfEmpty: 'div_hours', skipIfEmpty: true },
-			checkin: { hideDivIfEmpty: null, skipIfEmpty: false },
-			checkout: { hideDivIfEmpty: null, skipIfEmpty: false }
-		},
-		LISTING_TEMPLATE_PARAMETERS: {
-			'tipo': { id:'input-type', hideDivIfEmpty: 'div_type', newline: true },
-			'nome': { id:'input-name' },
-			'alt': { id:'input-alt' },
-			'sito': { id:'input-url' },
-			'email': { id:'input-email', newline: true },
-			'indirizzo': { id:'input-address' },
-			'lat': { id:'input-lat' },
-			'long': { id:'input-long' },
-			'indicazioni': { id:'input-directions', newline: true },
-			'tel': { id:'input-phone' },
-			'numero verde': { id:'input-tollfree' },
-			'fax': { id:'input-fax', newline: true },
-			'orari': { id:'input-hours' },
-			'checkin': { id:'input-checkin', hideDivIfEmpty: 'div_checkin', skipIfEmpty: true },
-			'checkout': { id:'input-checkout', hideDivIfEmpty: 'div_checkout', skipIfEmpty: true },
-			'prezzo': { id:'input-price', newline: true },
-			'wikipedia': { id:'input-wikipedia', skipIfEmpty: true },
-			'immagine': { id:'input-image', skipIfEmpty: true },
-			'wikidata': { id:'input-wikidata-value', newline: true, skipIfEmpty: true },
-			'descrizione': { id:'input-content', newline: true }
-		}
-	};
-
-	var PROJECT_CONFIG_DIRECTORY = {
-		itwikivoyage: PROJECT_CONFIG_ITWIKIVOYAGE,
-		enwikivoyage: PROJECT_CONFIG_ENWIKIVOYAGE
-	};
 	// check project has been setup correctly with no missing keys.
-	Object.keys( PROJECT_CONFIG_ENWIKIVOYAGE ).forEach( function ( key ) {
-		// check the key is present in all the other configurations
-		Object.keys( PROJECT_CONFIG_DIRECTORY ).forEach( function ( projectKey ) {
-			if ( projectKey === 'enwikivoyage' ) {
-				return; // no need to check against itself
-			} else {
-				if ( PROJECT_CONFIG_DIRECTORY[ projectKey ][ key ] === undefined ) {
-					throw new Error( 'Project ' + projectKey + ' must define project setting ' + key );
-				}
-			}
-		} );
+	PROJECT_CONFIG_KEYS.forEach( function ( key ) {
+		if ( PROJECT_CONFIG[ key ] === undefined ) {
+			throw new Error( 'Project ' + projectKey + ' must define project setting ' + key );
+		}
 	} );
 
 	var TRANSLATIONS_ALL = {
@@ -369,7 +278,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE ) {
 	}
 
 	var DB_NAME = mw.config.get( 'wgDBname' );
-	var PROJECT_CONFIG = PROJECT_CONFIG_DIRECTORY[ DB_NAME ] || PROJECT_CONFIG_ENWIKIVOYAGE;
 
 	var Config = function( ALLOWED_NAMESPACE ) {
 		var PAGE_VIEW_LANGUAGE = mw.config.get( 'wgPageViewLanguage' );

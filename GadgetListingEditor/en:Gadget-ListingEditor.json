@@ -1,0 +1,123 @@
+{
+    "SHOW_LAST_EDITED_FIELD": true,
+    "SUPPORTED_SECTIONS": [
+      "listing",
+      "see",
+      "do",
+      "buy",
+      "eat",
+      "drink",
+      "go",
+      "sleep"
+    ],
+    "iata": "{{IATA|%s}}",
+    "listingTypeRegExp": "({{\\s*(%s)\\b)(\\s*[\\|}])",
+    "REPLACE_NEW_LINE_CHARS": true,
+    "LISTING_TEMPLATES_OMIT": [],
+    "VALIDATE_CALLBACKS_EMAIL": false,
+    "SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT": true,
+    "ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP": true,
+    "LISTING_TYPE_PARAMETER": "type",
+    "LISTING_CONTENT_PARAMETER": "content",
+    "DEFAULT_LISTING_TEMPLATE": "listing",
+    "SLEEP_TEMPLATE_PARAMETERS": {
+      "hours": {
+        "hideDivIfEmpty": "div_hours",
+        "skipIfEmpty": true
+      },
+      "checkin": {
+        "hideDivIfEmpty": null,
+        "skipIfEmpty": false
+      },
+      "checkout": {
+        "hideDivIfEmpty": null,
+        "skipIfEmpty": false
+      }
+    },
+    "LISTING_TEMPLATE_PARAMETERS": {
+      "type": {
+        "id": "input-type",
+        "hideDivIfEmpty": "div_type",
+        "newline": true
+      },
+      "name": {
+        "id": "input-name"
+      },
+      "alt": {
+        "id": "input-alt"
+      },
+      "url": {
+        "id": "input-url"
+      },
+      "email": {
+        "id": "input-email",
+        "newline": true
+      },
+      "address": {
+        "id": "input-address"
+      },
+      "lat": {
+        "id": "input-lat"
+      },
+      "long": {
+        "id": "input-long"
+      },
+      "directions": {
+        "id": "input-directions",
+        "newline": true
+      },
+      "phone": {
+        "id": "input-phone"
+      },
+      "tollfree": {
+        "id": "input-tollfree"
+      },
+      "fax": {
+        "id": "input-fax",
+        "hideDivIfEmpty": "div_fax",
+        "newline": true,
+        "skipIfEmpty": true
+      },
+      "hours": {
+        "id": "input-hours"
+      },
+      "checkin": {
+        "id": "input-checkin",
+        "hideDivIfEmpty": "div_checkin",
+        "skipIfEmpty": true
+      },
+      "checkout": {
+        "id": "input-checkout",
+        "hideDivIfEmpty": "div_checkout",
+        "skipIfEmpty": true
+      },
+      "price": {
+        "id": "input-price",
+        "newline": true
+      },
+      "wikipedia": {
+        "id": "input-wikipedia",
+        "skipIfEmpty": true
+      },
+      "image": {
+        "id": "input-image",
+        "skipIfEmpty": true
+      },
+      "wikidata": {
+        "id": "input-wikidata-value",
+        "newline": true,
+        "skipIfEmpty": true
+      },
+      "lastedit": {
+        "id": "input-lastedit",
+        "newline": true,
+        "skipIfEmpty": true
+      },
+      "content": {
+        "id": "input-content",
+        "newline": true
+      }
+    },
+    "WIKIDATAID": "19826574",
+    "SPECIAL_CHARS": []
+}

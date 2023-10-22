@@ -9,8 +9,8 @@
         "drink",
         "sleep"
     ],
-    "iata": "IATA:$1",
-    "listingTypeRegExp": "({{\\s*%s\\b)\\s*([\\|}])",
+    "iata": "IATA:%s",
+    "listingTypeRegExp": "({{\\s*(%s)\\b)\\s*([\\|}])",
     "DEFAULT_LISTING_TEMPLATE": "listing",
     "REPLACE_NEW_LINE_CHARS": false,
     "VALIDATE_CALLBACKS_EMAIL": false,

@@ -36,12 +36,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		'LISTING_TYPE_PARAMETER', 'LISTING_CONTENT_PARAMETER',
 		'DEFAULT_LISTING_TEMPLATE', 'SLEEP_TEMPLATE_PARAMETERS',
 		'LISTING_TEMPLATE_PARAMETERS', 'WIKIDATAID', 'SPECIAL_CHARS'
-	];;
+	];
 
 	// check project has been setup correctly with no missing keys.
 	PROJECT_CONFIG_KEYS.forEach( function ( key ) {
 		if ( PROJECT_CONFIG[ key ] === undefined ) {
-			throw new Error( 'Project ' + projectKey + ' must define project setting ' + key );
+			throw new Error( 'Project must define project setting ' + key );
 		}
 	} );
 

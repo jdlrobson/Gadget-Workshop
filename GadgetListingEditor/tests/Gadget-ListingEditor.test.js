@@ -12,7 +12,7 @@ const TEMPLATE_TYPE = {
 };
 describe( 'Gadget-ListingEditor', () => {
 	it( 'exports', () => {
-		const le = listingEditor( [ 0 ], TEMPLATE_TYPE );
+		const le = listingEditor( [ 0 ], TEMPLATE_TYPE, require( '../en:Gadget-ListingEditor.json' ) );
 		expect( le.MODE_ADD ).toBe( 'add' );
 	} );
 } );

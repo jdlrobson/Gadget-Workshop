@@ -3,9 +3,6 @@ module.exports = {
         "browser": true,
         "es2021": true
     },
-    "ignorePatterns": [
-        "GadgetListingEditor/original.js"
-    ],
     "extends": "eslint:recommended",
     "overrides": [
         {

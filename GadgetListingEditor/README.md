@@ -5,6 +5,14 @@ The code lives in two files:
 * https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023Main.js (one canonical version is hosting on English Wikivoyage)
 * https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023.js (must be copied to a project)
 
+# Development
+
+To build the latest code run the following:
+
+```
+npm start
+```
+
 # Verifying build before deployment.
 
 Go to https://en.wikivoyage.org/wiki/Nottingham?safemode=1

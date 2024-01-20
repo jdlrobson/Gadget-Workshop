@@ -11,7 +11,7 @@ module.exports = {
 	// An array of glob patterns indicating a set of files fo
 	//  which coverage information should be collected
 	collectCoverageFrom: [
-		'resources/**/*.(js|vue)'
+		'GadgetListingEditor/src/*.(js|vue)'
 	],
 
 	// The directory where Jest should output its coverage files

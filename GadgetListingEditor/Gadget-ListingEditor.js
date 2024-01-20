@@ -2790,11 +2790,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 
 		// expose public members
 		return {
-			initListingEditorDialog: initListingEditorDialog,
-			MODE_ADD: MODE_ADD,
-			MODE_EDIT: MODE_EDIT,
-			trimDecimal: trimDecimal,
-			parseDMS: parseDMS
+			initListingEditorDialog,
+			MODE_ADD,
+			MODE_EDIT,
+			trimDecimal,
+			parseDMS
 		};
 	}();
 

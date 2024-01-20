@@ -165,13 +165,14 @@ $(function() {
 	}
 
 	function loadMain() {
+		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
-			importForeignModule(),
+			localModuleForDebugging ? Promise.resolve() : importForeignModule(),
 			mw.loader.using( 'ext.gadget.ListingEditorConfig' )
 		] ).then( function ( args ) {
 			var req = args[ 1 ];
 			var config = req( 'ext.gadget.ListingEditorConfig' );
-			var module = req( 'ext.gadget.ListingEditorMain' );
+			var module = localModuleForDebugging || req( 'ext.gadget.ListingEditorMain' );
 			return module( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, config );
 		} );
 	}

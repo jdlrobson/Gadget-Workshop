@@ -1,4 +1,4 @@
-const listingEditor = require( '../Gadget-ListingEditor.js' );
+const listingEditor = require( '../src/index.js' );
 const TEMPLATE_TYPE = {
 	'Cosa_vedere': 'see',
 	'Cosa_fare': 'do',

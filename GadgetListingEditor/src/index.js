@@ -24,7 +24,6 @@ Listing Editor v3.0.0alpha
 		- Figure out how to get this to upload properly
 ********************************************************************/
 //<nowiki>
-
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
 

@@ -181,7 +181,7 @@ module.exports = {
         removed: 'Rimosso elemento: ',
         helpPage: '//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor',
         enterCaptcha: 'Inserisci il CAPTCHA',
-        licenseText: 'Facendo click su "Salva", accetti espressamente i <a class="external" target="_blank" href="http://wikimediafoundation.org/wiki/Terms_of_Use/it">Termini d\'uso</a>, e accetti irrevocabilmente a rilasciare il tuo contributo sotto la <a class="external" target="_blank" href="http://en.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license">licenza CC-BY-SA 3.0</a>.',
+        licenseText: 'Facendo click su "Salva", accetti espressamente i <a class="external" target="_blank" href="http://wikimediafoundation.org/wiki/Terms_of_Use/it">Termini d\'uso</a>, e accetti irrevocabilmente a rilasciare il tuo contributo sotto la <a class="external" target="_blank" href="https://it.wikivoyage.org/wiki/Wikivoyage:Testo_della_Creative_Commons_Attribuzione-Condividi_allo_stesso_modo_3.0_Unported">licenza CC-BY-SA 3.0</a>.',
         ajaxInitFailure: 'Errore: Impossibile inizializzare il listing editor',
         sharedWikipedia: 'wikipedia',
         synchronized: '- campo sincronizzato.',

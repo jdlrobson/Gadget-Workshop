@@ -37,3 +37,15 @@ and copy the following files:
 * MediaWiki:Gadget-ListingEditor.json https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor.json
 * MediaWiki:ListingEditor2023.js  https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023.js
 
+
+## Local development
+
+* Update local mediawiki instance
+```
+wfLoadExtension('MobileFrontendContentProvider');
+wfLoadExtension('Gadgets');
+$wgExtraNamespaces[NS_WIKIVOYAGE] = "Wikivoyage";
+```
+* Install gadgets per instructions above.
+* Visit http://localhost:8888/wiki/Wikivoyage:Paris
+

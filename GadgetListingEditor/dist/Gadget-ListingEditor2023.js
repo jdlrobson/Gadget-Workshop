@@ -1,4 +1,6 @@
 $(function() {
+	var DEV_NAMESPACE = 9000;
+
 	// (oldid=4687849)[[Wikivoyage:Travellers%27_pub#c-WhatamIdoing-20230630083400-FredTC-20230630053700]]
 	if ( mw.config.get( 'skin' ) === 'minerva' ) {
 		return;
@@ -64,8 +66,13 @@ $(function() {
 	var ALLOWED_NAMESPACE = [
 		0, //Main
 		2, //User
-		4, //Wikivoyage
+		4 //Wikivoyage
 	];
+
+	// For development purposes, if localhost is detected, support namespace 9000.
+	if ( window.location.host.indexOf( 'localhost' ) > -1 ) {
+		ALLOWED_NAMESPACE.push( DEV_NAMESPACE );
+	}
 
 	// If any of these patterns are present on a page then no 'add listing'
 	// buttons will be added to the page
@@ -116,7 +123,10 @@ $(function() {
 	 * pages, edit pages, history pages, etc.
 	 */
 	var listingEditorAllowedForCurrentPage = function() {
-		var namespace = mw.config.get( 'wgNamespaceNumber' );
+		var namespace = mw.config.get( 'wgNamespaceNumber' )
+		if ( namespace === DEV_NAMESPACE ) {
+			return true;
+		}
 		if (ALLOWED_NAMESPACE.indexOf(namespace)<0) {
 			return false;
 		}

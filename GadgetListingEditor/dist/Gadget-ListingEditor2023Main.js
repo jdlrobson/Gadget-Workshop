@@ -406,7 +406,7 @@ function requireCore () {
 	        if (!matchFound) {
 	            listingSyntax = sectionText.substring(listingMatchIndex);
 	        }
-	        return $.trim(listingSyntax);
+	        return listingSyntax.trim();
 	    };
 
 	    /**
@@ -427,8 +427,8 @@ function requireCore () {
 	            var index = param.indexOf('=');
 	            if (index > 0) {
 	                // param is of the form key=value
-	                var key = $.trim(param.substr(0, index));
-	                var value = $.trim(param.substr(index+1));
+	                var key = param.substr(0, index).trim();
+	                var value = param.substr(index+1).trim();
 	                listingTemplateAsMap[key] = value;
 	                lastKey = key;
 	            } else if (lastKey && listingTemplateAsMap[lastKey].length) {
@@ -754,20 +754,20 @@ function requireCore () {
 	        }
 	        // newlines in listing content won't render properly in lists, so replace them with <br> tags
 	        if ( PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS ) {
-	            $('#input-content').val($.trim($('#input-content').val()).replace(/\n/g, '<br />'));
+	            $('#input-content').val($('#input-content').val().trim().replace(/\n/g, '<br />'));
 	        }
 	        // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
 	        // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
 	        if ( $('#input-content').val() ) {
 	            $('#input-content')
-	                .val(($.trim($('#input-content').val())+'.')
+	                .val(($('#input-content').val().trim()+'.')
 	                // eslint-disable-next-line no-useless-escape
 	                .replace(/([\.\!\?])\.+$/, '$1'));
 	        }
 
 	        // remove trailing period from price and address block
-	        $('#input-price').val($.trim($('#input-price').val()).replace(/\.$/, ''));
-	        $('#input-address').val($.trim($('#input-address').val()).replace(/\.$/, ''));
+	        $('#input-price').val($('#input-price').val().trim().replace(/\.$/, ''));
+	        $('#input-address').val($('#input-address').val().trim().replace(/\.$/, ''));
 	        // in case of decimal format, decimal digits will be limited to 6
 	        if ( $.isNumeric($('#input-lat').val()) ) {
 	            $('#input-lat').val(Core.trimDecimal(Number($('#input-lat').val()),6));

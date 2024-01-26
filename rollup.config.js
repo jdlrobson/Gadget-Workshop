@@ -6,7 +6,7 @@ module.exports = [
 		input: 'GadgetListingEditor/src/index.js',
 		output: [
 			{
-                file: 'GadgetListingEditor/dist/Gadget-ListingEditor.js',
+                file: 'GadgetListingEditor/dist/Gadget-ListingEditor2023Main.js',
                 format: 'cjs'
             }
 		],

@@ -1,0 +1,197 @@
+/* Responsive grid CSS from http://www.responsivegridsystem.com/calculator/
+   by Graham Miller (CC-SA 3.0 license) */
+/* BEGIN: listing editor form */
+.listing-col {
+	display: block;
+	float:left;
+	margin: 1% 0 0 3%;
+	width: 48.5%;
+}
+.listing-col:first-child {
+	margin-left: 0;
+}
+/* Use a single column at less than 640px */
+@media only screen and (max-width: 640px) {
+	.listing-col {
+		margin: 1% 0 0 0;
+		width: 100%;
+	}
+}
+
+.editor-row {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	width: 100%;
+}
+.editor-row > div {
+	width: 100%;
+	padding-bottom: 4px;
+}
+.editor-row > div:first-child {
+	width: 7em;
+	min-width: 7em;
+}
+.editor-row > div:nth-of-type(2) {
+	display: flex;
+}
+.editor-row .input-cc, .editor-row .input-price, .editor-row .input-other {
+	text-align: right;
+	white-space: nowrap;
+	padding-left: 0.4em;
+}
+.editor-row .input-cc:empty, .editor-row .input-other:empty {
+	padding-left: 0;
+}
+#div_wikidata_update, #div_type > div:nth-of-type(2) > div, #div_status /* div_status for en:voy only*/{
+	display: flex;
+}
+#div_type > div:nth-of-type(2) {
+	display: block;
+}
+.editor-fullwidth {
+	width: 100%;
+}
+.editor-partialwidth {
+	width: 55%;
+}
+.editor-label-col {
+	width: 83px;
+}
+.listing-tooltip {
+	border-bottom: 1px dotted;
+	cursor: help;
+}
+#span-minor, #span-wikidata-wp, #span-wikidata-img, #span-wikidata-link {
+	margin-left: 15px;
+	white-space: nowrap;
+}
+.listing-divider {
+	border-width: 1px 0 0 0;
+	border-color: #ccc;
+	margin: 10px 0;
+	border-style: dotted;
+}
+.vcard-edit-button a {
+	color: #969696;
+}
+body .ui-dialog .ui-widget-header {
+	background: #a9c8d6 !important;
+}
+#progress-dialog {
+	font-size:large;
+	padding-top:22px;
+	text-align:center;
+}
+#listing-editor {
+	padding: 0 1.5em 1em;
+}
+#listing-help {
+	margin-right: 30px;
+}
+.listingeditor-add {
+	margin-left: 0.25em;
+}
+.listing-license {
+	width: 60%;
+	padding-top: 0.8em;
+	font-size: 0.8em;
+}
+.listing-editor-dialog {
+	margin: 0 5%;
+}
+.listing-editor-dialog a:hover, .listing-editor-dialog a:focus {
+	text-decoration: underline;
+}
+#span-closed {
+	float: right;
+/*	color: maroon; not used in en:voy*/
+}
+.listing-sister {
+	padding-bottom: 0.1em;
+}
+.listing-sister:hover {
+	border-bottom: 1px solid #0645ad
+}
+.listing-sister-icons {
+	padding-right: 0.2em;
+}
+/* END: listing editor form */
+/* BEGIN: sync editor form */
+.wikidata-update, .wikivoyage-update {
+	display: inline-block;
+	margin: 0 5px 0 2px;
+}
+.wikidata-update {
+	background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Wikidata-logo.svg/16px-Wikidata-logo.svg.png);
+	width: 10px;
+	height: 9px;
+}
+.wikivoyage-update {
+	background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Wikivoyage-logo.svg/16px-Wikivoyage-logo.svg.png);
+	width: 16px;
+	height: 16px;
+}
+label .wikidata-update {
+	margin-bottom: 3px;
+}
+#listing-editor-sync fieldset {
+    border: none;
+    border-bottom: 1px dotted;
+    padding: 0;
+}
+#listing-editor-sync fieldset > span {
+	width: 48.5%;
+}
+@media only screen and (max-width: 640px) {
+	#listing-editor-sync fieldset > span {
+		width: 100%;
+	}
+}
+#listing-editor-sync fieldset > span:first-child {
+	float: left;
+}
+#listing-editor-sync fieldset > span:last-child, #listing-editor-sync fieldset > span:last-child > a, #listing-editor-sync fieldset .wikivoyage-update {
+	float: right;
+}
+#listing-editor-sync .clear, #listing-editor-sync {
+	display: block
+}
+.syncSelect {
+	font-size: larger;
+	font-weight: bold;
+}
+#listing-editor-sync .choose-row {
+	display: flex;
+	height: 22px;
+	line-height: 22px;
+}
+#listing-editor-sync .choose-row div {
+	text-align: center;
+	width: 3.33%; /* must be specified, in case the only field has doNotUpload */
+}
+#listing-editor-sync .choose-row div:first-child {
+	text-align: right;
+	width: 45%;
+	border: 1px solid black;
+	border-right:none;
+}
+#listing-editor-sync .choose-row div:nth-of-type(2) {
+	border: 1px solid black;
+	border-left:none;
+}
+#listing-editor-sync .choose-row div:nth-of-type(4) {
+	border: 1px solid black;
+	border-right:none;
+}
+#listing-editor-sync .choose-row div:last-child {
+	text-align: left;
+	width: 45%;
+	border:1px solid black;
+	border-left:none;
+}
+.sync_label {
+	text-align: center;
+	font-weight: bold;
+}
+/* END: sync editor form */

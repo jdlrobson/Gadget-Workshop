@@ -1081,7 +1081,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         MODE_ADD,
         MODE_EDIT,
         trimDecimal,
-        parseDMS
+        parseDMS,
+        test: {
+            validateForm
+        }
     };
 };
 

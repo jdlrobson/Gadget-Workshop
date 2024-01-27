@@ -553,11 +553,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         $('#input-price').val($('#input-price').val().trim().replace(/\.$/, ''));
         $('#input-address').val($('#input-address').val().trim().replace(/\.$/, ''));
         // in case of decimal format, decimal digits will be limited to 6
-        if ( $.isNumeric($('#input-lat').val()) ) {
-            $('#input-lat').val(Core.trimDecimal(Number($('#input-lat').val()),6));
+        const lat = Number($('#input-lat').val());
+        const long = Number($('#input-long').val());
+        if ( !isNaN( lat ) ) {
+            $('#input-lat').val(Core.trimDecimal(lat,6));
         }
-        if ( $.isNumeric($('#input-long').val()) ) {
-            $('#input-long').val(Core.trimDecimal(Number($('#input-long').val()),6));
+        if ( !isNaN( long ) ) {
+            $('#input-long').val(Core.trimDecimal(long,6));
         }
 
         var webRegex = new RegExp('^https?://', 'i');
@@ -997,9 +999,12 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     /**
      * Trim decimal precision if it exceeds the specified number of
      * decimal places.
+     * @param {number} value
+     * @param {number} precision
+     * @return {number}
      */
     var trimDecimal = function(value, precision) {
-        if ($.isNumeric(value) && value.toString().length > value.toFixed(precision).toString().length) {
+        if (value.toString().length > value.toFixed(precision).toString().length) {
             value = value.toFixed(precision);
         }
         return value;

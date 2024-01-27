@@ -701,12 +701,14 @@ function requireCore () {
 	                {
 	                    text: '?',
 	                    id: 'listing-help',
+	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
 	                        window.open( translate( 'helpPage' ) );
 	                    }
 	                },
 	                {
 	                    text: translate( 'submit' ),
+	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
 	                        if ($(Config.EDITOR_CLOSED_SELECTOR).is(':checked')) {
 	                            // no need to validate the form upon deletion request
@@ -731,6 +733,7 @@ function requireCore () {
 	                    text: translate( 'preview' ),
 	                    title: translate( 'preview' ),
 	                    id: 'listing-preview-button',
+	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
 	                        formToPreview(listingTemplateAsMap);
 	                    }
@@ -740,6 +743,7 @@ function requireCore () {
 	                    title: translate( 'previewOff' ),
 	                    id: 'listing-previewOff',
 	                    style: 'display: none',
+	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
 	                        hidePreview();
 	                    }
@@ -750,12 +754,14 @@ function requireCore () {
 	                    icon: 'ui-icon-refresh',
 	                    id: 'listing-refresh',
 	                    style: 'display: none',
+	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
 	                        refreshPreview(listingTemplateAsMap);
 	                    }
 	                },
 	                {
 	                    text: translate( 'cancel' ),
+	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
 	                        $(this).dialog('destroy').remove();
 	                        // if a sync editor dialog is open, get rid of it
@@ -765,6 +771,7 @@ function requireCore () {
 	                    }
 	                }
 	                ],
+	                // eslint-disable-next-line object-shorthand
 	                create: function() {
 	                    $('.ui-dialog-buttonpane').append('<div class="listing-license">' + translate( 'licenseText' ) + '</div>');
 	                    $('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
@@ -882,11 +889,13 @@ function requireCore () {
 	                prop: 'text',
 	                contentmodel: 'wikitext',
 	                format: 'json',
-	                'text': text,
+	                text,
 	            }),
+	            // eslint-disable-next-line object-shorthand
 	            error: function () {
 	                $('#listing-preview').hide();
 	            },
+	            // eslint-disable-next-line object-shorthand
 	            success: function (data) {
 	                $('#listing-preview-text').html(data.parse.text['*']);
 	            },
@@ -1093,7 +1102,7 @@ function requireCore () {
 	            title: mw.config.get( "wgPageName" ),
 	            section: sectionNumber,
 	            text: sectionText,
-	            summary: summary,
+	            summary,
 	            captchaid: cid,
 	            captchaword: answer
 	        };
@@ -1177,13 +1186,17 @@ function requireCore () {
 	            title: translate( 'enterCaptcha' ),
 	            buttons: [
 	                {
-	                    text: translate( 'submit' ), click: function() {
+	                    text: translate( 'submit' ),
+	                    // eslint-disable-next-line object-shorthand
+	                    click: function() {
 	                        saveForm(summary, minor, sectionNumber, captchaId, $('#input-captcha').val());
 	                        $(this).dialog('destroy').remove();
 	                    }
 	                },
 	                {
-	                    text: translate( 'cancel' ), click: function() {
+	                    text: translate( 'cancel' ),
+	                    // eslint-disable-next-line object-shorthand
+	                    click: function() {
 	                        $(this).dialog('destroy').remove();
 	                    }
 	                }
@@ -1731,28 +1744,28 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			'</form>';
 		// expose public members
 		return {
-			LANG: LANG,
-			WIKIDATAID: WIKIDATAID,
-			COMMONS_URL: COMMONS_URL,
-			WIKIDATA_URL: WIKIDATA_URL,
-			WIKIDATA_CLAIMS: WIKIDATA_CLAIMS,
-			WIKIPEDIA_URL: WIKIPEDIA_URL,
-			WIKIDATA_SITELINK_WIKIPEDIA: WIKIDATA_SITELINK_WIKIPEDIA,
-			TRANSLATIONS: TRANSLATIONS,
-			MAX_DIALOG_WIDTH: MAX_DIALOG_WIDTH,
-			ALLOWED_NAMESPACE: ALLOWED_NAMESPACE,
-			DEFAULT_LISTING_TEMPLATE: DEFAULT_LISTING_TEMPLATE,
-			LISTING_TYPE_PARAMETER: LISTING_TYPE_PARAMETER,
-			LISTING_CONTENT_PARAMETER: LISTING_CONTENT_PARAMETER,
-			ALLOW_UNRECOGNIZED_PARAMETERS: ALLOW_UNRECOGNIZED_PARAMETERS,
-			SECTION_TO_TEMPLATE_TYPE: SECTION_TO_TEMPLATE_TYPE,
-			LISTING_TEMPLATES: LISTING_TEMPLATES,
-			EDITOR_FORM_SELECTOR: EDITOR_FORM_SELECTOR,
-			EDITOR_CLOSED_SELECTOR: EDITOR_CLOSED_SELECTOR,
-			EDITOR_SUMMARY_SELECTOR: EDITOR_SUMMARY_SELECTOR,
-			EDITOR_MINOR_EDIT_SELECTOR: EDITOR_MINOR_EDIT_SELECTOR,
-			SYNC_FORM_SELECTOR: SYNC_FORM_SELECTOR,
-			EDITOR_FORM_HTML: EDITOR_FORM_HTML
+			LANG,
+			WIKIDATAID,
+			COMMONS_URL,
+			WIKIDATA_URL,
+			WIKIDATA_CLAIMS,
+			WIKIPEDIA_URL,
+			WIKIDATA_SITELINK_WIKIPEDIA,
+			TRANSLATIONS,
+			MAX_DIALOG_WIDTH,
+			ALLOWED_NAMESPACE,
+			DEFAULT_LISTING_TEMPLATE,
+			LISTING_TYPE_PARAMETER,
+			LISTING_CONTENT_PARAMETER,
+			ALLOW_UNRECOGNIZED_PARAMETERS,
+			SECTION_TO_TEMPLATE_TYPE,
+			LISTING_TEMPLATES,
+			EDITOR_FORM_SELECTOR,
+			EDITOR_CLOSED_SELECTOR,
+			EDITOR_SUMMARY_SELECTOR,
+			EDITOR_MINOR_EDIT_SELECTOR,
+			SYNC_FORM_SELECTOR,
+			EDITOR_FORM_HTML
 		};
 	}( ALLOWED_NAMESPACE );
 
@@ -1893,8 +1906,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		var typeToColor = function(listingType, form) {
 			$('#input-type', form).css( 'box-shadow', 'unset' );
 			$.ajax ({
-				'listingType': listingType,
-				'form': form,
+				listingType,
+				form,
 				url: mw.config.get('wgScriptPath') + '/api.php?' + $.param({
 					action: 'parse',
 					prop: 'text',
@@ -1903,6 +1916,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 					disablelimitreport: true,
 					'text': '{{#invoke:TypeToColor|convert|'+listingType+'}}',
 				}),
+				// eslint-disable-next-line object-shorthand
 				beforeSend: function() {
 					if (localStorage.getItem('listing-'+listingType)) {
 						changeColor(localStorage.getItem('listing-'+listingType), form);
@@ -1910,6 +1924,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 					}
 					else { return true; }
 				},
+				// eslint-disable-next-line object-shorthand
 				success: function (data) {
 					var color = $(data.parse.text['*']).text().trim();
 					localStorage.setItem('listing-'+listingType, color);
@@ -2006,6 +2021,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			}
 			// set up autocomplete to search for results as the user types
 			$('#input-wikidata-label', form).autocomplete({
+				// eslint-disable-next-line object-shorthand
 				source: function( request, response ) {
 					var ajaxUrl = SisterSite.API_WIKIDATA;
 					var ajaxData = {
@@ -2018,6 +2034,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 					};
 					SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
 				},
+				// eslint-disable-next-line object-shorthand
 				select: function(event, ui) {
 					$("#input-wikidata-value").val(ui.item.id);
 					wikidataLink("", ui.item.id);
@@ -2059,7 +2076,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			var wikipediaSiteData = {
 				apiUrl: SisterSite.API_WIKIPEDIA,
 				selector: $('#input-wikipedia', form),
-				form: form,
+				form,
 				ajaxData: {
 					namespace: 0
 				},
@@ -2069,7 +2086,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			var commonsSiteData = {
 				apiUrl: SisterSite.API_COMMONS,
 				selector: $('#input-image', form),
-				form: form,
+				form,
 				ajaxData: {
 					namespace: 6
 				},
@@ -2264,16 +2281,19 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 						},
 						{
 							text: translate( 'cancel' ),
+							// eslint-disable-next-line object-shorthand
 							click: function() {
 								$(this).dialog('close');
 							}
 						},
 					],
+					// eslint-disable-next-line object-shorthand
 					open: function() {
 						$('#div_wikidata_update').hide();
 						$('#wikidata-remove').hide();
 						$('#input-wikidata-label').prop('disabled', true);
 					},
+					// eslint-disable-next-line object-shorthand
 					close: function() {
 						$('#div_wikidata_update').show();
 						$('#wikidata-remove').show();
@@ -2520,7 +2540,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				}
 				var data = {
 					value: label,
-					label: label,
+					label,
 					description: result.description,
 					id: result.id
 				};
@@ -2636,9 +2656,9 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 
 		// expose public members
 		return {
-			CREATE_FORM_CALLBACKS: CREATE_FORM_CALLBACKS,
-			SUBMIT_FORM_CALLBACKS: SUBMIT_FORM_CALLBACKS,
-			VALIDATE_FORM_CALLBACKS: VALIDATE_FORM_CALLBACKS
+			CREATE_FORM_CALLBACKS,
+			SUBMIT_FORM_CALLBACKS,
+			VALIDATE_FORM_CALLBACKS
 		};
 	}();
 
@@ -2680,6 +2700,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		};
 		var _initializeAutocomplete = function(siteData, ajaxData, parseAjaxResponse) {
 			var autocompleteOptions = {
+				// eslint-disable-next-line object-shorthand
 				source: function(request, response) {
 					ajaxData.search = request.term;
 					var ajaxSuccess = function(jsonObj) {
@@ -2761,8 +2782,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				action: 'wbcreateclaim',
 				entity: $('#input-wikidata-value').val(),
 				property: prop,
-				snaktype: snaktype,
-				value: value,
+				snaktype,
+				value,
 				format: 'json',
 			};
 			var ajaxSuccess = function(jsonObj) {
@@ -2784,8 +2805,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			var ajaxData = {
 				action: 'wbsetclaimvalue',
 				claim: guidObj,
-				snaktype: snaktype,
-				value: value,
+				snaktype,
+				value
 			};
 			var ajaxSuccess = function(jsonObj) {
 				//console.log(jsonObj);
@@ -2820,17 +2841,17 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		var _unreferenceWikidata = function(statement, references) {
 			var ajaxData = {
 				action: 'wbremovereferences',
-				statement: statement,
-				references: references,
+				statement,
+				references
 			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
 			api.postWithToken( 'csrf', ajaxData, { async: false } );
 		};
 		// expose public members
 		return {
-			API_WIKIDATA: API_WIKIDATA,
-			API_WIKIPEDIA: API_WIKIPEDIA,
-			API_COMMONS: API_COMMONS,
+			API_WIKIDATA,
+			API_WIKIPEDIA,
+			API_COMMONS,
 			initializeSisterSiteAutocomplete: _initializeSisterSiteAutocomplete,
 			ajaxSisterSiteSearch: _ajaxSisterSiteSearch,
 			wikidataClaim: _wikidataClaim,

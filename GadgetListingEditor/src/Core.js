@@ -396,12 +396,14 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 {
                     text: '?',
                     id: 'listing-help',
+                    // eslint-disable-next-line object-shorthand
                     click: function() {
                         window.open( translate( 'helpPage' ) );
                     }
                 },
                 {
                     text: translate( 'submit' ),
+                    // eslint-disable-next-line object-shorthand
                     click: function() {
                         if ($(Config.EDITOR_CLOSED_SELECTOR).is(':checked')) {
                             // no need to validate the form upon deletion request
@@ -426,6 +428,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     text: translate( 'preview' ),
                     title: translate( 'preview' ),
                     id: 'listing-preview-button',
+                    // eslint-disable-next-line object-shorthand
                     click: function() {
                         formToPreview(listingTemplateAsMap);
                     }
@@ -435,6 +438,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     title: translate( 'previewOff' ),
                     id: 'listing-previewOff',
                     style: 'display: none',
+                    // eslint-disable-next-line object-shorthand
                     click: function() {
                         hidePreview();
                     }
@@ -445,12 +449,14 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     icon: 'ui-icon-refresh',
                     id: 'listing-refresh',
                     style: 'display: none',
+                    // eslint-disable-next-line object-shorthand
                     click: function() {
                         refreshPreview(listingTemplateAsMap);
                     }
                 },
                 {
                     text: translate( 'cancel' ),
+                    // eslint-disable-next-line object-shorthand
                     click: function() {
                         $(this).dialog('destroy').remove();
                         // if a sync editor dialog is open, get rid of it
@@ -460,6 +466,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     }
                 }
                 ],
+                // eslint-disable-next-line object-shorthand
                 create: function() {
                     $('.ui-dialog-buttonpane').append('<div class="listing-license">' + translate( 'licenseText' ) + '</div>');
                     $('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
@@ -577,11 +584,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 prop: 'text',
                 contentmodel: 'wikitext',
                 format: 'json',
-                'text': text,
+                text,
             }),
+            // eslint-disable-next-line object-shorthand
             error: function () {
                 $('#listing-preview').hide();
             },
+            // eslint-disable-next-line object-shorthand
             success: function (data) {
                 $('#listing-preview-text').html(data.parse.text['*']);
             },
@@ -788,7 +797,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             title: mw.config.get( "wgPageName" ),
             section: sectionNumber,
             text: sectionText,
-            summary: summary,
+            summary,
             captchaid: cid,
             captchaword: answer
         };
@@ -872,13 +881,17 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             title: translate( 'enterCaptcha' ),
             buttons: [
                 {
-                    text: translate( 'submit' ), click: function() {
+                    text: translate( 'submit' ),
+                    // eslint-disable-next-line object-shorthand
+                    click: function() {
                         saveForm(summary, minor, sectionNumber, captchaId, $('#input-captcha').val());
                         $(this).dialog('destroy').remove();
                     }
                 },
                 {
-                    text: translate( 'cancel' ), click: function() {
+                    text: translate( 'cancel' ),
+                    // eslint-disable-next-line object-shorthand
+                    click: function() {
                         $(this).dialog('destroy').remove();
                     }
                 }

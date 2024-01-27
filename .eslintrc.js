@@ -15,5 +15,6 @@ module.exports = {
         "mw": "readonly"
     },
     "rules": {
+        "object-shorthand": 2
     }
 }

@@ -390,28 +390,28 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			'</form>';
 		// expose public members
 		return {
-			LANG: LANG,
-			WIKIDATAID: WIKIDATAID,
-			COMMONS_URL: COMMONS_URL,
-			WIKIDATA_URL: WIKIDATA_URL,
-			WIKIDATA_CLAIMS: WIKIDATA_CLAIMS,
-			WIKIPEDIA_URL: WIKIPEDIA_URL,
-			WIKIDATA_SITELINK_WIKIPEDIA: WIKIDATA_SITELINK_WIKIPEDIA,
-			TRANSLATIONS: TRANSLATIONS,
-			MAX_DIALOG_WIDTH: MAX_DIALOG_WIDTH,
-			ALLOWED_NAMESPACE: ALLOWED_NAMESPACE,
-			DEFAULT_LISTING_TEMPLATE: DEFAULT_LISTING_TEMPLATE,
-			LISTING_TYPE_PARAMETER: LISTING_TYPE_PARAMETER,
-			LISTING_CONTENT_PARAMETER: LISTING_CONTENT_PARAMETER,
-			ALLOW_UNRECOGNIZED_PARAMETERS: ALLOW_UNRECOGNIZED_PARAMETERS,
-			SECTION_TO_TEMPLATE_TYPE: SECTION_TO_TEMPLATE_TYPE,
-			LISTING_TEMPLATES: LISTING_TEMPLATES,
-			EDITOR_FORM_SELECTOR: EDITOR_FORM_SELECTOR,
-			EDITOR_CLOSED_SELECTOR: EDITOR_CLOSED_SELECTOR,
-			EDITOR_SUMMARY_SELECTOR: EDITOR_SUMMARY_SELECTOR,
-			EDITOR_MINOR_EDIT_SELECTOR: EDITOR_MINOR_EDIT_SELECTOR,
-			SYNC_FORM_SELECTOR: SYNC_FORM_SELECTOR,
-			EDITOR_FORM_HTML: EDITOR_FORM_HTML
+			LANG,
+			WIKIDATAID,
+			COMMONS_URL,
+			WIKIDATA_URL,
+			WIKIDATA_CLAIMS,
+			WIKIPEDIA_URL,
+			WIKIDATA_SITELINK_WIKIPEDIA,
+			TRANSLATIONS,
+			MAX_DIALOG_WIDTH,
+			ALLOWED_NAMESPACE,
+			DEFAULT_LISTING_TEMPLATE,
+			LISTING_TYPE_PARAMETER,
+			LISTING_CONTENT_PARAMETER,
+			ALLOW_UNRECOGNIZED_PARAMETERS,
+			SECTION_TO_TEMPLATE_TYPE,
+			LISTING_TEMPLATES,
+			EDITOR_FORM_SELECTOR,
+			EDITOR_CLOSED_SELECTOR,
+			EDITOR_SUMMARY_SELECTOR,
+			EDITOR_MINOR_EDIT_SELECTOR,
+			SYNC_FORM_SELECTOR,
+			EDITOR_FORM_HTML
 		};
 	}( ALLOWED_NAMESPACE );
 
@@ -552,8 +552,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		var typeToColor = function(listingType, form) {
 			$('#input-type', form).css( 'box-shadow', 'unset' );
 			$.ajax ({
-				'listingType': listingType,
-				'form': form,
+				listingType,
+				form,
 				url: mw.config.get('wgScriptPath') + '/api.php?' + $.param({
 					action: 'parse',
 					prop: 'text',
@@ -562,6 +562,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 					disablelimitreport: true,
 					'text': '{{#invoke:TypeToColor|convert|'+listingType+'}}',
 				}),
+				// eslint-disable-next-line object-shorthand
 				beforeSend: function() {
 					if (localStorage.getItem('listing-'+listingType)) {
 						changeColor(localStorage.getItem('listing-'+listingType), form);
@@ -569,6 +570,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 					}
 					else { return true; }
 				},
+				// eslint-disable-next-line object-shorthand
 				success: function (data) {
 					var color = $(data.parse.text['*']).text().trim();
 					localStorage.setItem('listing-'+listingType, color);
@@ -665,6 +667,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			}
 			// set up autocomplete to search for results as the user types
 			$('#input-wikidata-label', form).autocomplete({
+				// eslint-disable-next-line object-shorthand
 				source: function( request, response ) {
 					var ajaxUrl = SisterSite.API_WIKIDATA;
 					var ajaxData = {
@@ -677,6 +680,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 					};
 					SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
 				},
+				// eslint-disable-next-line object-shorthand
 				select: function(event, ui) {
 					$("#input-wikidata-value").val(ui.item.id);
 					wikidataLink("", ui.item.id);
@@ -718,7 +722,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			var wikipediaSiteData = {
 				apiUrl: SisterSite.API_WIKIPEDIA,
 				selector: $('#input-wikipedia', form),
-				form: form,
+				form,
 				ajaxData: {
 					namespace: 0
 				},
@@ -728,7 +732,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			var commonsSiteData = {
 				apiUrl: SisterSite.API_COMMONS,
 				selector: $('#input-image', form),
-				form: form,
+				form,
 				ajaxData: {
 					namespace: 6
 				},
@@ -923,16 +927,19 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 						},
 						{
 							text: translate( 'cancel' ),
+							// eslint-disable-next-line object-shorthand
 							click: function() {
 								$(this).dialog('close');
 							}
 						},
 					],
+					// eslint-disable-next-line object-shorthand
 					open: function() {
 						$('#div_wikidata_update').hide();
 						$('#wikidata-remove').hide();
 						$('#input-wikidata-label').prop('disabled', true);
 					},
+					// eslint-disable-next-line object-shorthand
 					close: function() {
 						$('#div_wikidata_update').show();
 						$('#wikidata-remove').show();
@@ -1179,7 +1186,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				}
 				var data = {
 					value: label,
-					label: label,
+					label,
 					description: result.description,
 					id: result.id
 				};
@@ -1295,9 +1302,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 
 		// expose public members
 		return {
-			CREATE_FORM_CALLBACKS: CREATE_FORM_CALLBACKS,
-			SUBMIT_FORM_CALLBACKS: SUBMIT_FORM_CALLBACKS,
-			VALIDATE_FORM_CALLBACKS: VALIDATE_FORM_CALLBACKS
+			CREATE_FORM_CALLBACKS,
+			SUBMIT_FORM_CALLBACKS,
+			VALIDATE_FORM_CALLBACKS
 		};
 	}();
 
@@ -1339,6 +1346,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		};
 		var _initializeAutocomplete = function(siteData, ajaxData, parseAjaxResponse) {
 			var autocompleteOptions = {
+				// eslint-disable-next-line object-shorthand
 				source: function(request, response) {
 					ajaxData.search = request.term;
 					var ajaxSuccess = function(jsonObj) {
@@ -1420,8 +1428,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				action: 'wbcreateclaim',
 				entity: $('#input-wikidata-value').val(),
 				property: prop,
-				snaktype: snaktype,
-				value: value,
+				snaktype,
+				value,
 				format: 'json',
 			};
 			var ajaxSuccess = function(jsonObj) {
@@ -1443,8 +1451,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			var ajaxData = {
 				action: 'wbsetclaimvalue',
 				claim: guidObj,
-				snaktype: snaktype,
-				value: value,
+				snaktype,
+				value
 			};
 			var ajaxSuccess = function(jsonObj) {
 				//console.log(jsonObj);
@@ -1479,17 +1487,17 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		var _unreferenceWikidata = function(statement, references) {
 			var ajaxData = {
 				action: 'wbremovereferences',
-				statement: statement,
-				references: references,
+				statement,
+				references
 			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
 			api.postWithToken( 'csrf', ajaxData, { async: false } );
 		};
 		// expose public members
 		return {
-			API_WIKIDATA: API_WIKIDATA,
-			API_WIKIPEDIA: API_WIKIPEDIA,
-			API_COMMONS: API_COMMONS,
+			API_WIKIDATA,
+			API_WIKIPEDIA,
+			API_COMMONS,
 			initializeSisterSiteAutocomplete: _initializeSisterSiteAutocomplete,
 			ajaxSisterSiteSearch: _ajaxSisterSiteSearch,
 			wikidataClaim: _wikidataClaim,

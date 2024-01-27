@@ -26,6 +26,7 @@ Listing Editor v3.0.0alpha
 //<nowiki>
 
 const TRANSLATIONS_ALL = require( './translations.js' );
+const trimDecimal = require( './trimDecimal.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -797,8 +798,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 					res[key] = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p);
 					if (res[key]) {
 						if (key === 'coords') { //WD coords already stored in DD notation; no need to apply any conversion
-							res[key].latitude = Core.trimDecimal(res[key].latitude, 6);
-							res[key].longitude = Core.trimDecimal(res[key].longitude, 6);
+							res[key].latitude = trimDecimal(res[key].latitude, 6);
+							res[key].longitude = trimDecimal(res[key].longitude, 6);
 							msg += '\n' + Config.WIKIDATA_CLAIMS[key].label + ': ' + res[key].latitude + ' ' + res[key].longitude;
 						}
 						else if (key === 'iata') {
@@ -888,8 +889,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 					}
 					else if (key === 'coords') {
 						if ( res[key].value ) {
-							res[key].value.latitude = Core.trimDecimal(res[key].value.latitude, 6); 
-							res[key].value.longitude = Core.trimDecimal(res[key].value.longitude, 6);
+							res[key].value.latitude = trimDecimal(res[key].value.latitude, 6); 
+							res[key].value.longitude = trimDecimal(res[key].value.longitude, 6);
 							msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value.latitude, res[key].value.longitude], res[key].guidObj);
 						}
 						else { msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj); }
@@ -991,7 +992,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				// compare the present value to the Wikidata value
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p) {
 				//If coords, then compared the values after trimming the WD one into decimal and converting into decimal and trimming the present one 
-					if((Core.trimDecimal(Number(claimValue[j]), 6) != Core.trimDecimal(Core.parseDMS($(editorField[j]).val()), 6)) )
+					if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(Core.parseDMS($(editorField[j]).val()), 6)) )
 						break;
 				} else if ( field.p === Config.WIKIDATA_CLAIMS.image.p) {
 				//If image, then compared the values after converting underscores into spaces on the local value 
@@ -1070,7 +1071,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
 					var DDValue = [];
 					for ( i = 0; i < editorField.length; i++) {
-						DDValue[i] = syncedValue[i] ? Core.trimDecimal(Core.parseDMS(syncedValue[i]), 6) : '';
+						DDValue[i] = syncedValue[i] ? trimDecimal(Core.parseDMS(syncedValue[i]), 6) : '';
 						updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync); 
 					}
 					// TODO: make the find on map link work for placeholder coords

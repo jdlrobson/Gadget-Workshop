@@ -208,6 +208,95 @@ var translations = {
     }
 };
 
+/**
+ * Trim decimal precision if it exceeds the specified number of
+ * decimal places.
+ * @param {number} value
+ * @param {number} precision
+ * @return {string}
+ */
+
+var trimDecimal$1 = function(value, precision) {
+    if (value.toString().length > value.toFixed(precision).toString().length) {
+        return value.toFixed(precision);
+    } else {
+        return value.toString();
+    }
+};
+
+var trimDecimal_1 = trimDecimal$1;
+
+var validateForm_1;
+var hasRequiredValidateForm;
+
+function requireValidateForm () {
+	if (hasRequiredValidateForm) return validateForm_1;
+	hasRequiredValidateForm = 1;
+	const trimDecimal = trimDecimal_1;
+	/**
+	 * Logic invoked on form submit to analyze the values entered into the
+	 * editor form and to block submission if any fatal errors are found.
+	 */
+	const validateForm = function( VALIDATE_FORM_CALLBACKS, REPLACE_NEW_LINE_CHARS ) {
+	    var validationFailureMessages = [];
+	    for (var i=0; i < VALIDATE_FORM_CALLBACKS.length; i++) {
+	        VALIDATE_FORM_CALLBACKS[i](validationFailureMessages);
+	    }
+	    if (validationFailureMessages.length > 0) {
+	        alert(validationFailureMessages.join('\n'));
+	        return false;
+	    }
+	    // newlines in listing content won't render properly in lists, so replace them with <br> tags
+	    if ( REPLACE_NEW_LINE_CHARS ) {
+	        $('#input-content').val(
+	            ($('#input-content').val() || '')
+	                .trim().replace(/\n/g, '<br />')
+	        );
+	    }
+	    // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
+	    // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
+	    if ( $('#input-content').val() ) {
+	        $('#input-content')
+	            .val(
+	                ($('#input-content').val() || '')
+	                    .trim()+'.'
+	                // eslint-disable-next-line no-useless-escape
+	                .replace(/([\.\!\?])\.+$/, '$1')
+	            );
+	    }
+
+	    // remove trailing period from price and address block
+	    $('#input-price').val(
+	        ($('#input-price').val() || '')
+	            .trim().replace(/\.$/, '')
+	    );
+	    $('#input-address').val(
+	        ($('#input-address').val() || '')
+	            .trim().replace(/\.$/, '')
+	    );
+	    // in case of decimal format, decimal digits will be limited to 6
+	    const lat = Number($('#input-lat').val());
+	    const long = Number($('#input-long').val());
+	    if ( !isNaN( lat ) ) {
+	        $('#input-lat').val(trimDecimal(lat,6));
+	    }
+	    if ( !isNaN( long ) ) {
+	        $('#input-long').val(trimDecimal(long,6));
+	    }
+
+	    var webRegex = new RegExp('^https?://', 'i');
+	    var url = $('#input-url').val();
+	    if (!webRegex.test(url) && url !== '') {
+	        $('#input-url').val('http://' + url);
+	    }
+	    return true;
+
+	};
+
+	validateForm_1 = validateForm;
+	return validateForm_1;
+}
+
 var Core_1;
 var hasRequiredCore;
 
@@ -628,7 +717,7 @@ function requireCore () {
 	                                $(Config.SYNC_FORM_SELECTOR).dialog('close');
 	                            }
 	                        }
-	                        else if (validateForm()) {
+	                        else if (validateForm( Callbacks.VALIDATE_FORM_CALLBACKS, PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS )) {
 	                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
 	                            $(this).dialog('close');
 	                            // if a sync editor dialog is open, get rid of it
@@ -739,50 +828,7 @@ function requireCore () {
 	        return !(listingType in Config.LISTING_TEMPLATES);
 	    };
 
-	    /**
-	     * Logic invoked on form submit to analyze the values entered into the
-	     * editor form and to block submission if any fatal errors are found.
-	     */
-	    var validateForm = function() {
-	        var validationFailureMessages = [];
-	        for (var i=0; i < Callbacks.VALIDATE_FORM_CALLBACKS.length; i++) {
-	            Callbacks.VALIDATE_FORM_CALLBACKS[i](validationFailureMessages);
-	        }
-	        if (validationFailureMessages.length > 0) {
-	            alert(validationFailureMessages.join('\n'));
-	            return false;
-	        }
-	        // newlines in listing content won't render properly in lists, so replace them with <br> tags
-	        if ( PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS ) {
-	            $('#input-content').val($('#input-content').val().trim().replace(/\n/g, '<br />'));
-	        }
-	        // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
-	        // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
-	        if ( $('#input-content').val() ) {
-	            $('#input-content')
-	                .val(($('#input-content').val().trim()+'.')
-	                // eslint-disable-next-line no-useless-escape
-	                .replace(/([\.\!\?])\.+$/, '$1'));
-	        }
-
-	        // remove trailing period from price and address block
-	        $('#input-price').val($('#input-price').val().trim().replace(/\.$/, ''));
-	        $('#input-address').val($('#input-address').val().trim().replace(/\.$/, ''));
-	        // in case of decimal format, decimal digits will be limited to 6
-	        if ( $.isNumeric($('#input-lat').val()) ) {
-	            $('#input-lat').val(Core.trimDecimal(Number($('#input-lat').val()),6));
-	        }
-	        if ( $.isNumeric($('#input-long').val()) ) {
-	            $('#input-long').val(Core.trimDecimal(Number($('#input-long').val()),6));
-	        }
-
-	        var webRegex = new RegExp('^https?://', 'i');
-	        var url = $('#input-url').val();
-	        if (!webRegex.test(url) && url !== '') {
-	            $('#input-url').val('http://' + url);
-	        }
-	        return true;
-	    };
+	    var validateForm = requireValidateForm();
 
 	    /**
 	     * Convert the listing editor form entry fields into wiki text. This
@@ -1211,17 +1257,6 @@ function requireCore () {
 	    };
 
 	    /**
-	     * Trim decimal precision if it exceeds the specified number of
-	     * decimal places.
-	     */
-	    var trimDecimal = function(value, precision) {
-	        if ($.isNumeric(value) && value.toString().length > value.toFixed(precision).toString().length) {
-	            value = value.toFixed(precision);
-	        }
-	        return value;
-	    };
-
-	    /**
 	     * Parse coordinates in DMS notation, to convert it into DD notation in Wikidata format (i.e. without "°" symbol).
 	     * If the input is already in DD notation, input value is returned unchanged.
 	     * Notes:
@@ -1296,11 +1331,7 @@ function requireCore () {
 	        initListingEditorDialog,
 	        MODE_ADD,
 	        MODE_EDIT,
-	        trimDecimal,
-	        parseDMS,
-	        test: {
-	            validateForm
-	        }
+	        parseDMS
 	    };
 	};
 
@@ -1337,6 +1368,7 @@ Listing Editor v3.0.0alpha
 //<nowiki>
 
 const TRANSLATIONS_ALL = translations;
+const trimDecimal = trimDecimal_1;
 
 var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 
@@ -2107,8 +2139,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 					res[key] = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p);
 					if (res[key]) {
 						if (key === 'coords') { //WD coords already stored in DD notation; no need to apply any conversion
-							res[key].latitude = Core.trimDecimal(res[key].latitude, 6);
-							res[key].longitude = Core.trimDecimal(res[key].longitude, 6);
+							res[key].latitude = trimDecimal(res[key].latitude, 6);
+							res[key].longitude = trimDecimal(res[key].longitude, 6);
 							msg += '\n' + Config.WIKIDATA_CLAIMS[key].label + ': ' + res[key].latitude + ' ' + res[key].longitude;
 						}
 						else if (key === 'iata') {
@@ -2198,8 +2230,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 					}
 					else if (key === 'coords') {
 						if ( res[key].value ) {
-							res[key].value.latitude = Core.trimDecimal(res[key].value.latitude, 6); 
-							res[key].value.longitude = Core.trimDecimal(res[key].value.longitude, 6);
+							res[key].value.latitude = trimDecimal(res[key].value.latitude, 6); 
+							res[key].value.longitude = trimDecimal(res[key].value.longitude, 6);
 							msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value.latitude, res[key].value.longitude], res[key].guidObj);
 						}
 						else { msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj); }
@@ -2301,7 +2333,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				// compare the present value to the Wikidata value
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p) {
 				//If coords, then compared the values after trimming the WD one into decimal and converting into decimal and trimming the present one 
-					if((Core.trimDecimal(Number(claimValue[j]), 6) != Core.trimDecimal(Core.parseDMS($(editorField[j]).val()), 6)) )
+					if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(Core.parseDMS($(editorField[j]).val()), 6)) )
 						break;
 				} else if ( field.p === Config.WIKIDATA_CLAIMS.image.p) {
 				//If image, then compared the values after converting underscores into spaces on the local value 
@@ -2380,7 +2412,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
 					var DDValue = [];
 					for ( i = 0; i < editorField.length; i++) {
-						DDValue[i] = syncedValue[i] ? Core.trimDecimal(Core.parseDMS(syncedValue[i]), 6) : '';
+						DDValue[i] = syncedValue[i] ? trimDecimal(Core.parseDMS(syncedValue[i]), 6) : '';
 						updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync); 
 					}
 					// TODO: make the find on map link work for placeholder coords

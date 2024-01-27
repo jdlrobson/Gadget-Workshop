@@ -412,7 +412,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                                 $(Config.SYNC_FORM_SELECTOR).dialog('close');
                             }
                         }
-                        else if (validateForm()) {
+                        else if (validateForm( Callbacks.VALIDATE_FORM_CALLBACKS, PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS )) {
                             formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
                             $(this).dialog('close');
                             // if a sync editor dialog is open, get rid of it
@@ -523,64 +523,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         return !(listingType in Config.LISTING_TEMPLATES);
     };
 
-    /**
-     * Logic invoked on form submit to analyze the values entered into the
-     * editor form and to block submission if any fatal errors are found.
-     */
-    var validateForm = function() {
-        var validationFailureMessages = [];
-        for (var i=0; i < Callbacks.VALIDATE_FORM_CALLBACKS.length; i++) {
-            Callbacks.VALIDATE_FORM_CALLBACKS[i](validationFailureMessages);
-        }
-        if (validationFailureMessages.length > 0) {
-            alert(validationFailureMessages.join('\n'));
-            return false;
-        }
-        // newlines in listing content won't render properly in lists, so replace them with <br> tags
-        if ( PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS ) {
-            $('#input-content').val(
-                ($('#input-content').val() || '')
-                    .trim().replace(/\n/g, '<br />')
-            );
-        }
-        // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
-        // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
-        if ( $('#input-content').val() ) {
-            $('#input-content')
-                .val(
-                    ($('#input-content').val() || '')
-                        .trim()+'.'
-                    // eslint-disable-next-line no-useless-escape
-                    .replace(/([\.\!\?])\.+$/, '$1')
-                );
-        }
-
-        // remove trailing period from price and address block
-        $('#input-price').val(
-            ($('#input-price').val() || '')
-                .trim().replace(/\.$/, '')
-        );
-        $('#input-address').val(
-            ($('#input-address').val() || '')
-                .trim().replace(/\.$/, '')
-        );
-        // in case of decimal format, decimal digits will be limited to 6
-        const lat = Number($('#input-lat').val());
-        const long = Number($('#input-long').val());
-        if ( !isNaN( lat ) ) {
-            $('#input-lat').val(Core.trimDecimal(lat,6));
-        }
-        if ( !isNaN( long ) ) {
-            $('#input-long').val(Core.trimDecimal(long,6));
-        }
-
-        var webRegex = new RegExp('^https?://', 'i');
-        var url = $('#input-url').val();
-        if (!webRegex.test(url) && url !== '') {
-            $('#input-url').val('http://' + url);
-        }
-        return true;
-    };
+    var validateForm = require( './validateForm.js' );
 
     /**
      * Convert the listing editor form entry fields into wiki text. This
@@ -1009,20 +952,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     };
 
     /**
-     * Trim decimal precision if it exceeds the specified number of
-     * decimal places.
-     * @param {number} value
-     * @param {number} precision
-     * @return {number}
-     */
-    var trimDecimal = function(value, precision) {
-        if (value.toString().length > value.toFixed(precision).toString().length) {
-            value = value.toFixed(precision);
-        }
-        return value;
-    };
-
-    /**
      * Parse coordinates in DMS notation, to convert it into DD notation in Wikidata format (i.e. without "°" symbol).
      * If the input is already in DD notation, input value is returned unchanged.
      * Notes:
@@ -1097,11 +1026,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         initListingEditorDialog,
         MODE_ADD,
         MODE_EDIT,
-        trimDecimal,
-        parseDMS,
-        test: {
-            validateForm
-        }
+        parseDMS
     };
 };
 

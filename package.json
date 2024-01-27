@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "Gadget-HotCat.js",
   "scripts": {
-    "start": "rollup -c",
+    "start": "npm test && rollup -c",
     "test": "eslint . && jest"
   },
   "repository": {

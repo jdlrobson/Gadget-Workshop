@@ -538,20 +538,32 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         }
         // newlines in listing content won't render properly in lists, so replace them with <br> tags
         if ( PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS ) {
-            $('#input-content').val($('#input-content').val().trim().replace(/\n/g, '<br />'));
+            $('#input-content').val(
+                ($('#input-content').val() || '')
+                    .trim().replace(/\n/g, '<br />')
+            );
         }
         // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
         // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
         if ( $('#input-content').val() ) {
             $('#input-content')
-                .val(($('#input-content').val().trim()+'.')
-                // eslint-disable-next-line no-useless-escape
-                .replace(/([\.\!\?])\.+$/, '$1'));
+                .val(
+                    ($('#input-content').val() || '')
+                        .trim()+'.'
+                    // eslint-disable-next-line no-useless-escape
+                    .replace(/([\.\!\?])\.+$/, '$1')
+                );
         }
 
         // remove trailing period from price and address block
-        $('#input-price').val($('#input-price').val().trim().replace(/\.$/, ''));
-        $('#input-address').val($('#input-address').val().trim().replace(/\.$/, ''));
+        $('#input-price').val(
+            ($('#input-price').val() || '')
+                .trim().replace(/\.$/, '')
+        );
+        $('#input-address').val(
+            ($('#input-address').val() || '')
+                .trim().replace(/\.$/, '')
+        );
         // in case of decimal format, decimal digits will be limited to 6
         const lat = Number($('#input-lat').val());
         const long = Number($('#input-long').val());

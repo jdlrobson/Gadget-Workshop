@@ -1,6 +1,5 @@
 node_modules/
 GadgetListingEditor/dist
-GadgetListingEditor/original.js
-GadgetListingEditor/it.js
+GadgetListingEditor/originals
 Gadget-HotCat.js
 jest.setup.js

@@ -53,7 +53,7 @@ const validateForm = function( VALIDATE_FORM_CALLBACKS, REPLACE_NEW_LINE_CHARS )
     var webRegex = new RegExp('^https?://', 'i');
     var url = $('#input-url').val();
     if (!webRegex.test(url) && url !== '') {
-        $('#input-url').val('http://' + url);
+        $('#input-url').val(`http://${url}`);
     }
     return true;
 

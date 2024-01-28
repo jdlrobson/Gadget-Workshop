@@ -27,7 +27,7 @@ describe( 'Core', () => {
 		$('<div id="input-lat">' ).appendTo(document.body);
 		$('<div id="input-long">' ).appendTo(document.body);
 		$('<div id="input-url">' ).appendTo(document.body);
-		
+
 		$('#input-lat').val( '0.1' );
 		$('#input-lon').val( '0.2' );
 		$('#input-url').val( 'https://wikivoyage.org' );

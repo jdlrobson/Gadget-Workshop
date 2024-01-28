@@ -25,22 +25,22 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         // make sure the select dropdown includes any custom "type" values
         var listingType = listingTemplateAsMap[Config.LISTING_TYPE_PARAMETER];
         if (isCustomListingType(listingType)) {
-            $('#' + listingParameters[Config.LISTING_TYPE_PARAMETER].id, form).append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
+            $(`#${listingParameters[Config.LISTING_TYPE_PARAMETER].id}`, form).append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
         }
         // populate the empty form with existing values
         for (var parameter in listingParameters) {
             var parameterInfo = listingParameters[parameter];
             if (listingTemplateAsMap[parameter]) {
-                $('#' + parameterInfo.id, form).val(listingTemplateAsMap[parameter]);
+                $(`#${parameterInfo.id}`, form).val(listingTemplateAsMap[parameter]);
             } else if (parameterInfo.hideDivIfEmpty) {
-                $('#' + parameterInfo.hideDivIfEmpty, form).hide();
+                $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
             }
         }
         // Adding national currency symbols
         var natlCurrency = $(NATL_CURRENCY_SELECTOR, form);
         if (NATL_CURRENCY.length > 0) {
             for (i = 0; i < NATL_CURRENCY.length; i++) {
-                natlCurrency.append('<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">' + NATL_CURRENCY[i] + '</a></span>');
+                natlCurrency.append(`<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${NATL_CURRENCY[i]}</a></span>`);
             }
             natlCurrency.append(' |');
         } else natlCurrency.hide();
@@ -50,9 +50,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             phones.each( function() {
                 i = $(this).attr('data-for');
                 if (CC !== '')
-                    $(this).append( '<span class="listing-charinsert" data-for="'+ i +'"><a href="javascript:">' + CC + ' </a></span>' );
+                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${CC} </a></span>` );
                 if (LC !== '')
-                    $(this).append( '<span class="listing-charinsert" data-for="'+ i +'"><a href="javascript:">' + LC + ' </a></span>' );
+                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${LC} </a></span>` );
             });
         } else phones.hide();
         for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
@@ -200,7 +200,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     var wikiTextToListing = function(listingTemplateWikiSyntax) {
         var typeRegex = getListingTypesRegex();
         // convert "{{see" to {{listing|type=see"
-        listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,'{{listing| ' + Config.LISTING_TYPE_PARAMETER + '=$2$3');
+        listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${Config.LISTING_TYPE_PARAMETER}=$2$3`);
         // remove the trailing braces
         listingTemplateWikiSyntax = listingTemplateWikiSyntax.slice(0,-2);
         var listingTemplateAsMap = {};
@@ -218,7 +218,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             } else if (lastKey && listingTemplateAsMap[lastKey].length) {
                 // there was a pipe character within a param value, such as
                 // "key=value1|value2", so just append to the previous param
-                listingTemplateAsMap[lastKey] += '|' + param;
+                listingTemplateAsMap[lastKey] += `|${param}`;
             }
         }
         for (var loopKey1 in listingTemplateAsMap) {
@@ -290,9 +290,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      */
     var findPatternMatch = function(value, startPattern, endPattern) {
         var matchString = '';
-        var startRegex = new RegExp('^' + replaceSpecial(startPattern), 'i');
+        var startRegex = new RegExp(`^${replaceSpecial(startPattern)}`, 'i');
         if (startRegex.test(value)) {
-            var endRegex = new RegExp('^' + replaceSpecial(endPattern), 'i');
+            var endRegex = new RegExp(`^${replaceSpecial(endPattern)}`, 'i');
             var matchCount = 1;
             for (var i = startPattern.length; i < value.length; i++) {
                 var remainingValue = value.substr(i);
@@ -349,7 +349,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             sectionText = data;
             openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
         }).fail(function( _jqXHR, textStatus, errorThrown ) {
-            alert( translate( 'ajaxInitFailure' ) + ': ' + textStatus + ' ' + errorThrown);
+            alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
         });
     };
 
@@ -468,7 +468,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 ],
                 // eslint-disable-next-line object-shorthand
                 create: function() {
-                    $('.ui-dialog-buttonpane').append('<div class="listing-license">' + translate( 'licenseText' ) + '</div>');
+                    $('.ui-dialog-buttonpane').append(`<div class="listing-license">${translate( 'licenseText' )}</div>`);
                     $('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
                         // if a sync editor dialog is open, get rid of it
                         if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
@@ -490,7 +490,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         if (comments !== null ) {
             for (var i = 0; i < comments.length; i++) {
                 var comment = comments[i];
-                var rep = '<<<COMMENT' + i + '>>>';
+                var rep = `<<<COMMENT${i}>>>`;
                 text = text.replace(comment, rep);
                 replacements[rep] = comment;
             }
@@ -543,10 +543,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         var listing = listingTemplateAsMap;
         var defaultListingParameters = getListingInfo(Config.DEFAULT_LISTING_TEMPLATE);
         var listingTypeInput = defaultListingParameters[Config.LISTING_TYPE_PARAMETER].id;
-        var listingType = $("#" + listingTypeInput).val();
+        var listingType = $(`#${listingTypeInput}`).val();
         var listingParameters = getListingInfo(listingType);
         for (var parameter in listingParameters) {
-            listing[parameter] = $("#" + listingParameters[parameter].id).val();
+            listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
         }
         for (var i=0; i < Callbacks.SUBMIT_FORM_CALLBACKS.length; i++) {
             Callbacks.SUBMIT_FORM_CALLBACKS[i](listing, mode);
@@ -560,7 +560,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         }
         summary += $("#input-name").val();
         if ($(Config.EDITOR_SUMMARY_SELECTOR).val() !== '') {
-            summary += ' - ' + $(Config.EDITOR_SUMMARY_SELECTOR).val();
+            summary += ` - ${$(Config.EDITOR_SUMMARY_SELECTOR).val()}`;
         }
         var minor = $(Config.EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
         saveForm(summary, minor, sectionNumber, '', '');
@@ -571,21 +571,21 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         var listing = listingTemplateAsMap;
         var defaultListingParameters = getListingInfo(Config.DEFAULT_LISTING_TEMPLATE);
         var listingTypeInput = defaultListingParameters[Config.LISTING_TYPE_PARAMETER].id;
-        var listingType = $("#" + listingTypeInput).val();
+        var listingType = $(`#${listingTypeInput}`).val();
         var listingParameters = getListingInfo(listingType);
         for (var parameter in listingParameters) {
-            listing[parameter] = $("#" + listingParameters[parameter].id).val();
+            listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
         }
         var text = listingToStr(listing);
 
         $.ajax ({
-            url: mw.config.get('wgScriptPath') + '/api.php?' + $.param({
+            url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
                 action: 'parse',
                 prop: 'text',
                 contentmodel: 'wikitext',
                 format: 'json',
                 text,
-            }),
+            })}`,
             // eslint-disable-next-line object-shorthand
             error: function () {
                 $('#listing-preview').hide();
@@ -630,7 +630,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      */
     var editSummarySection = function() {
         var sectionName = getSectionName();
-        return (sectionName.length) ? '/* ' + sectionName + ' */ ' : "";
+        return (sectionName.length) ? `/* ${sectionName} */ ` : "";
     };
 
     var getSectionName = function() {
@@ -654,10 +654,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             index = sectionText.indexOf('====');
         }
         if (index > 0) {
-            sectionText = sectionText.substr(0, index) + '* ' + listingWikiText
-                    + '\n' + sectionText.substr(index);
+            sectionText = `${sectionText.substr(0, index)}* ${listingWikiText
+                     }\n${sectionText.substr(index)}`;
         } else {
-            sectionText += '\n'+ '* ' + listingWikiText;
+            sectionText += `\n* ${listingWikiText}`;
         }
         sectionText = restoreComments(sectionText, true);
         return summary;
@@ -669,7 +669,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         summary += translate( 'added' );
         //Creo un listing commentato dello stesso tipo di quello che aggiungerò.
         //Se nella sezione in cui andrò a scrivere troverò questo listing commentato, lo rimpiazzerò col nuovo.
-        var commentedListing = "<!--* {{" + listing[Config.LISTING_TYPE_PARAMETER]+ "\n| nome= | alt= | sito= | email=\n| indirizzo= | lat= | long= | indicazioni=\n| tel= | numero verde= | fax=\n|";
+        var commentedListing = `<!--* {{${listing[Config.LISTING_TYPE_PARAMETER]}\n| nome= | alt= | sito= | email=\n| indirizzo= | lat= | long= | indicazioni=\n| tel= | numero verde= | fax=\n|`;
         if (listing[Config.LISTING_TYPE_PARAMETER] !== 'sleep') {
             commentedListing += " orari= | prezzo=\n";
         } else {
@@ -680,10 +680,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         var index1 = sectionText.indexOf('===');
         var index2 = sectionText.indexOf('<!--===');
         var index3 = sectionText.indexOf('====');
-        var index4 = sectionText.indexOf('=== ' + translate( 'budget' ) + ' ===');
-        var index5 = sectionText.indexOf('<!--=== ' + translate( 'midrange' ) + ' ===-->');
-        var index6 = sectionText.indexOf('=== ' + translate( 'splurge' ) + ' ===');
-        var index7 = sectionText.indexOf('<!--=== ' + translate( 'splurge' ) + ' ===');
+        var index4 = sectionText.indexOf(`=== ${translate( 'budget' )} ===`);
+        var index5 = sectionText.indexOf(`<!--=== ${translate( 'midrange' )} ===-->`);
+        var index6 = sectionText.indexOf(`=== ${translate( 'splurge' )} ===`);
+        var index7 = sectionText.indexOf(`<!--=== ${translate( 'splurge' )} ===`);
         var splurgeOffset = 0;
         if (index7 > 0) {
             splurgeOffset = 4;
@@ -705,31 +705,31 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             var strApp = sectionText.substr(0, index).replace(/(\r\n|\n|\r)/gm," ").trim();
             if (strApp.substring(strApp.length-5) == '{{-}}') {
                 var indexApp = sectionText.lastIndexOf('{{-}}');
-                sectionText = sectionText.substr(0, indexApp).replace(commentedListing,'') + '* ' + listingWikiText + '\n{{-}}' + sectionText.substr(indexApp+5);
+                sectionText = `${sectionText.substr(0, indexApp).replace(commentedListing,'')}* ${listingWikiText}\n{{-}}${sectionText.substr(indexApp+5)}`;
             } else {
                 if( (index4 > 0) && (index6 > 0) ) {
                     //Mi assicuro di essere in Dove mangiare/dormire (le uniche divise per fascia di prezzo)
                     if ( index5 > 0) {
                         //Il primo elemento viene aggiunto nella sottosezione "Prezzi medi" (rimuovendone il commento)
-                        sectionText = sectionText.substr(0, index6-splurgeOffset).replace('<!--=== ' + translate( 'midrange' ) + ' ===-->\n' + commentedListing,'=== ' + translate( 'midrange' ) + ' ===\n') + '* ' + listingWikiText + '\n\n' + sectionText.substr(index6-splurgeOffset);
+                        sectionText = `${sectionText.substr(0, index6-splurgeOffset).replace(`<!--=== ${translate( 'midrange' )} ===-->\n${commentedListing}`,`=== ${translate( 'midrange' )} ===\n`)}* ${listingWikiText}\n\n${sectionText.substr(index6-splurgeOffset)}`;
                     } else {
                         //I successivi elementi vengono accodati nella sottosezione "Prezzi medi" (già priva di commento)
-                        sectionText = sectionText.substr(0, index6-splurgeOffset).replace(/\n+$/,'\n') + '* ' + listingWikiText + '\n\n' + sectionText.substr(index6-splurgeOffset);
+                        sectionText = `${sectionText.substr(0, index6-splurgeOffset).replace(/\n+$/,'\n')}* ${listingWikiText}\n\n${sectionText.substr(index6-splurgeOffset)}`;
                     }
                 } else {
                     var addbr = '';
                     if( sectionText.substr(index-2, 1).charCodeAt(0) != 10 )
                         addbr = '\n';
-                    sectionText = sectionText.substr(0, index-1).replace(commentedListing,'') + addbr + '* ' + listingWikiText + '\n' + sectionText.substr(index-1);
+                    sectionText = `${sectionText.substr(0, index-1).replace(commentedListing,'') + addbr}* ${listingWikiText}\n${sectionText.substr(index-1)}`;
                 }
             }
         } else {
             var strApp2 = sectionText.replace(/(\r\n|\n|\r)/gm," ").trim();
             if (strApp2.substring(strApp2.length-5) == '{{-}}') {
                 var indexApp2 = sectionText.lastIndexOf('{{-}}');
-                sectionText = sectionText.substr(0, indexApp2).replace(commentedListing,'') + '* ' + listingWikiText + '\n{{-}}';
+                sectionText = `${sectionText.substr(0, indexApp2).replace(commentedListing,'')}* ${listingWikiText}\n{{-}}`;
             } else {
-                sectionText = sectionText.replace(commentedListing,'') + '\n'+ '* ' +listingWikiText;
+                sectionText = `${sectionText.replace(commentedListing,'')}\n* ${listingWikiText}`;
             }
         }
         return summary;
@@ -756,7 +756,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             listingWikiText = '';
             editSummary += translate( 'removed' );
             // TODO: RegEx change to delete the complete row when listing is preceeded by templates showing just icons
-            var listRegex = new RegExp('(\\n+[\\:\\*\\#]*)?\\s*' + replaceSpecial(listingTemplateWikiSyntax));
+            var listRegex = new RegExp(`(\\n+[\\:\\*\\#]*)?\\s*${replaceSpecial(listingTemplateWikiSyntax)}`);
             sectionText = sectionText.replace(listRegex, listingWikiText);
         } else {
             editSummary += translate( 'updated' );
@@ -776,7 +776,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         if ($(SAVE_FORM_SELECTOR).length > 0) {
             $(SAVE_FORM_SELECTOR).dialog('destroy').remove();
         }
-        var progress = $('<div id="progress-dialog">' + translate( 'saving' ) + '</div>');
+        var progress = $(`<div id="progress-dialog">${translate( 'saving' )}</div>`);
         progress.dialog({
             modal: true,
             height: 100,
@@ -821,16 +821,16 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 if (canonicalUrl && currentUrlWithoutHash != canonicalUrl) {
                     var sectionName = mw.util.escapeIdForLink(getSectionName());
                     if (sectionName.length) {
-                        canonicalUrl += "#" + sectionName;
+                        canonicalUrl += `#${sectionName}`;
                     }
                     window.location.href = canonicalUrl;
                 } else {
                     window.location.reload();
                 }
             } else if (data && data.error) {
-                saveFailed(translate( 'submitApiError' ) + ' "' + data.error.code + '": ' + data.error.info );
+                saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
             } else if (data && data.edit.spamblacklist) {
-                saveFailed(translate( 'submitBlacklistError' ) + ': ' + data.edit.spamblacklist );
+                saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
             } else if (data && data.edit.captcha) {
                 $(SAVE_FORM_SELECTOR).dialog('destroy').remove();
                 captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id);
@@ -839,11 +839,11 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             }
         }).fail(function(code, result) {
             if (code === "http") {
-                saveFailed(translate( 'submitHttpError' ) + ': ' + result.textStatus );
+                saveFailed(`${translate( 'submitHttpError' )}: ${result.textStatus}` );
             } else if (code === "ok-but-empty") {
                 saveFailed(translate( 'submitEmptyError' ));
             } else {
-                saveFailed(translate( 'submitUnknownError' ) + ': ' + code );
+                saveFailed(`${translate( 'submitUnknownError' )}: ${code}` );
             }
         });
         savingForm();
@@ -908,7 +908,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         var saveStr = '{{';
         if( isCustomListingType(listingType) ) { // type parameter specified explicitly only on custom type
             saveStr += Config.DEFAULT_LISTING_TEMPLATE;
-            saveStr += ' | ' + Config.LISTING_TYPE_PARAMETER + '=' + listingType;
+            saveStr += ` | ${Config.LISTING_TYPE_PARAMETER}=${listingType}`;
         } else {
             saveStr += listingType;
         }
@@ -926,11 +926,11 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 continue;
             }
             if (listing[parameter] !== '' || (!l.skipIfEmpty && !inlineListing)) {
-                saveStr += '| ' + parameter + '=' + listing[parameter];
+                saveStr += `| ${parameter}=${listing[parameter]}`;
             }
             if (!saveStr.match(/\n$/)) {
                 if (!inlineListing && l.newline) {
-                    saveStr = rtrim(saveStr) + '\n';
+                    saveStr = `${rtrim(saveStr)}\n`;
                 } else if (!saveStr.match(/ $/)) {
                     saveStr += ' ';
                 }
@@ -947,11 +947,11 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     // skip unrecognized fields without values
                     continue;
                 }
-                saveStr += '| ' + key + '=' + listing[key];
+                saveStr += `| ${key}=${listing[key]}`;
                 saveStr += (inlineListing) ? ' ' : '\n';
             }
         }
-        saveStr += '| ' + Config.LISTING_CONTENT_PARAMETER + '=' + listing[Config.LISTING_CONTENT_PARAMETER];
+        saveStr += `| ${Config.LISTING_CONTENT_PARAMETER}=${listing[Config.LISTING_CONTENT_PARAMETER]}`;
         saveStr += (inlineListing || !listingParameters[Config.LISTING_CONTENT_PARAMETER].newline) ? ' ' : '\n';
         saveStr += '}}';
         return saveStr;
@@ -983,7 +983,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             .replace(/[_/\t\n\r]/g, " ")
             .replace(/\s/g, '')
             .replace(/([°'"])/g,"$1 ")
-            .replace(/([NSEW])/gi, function(v) { return ' '+v.toUpperCase(); })
+            .replace(/([NSEW])/gi, function(v) { return ` ${v.toUpperCase()}`; })
             // eslint-disable-next-line no-useless-escape
             .replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
         for (var i=0; i<4; i++)
@@ -991,7 +991,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 parts[i] = '';
         return convertDMS2DD( parts[0], parts[1], parts[2], parts[3] );
     };
-    
+
     /**
      * Convert splitted elements of coordinates in DMS notation into DD notation.
      * If the input is already in DD notation (i.e. only degrees is a number), input value is returned unchanged.

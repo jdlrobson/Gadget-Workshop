@@ -15,6 +15,10 @@ module.exports = {
         "mw": "readonly"
     },
     "rules": {
-        "object-shorthand": 2
+        "no-trailing-spaces": 2,
+        "template-curly-spacing": 2,
+        "no-useless-concat": 2,
+        "object-shorthand": 2,
+        "prefer-template": 2
     }
 }

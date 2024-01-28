@@ -28,10 +28,10 @@ Listing Editor v3.0.0alpha
 const TRANSLATIONS_ALL = require( './translations.js' );
 const trimDecimal = require( './trimDecimal.js' );
 const dialog = require( './dialogs.js' );
-const parseDMS = require( './parseDMS.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
+	const parseDMS = PROJECT_CONFIG.doNotParseDMS ? (a) => a : require( './parseDMS.js' );
 
 	var PROJECT_CONFIG_KEYS = [
 		'SHOW_LAST_EDITED_FIELD', 'SUPPORTED_SECTIONS', 'iata',

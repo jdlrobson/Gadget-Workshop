@@ -28,6 +28,7 @@ Listing Editor v3.0.0alpha
 const TRANSLATIONS_ALL = require( './translations.js' );
 const trimDecimal = require( './trimDecimal.js' );
 const dialog = require( './dialogs.js' );
+const parseDMS = require( './parseDMS.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -526,10 +527,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			// try to find and collect the best available coords
 			if ( $('#input-lat', form).val() && $('#input-long', form).val() ) {
 				// listing specific coords
-				latlngStr += `&lat=${Core.parseDMS($('#input-lat', form).val())}&lon=${Core.parseDMS($('#input-long', form).val())}&zoom=15`;
+				latlngStr += `&lat=${parseDMS($('#input-lat', form).val())}&lon=${parseDMS($('#input-long', form).val())}&zoom=15`;
 			} else if ( $('.mw-indicators .geo').lenght ) {
 				// coords added by Template:Geo
-				latlngStr += `&lat=${Core.parseDMS($('.mw-indicators .geo .latitude').text())}&lon=${Core.parseDMS($('.mw-indicators .geo .longitude').text())}&zoom=15`;
+				latlngStr += `&lat=${parseDMS($('.mw-indicators .geo .latitude').text())}&lon=${parseDMS($('.mw-indicators .geo .longitude').text())}&zoom=15`;
 			}
 			// #geomap-link is a link in the EDITOR_FORM_HTML
 			$('#geomap-link', form).attr('href', $('#geomap-link', form).attr('href') + latlngStr);
@@ -586,8 +587,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				coord.lat = $('.mw-indicators .geo .latitude').text();
 				coord.lon = $('.mw-indicators .geo .longitude').text();
 			}
-			coord.lat = Core.parseDMS(coord.lat);
-			coord.lon = Core.parseDMS(coord.lon);
+			coord.lat = parseDMS(coord.lat);
+			coord.lon = parseDMS(coord.lon);
 			return coord;
 		};
 
@@ -1048,7 +1049,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				// compare the present value to the Wikidata value
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p) {
 				//If coords, then compared the values after trimming the WD one into decimal and converting into decimal and trimming the present one
-					if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(Core.parseDMS($(editorField[j]).val()), 6)) )
+					if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(parseDMS($(editorField[j]).val()), 6)) )
 						break;
 				} else if ( field.p === Config.WIKIDATA_CLAIMS.image.p) {
 				//If image, then compared the values after converting underscores into spaces on the local value
@@ -1127,7 +1128,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
 					var DDValue = [];
 					for ( i = 0; i < editorField.length; i++) {
-						DDValue[i] = syncedValue[i] ? trimDecimal(Core.parseDMS(syncedValue[i]), 6) : '';
+						DDValue[i] = syncedValue[i] ? trimDecimal(parseDMS(syncedValue[i]), 6) : '';
 						updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync);
 					}
 					// TODO: make the find on map link work for placeholder coords
@@ -1189,7 +1190,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			switch(mode) {
 				case Config.WIKIDATA_CLAIMS.coords.p:
 					htmlPart += 'href="https://geohack.toolforge.org/geohack.php?params=';
-					for (i = 0; i < value.length; i++) { htmlPart += `${Core.parseDMS(valBool ? $(value[i]).val() : value[i])};`; }
+					for (i = 0; i < value.length; i++) { htmlPart += `${parseDMS(valBool ? $(value[i]).val() : value[i])};`; }
 					htmlPart += '_type:landmark">'; // sets the default zoom
 					break;
 				case Config.WIKIDATA_CLAIMS.url.p:

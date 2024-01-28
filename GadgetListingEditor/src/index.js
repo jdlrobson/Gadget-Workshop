@@ -27,6 +27,7 @@ Listing Editor v3.0.0alpha
 
 const TRANSLATIONS_ALL = require( './translations.js' );
 const trimDecimal = require( './trimDecimal.js' );
+const dialog = require( './dialogs.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -963,7 +964,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				// copied from dialog above. ideally should be global variable TODO
 				var windowWidth = $(window).width();
 				var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? (0.85*Config.MAX_DIALOG_WIDTH) : 'auto';
-				$(msg).dialog({
+				dialog.open(msg, {
 					title: translate( 'syncTitle' ),
 					width: dialogWidth,
 					dialogClass: 'listing-editor-dialog',
@@ -977,7 +978,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 							text: translate( 'cancel' ),
 							// eslint-disable-next-line object-shorthand
 							click: function() {
-								$(this).dialog('close');
+								dialog.close(this);
 							}
 						},
 					],
@@ -997,7 +998,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				});
 				if($(msg).find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
 					submitFunction();
-					$(Config.SYNC_FORM_SELECTOR).dialog('close');
+					dialog.close(Config.SYNC_FORM_SELECTOR);
 					alert( translate( 'wikidataSharedMatch' ) );
 				}
 				wikidataLink("", $("#input-wikidata-value").val()); // called to append the Wikidata link to the dialog title
@@ -1180,7 +1181,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 
 			// TODO: after testing is done, remove all console.log statements, do something about errors. alert? ignore?
 
-			$(this).dialog('close');
+			dialog.close(this);
 		};
 		var makeSyncLinks = function(value, mode, valBool) {
 			var htmlPart = '<a target="_blank" rel="noopener noreferrer"';

@@ -30,7 +30,7 @@ importScriptURI('https://en.wikivoyage.org/w/load.php?modules=ext.gadget.Listing
 Projects that wish to use this gadget must create two modules in [[MediaWiki:Gadgets-definition]]
 
 * ListingEditorConfig[ResourceLoader|package|hidden]|ListingEditorConfig.js|ListingEditor.json
-* ListingEditor2023[ResourceLoader|default|skins=vector-2022,vector,timeless,modern,cologneblue,monobook|type=general]|ListingEditor2023.js
+* ListingEditor2023[ResourceLoader|default|skins=vector-2022,vector,timeless,modern,cologneblue,monobook|type=general|dependencies=mediawiki.util]|ListingEditor2023.js
 
 and copy the following files:
 * MediaWiki:Gadget-ListingEditorConfig: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditorConfig.js

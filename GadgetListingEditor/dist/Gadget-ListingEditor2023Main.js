@@ -226,6 +226,32 @@ var trimDecimal$1 = function(value, precision) {
 
 var trimDecimal_1 = trimDecimal$1;
 
+function load() {
+    return mw.loader.using( 'jquery.ui' );
+}
+
+function destroy( selector ) {
+    load().then( () => $(selector).dialog( 'destroy' ).remove() );
+}
+
+function open( $element, options ) {
+    load().then( () => $element.dialog(options));
+}
+
+/**
+ * Closes dialog, also triggers dialogclose event.
+ * @param {string} selector
+ */
+function close( selector ) {
+    load().then( () => $(selector).dialog('close') );
+}
+
+var dialogs = {
+    destroy,
+    open,
+    close
+};
+
 var validateForm_1;
 var hasRequiredValidateForm;
 
@@ -304,6 +330,7 @@ function requireCore () {
 	if (hasRequiredCore) return Core_1;
 	hasRequiredCore = 1;
 	var DB_NAME = mw.config.get( 'wgDBname' );
+	const dialog = dialogs;
 
 	var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 	    var api = new mw.Api();
@@ -679,18 +706,18 @@ function requireCore () {
 	            var listingParameters = getListingInfo(listingType);
 	            // if a listing editor dialog is already open, get rid of it
 	            if ($(Config.EDITOR_FORM_SELECTOR).length > 0) {
-	                $(Config.EDITOR_FORM_SELECTOR).dialog('destroy').remove();
+	                dialog.destroy( Config.EDITOR_FORM_SELECTOR );
 	            }
 	            // if a sync editor dialog is already open, get rid of it
 	            if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-	                $(Config.SYNC_FORM_SELECTOR).dialog('destroy').remove();
+	                dialog.destroy(Config.SYNC_FORM_SELECTOR);
 	            }
 	            var form = $(createForm(mode, listingParameters, listingTemplateAsMap));
 	            // wide dialogs on huge screens look terrible
 	            var windowWidth = $(window).width();
 	            var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? Config.MAX_DIALOG_WIDTH : 'auto';
 	            // modal form - must submit or cancel
-	            form.dialog({
+	            dialog.open(form, {
 	                modal: true,
 	                height: 'auto',
 	                width: dialogWidth,
@@ -713,18 +740,18 @@ function requireCore () {
 	                        if ($(Config.EDITOR_CLOSED_SELECTOR).is(':checked')) {
 	                            // no need to validate the form upon deletion request
 	                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
-	                            $(this).dialog('close');
+	                            dialog.close(this);
 	                            // if a sync editor dialog is open, get rid of it
 	                            if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-	                                $(Config.SYNC_FORM_SELECTOR).dialog('close');
+	                                dialog.close(Config.SYNC_FORM_SELECTOR);
 	                            }
 	                        }
 	                        else if (validateForm( Callbacks.VALIDATE_FORM_CALLBACKS, PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS )) {
 	                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
-	                            $(this).dialog('close');
+	                            dialog.close(this);
 	                            // if a sync editor dialog is open, get rid of it
 	                            if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-	                                $(Config.SYNC_FORM_SELECTOR).dialog('close');
+	                                dialog.close(Config.SYNC_FORM_SELECTOR);
 	                            }
 	                        }
 	                    }
@@ -763,10 +790,10 @@ function requireCore () {
 	                    text: translate( 'cancel' ),
 	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
-	                        $(this).dialog('destroy').remove();
+	                        dialog.destroy(this);
 	                        // if a sync editor dialog is open, get rid of it
 	                        if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-	                            $(Config.SYNC_FORM_SELECTOR).dialog('destroy').remove();
+	                            dialog.destroy(Config.SYNC_FORM_SELECTOR);
 	                        }
 	                    }
 	                }
@@ -777,7 +804,7 @@ function requireCore () {
 	                    $('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
 	                        // if a sync editor dialog is open, get rid of it
 	                        if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-	                            $(Config.SYNC_FORM_SELECTOR).dialog('destroy').remove();
+	                            dialog.destroy(Config.SYNC_FORM_SELECTOR);
 	                        }
 	                    });
 	                }
@@ -1079,10 +1106,10 @@ function requireCore () {
 	    var savingForm = function() {
 	        // if a progress dialog is already open, get rid of it
 	        if ($(SAVE_FORM_SELECTOR).length > 0) {
-	            $(SAVE_FORM_SELECTOR).dialog('destroy').remove();
+	            dialog.destroy(SAVE_FORM_SELECTOR);
 	        }
 	        var progress = $(`<div id="progress-dialog">${translate( 'saving' )}</div>`);
-	        progress.dialog({
+	        dialog.open(progress, {
 	            modal: true,
 	            height: 100,
 	            width: 300,
@@ -1116,7 +1143,7 @@ function requireCore () {
 	            if (data && data.edit && data.edit.result == 'Success') {
 	                if ( data.edit.nochange !== undefined ) {
 	                    alert( 'Save skipped as there was no change to the content!' );
-	                    $(SAVE_FORM_SELECTOR).dialog('destroy').remove();
+	                    dialog.destroy(SAVE_FORM_SELECTOR);
 	                    return;
 	                }
 	                // since the listing editor can be used on diff pages, redirect
@@ -1137,7 +1164,7 @@ function requireCore () {
 	            } else if (data && data.edit.spamblacklist) {
 	                saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
 	            } else if (data && data.edit.captcha) {
-	                $(SAVE_FORM_SELECTOR).dialog('destroy').remove();
+	                dialog.destroy(SAVE_FORM_SELECTOR);
 	                captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id);
 	            } else {
 	                saveFailed(translate( 'submitUnknownError' ));
@@ -1160,8 +1187,8 @@ function requireCore () {
 	     * display an alert with a failure message.
 	     */
 	    var saveFailed = function(msg) {
-	        $(SAVE_FORM_SELECTOR).dialog('destroy').remove();
-	        $(Config.EDITOR_FORM_SELECTOR).dialog('open');
+	        dialog.destroy(SAVE_FORM_SELECTOR);
+	        dialog.open(Config.EDITOR_FORM_SELECTOR);
 	        alert(msg);
 	    };
 
@@ -1173,7 +1200,7 @@ function requireCore () {
 	    var captchaDialog = function(summary, minor, sectionNumber, captchaImgSrc, captchaId) {
 	        // if a captcha dialog is already open, get rid of it
 	        if ($(CAPTCHA_FORM_SELECTOR).length > 0) {
-	            $(CAPTCHA_FORM_SELECTOR).dialog('destroy').remove();
+	            dialog.destroy(CAPTCHA_FORM_SELECTOR);
 	        }
 	        var captcha = $('<div id="captcha-dialog">').text(translate( 'externalLinks' ));
 	        $('<img class="fancycaptcha-image">')
@@ -1181,7 +1208,7 @@ function requireCore () {
 	                .appendTo(captcha);
 	        $('<label for="input-captcha">').text(translate( 'enterCaptcha' )).appendTo(captcha);
 	        $('<input id="input-captcha" type="text">').appendTo(captcha);
-	        captcha.dialog({
+	        dialog.open(captcha, {
 	            modal: true,
 	            title: translate( 'enterCaptcha' ),
 	            buttons: [
@@ -1190,14 +1217,14 @@ function requireCore () {
 	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
 	                        saveForm(summary, minor, sectionNumber, captchaId, $('#input-captcha').val());
-	                        $(this).dialog('destroy').remove();
+	                        dialog.destroy(this);
 	                    }
 	                },
 	                {
 	                    text: translate( 'cancel' ),
 	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
-	                        $(this).dialog('destroy').remove();
+	                        dialog.destroy(this);
 	                    }
 	                }
 	            ]
@@ -1382,6 +1409,7 @@ Listing Editor v3.0.0alpha
 
 const TRANSLATIONS_ALL = translations;
 const trimDecimal = trimDecimal_1;
+const dialog = dialogs;
 
 var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 
@@ -2317,7 +2345,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				// copied from dialog above. ideally should be global variable TODO
 				var windowWidth = $(window).width();
 				var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? (0.85*Config.MAX_DIALOG_WIDTH) : 'auto';
-				$(msg).dialog({
+				dialog.open(msg, {
 					title: translate( 'syncTitle' ),
 					width: dialogWidth,
 					dialogClass: 'listing-editor-dialog',
@@ -2331,7 +2359,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 							text: translate( 'cancel' ),
 							// eslint-disable-next-line object-shorthand
 							click: function() {
-								$(this).dialog('close');
+								dialog.close(this);
 							}
 						},
 					],
@@ -2351,7 +2379,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				});
 				if($(msg).find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
 					submitFunction();
-					$(Config.SYNC_FORM_SELECTOR).dialog('close');
+					dialog.close(Config.SYNC_FORM_SELECTOR);
 					alert( translate( 'wikidataSharedMatch' ) );
 				}
 				wikidataLink("", $("#input-wikidata-value").val()); // called to append the Wikidata link to the dialog title
@@ -2534,7 +2562,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 
 			// TODO: after testing is done, remove all console.log statements, do something about errors. alert? ignore?
 
-			$(this).dialog('close');
+			dialog.close(this);
 		};
 		var makeSyncLinks = function(value, mode, valBool) {
 			var htmlPart = '<a target="_blank" rel="noopener noreferrer"';

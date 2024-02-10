@@ -14,6 +14,24 @@ $(function() {
 	// map section heading ID to the listing template to use for that section
 	var SECTION_TO_TEMPLATE_TYPE = ( function () {
 		switch ( DB_NAME ) {
+			case 'frwikivoyage':
+				return {
+					Aller: 'Aller',
+					Circuler: 'Circuler',
+					Voir: 'Voir',
+					Faire: 'Faire',
+					Acheter: 'Acheter',
+					Manger: 'Manger',
+					Communiquer: 'Listing',
+					'Boire_un_verre_.2F_Sortir': 'Sortir',
+					Sortir: 'Sortir',
+					Se_loger: 'Se loger',
+					'S.C3.A9curit.C3.A9': 'Listing',
+					'G.C3.A9rer_le_quotidien': 'Représentation diplomatique',
+					Villes: 'Ville',
+					Autres_destinations: 'Destination',
+					Aux_environs: 'Destination'
+				};
 			case 'itwikivoyage':
 				return {
 					'Cosa_vedere': 'see',
@@ -78,6 +96,8 @@ $(function() {
 	// buttons will be added to the page
 	var DISALLOW_ADD_LISTING_IF_PRESENT = ( function () {
 		switch ( DB_NAME ) {
+			case 'frwikivoyage':
+				return [ '#R\u00E9gions', '#\u00EEles' ];
 			case 'itwikivoyage':
 				return  ['#Centri_urbani', '#Altre_destinazioni'];
 			default:

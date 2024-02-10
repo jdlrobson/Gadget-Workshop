@@ -102,6 +102,26 @@ module.exports = {
         natlCurrencyTitle: '',
         intlCurrenciesTitle: ''
     },
+    fr: {
+        addTitle: 'ajouter un titre',
+        editTitle: 'Éditer un élément de listing existant',
+        add: 'ajouter un élément de listing',
+        edit: 'éditer',
+        saving: 'Enregistrer...',
+        submit: 'Soumettre',
+        cancel: 'Annuler',
+        validationEmptyListing: 'Entrez au moins un nom ou une adresse',
+        validationEmail: "Controler que l'adresse électronique soit correcte",
+        validationWikipedia: "Veuillez insérer le titre de la page Wikipédia seulement; Pas l'adresse URL complète",
+        validationImage: "Veuillez insérer le titre de l'image de Commons sans préfixe",
+        image: 'Fichier', //Préfixe local pour Image (ou File)
+        added: 'Listing ajouté pour ',
+        updated: 'Listing mis à jour: ',
+        removed: 'Listing effacé ',
+        helpPage: '//fr.wikivoyage.org/wiki/Aide:Éditeur_de_Listing',
+        enterCaptcha: 'Entrez le CAPTCHA',
+        externalLinks: 'Votre contribution inclus des liens externes.'
+    },
     it: {
         'placeholder-name': 'nome del posto',
         'placeholder-alt': 'noto anche come',

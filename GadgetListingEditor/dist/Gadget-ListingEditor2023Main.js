@@ -4,6 +4,33 @@ function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
+/**
+ * Listing Editor v3.0.0-alice
+ *	Source code: https://github.com/jdlrobson/Gadget-Workshop
+ *	Wiki: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023Main.js
+ *	Original author:
+ *	- torty3
+ *	Additional contributors:
+ *	- Andyrom75
+ *	- ARR8
+ *	- RolandUnger
+ *	- Wrh2
+ *	- Jdlrobson
+ *	Changelog: https://en.wikivoyage.org/wiki/Wikivoyage:Listing_editor#Changelog
+
+ *	TODO
+ *	- Add support for mobile devices.
+ *	- wrapContent is breaking the expand/collapse logic on the VFD page.
+ *	- populate the input-type select list from LISTING_TEMPLATES
+ *	- Allow syncing Wikipedia link back to Wikidata with wbsetsitelink
+ *	- Allow hierarchy of preferred sources, rather than just one source, for Wikidata sync
+ *		- E.g. get URL with language of work = english before any other language version if exists
+ *		- E.g. get fall back to getting coordinate of headquarters if geographic coordinates unavailable. Prioritize getting coordinates of entrance before any other coordinates if all present
+ *		- E.g. Can use multiple sources to fetch address
+ *		- Figure out how to get this to upload properly
+*/
+
+//<nowiki>
 var translations = {
     en: {
         'placeholder-name': 'name of place',
@@ -107,6 +134,26 @@ var translations = {
         listingUpdatedLabel: 'mark the listing as up-to-date?',
         natlCurrencyTitle: '',
         intlCurrenciesTitle: ''
+    },
+    fr: {
+        addTitle: 'ajouter un titre',
+        editTitle: 'Éditer un élément de listing existant',
+        add: 'ajouter un élément de listing',
+        edit: 'éditer',
+        saving: 'Enregistrer...',
+        submit: 'Soumettre',
+        cancel: 'Annuler',
+        validationEmptyListing: 'Entrez au moins un nom ou une adresse',
+        validationEmail: "Controler que l'adresse électronique soit correcte",
+        validationWikipedia: "Veuillez insérer le titre de la page Wikipédia seulement; Pas l'adresse URL complète",
+        validationImage: "Veuillez insérer le titre de l'image de Commons sans préfixe",
+        image: 'Fichier', //Préfixe local pour Image (ou File)
+        added: 'Listing ajouté pour ',
+        updated: 'Listing mis à jour: ',
+        removed: 'Listing effacé ',
+        helpPage: '//fr.wikivoyage.org/wiki/Aide:Éditeur_de_Listing',
+        enterCaptcha: 'Entrez le CAPTCHA',
+        externalLinks: 'Votre contribution inclus des liens externes.'
     },
     it: {
         'placeholder-name': 'nome del posto',
@@ -252,6 +299,87 @@ var dialogs = {
     close
 };
 
+/**
+ * Convert splitted elements of coordinates in DMS notation into DD notation.
+ * If the input is already in DD notation (i.e. only degrees is a number), input value is returned unchanged.
+ * Notes:
+ * 1) Each D, M & S is checked to be a valid number plus M & S are checked to be in a valid range. If one parameter is not valid, NaN (Not a Number) is returned
+ * 2) Empty string (provided from initial parsing section in parseDMS) are considered valid by isNaN function (i.e. isNaN('') is false)
+ */
+
+var parseDMS_1;
+var hasRequiredParseDMS;
+
+function requireParseDMS () {
+	if (hasRequiredParseDMS) return parseDMS_1;
+	hasRequiredParseDMS = 1;
+	var convertDMS2DD = function(degrees, minutes, seconds, direction) {
+	    var dd = NaN;
+	    if( isNaN(degrees) )
+	        return NaN;
+	    else {
+	        degrees = Number(degrees);
+	        if( degrees <= -180 || degrees > 180 )
+	            return NaN;
+	        else
+	            dd = degrees;
+	    }
+	    if( isNaN(minutes) )
+	        return NaN;
+	    else {
+	        degrees = Number(minutes);
+	        if( minutes < 0 || minutes >= 60 )
+	            return NaN;
+	        else
+	            dd = dd + minutes/60;
+	    }
+	    if( isNaN(seconds) )
+	        return NaN;
+	    else {
+	        degrees = Number(seconds);
+	        if( seconds < 0 || seconds >= 60 )
+	            return NaN;
+	        else
+	            dd = dd + seconds/(3600);
+	    }
+	    if (direction == "S" || direction == "W") {
+	        dd = dd * -1;
+	    } // Don't do anything for N or E
+	    return dd;
+	};
+
+	/**
+	 * Parse coordinates in DMS notation, to convert it into DD notation in Wikidata format (i.e. without "°" symbol).
+	 * If the input is already in DD notation, input value is returned unchanged.
+	 * Notes:
+	 * 1) Common notation is use as a proforma for potential future use because the split currently works to be more flexible skipping any char that is not a number, a minus, a dot or a cardinal point
+	 * 2) Missing parts are forced to be empty to use a common approach, altough M & S could be also "0" in fact North America coords 48°N 100°W are equivalent to 48° 0' 0" N, 100° 0' 0" W,
+	 *    but for compatibility with the DD notation where there is no alternative way to write it (i.e. 48° -100°), so the following parts are just empty, not 0
+	 * 3) The parsed parts could have also erroneous data if the input is badly formatted (e.g. 48°EE'00"N 100°00'4000""W"), but these checks will be performed inside convertDMS2DD
+	 */
+	var parseDMS = function(input) {
+	    // Uniform alternative notation, into one common notation DD° MM' SS" [NSEW], then the DMS components are splitted into its 4 atomic component
+	    var parts = input.toString()
+	        .replace(/[‘’′]/g, "'")
+	        .replace(/[“”″]/g, '"')
+	        .replace(/''/g, '"')
+	        .replace(/−/g, '-')
+	        .replace(/[_/\t\n\r]/g, " ")
+	        .replace(/\s/g, '')
+	        .replace(/([°'"])/g,"$1 ")
+	        .replace(/([NSEW])/gi, function(v) { return ` ${v.toUpperCase()}`; })
+	        // eslint-disable-next-line no-useless-escape
+	        .replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
+	    for (var i=0; i<4; i++)
+	        if( !parts[i] )
+	            parts[i] = '';
+	    return convertDMS2DD( parts[0], parts[1], parts[2], parts[3] );
+	};
+
+	parseDMS_1 = parseDMS;
+	return parseDMS_1;
+}
+
 var validateForm_1;
 var hasRequiredValidateForm;
 
@@ -331,7 +459,9 @@ function requireCore () {
 	hasRequiredCore = 1;
 	var DB_NAME = mw.config.get( 'wgDBname' );
 	const dialog = dialogs;
-
+	const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
+	const API_HOST = IS_LOCALHOST ? 'https://en.wikivoyage.org/w/api.php' :
+	    `${mw.config.get( 'wgScriptPath' )}/api.php`;
 	var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 	    var api = new mw.Api();
 	    var MODE_ADD = 'add';
@@ -674,11 +804,25 @@ function requireCore () {
 	        if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
 
 	        $.ajax({
-	            url: mw.util.wikiScript(''),
-	            data: { title: mw.config.get('wgPageName'), action: 'raw', section: sectionIndex },
+	            url: API_HOST,
+	            data: {
+	                prop: 'revisions',
+	                format: 'json',
+	                formatversion: 2,
+	                titles: IS_LOCALHOST ? mw.config.get( 'wgTitle' ) : mw.config.get('wgPageName'),
+	                action: 'query',
+	                rvprop: 'content',
+	                origin: '*',
+	                rvsection: sectionIndex
+	            },
 	            cache: false // required
-	        }).done(function(data) {
-	            sectionText = data;
+	        }).done(function( data ) {
+	            try {
+	                sectionText = data.query.pages[ 0 ].revisions[ 0 ].content;
+	            } catch ( e ) {
+	                alert( 'Error occurred loading content for this section.' );
+	                return;
+	            }
 	            openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
 	        }).fail(function( _jqXHR, textStatus, errorThrown ) {
 	            alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
@@ -1296,82 +1440,11 @@ function requireCore () {
 	        return str.replace(/\s+$/, '');
 	    };
 
-	    /**
-	     * Parse coordinates in DMS notation, to convert it into DD notation in Wikidata format (i.e. without "°" symbol).
-	     * If the input is already in DD notation, input value is returned unchanged.
-	     * Notes:
-	     * 1) Common notation is use as a proforma for potential future use because the split currently works to be more flexible skipping any char that is not a number, a minus, a dot or a cardinal point
-	     * 2) Missing parts are forced to be empty to use a common approach, altough M & S could be also "0" in fact North America coords 48°N 100°W are equivalent to 48° 0' 0" N, 100° 0' 0" W,
-	     *    but for compatibility with the DD notation where there is no alternative way to write it (i.e. 48° -100°), so the following parts are just empty, not 0
-	     * 3) The parsed parts could have also erroneous data if the input is badly formatted (e.g. 48°EE'00"N 100°00'4000""W"), but these checks will be performed inside convertDMS2DD
-	     */
-	    var parseDMS = function(input) {
-	        // Uniform alternative notation, into one common notation DD° MM' SS" [NSEW], then the DMS components are splitted into its 4 atomic component
-	        var parts = input.toString()
-	            .replace(/[‘’′]/g, "'")
-	            .replace(/[“”″]/g, '"')
-	            .replace(/''/g, '"')
-	            .replace(/−/g, '-')
-	            .replace(/[_/\t\n\r]/g, " ")
-	            .replace(/\s/g, '')
-	            .replace(/([°'"])/g,"$1 ")
-	            .replace(/([NSEW])/gi, function(v) { return ` ${v.toUpperCase()}`; })
-	            // eslint-disable-next-line no-useless-escape
-	            .replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
-	        for (var i=0; i<4; i++)
-	            if( !parts[i] )
-	                parts[i] = '';
-	        return convertDMS2DD( parts[0], parts[1], parts[2], parts[3] );
-	    };
-
-	    /**
-	     * Convert splitted elements of coordinates in DMS notation into DD notation.
-	     * If the input is already in DD notation (i.e. only degrees is a number), input value is returned unchanged.
-	     * Notes:
-	     * 1) Each D, M & S is checked to be a valid number plus M & S are checked to be in a valid range. If one parameter is not valid, NaN (Not a Number) is returned
-	     * 2) Empty string (provided from initial parsing section in parseDMS) are considered valid by isNaN function (i.e. isNaN('') is false)
-	     */
-	    var convertDMS2DD = function(degrees, minutes, seconds, direction) {
-	        var dd = NaN;
-	        if( isNaN(degrees) )
-	            return NaN;
-	        else {
-	            degrees = Number(degrees);
-	            if( degrees <= -180 || degrees > 180 )
-	                return NaN;
-	            else
-	                dd = degrees;
-	        }
-	        if( isNaN(minutes) )
-	            return NaN;
-	        else {
-	            degrees = Number(minutes);
-	            if( minutes < 0 || minutes >= 60 )
-	                return NaN;
-	            else
-	                dd = dd + minutes/60;
-	        }
-	        if( isNaN(seconds) )
-	            return NaN;
-	        else {
-	            degrees = Number(seconds);
-	            if( seconds < 0 || seconds >= 60 )
-	                return NaN;
-	            else
-	                dd = dd + seconds/(3600);
-	        }
-	        if (direction == "S" || direction == "W") {
-	            dd = dd * -1;
-	        } // Don't do anything for N or E
-	        return dd;
-	    };
-
 	    // expose public members
 	    return {
 	        initListingEditorDialog,
 	        MODE_ADD,
-	        MODE_EDIT,
-	        parseDMS
+	        MODE_EDIT
 	    };
 	};
 
@@ -1379,39 +1452,12 @@ function requireCore () {
 	return Core_1;
 }
 
-/******************************************************************
-Listing Editor v3.0.0alpha
-	Source code: https://github.com/jdlrobson/Gadget-Workshop
-	Wiki: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023Main.js
-	Original author:
-	- torty3
-	Additional contributors:
-	- Andyrom75
-	- ARR8
-	- RolandUnger
-	- Wrh2
-	- Jdlrobson
-	Changelog: https://en.wikivoyage.org/wiki/Wikivoyage:Listing_editor#Changelog
-
-	TODO
-	- Add support for mobile devices.
-	- wrapContent is breaking the expand/collapse logic on the VFD page.
-	- populate the input-type select list from LISTING_TEMPLATES
-	- Allow syncing Wikipedia link back to Wikidata with wbsetsitelink
-	- Allow hierarchy of preferred sources, rather than just one source, for Wikidata sync
-		- E.g. get URL with language of work = english before any other language version if exists
-		- E.g. get fall back to getting coordinate of headquarters if geographic coordinates unavailable. Prioritize getting coordinates of entrance before any other coordinates if all present
-		- E.g. Can use multiple sources to fetch address
-		- Figure out how to get this to upload properly
-********************************************************************/
-
-//<nowiki>
-
 const TRANSLATIONS_ALL = translations;
 const trimDecimal = trimDecimal_1;
 const dialog = dialogs;
 
 var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
+	const parseDMS = PROJECT_CONFIG.doNotParseDMS ? (a) => a : requireParseDMS();
 
 	var PROJECT_CONFIG_KEYS = [
 		'SHOW_LAST_EDITED_FIELD', 'SUPPORTED_SECTIONS', 'iata',
@@ -1907,10 +1953,10 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			// try to find and collect the best available coords
 			if ( $('#input-lat', form).val() && $('#input-long', form).val() ) {
 				// listing specific coords
-				latlngStr += `&lat=${Core.parseDMS($('#input-lat', form).val())}&lon=${Core.parseDMS($('#input-long', form).val())}&zoom=15`;
+				latlngStr += `&lat=${parseDMS($('#input-lat', form).val())}&lon=${parseDMS($('#input-long', form).val())}&zoom=15`;
 			} else if ( $('.mw-indicators .geo').lenght ) {
 				// coords added by Template:Geo
-				latlngStr += `&lat=${Core.parseDMS($('.mw-indicators .geo .latitude').text())}&lon=${Core.parseDMS($('.mw-indicators .geo .longitude').text())}&zoom=15`;
+				latlngStr += `&lat=${parseDMS($('.mw-indicators .geo .latitude').text())}&lon=${parseDMS($('.mw-indicators .geo .longitude').text())}&zoom=15`;
 			}
 			// #geomap-link is a link in the EDITOR_FORM_HTML
 			$('#geomap-link', form).attr('href', $('#geomap-link', form).attr('href') + latlngStr);
@@ -1967,8 +2013,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				coord.lat = $('.mw-indicators .geo .latitude').text();
 				coord.lon = $('.mw-indicators .geo .longitude').text();
 			}
-			coord.lat = Core.parseDMS(coord.lat);
-			coord.lon = Core.parseDMS(coord.lon);
+			coord.lat = parseDMS(coord.lat);
+			coord.lon = parseDMS(coord.lon);
 			return coord;
 		};
 
@@ -2429,7 +2475,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				// compare the present value to the Wikidata value
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p) {
 				//If coords, then compared the values after trimming the WD one into decimal and converting into decimal and trimming the present one
-					if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(Core.parseDMS($(editorField[j]).val()), 6)) )
+					if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(parseDMS($(editorField[j]).val()), 6)) )
 						break;
 				} else if ( field.p === Config.WIKIDATA_CLAIMS.image.p) {
 				//If image, then compared the values after converting underscores into spaces on the local value
@@ -2508,7 +2554,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				if ( field.p === Config.WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
 					var DDValue = [];
 					for ( i = 0; i < editorField.length; i++) {
-						DDValue[i] = syncedValue[i] ? trimDecimal(Core.parseDMS(syncedValue[i]), 6) : '';
+						DDValue[i] = syncedValue[i] ? trimDecimal(parseDMS(syncedValue[i]), 6) : '';
 						updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync);
 					}
 					// TODO: make the find on map link work for placeholder coords
@@ -2570,7 +2616,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			switch(mode) {
 				case Config.WIKIDATA_CLAIMS.coords.p:
 					htmlPart += 'href="https://geohack.toolforge.org/geohack.php?params=';
-					for (i = 0; i < value.length; i++) { htmlPart += `${Core.parseDMS(valBool ? $(value[i]).val() : value[i])};`; }
+					for (i = 0; i < value.length; i++) { htmlPart += `${parseDMS(valBool ? $(value[i]).val() : value[i])};`; }
 					htmlPart += '_type:landmark">'; // sets the default zoom
 					break;
 				case Config.WIKIDATA_CLAIMS.url.p:

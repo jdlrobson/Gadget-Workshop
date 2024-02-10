@@ -1,4 +1,11 @@
+/*
+ * Listing Editor v3.0.0-alice
+ */
 $(function() {
+	const USE_LISTING_BETA = window.__USE_LISTING_EDITOR_BETA__;
+	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
+		'ext.gadget.ListingEditorMain';
+	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';
 	var DEV_NAMESPACE = 9000;
 
 	// (oldid=4687849)[[Wikivoyage:Travellers%27_pub#c-WhatamIdoing-20230630083400-FredTC-20230630053700]]
@@ -177,11 +184,11 @@ $(function() {
 	function importForeignModule() {
 		if ( isLoaded ) {
 			return Promise.resolve( mw.loader.require );
-		} else if (  mw.loader.getState( 'ext.gadget.ListingEditorMain' ) !== 'ready' ) {
+		} else if (  mw.loader.getState( GADGET_NAME ) !== 'ready' ) {
 			isLoaded = true;
-			if ( mw.loader.getState( 'ext.gadget.ListingEditorMain' ) === null ) {
+			if ( mw.loader.getState( GADGET_NAME ) === null ) {
 				return new Promise( function ( resolve ) {
-					mw.loader.addScriptTag( 'https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditorMain', function () {
+					mw.loader.addScriptTag( `https://en.wikivoyage.org/w/load.php?modules=${GADGET_NAME}`, function () {
 						setTimeout( function () {
 							resolve( mw.loader.require );
 						}, 300 );
@@ -189,7 +196,7 @@ $(function() {
 				} );
 			} else {
 				// use the local gadget
-				return mw.loader.using( 'ext.gadget.ListingEditorMain' ).then( () => mw.loader.require );
+				return mw.loader.using( `${GADGET_NAME}` ).then( () => mw.loader.require );
 			}
 		}
 	}
@@ -198,11 +205,11 @@ $(function() {
 		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
 			localModuleForDebugging ? Promise.resolve() : importForeignModule(),
-			mw.loader.using( 'ext.gadget.ListingEditorConfig' )
+			mw.loader.using( GADGET_CONFIG_NAME )
 		] ).then( function ( args ) {
 			var req = args[ 1 ];
-			var config = req( 'ext.gadget.ListingEditorConfig' );
-			var module = localModuleForDebugging || req( 'ext.gadget.ListingEditorMain' );
+			var config = req( GADGET_CONFIG_NAME );
+			var module = localModuleForDebugging || req( GADGET_NAME );
 			return module( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, config );
 		} );
 	}

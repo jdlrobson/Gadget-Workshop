@@ -1,5 +1,5 @@
 /*
- * Listing Editor v3.0.0-alice
+ * Listing Editor v3.0.0-barbara
  */
 $(function() {
 	const USE_LISTING_BETA = window.__USE_LISTING_EDITOR_BETA__;
@@ -127,15 +127,21 @@ $(function() {
 	var TRANSLATIONS_ALL = {
 		en: {
 			add: 'add listing',
-			edit: 'edit'
+			add: 'add listing (beta)',
+			edit: 'edit',
+			editBeta: 'edit (beta)'
 		},
 		de: {
 			add: 'Eintrag hinzufügen',
-			edit: 'bearbeiten'
+			edit: 'bearbeiten',
+			addBeta: 'Eintrag hinzufügen (beta)',
+			editBeta: 'bearbeiten  (beta)'
 		},
 		it: {
 			add: 'aggiungi elemento',
-			edit: 'modifica'
+			edit: 'modifica',
+			addBeta: 'aggiungi elemento (beta)',
+			editBeta: 'modifica (beta)'
 		}
 	};
 	var TRANSLATIONS = $.extend( true,
@@ -218,8 +224,9 @@ $(function() {
 	 * Place an "edit" link next to all existing listing tags.
 	 */
 	var addEditButtons = function() {
+		const editMsg = USE_LISTING_BETA ? TRANSLATIONS.editBeta : TRANSLATIONS.edit;
 		var editButton = $('<span class="vcard-edit-button noprint">')
-			.html('<a href="javascript:" class="listingeditor-edit">'+TRANSLATIONS.edit+'</a>' )
+			.html(`<a href="javascript:" class="listingeditor-edit">${editMsg}</a>` )
 			.on('click', function() {
 				var $this = $(this);
 				loadMain().then( function ( core ) {
@@ -241,7 +248,8 @@ $(function() {
 	 */
 	var insertAddListingPlaceholder = function(parentHeading) {
 		var editSection = $(parentHeading).next('.mw-editsection');
-		editSection.append('<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">'+TRANSLATIONS.add+'</a><span class="mw-editsection-bracket">]</span>');
+		const addMsg = USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add;
+		editSection.append(`<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">${addMsg}</a><span class="mw-editsection-bracket">]</span>`);
 	};
 
 	/**

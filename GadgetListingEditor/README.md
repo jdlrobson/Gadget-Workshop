@@ -45,6 +45,7 @@ and copy the following files:
 wfLoadExtension('MobileFrontendContentProvider');
 wfLoadExtension('Gadgets');
 $wgExtraNamespaces[NS_WIKIVOYAGE] = "Wikivoyage";
+$wgExtraNamespaces[NS_WIKIVOYAGE+1] = "Wikivoyage talk";
 ```
 * Install gadgets per instructions above.
 * Visit http://localhost:8888/wiki/Wikivoyage:Paris

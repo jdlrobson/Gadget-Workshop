@@ -1,6 +1,8 @@
 var DB_NAME = mw.config.get( 'wgDBname' );
 const dialog = require( './dialogs.js' );
-
+const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
+const API_HOST = IS_LOCALHOST ? 'https://en.wikivoyage.org/w/api.php' :
+    `${mw.config.get( 'wgScriptPath' )}/api.php`;
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     var api = new mw.Api();
     var MODE_ADD = 'add';
@@ -343,11 +345,25 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
 
         $.ajax({
-            url: mw.util.wikiScript(''),
-            data: { title: mw.config.get('wgPageName'), action: 'raw', section: sectionIndex },
+            url: API_HOST,
+            data: {
+                prop: 'revisions',
+                format: 'json',
+                formatversion: 2,
+                titles: IS_LOCALHOST ? mw.config.get( 'wgTitle' ) : mw.config.get('wgPageName'),
+                action: 'query',
+                rvprop: 'content',
+                origin: '*',
+                rvsection: sectionIndex
+            },
             cache: false // required
-        }).done(function(data) {
-            sectionText = data;
+        }).done(function( data ) {
+            try {
+                sectionText = data.query.pages[ 0 ].revisions[ 0 ].content;
+            } catch ( e ) {
+                alert( 'Error occurred loading content for this section.' );
+                return;
+            }
             openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
         }).fail(function( _jqXHR, textStatus, errorThrown ) {
             alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);

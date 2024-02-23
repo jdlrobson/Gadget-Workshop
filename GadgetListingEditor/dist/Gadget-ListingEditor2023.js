@@ -1,5 +1,8 @@
 /*
- * Listing Editor v3.0.0-barbara
+ * Listing Editor v3.0.0-colm
+ * @maintainer Jdlrobson
+ * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
+ * to avoid losing them in future updates.
  */
 $(function() {
 	const USE_LISTING_BETA = window.__USE_LISTING_EDITOR_BETA__;

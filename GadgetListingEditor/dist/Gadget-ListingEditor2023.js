@@ -130,7 +130,7 @@ $(function() {
 	var TRANSLATIONS_ALL = {
 		en: {
 			add: 'add listing',
-			add: 'add listing (beta)',
+			addBeta: 'add listing (beta)',
 			edit: 'edit',
 			editBeta: 'edit (beta)'
 		},

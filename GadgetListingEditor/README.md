@@ -19,10 +19,10 @@ Go to https://en.wikivoyage.org/wiki/Nottingham?safemode=1
 
 In JavaScript console:
 module = {};
-// Copy paste contnets of Gadget-ListingEditor.js
+// Copy paste contnets of Gadget-ListingEditor2023Main.js
 localModuleForDebugging = module.exports;
 importScriptURI('https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditorConfig');
-// Copy paste contents of Gadget-ListingEditorBootstrap.js
+// Copy paste contents of Gadget-ListingEditor2023.js
 // Click one of the buttons
 
 # Installation

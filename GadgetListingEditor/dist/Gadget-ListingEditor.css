@@ -194,4 +194,17 @@ label .wikidata-update {
 	text-align: center;
 	font-weight: bold;
 }
+
+@media all and ( max-width: 800px ) {
+	.listing-editor-dialog {
+		left: 0 !important;
+		right: 0 !important;
+		top: 0 !important;
+		position: fixed !important;
+		bottom: 0 !important;
+		width: 100% !important;
+		height: 100% !important;
+		margin-left: 0 !important;
+	}
+}
 /* END: sync editor form */

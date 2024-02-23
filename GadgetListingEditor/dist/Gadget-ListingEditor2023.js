@@ -12,7 +12,7 @@ $(function() {
 	var DEV_NAMESPACE = 9000;
 
 	// (oldid=4687849)[[Wikivoyage:Travellers%27_pub#c-WhatamIdoing-20230630083400-FredTC-20230630053700]]
-	if ( mw.config.get( 'skin' ) === 'minerva' ) {
+	if ( !USE_LISTING_BETA && mw.config.get( 'skin' ) === 'minerva' ) {
 		return;
 	}
 
@@ -181,9 +181,14 @@ $(function() {
 	 * div cause any CSS or UI conflicts.
 	 */
 	var wrapContent = function() {
-		$('#bodyContent h2').each(function(){
-			$(this).nextUntil("h1, h2").addBack().wrapAll('<div class="mw-h2section" />');
-		});
+		// MobileFrontend use-case
+		if ( $( '.mw-parser-output > h2.section-heading' ).length ) {
+			$( '.mw-parser-output > section' ).addClass( 'mw-h2section' );
+		} else {
+			$('#bodyContent h2').each(function(){
+				$(this).nextUntil("h1, h2").addBack().wrapAll('<div class="mw-h2section" />');
+			});
+		}
 		$('#bodyContent h3').each(function(){
 			$(this).nextUntil("h1, h2, h3").addBack().wrapAll('<div class="mw-h3section" />');
 		});
@@ -270,7 +275,11 @@ $(function() {
 	};
 
 	const getSectionElement = ( $headingElement ) => {
-		return $headingElement.closest( 'div.mw-h2section' );
+		if ( $headingElement.is( '.section-heading' ) ) {
+			return $headingElement.next( 'section.mw-h2section' );
+		} else {
+			return $headingElement.closest( 'div.mw-h2section' );
+		}
 	};
 
 	/**

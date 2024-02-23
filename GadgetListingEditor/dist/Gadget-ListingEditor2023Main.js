@@ -5,7 +5,7 @@ function getDefaultExportFromCjs (x) {
 }
 
 /**
- * Listing Editor v3.0.0-alice
+ * Listing Editor v3.0.0-colm
  *	Source code: https://github.com/jdlrobson/Gadget-Workshop
  *	Wiki: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023Main.js
  *	Original author:
@@ -61,6 +61,8 @@ var translations = {
         propertyP18: ['image'],
         addTitle: 'Add New Listing',
         editTitle: 'Edit Existing Listing',
+        addTitleBeta: 'Add New Listing (Beta)',
+        editTitleBeta: 'Edit Existing Listing (Beta)',
         syncTitle: 'Wikidata Sync',
         saving: 'Saving...',
         submit: 'Submit',
@@ -861,12 +863,13 @@ function requireCore () {
 	            var windowWidth = $(window).width();
 	            var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? Config.MAX_DIALOG_WIDTH : 'auto';
 	            // modal form - must submit or cancel
+	            const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
 	            dialog.open(form, {
 	                modal: true,
 	                height: 'auto',
 	                width: dialogWidth,
 	                title: (mode == MODE_ADD) ?
-	                    translate( 'addTitle' ) : translate( 'editTitle' ),
+	                    translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
 	                dialogClass: 'listing-editor-dialog',
 	                buttons: [
 	                {

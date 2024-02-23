@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.0.0-alice
+ * Listing Editor v3.0.0-colm
  *	Source code: https://github.com/jdlrobson/Gadget-Workshop
  *	Wiki: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023Main.js
  *	Original author:
@@ -55,6 +55,8 @@ module.exports = {
         propertyP18: ['image'],
         addTitle: 'Add New Listing',
         editTitle: 'Edit Existing Listing',
+        addTitleBeta: 'Add New Listing (Beta)',
+        editTitleBeta: 'Edit Existing Listing (Beta)',
         syncTitle: 'Wikidata Sync',
         saving: 'Saving...',
         submit: 'Submit',

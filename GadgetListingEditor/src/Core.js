@@ -402,12 +402,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             var windowWidth = $(window).width();
             var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? Config.MAX_DIALOG_WIDTH : 'auto';
             // modal form - must submit or cancel
+            const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
             dialog.open(form, {
                 modal: true,
                 height: 'auto',
                 width: dialogWidth,
                 title: (mode == MODE_ADD) ?
-                    translate( 'addTitle' ) : translate( 'editTitle' ),
+                    translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
                 dialogClass: 'listing-editor-dialog',
                 buttons: [
                 {

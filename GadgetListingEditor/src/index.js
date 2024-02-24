@@ -235,8 +235,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				</div>
 				<div id="div_price" class="editor-row">
 					<div class="editor-label-col"><label for="input-price">${translate( 'price' )}</label></div>
-					// update the Callbacks.initStringFormFields
-					// method if the currency symbols are removed or modified
+					<!-- update the Callbacks.initStringFormFields
+						method if the currency symbols are removed or modified -->
 					<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">
 						<div class="input-price">
 							<span id="span_natl_currency" title="${translate( 'natlCurrencyTitle' )}"></span>
@@ -374,8 +374,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				}${SPECIAL_CHARS_STRING}</label></div>
 				<div><textarea rows="8" class="editor-fullwidth" id="input-content"></textarea></div>
 			</div>
-			// update the Callbacks.hideEditOnlyFields method if
-			// the status row is removed or modified
+			<!-- update the Callbacks.hideEditOnlyFields method if
+			the status row is removed or modified -->
 			<div id="div_status" class="editor-fullwidth">
 				<div class="editor-label-col"><label>Status</label></div>
 				<div>${
@@ -387,8 +387,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 					`</span>` : ''
 				}</div>
 			</div>
-			// update the Callbacks.hideEditOnlyFields method if
-			// the summary table is removed or modified
+			<! -- update the Callbacks.hideEditOnlyFields method if
+			 the summary table is removed or modified -->
 			<div id="div_summary" class="editor-fullwidth">
 				<div class="listing-divider"></div>
 				<div class="editor-row">

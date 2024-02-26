@@ -255,7 +255,7 @@ $(function() {
 	 * Utility function for appending the "add listing" link text to a heading.
 	 */
 	var insertAddListingPlaceholder = function(parentHeading) {
-		var editSection = $(parentHeading).next('.mw-editsection');
+		var editSection = $(parentHeading).find( '.mw-headline' ).next('.mw-editsection');
 		const addMsg = USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add;
 		editSection.append(`<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">${addMsg}</a><span class="mw-editsection-bracket">]</span>`);
 	};
@@ -295,7 +295,7 @@ $(function() {
 			if (topHeading.length) {
 				insertAddListingPlaceholder(topHeading);
 				var parentHeading = getSectionElement( topHeading );
-				$('h3 .mw-headline', parentHeading).each(function() {
+				$('h3', parentHeading).each(function() {
 					insertAddListingPlaceholder(this);
 				});
 			}

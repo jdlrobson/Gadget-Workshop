@@ -546,7 +546,8 @@ function requireCore () {
 	     * it is contained within.
 	     */
 	    var findSectionHeading = function(element) {
-	        return element.closest('div.mw-h3section, div.mw-h2section');
+	        // mw-h3section and mw-h2section can be removed when useparsoid=1 is everywhere.
+	        return element.closest('div.mw-h3section, div.mw-h2section, section');
 	    };
 
 	    /**

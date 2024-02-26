@@ -181,6 +181,10 @@ $(function() {
 	 * div cause any CSS or UI conflicts.
 	 */
 	var wrapContent = function() {
+		// No need to wrap with ?useparsoid=1&safemode=1
+		if ( $( '.mw-heading3, .mw-heading2' ).length ) {
+			return;
+		}
 		// MobileFrontend use-case
 		if ( $( '.mw-parser-output > h2.section-heading' ).length ) {
 			$( '.mw-parser-output > section' ).addClass( 'mw-h2section' );
@@ -255,8 +259,11 @@ $(function() {
 	 * Utility function for appending the "add listing" link text to a heading.
 	 */
 	var insertAddListingPlaceholder = function(parentHeading) {
-		var editSection = $(parentHeading).find( '.mw-headline' ).next('.mw-editsection');
+		const $pheading =  $(parentHeading);
+		const $headline = $(parentHeading).find( '.mw-headline' );
+		const editSection = $headline.length ? $headline.next('.mw-editsection') : $pheading.next( '.mw-editsection');
 		const addMsg = USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add;
+		console.log($pheading);
 		editSection.append(`<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">${addMsg}</a><span class="mw-editsection-bracket">]</span>`);
 	};
 
@@ -278,7 +285,7 @@ $(function() {
 		if ( $headingElement.is( '.section-heading' ) ) {
 			return $headingElement.next( 'section.mw-h2section' );
 		} else {
-			return $headingElement.closest( 'div.mw-h2section' );
+			return $headingElement.closest( 'div.mw-h2section, section' );
 		}
 	};
 

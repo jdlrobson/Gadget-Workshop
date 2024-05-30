@@ -263,7 +263,6 @@ $(function() {
 		const $headline = $(parentHeading).find( '.mw-headline' );
 		const editSection = $headline.length ? $headline.next('.mw-editsection') : $pheading.next( '.mw-editsection');
 		const addMsg = USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add;
-		console.log($pheading);
 		editSection.append(`<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">${addMsg}</a><span class="mw-editsection-bracket">]</span>`);
 	};
 

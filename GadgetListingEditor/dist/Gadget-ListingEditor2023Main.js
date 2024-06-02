@@ -308,6 +308,25 @@ var dialogs = {
 };
 
 /**
+ * @param {Object<string,string>} translations
+ * @return {string}
+ */
+
+var makeTranslateFunction$1 = ( translations ) => {
+    return ( key, params = [] ) => {
+        let msg =  translations[ key ];
+        if ( msg === undefined ) {
+            throw new Error( `Could not find undefined message ${key}` );
+        } else {
+            params.forEach( ( value, i ) => {
+                msg = msg.replace( `$${i + 1}`, value );
+            } );
+            return msg;
+        }
+    };
+};
+
+/**
  * Convert splitted elements of coordinates in DMS notation into DD notation.
  * If the input is already in DD notation (i.e. only degrees is a number), input value is returned unchanged.
  * Notes:
@@ -1500,6 +1519,7 @@ function requireCore () {
 const TRANSLATIONS_ALL = translations;
 const trimDecimal = trimDecimal_1;
 const dialog = dialogs;
+const makeTranslateFunction = makeTranslateFunction$1;
 
 var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	const parseDMS = PROJECT_CONFIG.doNotParseDMS ? (a) => a : requireParseDMS();
@@ -1540,14 +1560,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		} );
 	} );
 
-	var translate = function ( key ) {
-		var msg =  TRANSLATIONS[ key ];
-		if ( msg === undefined ) {
-			throw new Error( `Could not find undefined message ${key}` );
-		} else {
-			return msg;
-		}
-	};
+	const translate = makeTranslateFunction( TRANSLATIONS );
 
 	var Config = function( ALLOWED_NAMESPACE ) {
 		var PAGE_VIEW_LANGUAGE = mw.config.get( 'wgPageViewLanguage' );

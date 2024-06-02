@@ -1,6 +1,7 @@
 const TRANSLATIONS_ALL = require( './translations.js' );
 const trimDecimal = require( './trimDecimal.js' );
 const dialog = require( './dialogs.js' );
+const makeTranslateFunction = require( './makeTranslateFunction.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -42,14 +43,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		} );
 	} );
 
-	var translate = function ( key ) {
-		var msg =  TRANSLATIONS[ key ];
-		if ( msg === undefined ) {
-			throw new Error( `Could not find undefined message ${key}` );
-		} else {
-			return msg;
-		}
-	}
+	const translate = makeTranslateFunction( TRANSLATIONS );
 
 	var Config = function( ALLOWED_NAMESPACE ) {
 		var PAGE_VIEW_LANGUAGE = mw.config.get( 'wgPageViewLanguage' );

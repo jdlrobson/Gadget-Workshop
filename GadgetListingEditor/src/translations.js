@@ -1,5 +1,7 @@
 module.exports = {
     en: {
+        'report-bug': 'Report bug',
+        'listing-editor-version': 'Version $1',
         'coordinates-error': 'Coordinates are in an invalid form. Please use decimal degrees.',
         'placeholder-name': 'name of place',
         'placeholder-alt': 'also known as',

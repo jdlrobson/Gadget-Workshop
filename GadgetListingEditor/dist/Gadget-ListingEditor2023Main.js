@@ -38,6 +38,8 @@ function getDefaultExportFromCjs (x) {
 
 var translations = {
     en: {
+        'report-bug': 'Report bug',
+        'listing-editor-version': 'Version $1',
         'coordinates-error': 'Coordinates are in an invalid form. Please use decimal degrees.',
         'placeholder-name': 'name of place',
         'placeholder-alt': 'also known as',
@@ -1009,6 +1011,14 @@ function requireCore () {
 	                // eslint-disable-next-line object-shorthand
 	                create: function() {
 	                    $('.ui-dialog-buttonpane').append(`<div class="listing-license">${translate( 'licenseText' )}</div>`);
+	                    if ( window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ) {
+	                        $(
+	                            `<span class="listing-license">${translate('listing-editor-version', [ window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ])}</span>`
+	                        ).appendTo( '.ui-dialog-buttonpane' );
+	                    }
+	                    const bugUrl = 'https://github.com/jdlrobson/Gadget-Workshop/issues';
+	                    $( `<span class="listing-license">&nbsp;<a href="${bugUrl}">${translate( 'report-bug' )}</a></span>` )
+	                        .appendTo( '.ui-dialog-buttonpane' );
 	                    $('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
 	                        // if a sync editor dialog is open, get rid of it
 	                        if ($(Config.SYNC_FORM_SELECTOR).length > 0) {

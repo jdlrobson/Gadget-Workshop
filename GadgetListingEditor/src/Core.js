@@ -437,7 +437,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                             validateForm(
                                 Callbacks.VALIDATE_FORM_CALLBACKS,
                                 PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS,
-                                PROJECT_CONFIG.APPEND_FULL_STOP_TO_DESCRIPTION
+                                PROJECT_CONFIG.APPEND_FULL_STOP_TO_DESCRIPTION,
+                                translate
                             )
                         ) {
                             formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);

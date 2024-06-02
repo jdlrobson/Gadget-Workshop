@@ -27,6 +27,7 @@
 //<nowiki>
 module.exports = {
     en: {
+        'coordinates-error': 'Coordinates are in an invalid form. Please use decimal degrees.',
         'placeholder-name': 'name of place',
         'placeholder-alt': 'also known as',
         'placeholder-url': 'https://www.example.com',

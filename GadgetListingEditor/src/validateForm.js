@@ -1,17 +1,27 @@
 const trimDecimal = require( './trimDecimal.js' );
+
 /**
  * Logic invoked on form submit to analyze the values entered into the
  * editor form and to block submission if any fatal errors are found.
  *
+ * Alerts if validation error found.
+ *
  * @param {bool} VALIDATE_FORM_CALLBACKS
  * @param {bool} REPLACE_NEW_LINE_CHARS
  * @param {bool} APPEND_FULL_STOP_TO_DESCRIPTION
+ * @return {bool} whether validation succeeded.
  */
 const validateForm = function(
     VALIDATE_FORM_CALLBACKS,
     REPLACE_NEW_LINE_CHARS,
-    APPEND_FULL_STOP_TO_DESCRIPTION
+    APPEND_FULL_STOP_TO_DESCRIPTION,
+    translate = () => {}
 ) {
+    const coordsError = () => {
+        alert( translate( 'coordinates-error' ) );
+        return false;
+    };
+
     var validationFailureMessages = [];
     for (var i=0; i < VALIDATE_FORM_CALLBACKS.length; i++) {
         VALIDATE_FORM_CALLBACKS[i](validationFailureMessages);
@@ -49,13 +59,23 @@ const validateForm = function(
             .trim().replace(/\.$/, '')
     );
     // in case of decimal format, decimal digits will be limited to 6
-    const lat = Number($('#input-lat').val());
-    const long = Number($('#input-long').val());
-    if ( !isNaN( lat ) ) {
-        $('#input-lat').val(trimDecimal(lat,6));
-    }
-    if ( !isNaN( long ) ) {
-        $('#input-long').val(trimDecimal(long,6));
+    const latInput = ( $('#input-lat').val() || '' ).trim();
+    const longInput = ( $('#input-long').val() || '' ).trim();
+    if ( latInput && longInput ) {
+        const lat = Number( latInput );
+        const long = Number( longInput );
+        if ( isNaN( lat ) || isNaN( long ) ) {
+            return coordsError();
+        } else {
+            const savedLat = trimDecimal( lat, 6 );
+            const savedLong = trimDecimal( long, 6 );
+            $('#input-lat').val( savedLat );
+            $('#input-long').val( savedLong );
+        }
+    } else if ( latInput && !longInput ) {
+        return coordsError();
+    } else if ( !latInput && longInput ) {
+        return coordsError();
     }
 
     var webRegex = new RegExp('^https?://', 'i');

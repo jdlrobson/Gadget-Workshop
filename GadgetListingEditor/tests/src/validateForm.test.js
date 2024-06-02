@@ -32,8 +32,24 @@ describe( 'Core', () => {
 		$('#input-lon').val( '0.2' );
 		$('#input-url').val( 'https://wikivoyage.org' );
 		$('#input-content').val( 'Foo\nReplace' );
-		const validated = validateForm( Callbacks, true );
+		const validated = validateForm( Callbacks, true, true );
 		expect( validated ).toBe( true );
 		expect( $('#input-content').val() ).toBe( 'Foo<br />Replace.' );
+	} );
+
+	it( 'validate (APPEND_FULL_STOP_TO_DESCRIPTION)', () => {
+		$('<div id="input-content">' ).appendTo(document.body);
+		$('<div id="input-lat">' ).appendTo(document.body);
+		$('<div id="input-long">' ).appendTo(document.body);
+		$('<div id="input-url">' ).appendTo(document.body);
+
+		$('#input-lat').val( '0.1' );
+		$('#input-lon').val( '0.2' );
+		$('#input-url').val( 'https://wikivoyage.org' );
+		$('#input-content').val( 'Text without full stop' );
+		const validated = validateForm( Callbacks, false, false);
+		expect( validated ).toBe( true );
+		expect( $('#input-content').val() ).toBe( 'Text without full stop' );
+
 	} );
 } );

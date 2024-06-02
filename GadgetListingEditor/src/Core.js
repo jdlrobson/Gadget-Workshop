@@ -433,7 +433,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                                 dialog.close(Config.SYNC_FORM_SELECTOR);
                             }
                         }
-                        else if (validateForm( Callbacks.VALIDATE_FORM_CALLBACKS, PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS )) {
+                        else if (
+                            validateForm(
+                                Callbacks.VALIDATE_FORM_CALLBACKS,
+                                PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS,
+                                PROJECT_CONFIG.APPEND_FULL_STOP_TO_DESCRIPTION
+                            )
+                        ) {
                             formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
                             dialog.close(this);
                             // if a sync editor dialog is open, get rid of it

@@ -2,8 +2,16 @@ const trimDecimal = require( './trimDecimal.js' );
 /**
  * Logic invoked on form submit to analyze the values entered into the
  * editor form and to block submission if any fatal errors are found.
+ *
+ * @param {bool} VALIDATE_FORM_CALLBACKS
+ * @param {bool} REPLACE_NEW_LINE_CHARS
+ * @param {bool} APPEND_FULL_STOP_TO_DESCRIPTION
  */
-const validateForm = function( VALIDATE_FORM_CALLBACKS, REPLACE_NEW_LINE_CHARS ) {
+const validateForm = function(
+    VALIDATE_FORM_CALLBACKS,
+    REPLACE_NEW_LINE_CHARS,
+    APPEND_FULL_STOP_TO_DESCRIPTION
+) {
     var validationFailureMessages = [];
     for (var i=0; i < VALIDATE_FORM_CALLBACKS.length; i++) {
         VALIDATE_FORM_CALLBACKS[i](validationFailureMessages);
@@ -21,13 +29,13 @@ const validateForm = function( VALIDATE_FORM_CALLBACKS, REPLACE_NEW_LINE_CHARS )
     }
     // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
     // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
-    if ( $('#input-content').val() ) {
-        $('#input-content')
+    const $content = $('#input-content')
+    const contentValue = $content.val() || '';
+    if ( APPEND_FULL_STOP_TO_DESCRIPTION && contentValue ) {
+        $content
             .val(
-                ($('#input-content').val() || '')
-                    .trim()+'.'
-                // eslint-disable-next-line no-useless-escape
-                .replace(/([\.\!\?])\.+$/, '$1')
+                `${contentValue.trim()}.`
+                    .replace(/([.!?])\.+$/, '$1')
             );
     }
 

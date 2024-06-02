@@ -1,11 +1,9 @@
-'use strict';
-
-function getDefaultExportFromCjs (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
 /**
  * Listing Editor v3.1.0
+ * @maintainer Jdlrobson
+ * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
+ * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
+ * to avoid losing them in future updates.
  *	Source code: https://github.com/jdlrobson/Gadget-Workshop
  *	Wiki: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023Main.js
  *	Original author:
@@ -28,9 +26,16 @@ function getDefaultExportFromCjs (x) {
  *		- E.g. get fall back to getting coordinate of headquarters if geographic coordinates unavailable. Prioritize getting coordinates of entrance before any other coordinates if all present
  *		- E.g. Can use multiple sources to fetch address
  *		- Figure out how to get this to upload properly
-*/
+ */
+ //<nowiki>
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.1.0'
 
-//<nowiki>
+'use strict';
+
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
 var translations = {
     en: {
         'coordinates-error': 'Coordinates are in an invalid form. Please use decimal degrees.',

@@ -1541,10 +1541,11 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		}
 	} );
 
+	const userLanguage = mw.config.get( 'wgUserLanguage' );
 	var TRANSLATIONS = Object.assign(
 		{},
 		TRANSLATIONS_ALL.en,
-		TRANSLATIONS_ALL[ mw.config.get( 'wgUserLanguage' ) ]
+		TRANSLATIONS_ALL[ userLanguage ]
 	);
 
 	Object.keys( TRANSLATIONS_ALL.en ).forEach( function ( key ) {
@@ -1553,7 +1554,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			if ( lang === 'en' ) {
 				return; // no need to check against itself
 			} else {
-				if ( TRANSLATIONS_ALL[ lang ][ key ] === undefined ) {
+				if ( TRANSLATIONS_ALL[ lang ][ key ] === undefined && userLanguage === lang) {
 					mw.log.warn( `Language missing translation ${key} will fall back to English.` );
 				}
 			}

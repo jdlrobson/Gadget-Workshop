@@ -159,7 +159,11 @@ $(function() {
 	 * pages, edit pages, history pages, etc.
 	 */
 	var listingEditorAllowedForCurrentPage = function() {
-		var namespace = mw.config.get( 'wgNamespaceNumber' )
+		var namespace = mw.config.get( 'wgNamespaceNumber' );
+		// allow development
+		if ( location.host.includes( 'localhost' ) ) {
+			return true;
+		}
 		if ( namespace === DEV_NAMESPACE ) {
 			return true;
 		}

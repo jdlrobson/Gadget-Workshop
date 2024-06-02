@@ -1,0 +1,41 @@
+diff --git a/GadgetListingEditor/src/Core.js b/GadgetListingEditor/src/Core.js
+index 3433746..963c471 100644
+--- a/GadgetListingEditor/src/Core.js
++++ b/GadgetListingEditor/src/Core.js
+@@ -1,6 +1,17 @@
+ var DB_NAME = mw.config.get( 'wgDBname' );
+ const dialog = require( './dialogs.js' );
+ 
++const localDev = window.location.host.indexOf( 'localhost' ) > -1;
++
++const getWikiScript = () => {
++    const path = `${mw.config.get('wgScriptPath')}/api.php`;
++    return localDev ? `https://en.wikivoyage.org${path}` : path;
++}
++const getWikiScriptTitle = () => {
++    const pageName = mw.config.get('wgPageName');
++    return localDev ? pageName.split(':')[1] : pageName;
++};
++
+ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
+     var api = new mw.Api();
+     var MODE_ADD = 'add';
+@@ -343,8 +354,16 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
+         if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
+ 
+         $.ajax({
+-            url: mw.util.wikiScript(''),
+-            data: { title: mw.config.get('wgPageName'), action: 'raw', section: sectionIndex },
++            url: getWikiScript(),
++            xhrFields: {
++                withCredentials: true
++            },
++            data: {
++                origin: '*',
++                title: getWikiScriptTitle(),
++                action: 'raw',
++                section: sectionIndex
++            },
+             cache: false // required
+         }).done(function(data) {
+             sectionText = data;

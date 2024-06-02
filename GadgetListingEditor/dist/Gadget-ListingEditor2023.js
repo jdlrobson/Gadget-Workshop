@@ -1,5 +1,5 @@
 /*
- * Listing Editor v3.0.0-colm
+ * Listing Editor v3.1.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * to avoid losing them in future updates.

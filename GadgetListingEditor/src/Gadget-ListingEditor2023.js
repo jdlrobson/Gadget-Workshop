@@ -1,37 +1,3 @@
-/**
- * Listing Editor v3.1.0
- * @maintainer Jdlrobson
- * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
- * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
- * to avoid losing them in future updates.
- *	Source code: https://github.com/jdlrobson/Gadget-Workshop
- *	Wiki: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023Main.js
- *	Original author:
- *	- torty3
- *	Additional contributors:
- *	- Andyrom75
- *	- ARR8
- *	- RolandUnger
- *	- Wrh2
- *	- Jdlrobson
- *	Changelog: https://en.wikivoyage.org/wiki/Wikivoyage:Listing_editor#Changelog
-
- *	TODO
- *	- Add support for mobile devices.
- *	- wrapContent is breaking the expand/collapse logic on the VFD page.
- *	- populate the input-type select list from LISTING_TEMPLATES
- *	- Allow syncing Wikipedia link back to Wikidata with wbsetsitelink
- *	- Allow hierarchy of preferred sources, rather than just one source, for Wikidata sync
- *		- E.g. get URL with language of work = english before any other language version if exists
- *		- E.g. get fall back to getting coordinate of headquarters if geographic coordinates unavailable. Prioritize getting coordinates of entrance before any other coordinates if all present
- *		- E.g. Can use multiple sources to fetch address
- *		- Figure out how to get this to upload properly
- */
- //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.1.0'
-
-'use strict';
-
 $(function() {
 	const USE_LISTING_BETA = window.__USE_LISTING_EDITOR_BETA__;
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :

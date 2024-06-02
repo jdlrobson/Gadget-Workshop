@@ -56,5 +56,17 @@ module.exports = [
 			resolve(), // so Rollup can find `ms`
 			commonjs() // so Rollup can convert `ms` to an ES module
 		]
-	}
+	},
+	{
+		input: 'src/Gadget-ListingEditor2023.js',
+		output: [
+			{
+                file: 'dist/Gadget-ListingEditor2023.js',
+                format: 'cjs'
+            }
+		],
+        plugins: [
+			updateVersion()
+		]
+	},
 ];

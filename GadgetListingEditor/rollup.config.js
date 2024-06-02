@@ -3,10 +3,10 @@ const commonjs = require( '@rollup/plugin-commonjs' );
 
 module.exports = [
 	{
-		input: 'GadgetListingEditor/src/index.js',
+		input: 'src/index.js',
 		output: [
 			{
-                file: 'GadgetListingEditor/dist/Gadget-ListingEditor2023Main.js',
+                file: 'dist/Gadget-ListingEditor2023Main.js',
                 format: 'cjs'
             }
 		],

@@ -33,6 +33,7 @@ function getDefaultExportFromCjs (x) {
 //<nowiki>
 var translations = {
     en: {
+        'coordinates-error': 'Coordinates are in an invalid form. Please use decimal degrees.',
         'placeholder-name': 'name of place',
         'placeholder-alt': 'also known as',
         'placeholder-url': 'https://www.example.com',
@@ -389,11 +390,29 @@ function requireValidateForm () {
 	if (hasRequiredValidateForm) return validateForm_1;
 	hasRequiredValidateForm = 1;
 	const trimDecimal = trimDecimal_1;
+
 	/**
 	 * Logic invoked on form submit to analyze the values entered into the
 	 * editor form and to block submission if any fatal errors are found.
+	 *
+	 * Alerts if validation error found.
+	 *
+	 * @param {bool} VALIDATE_FORM_CALLBACKS
+	 * @param {bool} REPLACE_NEW_LINE_CHARS
+	 * @param {bool} APPEND_FULL_STOP_TO_DESCRIPTION
+	 * @return {bool} whether validation succeeded.
 	 */
-	const validateForm = function( VALIDATE_FORM_CALLBACKS, REPLACE_NEW_LINE_CHARS ) {
+	const validateForm = function(
+	    VALIDATE_FORM_CALLBACKS,
+	    REPLACE_NEW_LINE_CHARS,
+	    APPEND_FULL_STOP_TO_DESCRIPTION,
+	    translate = () => {}
+	) {
+	    const coordsError = () => {
+	        alert( translate( 'coordinates-error' ) );
+	        return false;
+	    };
+
 	    var validationFailureMessages = [];
 	    for (var i=0; i < VALIDATE_FORM_CALLBACKS.length; i++) {
 	        VALIDATE_FORM_CALLBACKS[i](validationFailureMessages);
@@ -411,13 +430,13 @@ function requireValidateForm () {
 	    }
 	    // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
 	    // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
-	    if ( $('#input-content').val() ) {
-	        $('#input-content')
+	    const $content = $('#input-content');
+	    const contentValue = $content.val() || '';
+	    if ( APPEND_FULL_STOP_TO_DESCRIPTION && contentValue ) {
+	        $content
 	            .val(
-	                ($('#input-content').val() || '')
-	                    .trim()+'.'
-	                // eslint-disable-next-line no-useless-escape
-	                .replace(/([\.\!\?])\.+$/, '$1')
+	                `${contentValue.trim()}.`
+	                    .replace(/([.!?])\.+$/, '$1')
 	            );
 	    }
 
@@ -431,13 +450,23 @@ function requireValidateForm () {
 	            .trim().replace(/\.$/, '')
 	    );
 	    // in case of decimal format, decimal digits will be limited to 6
-	    const lat = Number($('#input-lat').val());
-	    const long = Number($('#input-long').val());
-	    if ( !isNaN( lat ) ) {
-	        $('#input-lat').val(trimDecimal(lat,6));
-	    }
-	    if ( !isNaN( long ) ) {
-	        $('#input-long').val(trimDecimal(long,6));
+	    const latInput = ( $('#input-lat').val() || '' ).trim();
+	    const longInput = ( $('#input-long').val() || '' ).trim();
+	    if ( latInput && longInput ) {
+	        const lat = Number( latInput );
+	        const long = Number( longInput );
+	        if ( isNaN( lat ) || isNaN( long ) ) {
+	            return coordsError();
+	        } else {
+	            const savedLat = trimDecimal( lat, 6 );
+	            const savedLong = trimDecimal( long, 6 );
+	            $('#input-lat').val( savedLat );
+	            $('#input-long').val( savedLong );
+	        }
+	    } else if ( latInput && !longInput ) {
+	        return coordsError();
+	    } else if ( !latInput && longInput ) {
+	        return coordsError();
 	    }
 
 	    var webRegex = new RegExp('^https?://', 'i');
@@ -894,7 +923,14 @@ function requireCore () {
 	                                dialog.close(Config.SYNC_FORM_SELECTOR);
 	                            }
 	                        }
-	                        else if (validateForm( Callbacks.VALIDATE_FORM_CALLBACKS, PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS )) {
+	                        else if (
+	                            validateForm(
+	                                Callbacks.VALIDATE_FORM_CALLBACKS,
+	                                PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS,
+	                                PROJECT_CONFIG.APPEND_FULL_STOP_TO_DESCRIPTION,
+	                                translate
+	                            )
+	                        ) {
 	                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
 	                            dialog.close(this);
 	                            // if a sync editor dialog is open, get rid of it

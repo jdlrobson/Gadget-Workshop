@@ -1,7 +1,7 @@
 {
 	"root": true,
 	"extends": [
-		"../../.eslintrc"
+		"../.eslintrc"
 	],
 	"rules": {
 		"no-mixed-spaces-and-tabs": "off"

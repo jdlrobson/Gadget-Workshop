@@ -16,7 +16,7 @@ const wrapContent = function() {
     } else {
         if ( isNewMarkup ) {
             $('#bodyContent').find('.mw-heading2').each(function(){
-                $(this).nextUntil(".mw-heading").addBack().wrapAll('<div class="mw-h2section" />');
+                $(this).nextUntil(".mw-heading1, .mw-heading2").addBack().wrapAll('<div class="mw-h2section" />');
             });
         } else {
             $('#bodyContent').find('h2').each(function(){
@@ -26,7 +26,7 @@ const wrapContent = function() {
     }
     if ( isNewMarkup ) {
         $('#bodyContent').find('.mw-heading3').each(function(){
-            $(this).nextUntil(".mw-heading").addBack().wrapAll('<div class="mw-h3section" />');
+            $(this).nextUntil(".mw-heading1,.mw-heading2,.mw-heading3").addBack().wrapAll('<div class="mw-h3section" />');
         });
     } else {
         $('#bodyContent').find('h3').each(function(){

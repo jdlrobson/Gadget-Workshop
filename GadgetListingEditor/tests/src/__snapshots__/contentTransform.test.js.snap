@@ -5,28 +5,28 @@ exports[`wrapContent addListingButtons to h2s and h3s on new HTML 1`] = `
 <div class="mw-h2section"><div class="mw-heading mw-heading2">
     <h2 class="mw-headline" id="See">See</h2>
     <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
-</div><p>text</p></div>
-
-<div class="mw-h3section"><div class="mw-heading mw-heading3">
+</div><p>text</p><div class="mw-h3section"><div class="mw-heading mw-heading3">
     <h3 class="mw-headline" id="Museums">Museums</h3>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span></span>
-</div><p>text</p></div>
-
-<div class="mw-h3section"><div class="mw-heading mw-heading3">
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+</div><p>text</p></div><div class="mw-h3section"><div class="mw-heading mw-heading3">
     <h3 class="mw-headline" id="Temples">Temples</h3>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span></span>
-</div><p>text</p></div>
-
-<div class="mw-heading mw-heading4">
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+</div><p>text</p><div class="mw-heading mw-heading4">
     <h4 class="mw-headline" id="Buddhist">Buddhist</h4>
     <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span></span>
-</div>
-<p>text</p>
-<div class="mw-heading mw-heading4">
+</div><p>text</p><div class="mw-heading mw-heading4">
     <h4 class="mw-headline" id="Hindu">Hindu</h4>
     <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span></span>
-</div>
-<p>text</p>
+</div><p>text</p></div></div>
+
+
+
+
+
+
+
+
+
 <div class="mw-h2section"><div class="mw-heading mw-heading2">
     <h2 class="mw-headline" id="Do">Do</h2>
     <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
@@ -74,19 +74,19 @@ exports[`wrapContent it wraps new content 1`] = `
 "<div id="bodyContent">
 <div class="mw-h2section"><div class="mw-heading mw-heading2">
     <h2>hello</h2>
-</div></div>
-Text.
-<div class="mw-h3section"><div class="mw-heading mw-heading3">
+</div><div class="mw-h3section"><div class="mw-heading mw-heading3">
     <h3>hello jago</h3>
-</div></div>
-text.
-<div class="mw-h3section"><div class="mw-heading mw-heading3">
+</div></div><div class="mw-h3section"><div class="mw-heading mw-heading3">
     <h3>hello raffy</h3>
-</div></div>
-text.
-<div class="mw-heading mw-heading4">
+</div><div class="mw-heading mw-heading4">
     <h4>goodbye raffy </h4>
-</div>
+</div></div></div>
+Text.
+
+text.
+
+text.
+
 goodbye.
 <div class="mw-h2section"><div class="mw-heading mw-heading2">
     <h2>hi</h2>

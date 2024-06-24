@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`wrapContent it wraps new content 1`] = `
+"<div id="bodyContent">
+<div class="mw-h2section"><div class="mw-heading mw-heading2">
+    <h2>hello</h2>
+</div></div>
+Text.
+<div class="mw-h3section"><div class="mw-heading mw-heading3">
+    <h3>hello jago</h3>
+</div></div>
+text.
+<div class="mw-h3section"><div class="mw-heading mw-heading3">
+    <h3>hello raffy</h3>
+</div></div>
+text.
+<div class="mw-heading mw-heading4">
+    <h4>goodbye raffy </h4>
+</div>
+goodbye.
+<div class="mw-h2section"><div class="mw-heading mw-heading2">
+    <h2>hi</h2>
+</div></div>
+hi again.
+</div>"
+`;
+
+exports[`wrapContent it wraps old content 1`] = `
+"<div id="bodyContent">
+<div class="mw-h2section"><h2>hello</h2><div class="mw-h3section"><h3>hello jago</h3></div><div class="mw-h3section"><h3>hello raffy</h3><h4>goodbye raffy </h4></div></div>
+Text.
+
+text.
+
+text.
+
+goodbye.
+</div>"
+`;

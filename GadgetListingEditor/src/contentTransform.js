@@ -45,7 +45,47 @@ const insertAddListingPlaceholder = function(parentHeading, addMsg = '' ) {
     editSection.append(`<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">${addMsg}</a><span class="mw-editsection-bracket">]</span>`);
 };
 
+const getHeading = ( sectionId ) => {
+    // do not search using "#id" for two reasons. one, the article might
+    // re-use the same heading elsewhere and thus have two of the same ID.
+    // two, unicode headings are escaped ("è" becomes ".C3.A8") and the dot
+    // is interpreted by JQuery to indicate a child pattern unless it is
+    // escaped
+    const $nodeWithId = $(`[id="${sectionId}"]`);
+    if ( $nodeWithId.is( 'h2' )  ) {
+        return $nodeWithId;
+    } else {
+        return $nodeWithId.closest( 'h2' );
+    }
+};
+
+const getSectionElement = ( $headingElement ) => {
+    if ( $headingElement.is( '.section-heading' ) ) {
+        return $headingElement.next( 'section.mw-h2section' );
+    } else {
+        return $headingElement.closest( 'div.mw-h2section, section' );
+    }
+};
+
+/**
+ * Place an "add listing" link at the top of each section heading next to
+ * the "edit" link in the section heading.
+ */
+const addListingButtons = function( SECTION_TO_TEMPLATE_TYPE, addMsg = '' ) {
+    for (let sectionId in SECTION_TO_TEMPLATE_TYPE) {
+        const topHeading = getHeading( sectionId );
+        if (topHeading.length) {
+            insertAddListingPlaceholder(topHeading, addMsg);
+            const parentHeading = getSectionElement( topHeading );
+            $('h3', parentHeading).each(function() {
+                insertAddListingPlaceholder(this, addMsg);
+            });
+        }
+    }
+};
+
 module.exports = {
+    addListingButtons,
     wrapContent,
     insertAddListingPlaceholder
 };

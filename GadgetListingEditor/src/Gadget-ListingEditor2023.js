@@ -232,17 +232,6 @@ $(function() {
 		$(EDIT_LINK_CONTAINER_SELECTOR).append( editButton );
 	};
 
-	/**
-	 * Utility function for appending the "add listing" link text to a heading.
-	 */
-	var insertAddListingPlaceholder = function(parentHeading) {
-		const $pheading =  $(parentHeading);
-		const $headline = $(parentHeading).find( '.mw-headline' );
-		const editSection = $headline.length ? $headline.next('.mw-editsection') : $pheading.next( '.mw-editsection');
-		const addMsg = USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add;
-		editSection.append(`<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">${addMsg}</a><span class="mw-editsection-bracket">]</span>`);
-	};
-
 	const getHeading = ( sectionId ) => {
 		// do not search using "#id" for two reasons. one, the article might
 		// re-use the same heading elsewhere and thus have two of the same ID.
@@ -273,13 +262,14 @@ $(function() {
 		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
 			return false;
 		}
+		const addMsg = USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add;
 		for (var sectionId in SECTION_TO_TEMPLATE_TYPE) {
 			const topHeading = getHeading( sectionId );
 			if (topHeading.length) {
-				insertAddListingPlaceholder(topHeading);
+				contentTransform.insertAddListingPlaceholder(topHeading, addMsg);
 				var parentHeading = getSectionElement( topHeading );
 				$('h3', parentHeading).each(function() {
-					insertAddListingPlaceholder(this);
+					contentTransform.insertAddListingPlaceholder(this, addMsg);
 				});
 			}
 		}

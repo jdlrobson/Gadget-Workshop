@@ -35,6 +35,17 @@ const wrapContent = function() {
     }
 };
 
+/**
+ * Utility function for appending the "add listing" link text to a heading.
+ */
+const insertAddListingPlaceholder = function(parentHeading, addMsg = '' ) {
+    const $pheading =  $(parentHeading);
+    const $headline = $(parentHeading).find( '.mw-headline' );
+    const editSection = $headline.length ? $headline.next('.mw-editsection') : $pheading.next( '.mw-editsection');
+    editSection.append(`<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">${addMsg}</a><span class="mw-editsection-bracket">]</span>`);
+};
+
 module.exports = {
-    wrapContent
+    wrapContent,
+    insertAddListingPlaceholder
 };

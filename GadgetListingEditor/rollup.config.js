@@ -66,7 +66,9 @@ module.exports = [
             }
 		],
         plugins: [
-			updateVersion()
+			updateVersion(),
+			resolve(),
+			commonjs()
 		]
 	},
 ];

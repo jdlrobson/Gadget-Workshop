@@ -1451,7 +1451,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				format: 'json',
 			};
 			var ajaxSuccess = function(jsonObj) {
-				//console.log(jsonObj);
 				SisterSite.referenceWikidata(jsonObj);
 			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
@@ -1473,7 +1472,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				value
 			};
 			var ajaxSuccess = function(jsonObj) {
-				//console.log(jsonObj);
 				if( jsonObj.claim ) {
 					if( !(jsonObj.claim.references) ) { // if no references, add imported from
 						SisterSite.referenceWikidata(jsonObj);

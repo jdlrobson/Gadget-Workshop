@@ -58,6 +58,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${LC} </a></span>` );
             });
         } else phones.hide();
+
         for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
             Callbacks.CREATE_FORM_CALLBACKS[i](form, mode);
         }
@@ -122,14 +123,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * etc). If no matching type is found then the default listing template
      * type is returned.
      */
-    var findListingTypeForSection = function(entry) {
-        var sectionType = entry.closest('div.mw-h2section').children('h2').find('.mw-headline').attr('id');
-        for (var sectionId in Config.SECTION_TO_TEMPLATE_TYPE) {
-            if (sectionType == sectionId) {
-                return Config.SECTION_TO_TEMPLATE_TYPE[sectionId];
-            }
-        }
-        return Config.DEFAULT_LISTING_TEMPLATE;
+    const _findListingTypeForSection = require( './findListingTypeForSection.js' );
+    const findListingTypeForSection = function(entry ) {
+        console.log( Config.SECTION_TO_TEMPLATE_TYPE, Config.DEFAULT_LISTING_TEMPLATE )
+        return _findListingTypeForSection( entry, Config.SECTION_TO_TEMPLATE_TYPE, Config.DEFAULT_LISTING_TEMPLATE );
     };
 
     var replaceSpecial = function(str) {

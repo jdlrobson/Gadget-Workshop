@@ -18,10 +18,14 @@ npm start
 Go to https://en.wikivoyage.org/wiki/Nottingham?safemode=1
 
 In JavaScript console:
+```
 module = {};
+```
 // Copy paste contnets of Gadget-ListingEditor2023Main.js
-localModuleForDebugging = module.exports;
+```
+window._listingEditorModule = module.exports;
 importScriptURI('https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditorConfig');
+```
 // Copy paste contents of Gadget-ListingEditor2023.js
 // Click one of the buttons
 

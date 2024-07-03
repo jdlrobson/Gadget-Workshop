@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.3.0
+ * Listing Editor v3.3.1
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.3.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.3.1'
 
 'use strict';
 
@@ -409,6 +409,26 @@ function requireParseDMS () {
 	return parseDMS_1;
 }
 
+var findListingTypeForSection;
+var hasRequiredFindListingTypeForSection;
+
+function requireFindListingTypeForSection () {
+	if (hasRequiredFindListingTypeForSection) return findListingTypeForSection;
+	hasRequiredFindListingTypeForSection = 1;
+	findListingTypeForSection = function(entry, sectionToTemplateType, defaultType) {
+	    var closestSection = entry.closest('div.mw-h2section');
+	    var closestHeading = closestSection.find( '.mw-heading2 h2, h2 .mw-headline');
+	    var sectionType = closestHeading.attr('id');
+	    for (var sectionId in sectionToTemplateType) {
+	        if (sectionType == sectionId) {
+	            return sectionToTemplateType[sectionId];
+	        }
+	    }
+	    return defaultType;
+	};
+	return findListingTypeForSection;
+}
+
 var validateForm_1;
 var hasRequiredValidateForm;
 
@@ -574,6 +594,7 @@ function requireCore () {
 	                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${LC} </a></span>` );
 	            });
 	        } else phones.hide();
+
 	        for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
 	            Callbacks.CREATE_FORM_CALLBACKS[i](form, mode);
 	        }
@@ -638,14 +659,10 @@ function requireCore () {
 	     * etc). If no matching type is found then the default listing template
 	     * type is returned.
 	     */
-	    var findListingTypeForSection = function(entry) {
-	        var sectionType = entry.closest('div.mw-h2section').children('h2').find('.mw-headline').attr('id');
-	        for (var sectionId in Config.SECTION_TO_TEMPLATE_TYPE) {
-	            if (sectionType == sectionId) {
-	                return Config.SECTION_TO_TEMPLATE_TYPE[sectionId];
-	            }
-	        }
-	        return Config.DEFAULT_LISTING_TEMPLATE;
+	    const _findListingTypeForSection = requireFindListingTypeForSection();
+	    const findListingTypeForSection = function(entry ) {
+	        console.log( Config.SECTION_TO_TEMPLATE_TYPE, Config.DEFAULT_LISTING_TEMPLATE );
+	        return _findListingTypeForSection( entry, Config.SECTION_TO_TEMPLATE_TYPE, Config.DEFAULT_LISTING_TEMPLATE );
 	    };
 
 	    var replaceSpecial = function(str) {
@@ -2978,7 +2995,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				format: 'json',
 			};
 			var ajaxSuccess = function(jsonObj) {
-				//console.log(jsonObj);
 				SisterSite.referenceWikidata(jsonObj);
 			};
 			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
@@ -3000,7 +3016,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				value
 			};
 			var ajaxSuccess = function(jsonObj) {
-				//console.log(jsonObj);
 				if( jsonObj.claim ) {
 					if( !(jsonObj.claim.references) ) { // if no references, add imported from
 						SisterSite.referenceWikidata(jsonObj);

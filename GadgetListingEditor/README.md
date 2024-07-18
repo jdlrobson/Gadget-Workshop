@@ -39,7 +39,10 @@ Projects that wish to use this gadget must create two modules in [[MediaWiki:Gad
 and copy the following files:
 * MediaWiki:Gadget-ListingEditorConfig: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditorConfig.js
 * MediaWiki:Gadget-ListingEditor.json https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor.json
-* MediaWiki:ListingEditor2023.js  https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditor2023.js
+* MediaWiki:ListingEditor2023.js  should contain the following code:
+```
+importScriptURI('https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditor2023');
+```
 
 
 ## Local development

@@ -176,4 +176,14 @@ describe( 'findListingTypeForSection', () => {
         );
         expect( type ).toBe( 'go' );
     } );
+
+    it( 'works for parsoid HTML on h3s', () => {
+        $( parsoidHTML  ).appendTo( document.body );
+        const type = findListingTypeForSection(
+            $( '.mw-heading3 .listingeditor-add' ),
+            sectionToTemplateType,
+            'listing'
+        );
+        expect( type ).toBe( 'go' );
+    } );
 } );

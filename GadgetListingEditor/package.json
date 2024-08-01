@@ -1,6 +1,6 @@
 {
   "name": "gadget-listing-editor",
-  "version": "3.4.0-beta",
+  "version": "3.4.0",
   "scripts": {
     "start": "npm test && rollup -c",
     "test": "eslint . && jest"

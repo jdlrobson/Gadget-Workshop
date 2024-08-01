@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.4.0-beta
+ * Listing Editor v3.4.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.4.0-beta'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.4.0'
 
 'use strict';
 
@@ -416,7 +416,11 @@ function requireFindListingTypeForSection () {
 	if (hasRequiredFindListingTypeForSection) return findListingTypeForSection;
 	hasRequiredFindListingTypeForSection = 1;
 	findListingTypeForSection = function(entry, sectionToTemplateType, defaultType) {
-	    const closestSection = entry.closest('div.mw-h2section, section');
+	    let closestSection = entry.closest('div.mw-h2section, section');
+	    while ( closestSection.is( 'section' ) && closestSection.parents( 'section' ).length ) {
+	        // check it's the top level section.
+	        closestSection = closestSection.parent( 'section' );
+	    }
 	    const closestHeading = closestSection.find( '.mw-heading2 h2, h2 .mw-headline');
 	    const sectionType = closestHeading.attr('id');
 	    for (var sectionId in sectionToTemplateType) {

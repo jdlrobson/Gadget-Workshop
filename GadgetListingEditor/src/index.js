@@ -933,7 +933,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				// copied from dialog above. ideally should be global variable TODO
 				var windowWidth = $(window).width();
 				var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? (0.85*Config.MAX_DIALOG_WIDTH) : 'auto';
-				dialog.open(msg, {
+				var $syncDialogElement = $( msg );
+				dialog.open($syncDialogElement, {
 					title: translate( 'syncTitle' ),
 					width: dialogWidth,
 					dialogClass: 'listing-editor-dialog',

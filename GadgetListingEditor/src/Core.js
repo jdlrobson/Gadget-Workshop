@@ -887,7 +887,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      */
     var saveFailed = function(msg) {
         dialog.destroy(SAVE_FORM_SELECTOR);
-        dialog.open(Config.EDITOR_FORM_SELECTOR);
+        dialog.open($(Config.EDITOR_FORM_SELECTOR));
         alert(msg);
     };
 

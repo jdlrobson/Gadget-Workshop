@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.4.0
+ * Listing Editor v3.5.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.4.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.5.0'
 
 'use strict';
 
@@ -1427,7 +1427,7 @@ function requireCore () {
 	     */
 	    var saveFailed = function(msg) {
 	        dialog.destroy(SAVE_FORM_SELECTOR);
-	        dialog.open(Config.EDITOR_FORM_SELECTOR);
+	        dialog.open($(Config.EDITOR_FORM_SELECTOR));
 	        alert(msg);
 	    };
 
@@ -2481,7 +2481,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				// copied from dialog above. ideally should be global variable TODO
 				var windowWidth = $(window).width();
 				var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? (0.85*Config.MAX_DIALOG_WIDTH) : 'auto';
-				dialog.open(msg, {
+				var $syncDialogElement = $( msg );
+				dialog.open($syncDialogElement, {
 					title: translate( 'syncTitle' ),
 					width: dialogWidth,
 					dialogClass: 'listing-editor-dialog',

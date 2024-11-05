@@ -97,6 +97,21 @@ Text.
         expect( document.body.querySelectorAll( '.listingeditor-add' ).length ).toBe( 1 );
     } );
 
+    it( 'adds a button in new HTML if requested', () => {
+        $( 'body').html(
+            `<div id="bodyContent">
+<div class="mw-heading mw-heading2">
+    <h2 class="mw-headline" id="See">See</h2>
+    ${EDIT_SECTION_BRACKET}
+</div>
+Text.
+</div>`
+        );
+        contentTransform.insertAddListingPlaceholder( '#See', '', true );
+        expect( document.body.innerHTML ).toMatchSnapshot();
+        expect( document.body.querySelectorAll( '.listingeditor-add' ).length ).toBe( 1 );
+    } );
+
     it( 'addListingButtons to h2s and h3s on old HTML', () => {
         $( 'body').html(
             `<div id="bodyContent">

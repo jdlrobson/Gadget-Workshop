@@ -35,14 +35,28 @@ const wrapContent = function() {
     }
 };
 
+const insertAddListingBracketedLink = ( addMsg ) => {
+    return `<a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">${addMsg}</a>`
+};
+
+const insertAddListingIconButton = ( addMsg ) => {
+return `<button class="listingeditor-add cdx-button cdx-button--size-large cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--icon-only cdx-button--weight-quiet">
+    <span class="minerva-icon minerva-icon--addListing"></span>
+    <span>${addMsg}</span>
+</button>`
+};
+
 /**
  * Utility function for appending the "add listing" link text to a heading.
  */
-const insertAddListingPlaceholder = function(parentHeading, addMsg = '' ) {
+const insertAddListingPlaceholder = function(parentHeading, addMsg = '', useButton = false ) {
     const $pheading =  $(parentHeading);
     const $headline = $(parentHeading).find( '.mw-headline' );
     const editSection = $headline.length ? $headline.next('.mw-editsection') : $pheading.next( '.mw-editsection');
-    editSection.append(`<span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">${addMsg}</a><span class="mw-editsection-bracket">]</span>`);
+    const btn = useButton ?
+        insertAddListingIconButton( addMsg ) :
+        insertAddListingBracketedLink( addMsg );
+    editSection.append( btn );
 };
 
 const getHeading = ( sectionId ) => {
@@ -72,13 +86,14 @@ const getSectionElement = ( $headingElement ) => {
  * the "edit" link in the section heading.
  */
 const addListingButtons = function( SECTION_TO_TEMPLATE_TYPE, addMsg = '' ) {
+    const useButton = mw.config.get( 'skin' ) === 'minerva';
     for (let sectionId in SECTION_TO_TEMPLATE_TYPE) {
         const topHeading = getHeading( sectionId );
         if (topHeading.length) {
-            insertAddListingPlaceholder(topHeading, addMsg);
+            insertAddListingPlaceholder(topHeading, addMsg, useButton );
             const parentHeading = getSectionElement( topHeading );
             $('h3', parentHeading).each(function() {
-                insertAddListingPlaceholder(this, addMsg);
+                insertAddListingPlaceholder(this, addMsg, useButton );
             });
         }
     }

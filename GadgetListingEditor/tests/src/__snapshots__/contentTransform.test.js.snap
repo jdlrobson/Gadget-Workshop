@@ -4,13 +4,13 @@ exports[`wrapContent addListingButtons to h2s and h3s on new HTML 1`] = `
 "<div id="bodyContent">
 <div class="mw-h2section"><div class="mw-heading mw-heading2">
     <h2 class="mw-headline" id="See">See</h2>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">add</a></span>
 </div><p>text</p><div class="mw-h3section"><div class="mw-heading mw-heading3">
     <h3 class="mw-headline" id="Museums">Museums</h3>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">add</a></span>
 </div><p>text</p></div><div class="mw-h3section"><div class="mw-heading mw-heading3">
     <h3 class="mw-headline" id="Temples">Temples</h3>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">add</a></span>
 </div><p>text</p><div class="mw-heading mw-heading4">
     <h4 class="mw-headline" id="Buddhist">Buddhist</h4>
     <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span></span>
@@ -29,7 +29,7 @@ exports[`wrapContent addListingButtons to h2s and h3s on new HTML 1`] = `
 
 <div class="mw-h2section"><div class="mw-heading mw-heading2">
     <h2 class="mw-headline" id="Do">Do</h2>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">add</a></span>
 </div><p>text</p></div>
 
 </div>"
@@ -39,13 +39,13 @@ exports[`wrapContent addListingButtons to h2s and h3s on old HTML 1`] = `
 "<div id="bodyContent">
 <div class="mw-h2section"><h2>
     <span class="mw-headline" id="See">See</span>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">add</a></span>
 </h2><p>text</p><div class="mw-h3section"><h3>
     <span class="mw-headline" id="Museums">Museums</span>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">add</a></span>
 </h3><p>text</p></div><div class="mw-h3section"><h3>
     <span class="mw-headline" id="Temples">Temples</span>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">add</a></span>
 </h3><p>text</p><h4>
     <span class="mw-headline" id="Buddhist">Buddhist</span>
     <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span></span>
@@ -64,9 +64,22 @@ exports[`wrapContent addListingButtons to h2s and h3s on old HTML 1`] = `
 
 <div class="mw-h2section"><h2>
     <span class="mw-headline" id="Do">Do</span>
-    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><span class="mw-editsection-bracket">[</span><a href="javascript:" class="listingeditor-add">add</a><span class="mw-editsection-bracket">]</span></span>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">add</a></span>
 </h2><p>text</p></div>
 
+</div>"
+`;
+
+exports[`wrapContent adds a button in new HTML if requested 1`] = `
+"<div id="bodyContent">
+<div class="mw-heading mw-heading2">
+    <h2 class="mw-headline" id="See">See</h2>
+    <span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span><button class="listingeditor-add cdx-button cdx-button--size-large cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--icon-only cdx-button--weight-quiet">
+    <span class="minerva-icon minerva-icon--addListing"></span>
+    <span></span>
+</button></span>
+</div>
+Text.
 </div>"
 `;
 

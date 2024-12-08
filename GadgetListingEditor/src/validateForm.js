@@ -1,4 +1,5 @@
 const trimDecimal = require( './trimDecimal.js' );
+const parseDMS = require( './parseDMS.js' );
 
 /**
  * Logic invoked on form submit to analyze the values entered into the
@@ -62,10 +63,18 @@ const validateForm = function(
     const latInput = ( $('#input-lat').val() || '' ).trim();
     const longInput = ( $('#input-long').val() || '' ).trim();
     if ( latInput && longInput ) {
-        const lat = Number( latInput );
-        const long = Number( longInput );
+        let lat = Number( latInput );
+        let long = Number( longInput );
         if ( isNaN( lat ) || isNaN( long ) ) {
-            return coordsError();
+            // Perhaps in the form 39°22′32″N ?
+            lat = parseDMS( latInput );
+            long = parseDMS( longInput );
+            // update existing values.
+            $('#input-lat').val( lat );
+            $('#input-long').val( long );
+            if ( isNaN( lat ) || isNaN( long ) ) {
+                return coordsError();
+            }
         } else {
             const savedLat = trimDecimal( lat, 6 );
             const savedLong = trimDecimal( long, 6 );

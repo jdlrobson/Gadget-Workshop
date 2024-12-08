@@ -72,13 +72,13 @@ describe( 'Core', () => {
 		expect( validated ).toBe( false );
 	} );
 
-	it( 'validate (only accepts decimals)', () => {
+	it( 'validate other coordinate types (fixes #10)', () => {
 		makeForm();
 
 		$('#input-lat').val( '32° 18\' 23.1 N' );
 		$('#input-long').val( '122° 36\' 52.5" W' );
 		const validated = validateForm( Callbacks );
-		expect( validated ).toBe( false );
+		expect( validated ).toBe( true );
 	} );
 
 	it( 'validate (accepts decimals)', () => {

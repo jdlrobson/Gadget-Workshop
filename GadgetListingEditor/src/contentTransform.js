@@ -90,7 +90,7 @@ const addListingButtons = function( SECTION_TO_TEMPLATE_TYPE, addMsg = '' ) {
     for (let sectionId in SECTION_TO_TEMPLATE_TYPE) {
         const topHeading = getHeading( sectionId );
         if (topHeading.length) {
-            insertAddListingPlaceholder(topHeading, addMsg);
+            insertAddListingPlaceholder(topHeading, addMsg, useButton );
             const parentHeading = getSectionElement( topHeading );
             $('h3', parentHeading).each(function() {
                 insertAddListingPlaceholder(this, addMsg, useButton );

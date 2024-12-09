@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.6.0
+ * Listing Editor v3.7.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.6.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.0'
 
 'use strict';
 
@@ -2514,22 +2514,22 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 						document.getElementById("listing-editor-sync").outerHTML = ""; // delete the dialog. Direct DOM manipulation so the model gets updated. This is to avoid issues with subsequent dialogs no longer matching labels with inputs because IDs are already in use.
 					}
 				});
-				if($(msg).find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
+				if($syncDialogElement.find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
 					submitFunction();
 					dialog.close(Config.SYNC_FORM_SELECTOR);
 					alert( translate( 'wikidataSharedMatch' ) );
 				}
 				wikidataLink("", $("#input-wikidata-value").val()); // called to append the Wikidata link to the dialog title
 
-				$('.clear').on( 'click',  function() {
+				$syncDialogElement.find('.clear').on( 'click',  function() {
 					$(Config.SYNC_FORM_SELECTOR).find('input:radio:not([id]):enabled').prop('checked', true);
 				});
-				$('.syncSelect').on( 'click',  function() {
+				$syncDialogElement.find('.syncSelect').on( 'click',  function() {
 					var field = $(this).attr('name'); // wv or wd
 					$(`${Config.SYNC_FORM_SELECTOR} input[type=radio]`).prop('checked', false);
 					$(`${Config.SYNC_FORM_SELECTOR} input[id$=${field}]`).prop('checked', true);
 				});
-				$('#autoSelect').on( 'click',  function() { // auto select non-empty values
+				$syncDialogElement.find('#autoSelect').on( 'click',  function() { // auto select non-empty values
 					$(Config.SYNC_FORM_SELECTOR).find('.choose-row').each(function () {
 						var WD_value = $(this).find('label:first').text().trim().length;
 						var WV_value = $(this).find('label:last').text().trim().length;

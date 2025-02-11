@@ -171,6 +171,7 @@ $(function() {
 		$(EDIT_LINK_CONTAINER_SELECTOR).append( editButton );
 	};
 
+	let setup = false;
 	/**
 	 * Called on DOM ready, this method initializes the listing editor and
 	 * adds the "add/edit listing" links to sections and existing listings.
@@ -180,24 +181,30 @@ $(function() {
 			return;
 		}
 		wrapContent();
-		mw.hook( 'wikipage.content' ).add(
-			() => {
-
-				if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
-					return false;
-				}
-				contentTransform.addListingButtons(
-					SECTION_TO_TEMPLATE_TYPE,
-					USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add
-				);
-				$('.listingeditor-add').on('click', function() {
-					const $this = $(this);
-					loadMain().then( function ( core ) {
-						core.initListingEditorDialog(core.MODE_ADD, $this);
-					} );
-				});
+		const init = () => {
+			setup = true;
+			if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
+				return false;
 			}
+			contentTransform.addListingButtons(
+				SECTION_TO_TEMPLATE_TYPE,
+				USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add
+			);
+			$('.listingeditor-add').on('click', function() {
+				const $this = $(this);
+				loadMain().then( function ( core ) {
+					core.initListingEditorDialog(core.MODE_ADD, $this);
+				} );
+			});
+		};
+		mw.hook( 'wikipage.content' ).add(
+			init
 		);
+		setTimeout(() => {
+			if ( !setup ) {
+				init();
+			}
+		}, 1000);
 		addEditButtons();
 	};
 	initListingEditor();

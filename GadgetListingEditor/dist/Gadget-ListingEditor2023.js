@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.7.0
+ * Listing Editor v3.7.1
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.1'
 
 'use strict';
 
@@ -73,14 +73,14 @@ const wrapContent = function() {
 };
 
 const insertAddListingBracketedLink = ( addMsg ) => {
-    return `<a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">${addMsg}</a>`
+    return $( `<a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">${addMsg}</a>` );
 };
 
 const insertAddListingIconButton = ( addMsg ) => {
-return `<button class="listingeditor-add cdx-button cdx-button--size-large cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--icon-only cdx-button--weight-quiet">
+return $( `<button class="listingeditor-add cdx-button cdx-button--size-large cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--icon-only cdx-button--weight-quiet">
     <span class="minerva-icon minerva-icon--addListing"></span>
     <span>${addMsg}</span>
-</button>`
+</button>` );
 };
 
 /**
@@ -380,6 +380,7 @@ $(function() {
 		$(EDIT_LINK_CONTAINER_SELECTOR).append( editButton );
 	};
 
+	let setup = false;
 	/**
 	 * Called on DOM ready, this method initializes the listing editor and
 	 * adds the "add/edit listing" links to sections and existing listings.
@@ -389,24 +390,30 @@ $(function() {
 			return;
 		}
 		wrapContent();
-		mw.hook( 'wikipage.content' ).add(
-			() => {
-
-				if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
-					return false;
-				}
-				contentTransform.addListingButtons(
-					SECTION_TO_TEMPLATE_TYPE,
-					USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add
-				);
-				$('.listingeditor-add').on('click', function() {
-					const $this = $(this);
-					loadMain().then( function ( core ) {
-						core.initListingEditorDialog(core.MODE_ADD, $this);
-					} );
-				});
+		const init = () => {
+			setup = true;
+			if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
+				return false;
 			}
+			contentTransform.addListingButtons(
+				SECTION_TO_TEMPLATE_TYPE,
+				USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add
+			);
+			$('.listingeditor-add').on('click', function() {
+				const $this = $(this);
+				loadMain().then( function ( core ) {
+					core.initListingEditorDialog(core.MODE_ADD, $this);
+				} );
+			});
+		};
+		mw.hook( 'wikipage.content' ).add(
+			init
 		);
+		setTimeout(() => {
+			if ( !setup ) {
+				init();
+			}
+		}, 1000);
 		addEditButtons();
 	};
 	initListingEditor();

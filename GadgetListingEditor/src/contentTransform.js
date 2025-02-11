@@ -36,14 +36,14 @@ const wrapContent = function() {
 };
 
 const insertAddListingBracketedLink = ( addMsg ) => {
-    return `<a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">${addMsg}</a>`
+    return $( `<a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">${addMsg}</a>` );
 };
 
 const insertAddListingIconButton = ( addMsg ) => {
-return `<button class="listingeditor-add cdx-button cdx-button--size-large cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--icon-only cdx-button--weight-quiet">
+return $( `<button class="listingeditor-add cdx-button cdx-button--size-large cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--icon-only cdx-button--weight-quiet">
     <span class="minerva-icon minerva-icon--addListing"></span>
     <span>${addMsg}</span>
-</button>`
+</button>` );
 };
 
 /**

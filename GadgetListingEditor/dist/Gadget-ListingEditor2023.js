@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.7.1
+ * Listing Editor v3.7.2
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.1'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.2'
 
 'use strict';
 

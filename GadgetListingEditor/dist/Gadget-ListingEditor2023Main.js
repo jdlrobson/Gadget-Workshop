@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.7.2
+ * Listing Editor v3.7.3
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.2'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.3'
 
 'use strict';
 
@@ -36,115 +36,411 @@ function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
+var propertyP625$1 = [
+	"lat",
+	"long"
+];
+var propertyP856$1 = [
+	"url"
+];
+var propertyP968$1 = [
+	"email"
+];
+var propertyP238$1 = [
+	"alt"
+];
+var propertyP18$1 = [
+	"image"
+];
+var addTitle$1 = "Add New Listing";
+var editTitle$1 = "Edit Existing Listing";
+var addTitleBeta$1 = "Add New Listing (Beta)";
+var editTitleBeta$1 = "Edit Existing Listing (Beta)";
+var syncTitle$1 = "Wikidata Sync";
+var saving$1 = "Saving...";
+var submit$1 = "Submit";
+var cancel$1 = "Cancel";
+var cancelAll$1 = "Clear all";
+var preview$1 = "Preview";
+var previewOff$1 = "Preview off";
+var refresh$1 = "↺";
+var refreshTitle$1 = "Refresh preview";
+var selectAll$1 = "Select all";
+var selectAlternatives$1 = "Select all values where the alternative is empty.";
+var validationEmptyListing$1 = "Please enter either a name or an address";
+var validationEmail$1 = "Please ensure the email address is valid";
+var validationWikipedia$1 = "Please insert the Wikipedia page title only; not the full URL address";
+var validationImage$1 = "Please insert the Commons image title only without any prefix";
+var added$1 = "Added listing for ";
+var updated$1 = "Updated listing for ";
+var removed$1 = "Deleted listing for ";
+var helpPage$1 = "//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor";
+var enterCaptcha$1 = "Enter CAPTCHA";
+var externalLinks$1 = "Your edit includes new external links.";
+var licenseText$1 = "By clicking \"Submit\", you agree to the <a class=\"external\" target=\"_blank\" href=\"//wikimediafoundation.org/wiki/Terms_of_use\">Terms of use</a>, and you irrevocably agree to release your contribution under the <a class=\"external\" target=\"_blank\" href=\"//en.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license\">CC-BY-SA 3.0 License</a>. You agree that a hyperlink or URL is sufficient attribution under the Creative Commons license.";
+var ajaxInitFailure$1 = "Error: Unable to initialize the listing editor";
+var sharedWikipedia$1 = "wikipedia";
+var synchronized$1 = "synchronized.";
+var submitApiError$1 = "Error: The server returned an error while attempting to save the listing, please try again";
+var submitBlacklistError$1 = "Error: A value in the data submitted has been blacklisted, please remove the blacklisted pattern and try again";
+var submitUnknownError$1 = "Error: An unknown error has been encountered while attempting to save the listing, please try again";
+var submitHttpError$1 = "Error: The server responded with an HTTP error while attempting to save the listing, please try again";
+var submitEmptyError$1 = "Error: The server returned an empty response while attempting to save the listing, please try again";
+var viewCommonsPage$1 = "view Commons page";
+var viewWikidataPage$1 = "view Wikidata record";
+var viewWikipediaPage$1 = "view Wikipedia page";
+var wikidataSharedMatch$1 = "No differences found between local and Wikidata values";
+var wikidataShared$1 = "The following data was found in the shared Wikidata record. Update shared fields using these values?";
+var wikidataSharedNotFound$1 = "No shared data found in the Wikidata repository";
+var wikidataSyncBlurb$1 = "Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally.<p>You are encouraged to go to the Wikidata item and add references for any data you change.";
+var editSummary$1 = "Edit Summary";
+var name$1 = "Name";
+var alt$1 = "Alt";
+var website$1 = "Website";
+var address$1 = "Address";
+var directions$1 = "Directions";
+var phone$1 = "Phone";
+var tollfree$1 = "Tollfree";
+var fax$1 = "Fax";
+var lastUpdated$1 = "Last Updated";
+var syncWikidata$1 = "Sync shared fields to/from Wikidata";
+var syncWikidataTitle$1 = "This simply gets the values from Wikidata and replaces the local values. Useful for new listings.";
+var syncWikidataLabel$1 = "(quick fetch)";
+var content$1 = "Content";
+var minorTitle$1 = "Check the box if the change to the listing is minor, such as a typo correction";
+var minorLabel$1 = "minor change?";
+var email$1 = "Email";
+var type$1 = "Type";
+var latitude$1 = "Latitude";
+var longitude$1 = "Longitude";
+var findOnMap$1 = "find on map";
+var hours$1 = "Hours";
+var checkin$1 = "Check-in";
+var checkout$1 = "Check-out";
+var price$1 = "Price";
+var wpWd$1 = "Get ID from Wikipedia article";
+var wikidataRemoveTitle$1 = "Delete the Wikidata entry from this listing";
+var wikidataRemoveLabel$1 = "remove";
+var image$1 = "Image";
+var listingTooltip$1 = "Check the box if the business is no longer in operation or if the listing should be deleted for some other reason, and it will be removed from this article";
+var listingLabel$1 = "delete this listing?";
+var listingUpdatedTooltip$1 = "Check the box if the information in this listing has been verified to be current and accurate, and the last updated date will be changed to the current date";
+var listingUpdatedLabel$1 = "mark the listing as up-to-date?";
+var natlCurrencyTitle$1 = "";
+var intlCurrenciesTitle$1 = "";
+var require$$0 = {
+	"report-bug": "Report bug",
+	"listing-editor-version": "Version $1",
+	"coordinates-error": "Coordinates are in an invalid form. Please use decimal degrees.",
+	"placeholder-name": "name of place",
+	"placeholder-alt": "also known as",
+	"placeholder-url": "https://www.example.com",
+	"placeholder-address": "address of place",
+	"placeholder-directions": "how to get here",
+	"placeholder-phone": "+55 555 555 5555",
+	"placeholder-tollfree": "+1 800 100 1000",
+	"placeholder-fax": "+55 555 555 555",
+	"placeholder-email": "info@example.com",
+	"placeholder-lastedit": "2020-01-15",
+	"placeholder-lat": "11.11111",
+	"placeholder-long": "111.11111",
+	"placeholder-hours": "9AM-5PM or 09:00-17:00",
+	"placeholder-checkin": "check in time",
+	"placeholder-checkout": "check out time",
+	"placeholder-price": "entry or service price",
+	"placeholder-wikidata-label": "wikidata record",
+	"placeholder-wikipedia": "wikipedia article",
+	"placeholder-image": "image of place",
+	"placeholder-content": "description of place",
+	"placeholder-summary": "reason listing was changed",
+	propertyP625: propertyP625$1,
+	propertyP856: propertyP856$1,
+	propertyP968: propertyP968$1,
+	propertyP238: propertyP238$1,
+	propertyP18: propertyP18$1,
+	addTitle: addTitle$1,
+	editTitle: editTitle$1,
+	addTitleBeta: addTitleBeta$1,
+	editTitleBeta: editTitleBeta$1,
+	syncTitle: syncTitle$1,
+	saving: saving$1,
+	submit: submit$1,
+	cancel: cancel$1,
+	cancelAll: cancelAll$1,
+	preview: preview$1,
+	previewOff: previewOff$1,
+	refresh: refresh$1,
+	refreshTitle: refreshTitle$1,
+	selectAll: selectAll$1,
+	selectAlternatives: selectAlternatives$1,
+	validationEmptyListing: validationEmptyListing$1,
+	validationEmail: validationEmail$1,
+	validationWikipedia: validationWikipedia$1,
+	validationImage: validationImage$1,
+	added: added$1,
+	updated: updated$1,
+	removed: removed$1,
+	helpPage: helpPage$1,
+	enterCaptcha: enterCaptcha$1,
+	externalLinks: externalLinks$1,
+	licenseText: licenseText$1,
+	ajaxInitFailure: ajaxInitFailure$1,
+	sharedWikipedia: sharedWikipedia$1,
+	synchronized: synchronized$1,
+	submitApiError: submitApiError$1,
+	submitBlacklistError: submitBlacklistError$1,
+	submitUnknownError: submitUnknownError$1,
+	submitHttpError: submitHttpError$1,
+	submitEmptyError: submitEmptyError$1,
+	viewCommonsPage: viewCommonsPage$1,
+	viewWikidataPage: viewWikidataPage$1,
+	viewWikipediaPage: viewWikipediaPage$1,
+	wikidataSharedMatch: wikidataSharedMatch$1,
+	wikidataShared: wikidataShared$1,
+	wikidataSharedNotFound: wikidataSharedNotFound$1,
+	wikidataSyncBlurb: wikidataSyncBlurb$1,
+	editSummary: editSummary$1,
+	name: name$1,
+	alt: alt$1,
+	website: website$1,
+	address: address$1,
+	directions: directions$1,
+	phone: phone$1,
+	tollfree: tollfree$1,
+	fax: fax$1,
+	lastUpdated: lastUpdated$1,
+	syncWikidata: syncWikidata$1,
+	syncWikidataTitle: syncWikidataTitle$1,
+	syncWikidataLabel: syncWikidataLabel$1,
+	content: content$1,
+	minorTitle: minorTitle$1,
+	minorLabel: minorLabel$1,
+	email: email$1,
+	type: type$1,
+	latitude: latitude$1,
+	longitude: longitude$1,
+	findOnMap: findOnMap$1,
+	hours: hours$1,
+	checkin: checkin$1,
+	checkout: checkout$1,
+	price: price$1,
+	wpWd: wpWd$1,
+	wikidataRemoveTitle: wikidataRemoveTitle$1,
+	wikidataRemoveLabel: wikidataRemoveLabel$1,
+	image: image$1,
+	listingTooltip: listingTooltip$1,
+	listingLabel: listingLabel$1,
+	listingUpdatedTooltip: listingUpdatedTooltip$1,
+	listingUpdatedLabel: listingUpdatedLabel$1,
+	natlCurrencyTitle: natlCurrencyTitle$1,
+	intlCurrenciesTitle: intlCurrenciesTitle$1
+};
+
+var propertyP625 = [
+	"vĩ độ",
+	"kinh độ"
+];
+var propertyP856 = [
+	"url"
+];
+var propertyP968 = [
+	"email"
+];
+var propertyP238 = [
+	"tên khác"
+];
+var propertyP18 = [
+	"hình ảnh"
+];
+var addTitle = "Thêm địa điểm mới";
+var editTitle = "Chỉnh sửa địa điểm hiện có";
+var addTitleBeta = "Thêm địa điểm mới (Beta)";
+var editTitleBeta = "Chỉnh sửa địa điểm hiện có (Beta)";
+var syncTitle = "Đồng bộ Wikidata";
+var saving = "Đang lưu...";
+var submit = "Lưu";
+var cancel = "Hủy";
+var cancelAll = "Xóa tất cả";
+var preview = "Xem trước";
+var previewOff = "Tắt xem trước";
+var refresh = "↺";
+var refreshTitle = "Làm mới xem trước";
+var selectAll = "Chọn tất cả";
+var selectAlternatives = "Chọn tất cả các giá trị mà không có tên thay thế.";
+var validationEmptyListing = "Vui lòng nhập tên hoặc địa chỉ";
+var validationEmail = "Vui lòng đảm bảo địa chỉ email hợp lệ";
+var validationWikipedia = "Vui lòng chỉ nhập tên trang Wikipedia, không phải URL đầy đủ";
+var validationImage = "Vui lòng chỉ nhập tiêu đề hình ảnh trên Commons, không có tiền tố";
+var added = "Đã thêm địa điểm cho ";
+var updated = "Đã cập nhật địa điểm cho ";
+var removed = "Đã xóa địa điểm cho ";
+var helpPage = "//vi.wikivoyage.org/wiki/Wikivoyage:Trình_soạn_thảo_địa_điểm";
+var enterCaptcha = "Nhập CAPTCHA";
+var externalLinks = "Sửa đổi của bạn bao gồm các liên kết ngoài mới.";
+var licenseText = "Bằng cách nhấp vào \"Lưu\", bạn đồng ý với <a class=\"external\" target=\"_blank\" href=\"//foundation.wikimedia.org/wiki/Special:MyLanguage/Terms_of_use\">Điều khoản sử dụng</a>, và bạn đồng ý phát hành, một cách không thể hủy bỏ, các đóng góp của bạn theo <a class=\"external\" target=\"_blank\" href=\"//vi.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license\">Giấy phép CC-BY-SA 3.0</a>. Bạn đồng ý rằng một siêu liên kết hoặc URL là đủ để ghi công theo giấy phép Creative Commons.";
+var ajaxInitFailure = "Lỗi: Không thể khởi tạo trình soạn thảo địa điểm";
+var sharedWikipedia = "wikipedia";
+var synchronized = "đã đồng bộ.";
+var submitApiError = "Lỗi: Máy chủ trả về lỗi khi cố gắng lưu địa điểm, vui lòng thử lại";
+var submitBlacklistError = "Lỗi: Một giá trị trong dữ liệu đã gửi nằm trong danh sách đen, vui lòng xóa dữ liệu bị cấm và thử lại";
+var submitUnknownError = "Lỗi: Đã xảy ra lỗi không xác định khi cố gắng lưu địa điểm, vui lòng thử lại";
+var submitHttpError = "Lỗi: Máy chủ phản hồi với lỗi HTTP khi cố gắng lưu địa điểm, vui lòng thử lại";
+var submitEmptyError = "Lỗi: Máy chủ trả về phản hồi trống khi cố gắng lưu địa điểm, vui lòng thử lại";
+var viewCommonsPage = "xem trang Commons";
+var viewWikidataPage = "xem khoản mục Wikidata";
+var viewWikipediaPage = "xem trang Wikipedia";
+var wikidataSharedMatch = "Không tìm thấy sự khác biệt giữa giá trị cục bộ và Wikidata";
+var wikidataShared = "Dữ liệu sau đã được tìm thấy trong khoản mục Wikidata chung. Cập nhật các trường chung bằng các giá trị này?";
+var wikidataSharedNotFound = "Không tìm thấy dữ liệu chung trong khoản mục Wikidata";
+var wikidataSyncBlurb = "Chọn một giá trị sẽ thay đổi cả hai trang web để khớp nhau (chọn một giá trị trống sẽ xóa khỏi cả hai). Không chọn gì sẽ không thay đổi. Vui lòng nghiêng về việc chọn một trong các giá trị thay vì bỏ qua - có rất ít trường hợp chúng ta nên cố ý có giá trị khác.<p>Bạn được khuyến khích truy cập khoản mục Wikidata và thêm nguồn tham khảo cho bất kỳ dữ liệu nào bạn thay đổi.";
+var editSummary = "Tóm lược sửa đổi";
+var name = "Tên";
+var alt = "Tên khác";
+var website = "Trang web";
+var address = "Địa chỉ";
+var directions = "Hướng dẫn";
+var phone = "Điện thoại";
+var tollfree = "Miễn phí";
+var fax = "Fax";
+var lastUpdated = "Cập nhật lần cuối";
+var syncWikidata = "Đồng bộ các trường chung với/từ Wikidata";
+var syncWikidataTitle = "Điều này chỉ đơn giản lấy các giá trị từ Wikidata và thay thế các giá trị cục bộ. Hữu ích cho địa điểm mới.";
+var syncWikidataLabel = "(truy xuất nhanh)";
+var content = "Nội dung";
+var minorTitle = "Tích vào ô nếu thay đổi đối với địa điểm là nhỏ, chẳng hạn như sửa lỗi chính tả";
+var minorLabel = "thay đổi nhỏ?";
+var email = "Email";
+var type = "Loại";
+var latitude = "Vĩ độ";
+var longitude = "Kinh độ";
+var findOnMap = "tìm trên bản đồ";
+var hours = "Giờ mở cửa";
+var checkin = "Nhận phòng";
+var checkout = "Trả phòng";
+var price = "Giá";
+var wpWd = "Lấy ID từ bài viết Wikipedia";
+var wikidataRemoveTitle = "Xóa khoản mục Wikidata khỏi danh sách này";
+var wikidataRemoveLabel = "xóa";
+var image = "Hình ảnh";
+var listingTooltip = "Tích vào ô nếu doanh nghiệp không còn hoạt động hoặc nếu địa điểm nên bị xóa vì lý do khác, và nó sẽ bị xóa khỏi bài viết này";
+var listingLabel = "xóa địa điểm này?";
+var listingUpdatedTooltip = "Tích vào ô nếu thông tin trong địa điểm này đã được xác minh là hiện tại và chính xác, và ngày cập nhật cuối cùng sẽ được thay đổi thành ngày hiện tại";
+var listingUpdatedLabel = "đánh dấu địa điểm là đã cập nhật?";
+var natlCurrencyTitle = "";
+var intlCurrenciesTitle = "";
+var require$$1 = {
+	"report-bug'": "Báo cáo lỗi",
+	"listing-editor-version'": "Phiên bản $1",
+	"coordinates-error'": "Tọa độ không hợp lệ. Vui lòng sử dụng độ thập phân.",
+	"placeholder-name'": "tên địa điểm",
+	"placeholder-alt'": "còn được gọi là",
+	"placeholder-url'": "https://www.example.com",
+	"placeholder-address'": "địa chỉ của địa điểm",
+	"placeholder-directions'": "làm thế nào để đến đây",
+	"placeholder-phone'": "+55 555 555 5555",
+	"placeholder-tollfree'": "+1 800 100 1000",
+	"placeholder-fax'": "+55 555 555 555",
+	"placeholder-email'": "info@example.com",
+	"placeholder-lastedit'": "2020-01-15",
+	"placeholder-lat'": "11.11111",
+	"placeholder-long'": "111.11111",
+	"placeholder-hours'": "9AM-5PM hoặc 09:00-17:00",
+	"placeholder-checkin'": "giờ nhận phòng",
+	"placeholder-checkout'": "giờ trả phòng",
+	"placeholder-price'": "giá vé hoặc dịch vụ",
+	"placeholder-wikidata-label'": "khoản mục wikidata",
+	"placeholder-wikipedia'": "bài viết wikipedia",
+	"placeholder-image'": "hình ảnh địa điểm",
+	"placeholder-content'": "mô tả địa điểm",
+	"placeholder-summary'": "lý do thay đổi địa điểm",
+	propertyP625: propertyP625,
+	propertyP856: propertyP856,
+	propertyP968: propertyP968,
+	propertyP238: propertyP238,
+	propertyP18: propertyP18,
+	addTitle: addTitle,
+	editTitle: editTitle,
+	addTitleBeta: addTitleBeta,
+	editTitleBeta: editTitleBeta,
+	syncTitle: syncTitle,
+	saving: saving,
+	submit: submit,
+	cancel: cancel,
+	cancelAll: cancelAll,
+	preview: preview,
+	previewOff: previewOff,
+	refresh: refresh,
+	refreshTitle: refreshTitle,
+	selectAll: selectAll,
+	selectAlternatives: selectAlternatives,
+	validationEmptyListing: validationEmptyListing,
+	validationEmail: validationEmail,
+	validationWikipedia: validationWikipedia,
+	validationImage: validationImage,
+	added: added,
+	updated: updated,
+	removed: removed,
+	helpPage: helpPage,
+	enterCaptcha: enterCaptcha,
+	externalLinks: externalLinks,
+	licenseText: licenseText,
+	ajaxInitFailure: ajaxInitFailure,
+	sharedWikipedia: sharedWikipedia,
+	synchronized: synchronized,
+	submitApiError: submitApiError,
+	submitBlacklistError: submitBlacklistError,
+	submitUnknownError: submitUnknownError,
+	submitHttpError: submitHttpError,
+	submitEmptyError: submitEmptyError,
+	viewCommonsPage: viewCommonsPage,
+	viewWikidataPage: viewWikidataPage,
+	viewWikipediaPage: viewWikipediaPage,
+	wikidataSharedMatch: wikidataSharedMatch,
+	wikidataShared: wikidataShared,
+	wikidataSharedNotFound: wikidataSharedNotFound,
+	wikidataSyncBlurb: wikidataSyncBlurb,
+	editSummary: editSummary,
+	name: name,
+	alt: alt,
+	website: website,
+	address: address,
+	directions: directions,
+	phone: phone,
+	tollfree: tollfree,
+	fax: fax,
+	lastUpdated: lastUpdated,
+	syncWikidata: syncWikidata,
+	syncWikidataTitle: syncWikidataTitle,
+	syncWikidataLabel: syncWikidataLabel,
+	content: content,
+	minorTitle: minorTitle,
+	minorLabel: minorLabel,
+	email: email,
+	type: type,
+	latitude: latitude,
+	longitude: longitude,
+	findOnMap: findOnMap,
+	hours: hours,
+	checkin: checkin,
+	checkout: checkout,
+	price: price,
+	wpWd: wpWd,
+	wikidataRemoveTitle: wikidataRemoveTitle,
+	wikidataRemoveLabel: wikidataRemoveLabel,
+	image: image,
+	listingTooltip: listingTooltip,
+	listingLabel: listingLabel,
+	listingUpdatedTooltip: listingUpdatedTooltip,
+	listingUpdatedLabel: listingUpdatedLabel,
+	natlCurrencyTitle: natlCurrencyTitle,
+	intlCurrenciesTitle: intlCurrenciesTitle
+};
+
+const en = require$$0;
+const vi = require$$1;
 var translations = {
-    en: {
-        'report-bug': 'Report bug',
-        'listing-editor-version': 'Version $1',
-        'coordinates-error': 'Coordinates are in an invalid form. Please use decimal degrees.',
-        'placeholder-name': 'name of place',
-        'placeholder-alt': 'also known as',
-        'placeholder-url': 'https://www.example.com',
-        'placeholder-address': 'address of place',
-        'placeholder-directions':		'how to get here',
-        'placeholder-phone': '+55 555 555 5555',
-        'placeholder-tollfree': '+1 800 100 1000',
-        'placeholder-fax': '+55 555 555 555',
-        'placeholder-email': 'info@example.com',
-        'placeholder-lastedit': '2020-01-15',
-        'placeholder-lat': '11.11111',
-        'placeholder-long': '111.11111',
-        'placeholder-hours': '9AM-5PM or 09:00-17:00',
-        'placeholder-checkin': 'check in time',
-        'placeholder-checkout': 'check out time',
-        'placeholder-price': 'entry or service price',
-        'placeholder-wikidata-label': 'wikidata record',
-        'placeholder-wikipedia': 'wikipedia article',
-        'placeholder-image': 'image of place',
-        'placeholder-content': 'description of place',
-        'placeholder-summary': 'reason listing was changed',
-        propertyP625: ['lat', 'long'],
-        propertyP856: ['url'],
-        propertyP968: ['email'],
-        propertyP238: ['alt'],
-        propertyP18: ['image'],
-        addTitle: 'Add New Listing',
-        editTitle: 'Edit Existing Listing',
-        addTitleBeta: 'Add New Listing (Beta)',
-        editTitleBeta: 'Edit Existing Listing (Beta)',
-        syncTitle: 'Wikidata Sync',
-        saving: 'Saving...',
-        submit: 'Submit',
-        cancel: 'Cancel',
-        cancelAll: 'Clear all',
-        preview: 'Preview',
-        previewOff: 'Preview off',
-        refresh: '↺', // \ue031 not yet working
-        refreshTitle: 'Refresh preview',
-        selectAll: 'Select all',
-        selectAlternatives: 'Select all values where the alternative is empty.',
-        validationEmptyListing: 'Please enter either a name or an address',
-        validationEmail: 'Please ensure the email address is valid',
-        validationWikipedia: 'Please insert the Wikipedia page title only; not the full URL address',
-        validationImage: 'Please insert the Commons image title only without any prefix',
-        added: 'Added listing for ',
-        updated: 'Updated listing for ',
-        removed: 'Deleted listing for ',
-        helpPage: '//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor',
-        enterCaptcha: 'Enter CAPTCHA',
-        externalLinks: 'Your edit includes new external links.',
-        // license text should match MediaWiki:Wikimedia-copyrightwarning
-        licenseText: 'By clicking "Submit", you agree to the <a class="external" target="_blank" href="//wikimediafoundation.org/wiki/Terms_of_use">Terms of use</a>, and you irrevocably agree to release your contribution under the <a class="external" target="_blank" href="//en.wikivoyage.org/wiki/Wikivoyage:Full_text_of_the_Attribution-ShareAlike_3.0_license">CC-BY-SA 3.0 License</a>. You agree that a hyperlink or URL is sufficient attribution under the Creative Commons license.',
-        ajaxInitFailure: 'Error: Unable to initialize the listing editor',
-        sharedWikipedia: 'wikipedia',
-        synchronized: 'synchronized.',
-        submitApiError: 'Error: The server returned an error while attempting to save the listing, please try again',
-        submitBlacklistError: 'Error: A value in the data submitted has been blacklisted, please remove the blacklisted pattern and try again',
-        submitUnknownError: 'Error: An unknown error has been encountered while attempting to save the listing, please try again',
-        submitHttpError: 'Error: The server responded with an HTTP error while attempting to save the listing, please try again',
-        submitEmptyError: 'Error: The server returned an empty response while attempting to save the listing, please try again',
-        viewCommonsPage: 'view Commons page',
-        viewWikidataPage: 'view Wikidata record',
-        viewWikipediaPage: 'view Wikipedia page',
-        wikidataSharedMatch: 'No differences found between local and Wikidata values',
-        wikidataShared: 'The following data was found in the shared Wikidata record. Update shared fields using these values?',
-        wikidataSharedNotFound: 'No shared data found in the Wikidata repository',
-        wikidataSyncBlurb: 'Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally.<p>You are encouraged to go to the Wikidata item and add references for any data you change.',
-        editSummary: 'Edit Summary',
-        name: 'Name',
-        alt: 'Alt',
-        website: 'Website',
-        address: 'Address',
-        directions: 'Directions',
-        phone: 'Phone',
-        tollfree: 'Tollfree',
-        fax: 'Fax',
-        lastUpdated: 'Last Updated',
-        syncWikidata: 'Sync shared fields to/from Wikidata',
-        syncWikidataTitle: 'This simply gets the values from Wikidata and replaces the local values. Useful for new listings.',
-        syncWikidataLabel: '(quick fetch)',
-        content: 'Content',
-        minorTitle: 'Check the box if the change to the listing is minor, such as a typo correction',
-        minorLabel: 'minor change?',
-        email: 'Email',
-        type: 'Type',
-        latitude: 'Latitude',
-        longitude: 'Longitude',
-        findOnMap: 'find on map',
-        hours: 'Hours',
-        checkin: 'Check-in',
-        checkout: 'Check-out',
-        price: 'Price',
-        wpWd: 'Get ID from Wikipedia article',
-        wikidataRemoveTitle: 'Delete the Wikidata entry from this listing',
-        wikidataRemoveLabel: 'remove',
-        image: 'Image',
-        listingTooltip: 'Check the box if the business is no longer in operation or if the listing should be deleted for some other reason, and it will be removed from this article',
-        listingLabel: 'delete this listing?',
-        listingUpdatedTooltip: 'Check the box if the information in this listing has been verified to be current and accurate, and the last updated date will be changed to the current date',
-        listingUpdatedLabel: 'mark the listing as up-to-date?',
-        natlCurrencyTitle: '',
-        intlCurrenciesTitle: ''
-    },
+    en,
+    vi,
     fr: {
         addTitle: 'ajouter un titre',
         editTitle: 'Éditer un élément de listing existant',

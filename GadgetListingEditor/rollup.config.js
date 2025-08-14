@@ -1,5 +1,7 @@
 const resolve = require( '@rollup/plugin-node-resolve' );
 const commonjs = require( '@rollup/plugin-commonjs' );
+const json = require( '@rollup/plugin-json' );
+
 const fs = require( 'fs' );
 
 const updateVersion = () => ({
@@ -52,6 +54,7 @@ module.exports = [
             }
 		],
         plugins: [
+			json(),
 			updateVersion(),
 			resolve(), // so Rollup can find `ms`
 			commonjs() // so Rollup can convert `ms` to an ES module

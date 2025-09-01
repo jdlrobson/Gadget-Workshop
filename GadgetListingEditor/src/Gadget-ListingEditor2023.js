@@ -64,21 +64,19 @@ $(function() {
 	var TRANSLATIONS_ALL = {
 		en: {
 			add: 'add listing',
-			addBeta: 'add listing (beta)',
-			edit: 'edit',
-			editBeta: 'edit (beta)'
+			edit: 'edit'
 		},
 		de: {
 			add: 'Eintrag hinzufügen',
-			edit: 'bearbeiten',
-			addBeta: 'Eintrag hinzufügen (beta)',
-			editBeta: 'bearbeiten  (beta)'
+			edit: 'bearbeiten'
 		},
 		it: {
 			add: 'aggiungi elemento',
-			edit: 'modifica',
-			addBeta: 'aggiungi elemento (beta)',
-			editBeta: 'modifica (beta)'
+			edit: 'modifica'
+		},
+		vi: {
+			add: 'thêm địa điểm',
+			edit: 'sửa',
 		}
 	};
 	var TRANSLATIONS = $.extend( true,
@@ -188,7 +186,7 @@ $(function() {
 			}
 			contentTransform.addListingButtons(
 				SECTION_TO_TEMPLATE_TYPE,
-				USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add
+				TRANSLATIONS.add
 			);
 			$('.listingeditor-add').on('click', function() {
 				const $this = $(this);

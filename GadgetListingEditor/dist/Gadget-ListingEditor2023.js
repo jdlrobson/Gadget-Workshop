@@ -175,6 +175,29 @@ var sectionToTemplateType$1 = function ( DB_NAME = 'enwikivoyage' ) {
                 'Come arrivare': 'listing',
                 'Come spostarsi': 'listing'
             };
+		case 'viwikivoyage':
+            return {
+                'Xem': 'tham_quan',
+                'Tham_quan': 'tham_quan',
+                'Làm': 'hoạt_động',
+                'Hoạt_động': 'hoạt_động',
+                'Việc_có_thể_làm': 'hoạt_động',
+                'Mua': 'mua_sắm',
+                'Mua_sắm': 'mua_sắm',
+                'Ăn': 'ẩm_thực',
+                'Ẩm_thực': 'ẩm_thực',
+                'Uống': 'đồ_uống',
+                'Đồ_uống': 'đồ_uống',
+                'Ngủ': 'nghỉ_ngơi',
+                'Nghỉ_ngơi': 'nghỉ_ngơi',
+                'Kết_nối': 'địa_điểm',
+                'Khu_vực_chờ': 'tham_quan',
+                'Tham_quan_và_hoạt_động': 'tham_quan',
+                'Ăn_uống': 'ẩm_thực',
+                'Đến': 'đi_lại',
+                'Đi_lại': 'đi_lại',
+                'Đi_dạo': 'đi_lại',
+            };
         default:
             return {
                 'See': 'see',
@@ -288,7 +311,13 @@ $(function() {
 			edit: 'modifica',
 			addBeta: 'aggiungi elemento (beta)',
 			editBeta: 'modifica (beta)'
-		}
+		},
+        vi: {
+            add: 'thêm địa điểm',
+			edit: 'sửa',
+			addBeta: 'thêm địa điểm (beta)',
+			editBeta: 'sửa địa điểm (beta)'
+        }
 	};
 	var TRANSLATIONS = $.extend( true,
 		{},

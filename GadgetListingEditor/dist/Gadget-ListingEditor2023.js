@@ -316,7 +316,7 @@ $(function() {
             add: 'thêm địa điểm',
 			edit: 'sửa',
 			addBeta: 'thêm địa điểm (beta)',
-			editBeta: 'sửa địa điểm (beta)'
+			editBeta: 'sửa (beta)'
         }
 	};
 	var TRANSLATIONS = $.extend( true,

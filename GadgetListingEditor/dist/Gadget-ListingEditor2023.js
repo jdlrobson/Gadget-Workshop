@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.7.4
+ * Listing Editor v3.7.5
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.4'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.5'
 
 'use strict';
 
@@ -273,21 +273,19 @@ $(function() {
 	var TRANSLATIONS_ALL = {
 		en: {
 			add: 'add listing',
-			addBeta: 'add listing (beta)',
-			edit: 'edit',
-			editBeta: 'edit (beta)'
+			edit: 'edit'
 		},
 		de: {
 			add: 'Eintrag hinzufügen',
-			edit: 'bearbeiten',
-			addBeta: 'Eintrag hinzufügen (beta)',
-			editBeta: 'bearbeiten  (beta)'
+			edit: 'bearbeiten'
 		},
 		it: {
 			add: 'aggiungi elemento',
-			edit: 'modifica',
-			addBeta: 'aggiungi elemento (beta)',
-			editBeta: 'modifica (beta)'
+			edit: 'modifica'
+		},
+		vi: {
+			add: 'thêm địa điểm',
+			edit: 'sửa',
 		}
 	};
 	var TRANSLATIONS = $.extend( true,
@@ -397,7 +395,7 @@ $(function() {
 			}
 			contentTransform.addListingButtons(
 				SECTION_TO_TEMPLATE_TYPE,
-				USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add
+				TRANSLATIONS.add
 			);
 			$('.listingeditor-add').on('click', function() {
 				const $this = $(this);

@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.7.4
+ * Listing Editor v3.7.5
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.4'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.5'
 
 'use strict';
 
@@ -175,7 +175,7 @@ var sectionToTemplateType$1 = function ( DB_NAME = 'enwikivoyage' ) {
                 'Come arrivare': 'listing',
                 'Come spostarsi': 'listing'
             };
-		case 'viwikivoyage':
+        case 'viwikivoyage':
             return {
                 'Xem': 'tham_quan',
                 'Tham_quan': 'tham_quan',
@@ -189,6 +189,7 @@ var sectionToTemplateType$1 = function ( DB_NAME = 'enwikivoyage' ) {
                 'Uống': 'đồ_uống',
                 'Đồ_uống': 'đồ_uống',
                 'Ngủ': 'nghỉ_ngơi',
+                'Chỗ_nghỉ': 'nghỉ_ngơi',
                 'Nghỉ_ngơi': 'nghỉ_ngơi',
                 'Kết_nối': 'địa_điểm',
                 'Khu_vực_chờ': 'tham_quan',
@@ -296,28 +297,20 @@ $(function() {
 	var TRANSLATIONS_ALL = {
 		en: {
 			add: 'add listing',
-			addBeta: 'add listing (beta)',
-			edit: 'edit',
-			editBeta: 'edit (beta)'
+			edit: 'edit'
 		},
 		de: {
 			add: 'Eintrag hinzufügen',
-			edit: 'bearbeiten',
-			addBeta: 'Eintrag hinzufügen (beta)',
-			editBeta: 'bearbeiten  (beta)'
+			edit: 'bearbeiten'
 		},
 		it: {
 			add: 'aggiungi elemento',
-			edit: 'modifica',
-			addBeta: 'aggiungi elemento (beta)',
-			editBeta: 'modifica (beta)'
+			edit: 'modifica'
 		},
-        vi: {
-            add: 'thêm địa điểm',
+		vi: {
+			add: 'thêm địa điểm',
 			edit: 'sửa',
-			addBeta: 'thêm địa điểm (beta)',
-			editBeta: 'sửa (beta)'
-        }
+		}
 	};
 	var TRANSLATIONS = $.extend( true,
 		{},
@@ -426,7 +419,7 @@ $(function() {
 			}
 			contentTransform.addListingButtons(
 				SECTION_TO_TEMPLATE_TYPE,
-				USE_LISTING_BETA ? TRANSLATIONS.addBeta : TRANSLATIONS.add
+				TRANSLATIONS.add
 			);
 			$('.listingeditor-add').on('click', function() {
 				const $this = $(this);

@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.7.5
+ * Listing Editor v3.7.6
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.5'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.6'
 
 'use strict';
 
@@ -174,6 +174,30 @@ var sectionToTemplateType$1 = function ( DB_NAME = 'enwikivoyage' ) {
                 'Eventi_e_feste': 'listing',
                 'Come arrivare': 'listing',
                 'Come spostarsi': 'listing'
+            };
+        case 'viwikivoyage':
+            return {
+                'Xem': 'tham_quan',
+                'Tham_quan': 'tham_quan',
+                'Làm': 'hoạt_động',
+                'Hoạt_động': 'hoạt_động',
+                'Việc_có_thể_làm': 'hoạt_động',
+                'Mua': 'mua_sắm',
+                'Mua_sắm': 'mua_sắm',
+                'Ăn': 'ẩm_thực',
+                'Ẩm_thực': 'ẩm_thực',
+                'Uống': 'đồ_uống',
+                'Đồ_uống': 'đồ_uống',
+                'Ngủ': 'nghỉ_ngơi',
+                'Chỗ_nghỉ': 'nghỉ_ngơi',
+                'Nghỉ_ngơi': 'nghỉ_ngơi',
+                'Kết_nối': 'địa_điểm',
+                'Khu_vực_chờ': 'tham_quan',
+                'Tham_quan_và_hoạt_động': 'tham_quan',
+                'Ăn_uống': 'ẩm_thực',
+                'Đến': 'đi_lại',
+                'Đi_lại': 'đi_lại',
+                'Đi_dạo': 'đi_lại',
             };
         default:
             return {

@@ -20,3 +20,115 @@ https://thenounproject.com/icon/add-to-list-2093754/ */
 a.listingeditor-add .minerva-icon--addListing {
 	mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTIwMHB0IiBoZWlnaHQ9IjEyMDBwdCIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgMTIwMCAxMjAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogPHBhdGggZD0ibTYwMCA0MDBjMC0xMy4yNjIgNS4yNjk1LTI1Ljk4IDE0LjY0NS0zNS4zNTVzMjIuMDk0LTE0LjY0NSAzNS4zNTUtMTQuNjQ1aDM1MGMxNy44NjMgMCAzNC4zNzEgOS41MzEyIDQzLjMwMSAyNSA4LjkzMzYgMTUuNDY5IDguOTMzNiAzNC41MzEgMCA1MC04LjkyOTcgMTUuNDY5LTI1LjQzOCAyNS00My4zMDEgMjVoLTM1MGMtMTMuMjYyIDAtMjUuOTgtNS4yNjk1LTM1LjM1NS0xNC42NDVzLTE0LjY0NS0yMi4wOTQtMTQuNjQ1LTM1LjM1NXptNDAwIDI1MGgtODAwYy0xNy44NjMgMC0zNC4zNzEgOS41MzEyLTQzLjMwMSAyNS04LjkzMzYgMTUuNDY5LTguOTMzNiAzNC41MzEgMCA1MCA4LjkyOTcgMTUuNDY5IDI1LjQzOCAyNSA0My4zMDEgMjVoODAwYzE3Ljg2MyAwIDM0LjM3MS05LjUzMTIgNDMuMzAxLTI1IDguOTMzNi0xNS40NjkgOC45MzM2LTM0LjUzMSAwLTUwLTguOTI5Ny0xNS40NjktMjUuNDM4LTI1LTQzLjMwMS0yNXptMCAzMDBoLTgwMGMtMTcuODYzIDAtMzQuMzcxIDkuNTMxMi00My4zMDEgMjUtOC45MzM2IDE1LjQ2OS04LjkzMzYgMzQuNTMxIDAgNTAgOC45Mjk3IDE1LjQ2OSAyNS40MzggMjUgNDMuMzAxIDI1aDgwMGMxNy44NjMgMCAzNC4zNzEtOS41MzEyIDQzLjMwMS0yNSA4LjkzMzYtMTUuNDY5IDguOTMzNi0zNC41MzEgMC01MC04LjkyOTctMTUuNDY5LTI1LjQzOC0yNS00My4zMDEtMjV6bS04MDAtNjAwaDEwMHYxMDBjMCAxNy44NjMgOS41MzEyIDM0LjM3MSAyNSA0My4zMDEgMTUuNDY5IDguOTMzNiAzNC41MzEgOC45MzM2IDUwIDAgMTUuNDY5LTguOTI5NyAyNS0yNS40MzggMjUtNDMuMzAxdi0xMDBoMTAwYzE3Ljg2MyAwIDM0LjM3MS05LjUzMTIgNDMuMzAxLTI1IDguOTMzNi0xNS40NjkgOC45MzM2LTM0LjUzMSAwLTUwLTguOTI5Ny0xNS40NjktMjUuNDM4LTI1LTQzLjMwMS0yNWgtMTAwdi0xMDBjMC0xNy44NjMtOS41MzEyLTM0LjM3MS0yNS00My4zMDEtMTUuNDY5LTguOTMzNi0zNC41MzEtOC45MzM2LTUwIDAtMTUuNDY5IDguOTI5Ny0yNSAyNS40MzgtMjUgNDMuMzAxdjEwMGgtMTAwYy0xNy44NjMgMC0zNC4zNzEgOS41MzEyLTQzLjMwMSAyNS04LjkzMzYgMTUuNDY5LTguOTMzNiAzNC41MzEgMCA1MCA4LjkyOTcgMTUuNDY5IDI1LjQzOCAyNSA0My4zMDEgMjV6Ii8+Cjwvc3ZnPgo=");
 }
+
+/* Support for dark theme of Vector 2022 */
+html.skin-theme-clientpref-night .ui-widget-overlay {
+  background: #000000 !important;
+  opacity: 0.7 !important;
+}
+
+html.skin-theme-clientpref-night .listing-editor-dialog,
+html.skin-theme-clientpref-night .ui-dialog .ui-widget-content,
+html.skin-theme-clientpref-night .ui-dialog .ui-widget-header {
+  background: #2c2c2e;
+  color: #e6e6e6;
+  border-color: #444446;
+}
+
+html.skin-theme-clientpref-night .listing-editor-dialog input,
+html.skin-theme-clientpref-night .listing-editor-dialog select,
+html.skin-theme-clientpref-night .listing-editor-dialog textarea {
+  background: #1c1c1e;
+  color: #e6e6e6;
+  border-color: #444446;
+}
+html.skin-theme-clientpref-night .ui-dialog .ui-dialog-titlebar {
+  background: #1c1c1e !important;
+  color: #e6e6e6;
+  border-color: #444446;
+}
+
+/* Style for buttons */
+html.skin-theme-clientpref-night .ui-dialog .ui-dialog-buttonpane button,
+html.skin-theme-clientpref-night .ui-dialog .ui-dialog-buttonpane .ui-button {
+  background: #3a3a3c !important;
+  color: #e6e6e6 !important;
+  border-color: #444446 !important;
+}
+
+html.skin-theme-clientpref-night .ui-dialog .ui-dialog-buttonpane button:hover,
+html.skin-theme-clientpref-night .ui-dialog .ui-dialog-buttonpane .ui-button:hover {
+  background: #4a4a4c !important;
+}
+
+/* Style for close (X) button */
+html.skin-theme-clientpref-night .ui-dialog .ui-dialog-titlebar-close {
+  background: #3a3a3c !important;
+  border-color: #444446 !important;
+  color: #e6e6e6 !important;
+}
+
+html.skin-theme-clientpref-night .ui-dialog .ui-dialog-titlebar-close:hover {
+  background: #4a4a4c !important;
+}
+
+html.skin-theme-clientpref-night .ui-dialog .ui-icon-closethick {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e6e6e6'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E") !important;
+}
+
+/* Automatic mode with dark device preference */
+@media screen and (prefers-color-scheme: dark) {
+  html.skin-theme-clientpref-os .ui-widget-overlay {
+    background: #000000 !important;
+    opacity: 0.7 !important;
+  }
+
+  html.skin-theme-clientpref-os .listing-editor-dialog,
+  html.skin-theme-clientpref-os .ui-dialog .ui-widget-content,
+  html.skin-theme-clientpref-os .ui-dialog .ui-widget-header {
+    background: #2c2c2e;
+    color: #e6e6e6;
+    border-color: #444446;
+  }
+
+  html.skin-theme-clientpref-os .listing-editor-dialog input,
+  html.skin-theme-clientpref-os .listing-editor-dialog select,
+  html.skin-theme-clientpref-os .listing-editor-dialog textarea {
+    background: #1c1c1e;
+    color: #e6e6e6;
+    border-color: #444446;
+  }
+
+  html.skin-theme-clientpref-os .ui-dialog .ui-dialog-titlebar {
+    background: #1c1c1e !important;
+    color: #e6e6e6;
+    border-color: #444446;
+  }
+
+  /* Style for buttons */
+  html.skin-theme-clientpref-os .ui-dialog .ui-dialog-buttonpane button,
+  html.skin-theme-clientpref-os .ui-dialog .ui-dialog-buttonpane .ui-button {
+    background: #3a3a3c !important;
+    color: #e6e6e6 !important;
+    border-color: #444446 !important;
+  }
+
+  html.skin-theme-clientpref-os .ui-dialog .ui-dialog-buttonpane button:hover,
+  html.skin-theme-clientpref-os .ui-dialog .ui-dialog-buttonpane .ui-button:hover {
+    background: #4a4a4c !important;
+  }
+
+  /* Style for close (X) button */
+  html.skin-theme-clientpref-os .ui-dialog .ui-dialog-titlebar-close {
+    background: #3a3a3c !important;
+    border-color: #444446 !important;
+    color: #e6e6e6 !important;
+  }
+
+  html.skin-theme-clientpref-os .ui-dialog .ui-dialog-titlebar-close:hover {
+    background: #4a4a4c !important;
+  }
+
+  html.skin-theme-clientpref-os .ui-dialog .ui-icon-closethick {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e6e6e6'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E") !important;
+}

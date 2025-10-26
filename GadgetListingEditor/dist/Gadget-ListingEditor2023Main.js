@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.7.6
+ * Listing Editor v3.8.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.6'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.8.0'
 
 'use strict';
 
@@ -253,9 +253,9 @@ var propertyP18$1 = [
 	"hình ảnh"
 ];
 var addTitle$3 = "Thêm địa điểm mới";
-var editTitle$3 = "Chỉnh sửa địa điểm hiện có";
+var editTitle$3 = "Sửa địa điểm hiện tại";
 var addTitleBeta$1 = "Thêm địa điểm mới (Beta)";
-var editTitleBeta$1 = "Chỉnh sửa địa điểm hiện có (Beta)";
+var editTitleBeta$1 = "Sửa địa điểm hiện tại (Beta)";
 var syncTitle$2 = "Đồng bộ Wikidata";
 var saving$3 = "Đang lưu...";
 var submit$3 = "Lưu";
@@ -271,12 +271,12 @@ var validationEmptyListing$3 = "Vui lòng nhập tên hoặc địa chỉ";
 var validationEmail$3 = "Vui lòng đảm bảo địa chỉ email hợp lệ";
 var validationWikipedia$3 = "Vui lòng chỉ nhập tên trang Wikipedia, không phải URL đầy đủ";
 var validationImage$3 = "Vui lòng chỉ nhập tiêu đề hình ảnh trên Commons, không có tiền tố";
-var added$3 = "Đã thêm địa điểm cho ";
-var updated$3 = "Đã cập nhật địa điểm cho ";
-var removed$3 = "Đã xóa địa điểm cho ";
+var added$3 = "Thêm địa điểm ";
+var updated$3 = "Cập nhật địa điểm ";
+var removed$3 = "Xóa địa điểm ";
 var helpPage$3 = "//vi.wikivoyage.org/wiki/Wikivoyage:Trình_soạn_thảo_địa_điểm";
 var enterCaptcha$3 = "Nhập CAPTCHA";
-var externalLinks$3 = "Sửa đổi của bạn bao gồm các liên kết ngoài mới.";
+var externalLinks$3 = "Sửa đổi của bạn có chứa các liên kết ngoài mới.";
 var licenseText$2 = "Nhấp vào “Lưu” có nghĩa là bạn đồng ý với <a class=\"external\" target=\"_blank\" href=\"//foundation.wikimedia.org/wiki/Special:MyLanguage/Terms_of_use\">Điều khoản sử dụng</a>, và bạn đồng ý phát hành, một cách không thể hủy bỏ, các đóng góp của bạn theo <a class=\"external\" target=\"_blank\" href=\"//vi.wikipedia.org/wiki/Wikipedia:Nguyên_văn_Giấy_phép_Creative_Commons_Ghi_công–Chia_sẻ_tương_tự_phiên_bản_4.0_Quốc_tế\">Giấy phép CC-BY-SA 4.0</a>. Bạn đồng ý rằng một siêu liên kết hoặc URL là đủ điều kiện ghi công theo giấy phép Creative Commons.";
 var ajaxInitFailure$2 = "Lỗi: Không thể khởi tạo trình soạn thảo địa điểm";
 var sharedWikipedia$1 = "wikipedia";
@@ -329,30 +329,30 @@ var listingUpdatedLabel$1 = "đánh dấu địa điểm là đã cập nhật?"
 var natlCurrencyTitle$2 = "";
 var intlCurrenciesTitle$2 = "";
 var require$$1 = {
-	"report-bug'": "Báo cáo lỗi",
-	"listing-editor-version'": "Phiên bản $1",
-	"coordinates-error'": "Tọa độ không hợp lệ. Vui lòng sử dụng độ thập phân.",
-	"placeholder-name'": "tên địa điểm",
-	"placeholder-alt'": "còn được gọi là",
-	"placeholder-url'": "https://www.example.com",
-	"placeholder-address'": "địa chỉ của địa điểm",
-	"placeholder-directions'": "làm thế nào để đến đây",
-	"placeholder-phone'": "+55 555 555 5555",
-	"placeholder-tollfree'": "+1 800 100 1000",
-	"placeholder-fax'": "+55 555 555 555",
-	"placeholder-email'": "info@example.com",
-	"placeholder-lastedit'": "2020-01-15",
-	"placeholder-lat'": "11.11111",
-	"placeholder-long'": "111.11111",
-	"placeholder-hours'": "9AM-5PM hoặc 09:00-17:00",
-	"placeholder-checkin'": "giờ nhận phòng",
-	"placeholder-checkout'": "giờ trả phòng",
-	"placeholder-price'": "giá vé hoặc dịch vụ",
-	"placeholder-wikidata-label'": "khoản mục wikidata",
-	"placeholder-wikipedia'": "bài viết wikipedia",
-	"placeholder-image'": "hình ảnh địa điểm",
-	"placeholder-content'": "mô tả địa điểm",
-	"placeholder-summary'": "lý do thay đổi địa điểm",
+	"report-bug": "Báo cáo lỗi",
+	"listing-editor-version": "Phiên bản $1",
+	"coordinates-error": "Tọa độ không hợp lệ. Vui lòng sử dụng độ thập phân.",
+	"placeholder-name": "tên địa điểm",
+	"placeholder-alt": "còn được gọi là",
+	"placeholder-url": "https://www.example.com",
+	"placeholder-address": "địa chỉ của địa điểm",
+	"placeholder-directions": "làm thế nào để đến đây",
+	"placeholder-phone": "+55 555 555 5555",
+	"placeholder-tollfree": "+1 800 100 1000",
+	"placeholder-fax": "+55 555 555 555",
+	"placeholder-email": "info@example.com",
+	"placeholder-lastedit": "2020-01-15",
+	"placeholder-lat": "11.11111",
+	"placeholder-long": "111.11111",
+	"placeholder-hours": "9AM-5PM hoặc 09:00-17:00",
+	"placeholder-checkin": "giờ nhận phòng",
+	"placeholder-checkout": "giờ trả phòng",
+	"placeholder-price": "giá vé hoặc dịch vụ",
+	"placeholder-wikidata-label": "khoản mục wikidata",
+	"placeholder-wikipedia": "bài viết wikipedia",
+	"placeholder-image": "hình ảnh địa điểm",
+	"placeholder-content": "mô tả địa điểm",
+	"placeholder-summary": "lý do thay đổi địa điểm",
 	propertyP625: propertyP625,
 	propertyP856: propertyP856$1,
 	propertyP968: propertyP968,

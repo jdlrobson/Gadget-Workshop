@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.7.6
+ * Listing Editor v3.8.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.7.6'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.8.0'
 
 'use strict';
 
@@ -177,27 +177,27 @@ var sectionToTemplateType$1 = function ( DB_NAME = 'enwikivoyage' ) {
             };
         case 'viwikivoyage':
             return {
-                'Xem': 'tham_quan',
-                'Tham_quan': 'tham_quan',
+                'Xem': 'tham quan',
+                'Tham_quan': 'tham quan',
                 'Làm': 'hoạt_động',
-                'Hoạt_động': 'hoạt_động',
-                'Việc_có_thể_làm': 'hoạt_động',
-                'Mua': 'mua_sắm',
-                'Mua_sắm': 'mua_sắm',
-                'Ăn': 'ẩm_thực',
-                'Ẩm_thực': 'ẩm_thực',
-                'Uống': 'đồ_uống',
-                'Đồ_uống': 'đồ_uống',
-                'Ngủ': 'nghỉ_ngơi',
-                'Chỗ_nghỉ': 'nghỉ_ngơi',
-                'Nghỉ_ngơi': 'nghỉ_ngơi',
-                'Kết_nối': 'địa_điểm',
-                'Khu_vực_chờ': 'tham_quan',
-                'Tham_quan_và_hoạt_động': 'tham_quan',
-                'Ăn_uống': 'ẩm_thực',
-                'Đến': 'đi_lại',
-                'Đi_lại': 'đi_lại',
-                'Đi_dạo': 'đi_lại',
+                'Hoạt_động': 'hoạt động',
+                'Việc_có_thể_làm': 'hoạt động',
+                'Mua': 'mua sắm',
+                'Mua_sắm': 'mua sắm',
+                'Ăn': 'ẩm thực',
+                'Ẩm_thực': 'ẩm thực',
+                'Uống': 'đồ uống',
+                'Đồ_uống': 'đồ uống',
+                'Ngủ': 'nghỉ ngơi',
+                'Chỗ_nghỉ': 'nghỉ ngơi',
+                'Nghỉ_ngơi': 'nghỉ ngơi',
+                'Kết_nối': 'địa điểm',
+                'Khu_vực_chờ': 'tham quan',
+                'Tham_quan_và_hoạt_động': 'tham quan',
+                'Ăn_uống': 'ẩm thực',
+                'Đến': 'đi lại',
+                'Đi_lại': 'đi lại',
+                'Đi_dạo': 'đi lại',
             };
         default:
             return {

@@ -76,7 +76,8 @@
 	color: #969696;
 }
 body .ui-dialog .ui-widget-header {
-	background: #a9c8d6 !important;
+	background: var(--background-color-progressive-subtle) !important;
+	color: var( --color-base );
 }
 #progress-dialog {
 	font-size:large;
@@ -85,6 +86,11 @@ body .ui-dialog .ui-widget-header {
 }
 #listing-editor {
 	padding: 0 1.5em 1em;
+}
+#listing-editor,
+.listing-editor-dialog .ui-widget-content {
+	color: var( --color-base, black );
+	background-color: var( --background-color-base );
 }
 #listing-help {
 	margin-right: 30px;
@@ -207,5 +213,19 @@ label .wikidata-update {
 		margin-left: 0 !important;
 		overflow: scroll;
 	}
+}
+@media screen {
+	html.skin-theme-clientpref-night {
+		.ui-icon-closethick {
+			filter: invert(1);
+		}
+	}
+}
+@media screen and (prefers-color-scheme: dark) {
+  html.skin-theme-clientpref-os {
+		.ui-icon-closethick {
+			filter: invert(1);
+		}
+  }
 }
 /* END: sync editor form */

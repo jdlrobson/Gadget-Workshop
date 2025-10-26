@@ -218,14 +218,22 @@ label .wikidata-update {
 	html.skin-theme-clientpref-night {
 		.ui-icon-closethick {
 			filter: invert(1);
-		}
+		},
+		.ui-widget-overlay {
+  background: #000000 !important;
+  opacity: 0.7 !important;
+  }
 	}
 }
 @media screen and (prefers-color-scheme: dark) {
   html.skin-theme-clientpref-os {
 		.ui-icon-closethick {
 			filter: invert(1);
-		}
+		},
+		.ui-widget-overlay {
+  background: #000000 !important;
+  opacity: 0.7 !important;
+   }
   }
 }
 /* END: sync editor form */

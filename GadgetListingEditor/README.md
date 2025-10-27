@@ -25,6 +25,7 @@ module = {};
 ```
 window._listingEditorModule = module.exports;
 importScriptURI('https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditorConfig');
+importStylesheetURI('https://en.wikivoyage.org/w/load.php?modules=ext.gadget.ListingEditorMain&only=styles')
 ```
 // Copy paste contents of Gadget-ListingEditor2023.js
 // Click one of the buttons

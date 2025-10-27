@@ -78,6 +78,7 @@
 body .ui-dialog .ui-widget-header {
 	background: var(--background-color-progressive-subtle) !important;
 	color: var( --color-base );
+	border-color: var(--border-color-progressive);
 }
 #progress-dialog {
 	font-size:large;
@@ -88,8 +89,11 @@ body .ui-dialog .ui-widget-header {
 	padding: 0 1.5em 1em;
 }
 #listing-editor,
+.listing-editor-dialog.ui-widget-content,
 .listing-editor-dialog .ui-widget-content {
 	color: var( --color-base, black );
+	border-color: var(--border-color-base);
+    background: none;
 	background-color: var( --background-color-base );
 }
 #listing-help {

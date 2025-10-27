@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.8.0
+ * Listing Editor v3.9.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.8.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.9.0'
 
 'use strict';
 
@@ -1509,14 +1509,7 @@ function requireCore () {
 	            var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? Config.MAX_DIALOG_WIDTH : 'auto';
 	            // modal form - must submit or cancel
 	            const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
-	            dialog.open(form, {
-	                modal: true,
-	                height: 'auto',
-	                width: dialogWidth,
-	                title: (mode == MODE_ADD) ?
-	                    translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
-	                dialogClass: 'listing-editor-dialog',
-	                buttons: [
+	            const buttons = [
 	                {
 	                    text: '?',
 	                    id: 'listing-help',
@@ -1596,18 +1589,50 @@ function requireCore () {
 	                        }
 	                    }
 	                }
-	                ],
+	                ];
+	            dialog.open(form, {
+	                modal: true,
+	                height: 'auto',
+	                width: dialogWidth,
+	                title: (mode == MODE_ADD) ?
+	                    translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
+	                dialogClass: 'listing-editor-dialog',
 	                // eslint-disable-next-line object-shorthand
 	                create: function() {
-	                    $('.ui-dialog-buttonpane').append(`<div class="listing-license">${translate( 'licenseText' )}</div>`);
+	                    // Make button pane
+	                    const $dialog = form.parent();
+	                    const $btnPane = $( '<div>' )
+	                        .addClass( 'ui-dialog-buttonpane ui-widget-content ui-helper-clearfix' )
+	                        .appendTo( $dialog );
+	                    const $buttonSet = $( '<div>' ).addClass( 'ui-dialog-buttonset' ).appendTo( $btnPane );
+	                    buttons.forEach( ( props ) => {
+	                        const btn = document.createElement( 'button' );
+	                        btn.classList.add( 'cdx-button', 'cdx-button--action-default' );
+	                        if ( props.id ) {
+	                            btn.id = props.id;
+	                        }
+	                        if ( props.title ) {
+	                            btn.setAttribute( 'title', props.title );
+	                        }
+	                        if ( props.style ) {
+	                            btn.setAttribute( 'style', props.style );
+	                        }
+	                        btn.textContent = props.text;
+	                        btn.addEventListener( 'click', () => {
+	                            console.log('click', props.click);
+	                            props.click.apply( form );
+	                        } );
+	                        $buttonSet.append( btn );
+	                    } );
+	                    $btnPane.append(`<div class="listing-license">${translate( 'licenseText' )}</div>`);
 	                    if ( window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ) {
 	                        $(
 	                            `<span class="listing-license">${translate('listing-editor-version', [ window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ])}</span>`
-	                        ).appendTo( '.ui-dialog-buttonpane' );
+	                        ).appendTo( $btnPane );
 	                    }
 	                    const bugUrl = 'https://github.com/jdlrobson/Gadget-Workshop/issues';
 	                    $( `<span class="listing-license">&nbsp;<a href="${bugUrl}">${translate( 'report-bug' )}</a></span>` )
-	                        .appendTo( '.ui-dialog-buttonpane' );
+	                        .appendTo( $btnPane );
 	                    $('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
 	                        // if a sync editor dialog is open, get rid of it
 	                        if ($(Config.SYNC_FORM_SELECTOR).length > 0) {

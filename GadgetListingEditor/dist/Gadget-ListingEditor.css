@@ -76,8 +76,8 @@
 	color: #969696;
 }
 body .ui-dialog .ui-widget-header {
-	background: var(--background-color-progressive-subtle) !important;
-	color: var( --color-base );
+	background: var(--background-color-progressive-subtle, #a9c8d6) !important;
+	color: var( --color-base, black );
 	border-color: var(--border-color-progressive);
 }
 #progress-dialog {
@@ -91,10 +91,9 @@ body .ui-dialog .ui-widget-header {
 #listing-editor,
 .listing-editor-dialog.ui-widget-content,
 .listing-editor-dialog .ui-widget-content {
-	color: var( --color-base, black );
 	border-color: var(--border-color-base);
-    background: none;
-	background-color: var( --background-color-base );
+	background-color: var( --background-color-base, white );
+	color: var( --color-base, black );
 }
 #listing-help {
 	margin-right: 30px;
@@ -219,17 +218,13 @@ label .wikidata-update {
 	}
 }
 @media screen {
-	html.skin-theme-clientpref-night {
-		.ui-icon-closethick {
+	html.skin-theme-clientpref-night .ui-icon-closethick {
 			filter: invert(1);
-		}
 	}
 }
 @media screen and (prefers-color-scheme: dark) {
-  html.skin-theme-clientpref-os {
-		.ui-icon-closethick {
+  html.skin-theme-clientpref-os .ui-icon-closethick {
 			filter: invert(1);
-		}
   }
 }
 /* END: sync editor form */

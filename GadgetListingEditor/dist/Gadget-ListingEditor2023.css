@@ -1,7 +1,7 @@
 /*** Must be loaded on page load along with Gadget-ListingEditor2023.js */
 /* Wrap add icon in brackets */
 a.listingeditor-add.listingeditor-add-brackets {
-	color: var( --color-progressive );
+	color: var( --color-progressive, #0645ad );
 }
 a.listingeditor-add.listingeditor-add-brackets:before {
     content: '[';

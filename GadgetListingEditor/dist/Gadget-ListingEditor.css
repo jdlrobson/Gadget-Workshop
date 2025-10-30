@@ -92,6 +92,8 @@ body .ui-dialog .ui-widget-header {
 .listing-editor-dialog.ui-widget-content,
 .listing-editor-dialog .ui-widget-content {
 	border-color: var(--border-color-base);
+	/* overrides redundant default jquery.ui background #f2f5f7 url(data:image/png;base64 for dark mode support */
+	background: none;
 	background-color: var( --background-color-base, white );
 	color: var( --color-base, black );
 }

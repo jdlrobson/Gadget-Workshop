@@ -8,11 +8,6 @@ $(function() {
 	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';
 	var DEV_NAMESPACE = 9000;
 
-	// (oldid=4687849)[[Wikivoyage:Travellers%27_pub#c-WhatamIdoing-20230630083400-FredTC-20230630053700]]
-	if ( !USE_LISTING_BETA && mw.config.get( 'skin' ) === 'minerva' ) {
-		return;
-	}
-
 	// --------------------------------------------------------------------
 	// UPDATE THE FOLLOWING TO MATCH WIKIVOYAGE ARTICLE SECTION NAMES
 	// --------------------------------------------------------------------
@@ -188,7 +183,9 @@ $(function() {
 				SECTION_TO_TEMPLATE_TYPE,
 				TRANSLATIONS.add
 			);
-			$('.listingeditor-add').on('click', function() {
+			$('.listingeditor-add').on('click', function( ev ) {
+				// dont collapse section on mobile.
+				ev.stopPropagation();
 				const $this = $(this);
 				loadMain().then( function ( core ) {
 					core.initListingEditorDialog(core.MODE_ADD, $this);

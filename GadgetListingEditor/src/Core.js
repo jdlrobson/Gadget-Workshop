@@ -1,8 +1,6 @@
 var DB_NAME = mw.config.get( 'wgDBname' );
 const dialog = require( './dialogs.js' );
 const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
-const API_HOST = IS_LOCALHOST ? 'https://en.wikivoyage.org/w/api.php' :
-    `${mw.config.get( 'wgScriptPath' )}/api.php`;
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     var api = new mw.Api();
     var MODE_ADD = 'add';
@@ -125,7 +123,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      */
     const _findListingTypeForSection = require( './findListingTypeForSection.js' );
     const findListingTypeForSection = function(entry ) {
-        console.log( Config.SECTION_TO_TEMPLATE_TYPE, Config.DEFAULT_LISTING_TEMPLATE )
         return _findListingTypeForSection( entry, Config.SECTION_TO_TEMPLATE_TYPE, Config.DEFAULT_LISTING_TEMPLATE );
     };
 
@@ -342,20 +339,16 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         dataSel = $( '.countryData' ).attr('data-local-dialing-code');
         if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
 
-        $.ajax({
-            url: API_HOST,
-            data: {
-                prop: 'revisions',
-                format: 'json',
-                formatversion: 2,
-                titles: IS_LOCALHOST ? mw.config.get( 'wgTitle' ) : mw.config.get('wgPageName'),
-                action: 'query',
-                rvprop: 'content',
-                origin: '*',
-                rvsection: sectionIndex
-            },
-            cache: false // required
-        }).done(function( data ) {
+        api.ajax({
+            prop: 'revisions',
+            format: 'json',
+            formatversion: 2,
+            titles: IS_LOCALHOST ? mw.config.get( 'wgTitle' ) : mw.config.get('wgPageName'),
+            action: 'query',
+            rvprop: 'content',
+            origin: '*',
+            rvsection: sectionIndex
+        }).then(function( data ) {
             try {
                 sectionText = data.query.pages[ 0 ].revisions[ 0 ].content;
             } catch ( e ) {
@@ -363,7 +356,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 return;
             }
             openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
-        }).fail(function( _jqXHR, textStatus, errorThrown ) {
+        }, function( _jqXHR, textStatus, errorThrown ) {
             alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
         });
     };
@@ -511,7 +504,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                         }
                         btn.textContent = props.text;
                         btn.addEventListener( 'click', () => {
-                            console.log('click', props.click);
                             props.click.apply( form );
                         } );
                         $buttonSet.append( btn );
@@ -863,7 +855,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         api.postWithToken(
             "csrf",
             editPayload
-        ).done(function(data) {
+        ).then(function(data) {
             if (data && data.edit && data.edit.result == 'Success') {
                 if ( data.edit.nochange !== undefined ) {
                     alert( 'Save skipped as there was no change to the content!' );
@@ -893,7 +885,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             } else {
                 saveFailed(translate( 'submitUnknownError' ));
             }
-        }).fail(function(code, result) {
+        }, function(code, result) {
             if (code === "http") {
                 saveFailed(`${translate( 'submitHttpError' )}: ${result.textStatus}` );
             } else if (code === "ok-but-empty") {

@@ -1,6 +1,7 @@
 const resolve = require( '@rollup/plugin-node-resolve' );
 const commonjs = require( '@rollup/plugin-commonjs' );
 const json = require( '@rollup/plugin-json' );
+const vue = require( 'rollup-plugin-vue' );
 
 const fs = require( 'fs' );
 
@@ -44,6 +45,7 @@ window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '${version}'
 	}
   })
 
+
 module.exports = [
 	{
 		input: 'src/index.js',
@@ -53,11 +55,13 @@ module.exports = [
                 format: 'cjs'
             }
 		],
+		external: [/node_modules/],
         plugins: [
+			vue(),
 			json(),
 			updateVersion(),
-			resolve(), // so Rollup can find `ms`
-			commonjs() // so Rollup can convert `ms` to an ES module
+			resolve(),
+			commonjs()
 		]
 	},
 	{

@@ -175,6 +175,9 @@ $(function() {
 		}
 		wrapContent();
 		const init = () => {
+			if ( setup ) {
+				return;
+			}
 			setup = true;
 			if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
 				return false;

@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.9.0
+ * Listing Editor v3.9.1
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.9.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.9.1'
 
 'use strict';
 
@@ -235,7 +235,7 @@ const contentTransform = contentTransform$1;
 const sectionToTemplateType = sectionToTemplateType$1;
 
 $(function() {
-	const USE_LISTING_BETA = window.__USE_LISTING_EDITOR_BETA__;
+	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' );
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';
 	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';
@@ -408,6 +408,9 @@ $(function() {
 		}
 		wrapContent();
 		const init = () => {
+			if ( setup ) {
+				return;
+			}
 			setup = true;
 			if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
 				return false;

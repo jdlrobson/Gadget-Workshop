@@ -2,7 +2,7 @@ const contentTransform = require( './contentTransform' );
 const sectionToTemplateType = require( './sectionToTemplateType' );
 
 $(function() {
-	const USE_LISTING_BETA = window.__USE_LISTING_EDITOR_BETA__;
+	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' );
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';
 	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';

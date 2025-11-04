@@ -110,6 +110,10 @@ body .ui-dialog .ui-widget-header {
 }
 .listing-editor-dialog {
 	margin: 0 5%;
+	max-width: 1200px;
+}
+.listing-editor-dialog--wikidata-shared {
+	max-width: 1020px;
 }
 .listing-editor-dialog a:hover, .listing-editor-dialog a:focus {
 	text-decoration: underline;

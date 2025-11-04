@@ -70,10 +70,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			'image':		{ 'p': 'P18', 'label': 'image', 'fields': lookupField( 'P18'), 'remotely_sync': true, }
 		};
 
-		// if the browser window width is less than MAX_DIALOG_WIDTH (pixels), the
-		// listing editor dialog will fill the available space, otherwise it will
-		// be limited to the specified width
-		var MAX_DIALOG_WIDTH = 1200;
 		// set this flag to false if the listing editor should strip away any
 		// listing template parameters that are not explicitly configured in the
 		// LISTING_TEMPLATES parameter arrays (such as wikipedia, phoneextra, etc).
@@ -416,7 +412,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			WIKIPEDIA_URL,
 			WIKIDATA_SITELINK_WIKIPEDIA,
 			TRANSLATIONS,
-			MAX_DIALOG_WIDTH,
 			ALLOWED_NAMESPACE,
 			DEFAULT_LISTING_TEMPLATE,
 			LISTING_TYPE_PARAMETER,
@@ -930,14 +925,10 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				msg += `</div><p><small><a href="javascript:" class="clear">${translate( 'cancelAll' )}</a></small>`;
 				msg += '</form>';
 
-				// copied from dialog above. ideally should be global variable TODO
-				var windowWidth = $(window).width();
-				var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? (0.85*Config.MAX_DIALOG_WIDTH) : 'auto';
 				var $syncDialogElement = $( msg );
 				dialog.open($syncDialogElement, {
 					title: translate( 'syncTitle' ),
-					width: dialogWidth,
-					dialogClass: 'listing-editor-dialog',
+					dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
 
 					buttons: [
 						{

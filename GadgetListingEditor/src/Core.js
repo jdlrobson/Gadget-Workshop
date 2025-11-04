@@ -391,7 +391,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             var form = $(createForm(mode, listingParameters, listingTemplateAsMap));
             // wide dialogs on huge screens look terrible
             var windowWidth = $(window).width();
-            var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? Config.MAX_DIALOG_WIDTH : 'auto';
             // modal form - must submit or cancel
             const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
             const buttons = [
@@ -477,8 +476,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 ];
             dialog.open(form, {
                 modal: true,
-                height: 'auto',
-                width: dialogWidth,
                 title: (mode == MODE_ADD) ?
                     translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
                 dialogClass: 'listing-editor-dialog',

@@ -622,7 +622,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
         }
         var text = listingToStr(listing);
-
         $.ajax ({
             url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
                 action: 'parse',
@@ -630,15 +629,11 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 contentmodel: 'wikitext',
                 format: 'json',
                 text,
-            })}`,
-            // eslint-disable-next-line object-shorthand
-            error: function () {
-                $('#listing-preview').hide();
-            },
-            // eslint-disable-next-line object-shorthand
-            success: function (data) {
-                $('#listing-preview-text').html(data.parse.text['*']);
-            },
+            })}`
+        } ).then( ( data ) => {
+            $('#listing-preview-text').html(data.parse.text['*']);
+        }, () => {
+            $('#listing-preview').hide();
         });
     };
 

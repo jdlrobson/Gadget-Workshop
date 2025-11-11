@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.9.1
+ * Listing Editor v3.10.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.9.1'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.10.0'
 
 'use strict';
 
@@ -861,7 +861,14 @@ function destroy( selector ) {
 }
 
 function open( $element, options ) {
-    load().then( () => $element.dialog(options));
+    load().then( () =>
+        $element.dialog(
+            Object.assign( options, {
+                height: 'auto',
+                width: 'auto'
+            } )
+        )
+    );
     document.documentElement.classList.add( 'listing-editor-dialog-open' );
 }
 
@@ -978,6 +985,562 @@ function requireParseDMS () {
 
 	parseDMS_1 = parseDMS;
 	return parseDMS_1;
+}
+
+var html;
+var hasRequiredHtml;
+
+function requireHtml () {
+	if (hasRequiredHtml) return html;
+	hasRequiredHtml = 1;
+	const INTL_CURRENCIES = [ '€', '$', '£', '¥', '₩' ];
+	const CURRENCY_CHOICES = INTL_CURRENCIES.map( function ( c ) {
+	    return `<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${c}</a></span>`;
+	} ).join( '' );
+
+	html = ( translate, SPECIAL_CHARS, showLastEditedField ) => {
+	    let SPECIAL_CHARS_STRING = SPECIAL_CHARS.map( function ( char ) {
+	        return `<span class="listing-charinsert" data-for="input-content"> <a href="javascript:">${char}</a></span>`;
+	    } ).join( '\n' );
+	    if (SPECIAL_CHARS.length) {
+	        SPECIAL_CHARS_STRING = `<br />(${SPECIAL_CHARS_STRING}&nbsp;)`;
+	    }
+	    return `<form id="listing-editor">
+    <div class="listing-col">
+        <div class="editor-fullwidth">
+        <div id="div_name" class="editor-row">
+            <div class="editor-label-col"><label for="input-name">${translate( 'name' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-name"></div>
+        </div>
+        <div id="div_alt" class="editor-row">
+            <div class="editor-label-col"><label for="input-alt">${translate( 'alt' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-alt"></div>
+        </div>
+        <div id="div_address" class="editor-row">
+            <div class="editor-label-col"><label for="input-address">${translate( 'address' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-address"></div>
+        </div>
+        <div id="div_directions" class="editor-row">
+            <div class="editor-label-col"><label for="input-directions">${translate( 'directions' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-directions"></div>
+        </div>
+        <div id="div_phone" class="editor-row">
+            <div class="editor-label-col"><label for="input-phone">${translate( 'phone' )}</label></div>
+            <div class="editor-fullwidth">
+                <input type="text" class="editor-fullwidth" id="input-phone">
+                <div class="input-cc" data-for="input-phone"></div>
+            </div>
+        </div>
+        <div id="div_tollfree" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-tollfree">${translate( 'tollfree' )}</label>
+            </div>
+            <div class="editor-fullwidth">
+                <input type="text" class="editor-fullwidth" id="input-tollfree">
+                <div class="input-cc" data-for="input-tollfree"></div>
+            </div>
+        </div>
+        <div id="div_fax" class="editor-row">
+            <div class="editor-label-col"><label for="input-fax">${translate( 'fax' )}</label></div>
+            <div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax">
+                <div class="input-cc" data-for="input-fax"></div>
+            </div>
+        </div>
+        <div id="div_hours" class="editor-row">
+            <div class="editor-label-col"><label for="input-hours">${translate( 'hours' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-hours"></div>
+        </div>
+        <div id="div_checkin" class="editor-row">
+            <div class="editor-label-col"><label for="input-checkin">${translate( 'checkin' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-checkin"></div>
+        </div>
+        <div id="div_checkout" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-checkout">${translate( 'checkout' )}</label>
+            </div>
+            <div><input type="text" class="editor-fullwidth" id="input-checkout"></div>
+        </div>
+        <div id="div_price" class="editor-row">
+            <div class="editor-label-col"><label for="input-price">${translate( 'price' )}</label></div>
+            <!-- update the Callbacks.initStringFormFields
+                method if the currency symbols are removed or modified -->
+            <div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">
+                <div class="input-price">
+                    <span id="span_natl_currency" title="${translate( 'natlCurrencyTitle' )}"></span>
+                    <span id="span_intl_currencies" title="${translate( 'intlCurrenciesTitle' )}">${
+	                        CURRENCY_CHOICES
+	                    }</span>
+                </div>
+            </div>
+        </div>
+        <div id="div_lastedit" style="display: none;">
+            <div class="editor-label-col">
+                <label for="input-lastedit">${translate( 'lastUpdated' )}</label>
+            </div>
+            <div><input type="text" size="10" id="input-lastedit"></div>
+        </div>
+        </div>
+    </div>
+    <div class="listing-col">
+        <div class="editor-fullwidth">
+        <div id="div_type" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-type">${translate( 'type' )}</label>
+            </div>
+            <div>
+                <select id="input-type">
+                    <option value="listing">listing</option>
+                    <option value="see">see</option>
+                    <option value="do">do</option>
+                    <option value="buy">buy</option>
+                    <option value="eat">eat</option>
+                    <option value="drink">drink</option>
+                    <option value="go">go</option>
+                    <option value="sleep">sleep</option>
+                </select>
+            </div>
+            <div class="editor-fullwidth">
+                <span id="span-closed">
+                    <input type="checkbox" id="input-closed">
+                    <label for="input-closed"
+                        class="listing-tooltip"
+                        title="${translate( 'listingTooltip' )}">${translate( 'listingLabel' )}</label>
+                </span>
+            </div>
+        </div>
+        <div id="div_url" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-url">${translate( 'website' )}<span class="wikidata-update"></span></label>
+            </div>
+            <div><input type="text" class="editor-fullwidth" id="input-url"></div>
+        </div>
+        <div id="div_email" class="editor-row">
+            <div class="editor-label-col"><label for="input-email">${translate( 'email' )}<span class="wikidata-update"></span></label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-email"></div>
+        </div>
+        <div id="div_lat" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-lat">${translate( 'latitude' )}<span class="wikidata-update"></span></label>
+            </div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-lat">
+                <!-- update the Callbacks.initFindOnMapLink
+                method if this field is removed or modified -->
+                <div class="input-other">
+                    <a id="geomap-link"
+                        target="_blank"
+                        href="https://wikivoyage.toolforge.org/w/geomap.php">${translate( 'findOnMap' )}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div id="div_long" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-long">${translate( 'longitude' )}<span class="wikidata-update"></span></label>
+            </div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-long">
+            </div>
+        </div>
+        <div id="div_wikidata" class="editor-row">
+            <div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-wikidata-label">
+                <input type="hidden" id="input-wikidata-value">
+                <a href="javascript:" id="wp-wd"
+                    title="${translate( 'wpWd' )}"
+                    style="display:none"><small>&#160;WP</small></a>
+                <span id="wikidata-value-display-container" style="display:none">
+                    <small>
+                    &#160;<span id="wikidata-value-link"></span>
+                    &#160;|&#160;<a href="javascript:"
+                        id="wikidata-remove"
+                        title="${translate( 'wikidataRemoveTitle' )}">${translate( 'wikidataRemoveLabel' )}</a>
+                    </small>
+                </span>
+            </div>
+        </div>
+        <div id="div_wikidata_update" style="display: none">
+            <div class="editor-label-col">&#160;</div>
+            <div>
+                <span class="wikidata-update"></span>
+                <a href="javascript:" id="wikidata-shared">${translate( 'syncWikidata' )}</a>
+                <small>&nbsp;<a href="javascript:"
+                    title="${translate( 'syncWikidataTitle' )}"
+                    class="listing-tooltip"
+                    id="wikidata-shared-quick">${translate( 'syncWikidataLabel' )}</a>
+                </small>
+            </div>
+        </div>
+        <div id="div_wikipedia" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label>
+            </div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-wikipedia">
+                <span id="wikipedia-value-display-container" style="display:none">
+                    <small>&#160;<span id="wikipedia-value-link"></span></small>
+                </span>
+            </div>
+        </div>
+        <div id="div_image" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-image">${translate( 'image' )}<span class="wikidata-update"></span></label>
+            </div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-image">
+                <span id="image-value-display-container" style="display:none">
+                    <small>&#160;<span id="image-value-link"></span></small>
+                </span>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div id="div_content" class="editor-row">
+        <div class="editor-label-col"><label for="input-content">${translate( 'content' )
+	        }${SPECIAL_CHARS_STRING}</label></div>
+        <div><textarea rows="8" class="editor-fullwidth" id="input-content"></textarea></div>
+    </div>
+    <!-- update the Callbacks.hideEditOnlyFields method if
+    the status row is removed or modified -->
+    <div id="div_status" class="editor-fullwidth">
+        <div class="editor-label-col"><label>Status</label></div>
+        <div>${
+	            // update the Callbacks.updateLastEditDate
+	            // method if the last edit input is removed or modified
+	            showLastEditedField ? `<span id="span-last-edit">` +
+	                `<input type="checkbox" id="input-last-edit" />` +
+	                `<label for="input-last-edit" class="listing-tooltip" title="${translate( 'listingUpdatedTooltip' )}">${translate( 'listingUpdatedLabel' )}</label>` +
+	            `</span>` : ''
+	        }</div>
+    </div>
+    <! -- update the Callbacks.hideEditOnlyFields method if
+        the summary table is removed or modified -->
+    <div id="div_summary" class="editor-fullwidth">
+        <div class="listing-divider"></div>
+        <div class="editor-row">
+            <div class="editor-label-col"><label for="input-summary">${translate( 'editSummary' )}</label></div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-summary">
+                <span id="span-minor">
+                    <input type="checkbox" id="input-minor">
+                        <label for="input-minor" class="listing-tooltip"
+                            title="${translate( 'minorTitle' )}">${translate( 'minorLabel' )}</label>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div id="listing-preview" style="display: none;">
+        <div class="listing-divider"></div>
+        <div class="editor-row">
+            <div title="Preview">${translate( 'preview' )}</div>
+            <div id="listing-preview-text"></div>
+        </div>
+    </div>
+    </form>`;
+	};
+	return html;
+}
+
+var SisterSite;
+var hasRequiredSisterSite;
+
+function requireSisterSite () {
+	if (hasRequiredSisterSite) return SisterSite;
+	hasRequiredSisterSite = 1;
+	SisterSite = function( Config ) {
+	    const { WIKIDATA_URL, WIKIPEDIA_URL, COMMONS_URL } = Config;
+	    var API_WIKIDATA = `${WIKIDATA_URL}/w/api.php`;
+	    var API_WIKIPEDIA = `${WIKIPEDIA_URL}/w/api.php`;
+	    var API_COMMONS = `${COMMONS_URL}/w/api.php`;
+	    var WIKIDATA_PROP_WMURL = 'P143'; // Wikimedia import URL
+	    var WIKIDATA_PROP_WMPRJ = 'P4656'; // Wikimedia project source of import
+
+	    var initializeSisterSiteAutocomplete = function(siteData) {
+	        var currentValue = $(siteData.selector).val();
+	        if (currentValue) {
+	            siteData.updateLinkFunction(currentValue, siteData.form);
+	        }
+	        $(siteData.selector).change(function() {
+	            siteData.updateLinkFunction($(siteData.selector).val(), siteData.form);
+	        });
+	        siteData.selectFunction = function(event, ui) {
+	            siteData.updateLinkFunction(ui.item.value, siteData.form);
+	        };
+	        var ajaxData = siteData.ajaxData;
+	        ajaxData.action = 'opensearch';
+	        ajaxData.list = 'search';
+	        ajaxData.limit = 10;
+	        ajaxData.redirects = 'resolve';
+	        var parseAjaxResponse = function(jsonObj) {
+	            var results = [];
+	            var titleResults = $(jsonObj[1]);
+	            for (var i=0; i < titleResults.length; i++) {
+	                var result = titleResults[i];
+	                var valueWithoutFileNamespace = (result.indexOf("File:") != -1) ? result.substring("File:".length) : result;
+	                var titleResult = { value: valueWithoutFileNamespace, label: result, description: $(jsonObj[2])[i], link: $(jsonObj[3])[i] };
+	                results.push(titleResult);
+	            }
+	            return results;
+	        };
+	        _initializeAutocomplete(siteData, ajaxData, parseAjaxResponse);
+	    };
+	    var _initializeAutocomplete = function(siteData, ajaxData, parseAjaxResponse) {
+	        var autocompleteOptions = {
+	            // eslint-disable-next-line object-shorthand
+	            source: function(request, response) {
+	                ajaxData.search = request.term;
+	                var ajaxSuccess = function(jsonObj) {
+	                    console.log('gpot', jsonObj);
+	                    response(parseAjaxResponse(jsonObj));
+	                };
+	                ajaxSisterSiteSearch(siteData.apiUrl, ajaxData, ajaxSuccess);
+	            }
+	        };
+	        if (siteData.selectFunction) {
+	            autocompleteOptions.select = siteData.selectFunction;
+	        }
+	        siteData.selector.autocomplete(autocompleteOptions);
+	    };
+	    // perform an ajax query of a sister site
+	    var ajaxSisterSiteSearch = function(ajaxUrl, ajaxData, ajaxSuccess) {
+	        ajaxData.format = 'json';
+	        $.ajax({
+	            url: ajaxUrl,
+	            data: ajaxData,
+	            dataType: 'jsonp',
+	            success: ajaxSuccess
+	        });
+	    };
+	    // parse the wikidata "claim" object from the wikidata response
+	    var wikidataClaim = function(jsonObj, value, property, guidBool) {
+	        var entity = _wikidataEntity(jsonObj, value);
+	        if (!entity || !entity.claims || !entity.claims[property]) {
+	            return null;
+	        }
+	        var propertyObj = entity.claims[property];
+	        if (!propertyObj || propertyObj.length < 1 || !propertyObj[0].mainsnak || !propertyObj[0].mainsnak.datavalue) {
+	            return null;
+	        }
+	        var index = 0;
+	        if( propertyObj[index].mainsnak.datavalue.type === "monolingualtext" ) { // have to select correct language, Wikidata sends all despite specifying
+	            while( propertyObj[index].mainsnak.datavalue.value.language !== Config.LANG ) {
+	                index = index + 1;
+	                if( !(propertyObj[index]) ) { return null; } // if we run out of langs and none of them matched
+	            }
+	            if (guidBool === true) { return propertyObj[index].id }
+	            return propertyObj[index].mainsnak.datavalue.value.text;
+	        }
+	        if (guidBool === true) { return propertyObj[index].id }
+	        return propertyObj[index].mainsnak.datavalue.value;
+	    };
+	    // parse the wikidata "entity" object from the wikidata response
+	    var _wikidataEntity = function(jsonObj, value) {
+	        if (!jsonObj || !jsonObj.entities || !jsonObj.entities[value]) {
+	            return null;
+	        }
+	        return jsonObj.entities[value];
+	    };
+	    // parse the wikidata display label from the wikidata response
+	    var wikidataLabel = function(jsonObj, value) {
+	        var entityObj = _wikidataEntity(jsonObj, value);
+	        if (!entityObj || !entityObj.labels || !entityObj.labels.en) {
+	            return null;
+	        }
+	        return entityObj.labels.en.value;
+	    };
+	    // parse the wikipedia link from the wikidata response
+	    var wikidataWikipedia = function(jsonObj, value) {
+	        var entityObj = _wikidataEntity(jsonObj, value);
+	        if (!entityObj || !entityObj.sitelinks || !entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA] || !entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA].title) {
+	            return null;
+	        }
+	        return entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA].title;
+	    };
+
+	    var wikipediaWikidata = function(jsonObj) {
+	        if (!jsonObj || !jsonObj.query || jsonObj.query.pageids[0] == "-1" ) { // wikipedia returns -1 pageid when page is not found
+	            return null;
+	        }
+	        var pageID = jsonObj.query.pageids[0];
+	        return jsonObj['query']['pages'][pageID]['pageprops']['wikibase_item'];
+	    };
+	    var sendToWikidata = function(prop, value, snaktype) {
+	        var ajaxData = {
+	            action: 'wbcreateclaim',
+	            entity: $('#input-wikidata-value').val(),
+	            property: prop,
+	            snaktype,
+	            value,
+	            format: 'json',
+	        };
+	        var ajaxSuccess = function(jsonObj) {
+	            referenceWikidata(jsonObj);
+	        };
+	        var api = new mw.ForeignApi( API_WIKIDATA );
+	        api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} ); // async disabled because otherwise get edit conflicts with multiple changes submitted at once
+	    };
+	    var removeFromWikidata = function(guidObj) {
+	        var ajaxData = {
+	            action: 'wbremoveclaims',
+	            claim: guidObj,
+	        };
+	        var api = new mw.ForeignApi( API_WIKIDATA );
+	        api.postWithToken( 'csrf', ajaxData, { async: false } );
+	    };
+	    var changeOnWikidata = function(guidObj, prop, value, snaktype) {
+	        var ajaxData = {
+	            action: 'wbsetclaimvalue',
+	            claim: guidObj,
+	            snaktype,
+	            value
+	        };
+	        var ajaxSuccess = function(jsonObj) {
+	            if( jsonObj.claim ) {
+	                if( !(jsonObj.claim.references) ) { // if no references, add imported from
+	                    referenceWikidata(jsonObj);
+	                }
+	                else if ( jsonObj.claim.references.length === 1 ) { // skip if >1 reference; too complex to automatically set
+	                    var acceptedProps = [WIKIDATA_PROP_WMURL, WIKIDATA_PROP_WMPRJ]; // properties relating to Wikimedia import only
+	                    var diff = $(jsonObj.claim.references[0]['snaks-order']).not(acceptedProps).get(); // x-compatible method for diff on arrays, from https://stackoverflow.com/q/1187518
+	                    if( diff.length === 0 ) { // if the set of present properties is a subset of the set of acceptable properties
+	                        unreferenceWikidata(jsonObj.claim.id, jsonObj.claim.references[0].hash); // then remove the current reference
+	                        referenceWikidata(jsonObj); // and add imported from
+	                    }
+	                }
+	            }
+	        };
+	        var api = new mw.ForeignApi( API_WIKIDATA );
+	        api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
+	    };
+	    var referenceWikidata = function(jsonObj) {
+	        var revUrl = `https:${mw.config.get('wgServer')}${mw.config.get('wgArticlePath').replace('$1', '')}${mw.config.get('wgPageName')}?oldid=${mw.config.get('wgCurRevisionId')}`; // surprising that there is no API call for this
+	        var ajaxData = {
+	            action: 'wbsetreference',
+	            statement: jsonObj.claim.id,
+	            snaks: `{"${WIKIDATA_PROP_WMURL}":[{"snaktype":"value","property":"${WIKIDATA_PROP_WMURL}","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":"${Config.WIKIDATAID}"}}}],` +
+	                `"${WIKIDATA_PROP_WMPRJ}": [{"snaktype":"value","property":"${WIKIDATA_PROP_WMPRJ}","datavalue":{"type":"string","value":"${revUrl}"}}]}`,
+	        };
+	        var api = new mw.ForeignApi( API_WIKIDATA );
+	        api.postWithToken( 'csrf', ajaxData, { async: false } );
+	    };
+	    var unreferenceWikidata = function(statement, references) {
+	        var ajaxData = {
+	            action: 'wbremovereferences',
+	            statement,
+	            references
+	        };
+	        var api = new mw.ForeignApi( API_WIKIDATA );
+	        api.postWithToken( 'csrf', ajaxData, { async: false } );
+	    };
+	    // expose public members
+	    return {
+	        API_WIKIDATA,
+	        API_WIKIPEDIA,
+	        API_COMMONS,
+	        initializeSisterSiteAutocomplete,
+	        ajaxSisterSiteSearch,
+	        wikidataClaim,
+	        wikidataWikipedia,
+	        wikidataLabel,
+	        wikipediaWikidata,
+	        sendToWikidata,
+	        removeFromWikidata,
+	        changeOnWikidata,
+	        referenceWikidata,
+	        unreferenceWikidata
+	    };
+	};
+	return SisterSite;
+}
+
+var autocompletes;
+var hasRequiredAutocompletes;
+
+function requireAutocompletes () {
+	if (hasRequiredAutocompletes) return autocompletes;
+	hasRequiredAutocompletes = 1;
+	const parseWikiDataResult = function(jsonObj) {
+	    var results = [];
+	    for (var i=0; i < $(jsonObj.search).length; i++) {
+	        var result = $(jsonObj.search)[i];
+	        var label = result.label;
+	        if (result.match && result.match.text) {
+	            label = result.match.text;
+	        }
+	        var data = {
+	            value: label,
+	            label,
+	            description: result.description,
+	            id: result.id
+	        };
+	        results.push(data);
+	    }
+	    return results;
+	};
+
+	const setupWikidataAutocomplete = ( SisterSite, form, updateLinkFunction, language ) => {
+	    $('#input-wikidata-label', form).autocomplete({
+	        // eslint-disable-next-line object-shorthand
+	        source: function( request, response ) {
+	            var ajaxUrl = SisterSite.API_WIKIDATA;
+	            var ajaxData = {
+	                action: 'wbsearchentities',
+	                search: request.term,
+	                language
+	            };
+	            var ajaxSuccess = function (jsonObj) {
+	                response(parseWikiDataResult(jsonObj));
+	            };
+	            SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
+	        },
+	        // eslint-disable-next-line object-shorthand
+	        select: function(event, ui) {
+	            $("#input-wikidata-value").val(ui.item.id);
+	            updateLinkFunction("", ui.item.id);
+	        }
+	    }).data("ui-autocomplete")._renderItem = function(ul, item) {
+	        var label = `${mw.html.escape(item.label)} <small>${mw.html.escape(item.id)}</small>`;
+	        if (item.description) {
+	            label += `<br /><small>${mw.html.escape(item.description)}</small>`;
+	        }
+	        return $("<li>").data('ui-autocomplete-item', item).append($("<a>").html(label)).appendTo(ul);
+	    };
+	};
+
+	const setupWikipediaAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
+	    var wikipediaSiteData = {
+	        apiUrl: SisterSite.API_WIKIPEDIA,
+	        selector: $('#input-wikipedia', form),
+	        form,
+	        ajaxData: {
+	            namespace: 0
+	        },
+	        updateLinkFunction
+	    };
+	    SisterSite.initializeSisterSiteAutocomplete(wikipediaSiteData);
+	};
+
+
+	const setupCommonsAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
+	    var commonsSiteData = {
+	        apiUrl: SisterSite.API_COMMONS,
+	        selector: $('#input-image', form),
+	        form,
+	        ajaxData: {
+	            namespace: 6
+	        },
+	        updateLinkFunction
+	    };
+	    SisterSite.initializeSisterSiteAutocomplete(commonsSiteData);
+	};
+
+	autocompletes = ( SisterSite, form, wikidataLink, wikipediaLink, commonsLink, language ) => {
+	    setupWikidataAutocomplete( SisterSite, form, wikidataLink, language );
+	    setupWikipediaAutocomplete( SisterSite, form, wikipediaLink );
+	    setupCommonsAutocomplete( SisterSite, form, commonsLink );
+	};
+	return autocompletes;
 }
 
 var findListingTypeForSection;
@@ -1500,9 +2063,6 @@ function requireCore () {
 	                dialog.destroy(Config.SYNC_FORM_SELECTOR);
 	            }
 	            var form = $(createForm(mode, listingParameters, listingTemplateAsMap));
-	            // wide dialogs on huge screens look terrible
-	            var windowWidth = $(window).width();
-	            var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? Config.MAX_DIALOG_WIDTH : 'auto';
 	            // modal form - must submit or cancel
 	            const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
 	            const buttons = [
@@ -1588,8 +2148,6 @@ function requireCore () {
 	                ];
 	            dialog.open(form, {
 	                modal: true,
-	                height: 'auto',
-	                width: dialogWidth,
 	                title: (mode == MODE_ADD) ?
 	                    translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
 	                dialogClass: 'listing-editor-dialog',
@@ -1736,7 +2294,6 @@ function requireCore () {
 	            listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
 	        }
 	        var text = listingToStr(listing);
-
 	        $.ajax ({
 	            url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
 	                action: 'parse',
@@ -1744,15 +2301,11 @@ function requireCore () {
 	                contentmodel: 'wikitext',
 	                format: 'json',
 	                text,
-	            })}`,
-	            // eslint-disable-next-line object-shorthand
-	            error: function () {
-	                $('#listing-preview').hide();
-	            },
-	            // eslint-disable-next-line object-shorthand
-	            success: function (data) {
-	                $('#listing-preview-text').html(data.parse.text['*']);
-	            },
+	            })}`
+	        } ).then( ( data ) => {
+	            $('#listing-preview-text').html(data.parse.text['*']);
+	        }, () => {
+	            $('#listing-preview').hide();
 	        });
 	    };
 
@@ -2206,10 +2759,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			'image':		{ 'p': 'P18', 'label': 'image', 'fields': lookupField( 'P18'), 'remotely_sync': true, }
 		};
 
-		// if the browser window width is less than MAX_DIALOG_WIDTH (pixels), the
-		// listing editor dialog will fill the available space, otherwise it will
-		// be limited to the specified width
-		var MAX_DIALOG_WIDTH = 1200;
 		// set this flag to false if the listing editor should strip away any
 		// listing template parameters that are not explicitly configured in the
 		// LISTING_TEMPLATES parameter arrays (such as wikipedia, phoneextra, etc).
@@ -2289,19 +2838,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		// the same for WIKIDATA_SYNC_FORM_HTML
 		var SYNC_FORM_SELECTOR = '#listing-editor-sync';
 
-		var INTL_CURRENCIES = [ '€', '$', '£', '¥', '₩' ];
-		var SPECIAL_CHARS = PROJECT_CONFIG.SPECIAL_CHARS;
-
-		var CURRENCY_CHOICES = INTL_CURRENCIES.map( function ( c ) {
-			return `<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${c}</a></span>`;
-		} ).join( '' );
-		var SPECIAL_CHARS_STRING = SPECIAL_CHARS.map( function ( char ) {
-			return `<span class="listing-charinsert" data-for="input-content"> <a href="javascript:">${char}</a></span>`;
-		} ).join( '\n' );
-		if (SPECIAL_CHARS.length) {
-			SPECIAL_CHARS_STRING = `<br />(${SPECIAL_CHARS_STRING}&nbsp;)`;
-		}
-
 		// the below HTML is the UI that will be loaded into the listing editor
 		// dialog box when a listing is added or edited. EACH WIKIVOYAGE
 		// LANGUAGE SITE CAN CUSTOMIZE THIS HTML - fields can be removed,
@@ -2309,239 +2845,11 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		// any changes to the HTML structure are also made to the
 		// LISTING_TEMPLATES parameter arrays since that array provides the
 		// mapping between the editor HTML and the listing template fields.
-		var EDITOR_FORM_HTML = `<form id="listing-editor">
-			<div class="listing-col">
-				<div class="editor-fullwidth">
-				<div id="div_name" class="editor-row">
-					<div class="editor-label-col"><label for="input-name">${translate( 'name' )}</label></div>
-					<div><input type="text" class="editor-fullwidth" id="input-name"></div>
-				</div>
-				<div id="div_alt" class="editor-row">
-					<div class="editor-label-col"><label for="input-alt">${translate( 'alt' )}</label></div>
-					<div><input type="text" class="editor-fullwidth" id="input-alt"></div>
-				</div>
-				<div id="div_address" class="editor-row">
-					<div class="editor-label-col"><label for="input-address">${translate( 'address' )}</label></div>
-					<div><input type="text" class="editor-fullwidth" id="input-address"></div>
-				</div>
-				<div id="div_directions" class="editor-row">
-					<div class="editor-label-col"><label for="input-directions">${translate( 'directions' )}</label></div>
-					<div><input type="text" class="editor-fullwidth" id="input-directions"></div>
-				</div>
-				<div id="div_phone" class="editor-row">
-					<div class="editor-label-col"><label for="input-phone">${translate( 'phone' )}</label></div>
-					<div class="editor-fullwidth">
-						<input type="text" class="editor-fullwidth" id="input-phone">
-						<div class="input-cc" data-for="input-phone"></div>
-					</div>
-				</div>
-				<div id="div_tollfree" class="editor-row">
-					<div class="editor-label-col">
-						<label for="input-tollfree">${translate( 'tollfree' )}</label>
-					</div>
-					<div class="editor-fullwidth">
-						<input type="text" class="editor-fullwidth" id="input-tollfree">
-						<div class="input-cc" data-for="input-tollfree"></div>
-					</div>
-				</div>
-				<div id="div_fax" class="editor-row">
-					<div class="editor-label-col"><label for="input-fax">${translate( 'fax' )}</label></div>
-					<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax">
-						<div class="input-cc" data-for="input-fax"></div>
-					</div>
-				</div>
-				<div id="div_hours" class="editor-row">
-					<div class="editor-label-col"><label for="input-hours">${translate( 'hours' )}</label></div>
-					<div><input type="text" class="editor-fullwidth" id="input-hours"></div>
-				</div>
-				<div id="div_checkin" class="editor-row">
-					<div class="editor-label-col"><label for="input-checkin">${translate( 'checkin' )}</label></div>
-					<div><input type="text" class="editor-fullwidth" id="input-checkin"></div>
-				</div>
-				<div id="div_checkout" class="editor-row">
-					<div class="editor-label-col">
-						<label for="input-checkout">${translate( 'checkout' )}</label>
-					</div>
-					<div><input type="text" class="editor-fullwidth" id="input-checkout"></div>
-				</div>
-				<div id="div_price" class="editor-row">
-					<div class="editor-label-col"><label for="input-price">${translate( 'price' )}</label></div>
-					<!-- update the Callbacks.initStringFormFields
-						method if the currency symbols are removed or modified -->
-					<div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">
-						<div class="input-price">
-							<span id="span_natl_currency" title="${translate( 'natlCurrencyTitle' )}"></span>
-							<span id="span_intl_currencies" title="${translate( 'intlCurrenciesTitle' )}">${
-								CURRENCY_CHOICES
-							}</span>
-						</div>
-					</div>
-				</div>
-				<div id="div_lastedit" style="display: none;">
-					<div class="editor-label-col">
-						<label for="input-lastedit">${translate( 'lastUpdated' )}</label>
-					</div>
-					<div><input type="text" size="10" id="input-lastedit"></div>
-				</div>
-				</div>
-			</div>
-			<div class="listing-col">
-				<div class="editor-fullwidth">
-				<div id="div_type" class="editor-row">
-					<div class="editor-label-col">
-						<label for="input-type">${translate( 'type' )}</label>
-					</div>
-					<div>
-						<select id="input-type">
-							<option value="listing">listing</option>
-							<option value="see">see</option>
-							<option value="do">do</option>
-							<option value="buy">buy</option>
-							<option value="eat">eat</option>
-							<option value="drink">drink</option>
-							<option value="go">go</option>
-							<option value="sleep">sleep</option>
-						</select>
-					</div>
-					<div class="editor-fullwidth">
-						<span id="span-closed">
-							<input type="checkbox" id="input-closed">
-							<label for="input-closed"
-								class="listing-tooltip"
-								title="${translate( 'listingTooltip' )}">${translate( 'listingLabel' )}</label>
-						</span>
-					</div>
-				</div>
-				<div id="div_url" class="editor-row">
-					<div class="editor-label-col">
-						<label for="input-url">${translate( 'website' )}<span class="wikidata-update"></span></label>
-					</div>
-					<div><input type="text" class="editor-fullwidth" id="input-url"></div>
-				</div>
-				<div id="div_email" class="editor-row">
-					<div class="editor-label-col"><label for="input-email">${translate( 'email' )}<span class="wikidata-update"></span></label></div>
-					<div><input type="text" class="editor-fullwidth" id="input-email"></div>
-				</div>
-				<div id="div_lat" class="editor-row">
-					<div class="editor-label-col">
-						<label for="input-lat">${translate( 'latitude' )}<span class="wikidata-update"></span></label>
-					</div>
-					<div>
-						<input type="text" class="editor-partialwidth" id="input-lat">
-						<!-- update the Callbacks.initFindOnMapLink
-						method if this field is removed or modified -->
-						<div class="input-other">
-							<a id="geomap-link"
-								target="_blank"
-								href="https://wikivoyage.toolforge.org/w/geomap.php">${translate( 'findOnMap' )}
-							</a>
-						</div>
-					</div>
-				</div>
-				<div id="div_long" class="editor-row">
-					<div class="editor-label-col">
-						<label for="input-long">${translate( 'longitude' )}<span class="wikidata-update"></span></label>
-					</div>
-					<div>
-						<input type="text" class="editor-partialwidth" id="input-long">
-					</div>
-				</div>
-				<div id="div_wikidata" class="editor-row">
-					<div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>
-					<div>
-						<input type="text" class="editor-partialwidth" id="input-wikidata-label">
-						<input type="hidden" id="input-wikidata-value">
-						<a href="javascript:" id="wp-wd"
-							title="${translate( 'wpWd' )}"
-							style="display:none"><small>&#160;WP</small></a>
-						<span id="wikidata-value-display-container" style="display:none">
-							<small>
-							&#160;<span id="wikidata-value-link"></span>
-							&#160;|&#160;<a href="javascript:"
-								id="wikidata-remove"
-								title="${translate( 'wikidataRemoveTitle' )}">${translate( 'wikidataRemoveLabel' )}</a>
-							</small>
-						</span>
-					</div>
-				</div>
-				<div id="div_wikidata_update" style="display: none">
-					<div class="editor-label-col">&#160;</div>
-					<div>
-						<span class="wikidata-update"></span>
-						<a href="javascript:" id="wikidata-shared">${translate( 'syncWikidata' )}</a>
-						<small>&nbsp;<a href="javascript:"
-							title="${translate( 'syncWikidataTitle' )}"
-							class="listing-tooltip"
-							id="wikidata-shared-quick">${translate( 'syncWikidataLabel' )}</a>
-						</small>
-					</div>
-				</div>
-				<div id="div_wikipedia" class="editor-row">
-					<div class="editor-label-col">
-						<label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label>
-					</div>
-					<div>
-						<input type="text" class="editor-partialwidth" id="input-wikipedia">
-						<span id="wikipedia-value-display-container" style="display:none">
-							<small>&#160;<span id="wikipedia-value-link"></span></small>
-						</span>
-					</div>
-				</div>
-				<div id="div_image" class="editor-row">
-					<div class="editor-label-col">
-						<label for="input-image">${translate( 'image' )}<span class="wikidata-update"></span></label>
-					</div>
-					<div>
-						<input type="text" class="editor-partialwidth" id="input-image">
-						<span id="image-value-display-container" style="display:none">
-							<small>&#160;<span id="image-value-link"></span></small>
-						</span>
-					</div>
-				</div>
-				</div>
-			</div>
-			<div id="div_content" class="editor-row">
-				<div class="editor-label-col"><label for="input-content">${translate( 'content' )
-				}${SPECIAL_CHARS_STRING}</label></div>
-				<div><textarea rows="8" class="editor-fullwidth" id="input-content"></textarea></div>
-			</div>
-			<!-- update the Callbacks.hideEditOnlyFields method if
-			the status row is removed or modified -->
-			<div id="div_status" class="editor-fullwidth">
-				<div class="editor-label-col"><label>Status</label></div>
-				<div>${
-					// update the Callbacks.updateLastEditDate
-					// method if the last edit input is removed or modified
-					PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD ? `<span id="span-last-edit">` +
-						`<input type="checkbox" id="input-last-edit" />` +
-						`<label for="input-last-edit" class="listing-tooltip" title="${translate( 'listingUpdatedTooltip' )}">${translate( 'listingUpdatedLabel' )}</label>` +
-					`</span>` : ''
-				}</div>
-			</div>
-			<! -- update the Callbacks.hideEditOnlyFields method if
-			 the summary table is removed or modified -->
-			<div id="div_summary" class="editor-fullwidth">
-				<div class="listing-divider"></div>
-				<div class="editor-row">
-					<div class="editor-label-col"><label for="input-summary">${translate( 'editSummary' )}</label></div>
-					<div>
-						<input type="text" class="editor-partialwidth" id="input-summary">
-						<span id="span-minor">
-							<input type="checkbox" id="input-minor">
-								<label for="input-minor" class="listing-tooltip"
-									title="${translate( 'minorTitle' )}">${translate( 'minorLabel' )}</label>
-						</span>
-					</div>
-				</div>
-			</div>
-			<div id="listing-preview" style="display: none;">
-				<div class="listing-divider"></div>
-				<div class="editor-row">
-					<div title="Preview">${translate( 'preview' )}</div>
-					<div id="listing-preview-text"></div>
-				</div>
-			</div>
-			</form>`;
+		const EDITOR_FORM_HTML = requireHtml()(
+			translate,
+			PROJECT_CONFIG.SPECIAL_CHARS,
+			PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD
+		);
 		// expose public members
 		return {
 			LANG,
@@ -2552,7 +2860,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			WIKIPEDIA_URL,
 			WIKIDATA_SITELINK_WIKIPEDIA,
 			TRANSLATIONS,
-			MAX_DIALOG_WIDTH,
 			ALLOWED_NAMESPACE,
 			DEFAULT_LISTING_TEMPLATE,
 			LISTING_TYPE_PARAMETER,
@@ -2768,6 +3075,10 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		};
 		CREATE_FORM_CALLBACKS.push(autoDirParameters);
 
+
+		const SisterSite = requireSisterSite()(
+			Config
+		);
 		var setDefaultPlaceholders = function(form) {
 			[
 				'name',
@@ -2819,33 +3130,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				};
 				SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
 			}
-			// set up autocomplete to search for results as the user types
-			$('#input-wikidata-label', form).autocomplete({
-				// eslint-disable-next-line object-shorthand
-				source: function( request, response ) {
-					var ajaxUrl = SisterSite.API_WIKIDATA;
-					var ajaxData = {
-						action: 'wbsearchentities',
-						search: request.term,
-						language: Config.LANG
-					};
-					var ajaxSuccess = function (jsonObj) {
-						response(parseWikiDataResult(jsonObj));
-					};
-					SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
-				},
-				// eslint-disable-next-line object-shorthand
-				select: function(event, ui) {
-					$("#input-wikidata-value").val(ui.item.id);
-					wikidataLink("", ui.item.id);
-				}
-			}).data("ui-autocomplete")._renderItem = function(ul, item) {
-				var label = `${mw.html.escape(item.label)} <small>${mw.html.escape(item.id)}</small>`;
-				if (item.description) {
-					label += `<br /><small>${mw.html.escape(item.description)}</small>`;
-				}
-				return $("<li>").data('ui-autocomplete-item', item).append($("<a>").html(label)).appendTo(ul);
-			};
 			// add a listener to the "remove" button so that links can be deleted
 			$('#wikidata-remove', form).on( 'click', function() {
 				wikidataRemove(form);
@@ -2873,26 +3157,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				var wikidataRecord = $("#input-wikidata-value", form).val();
 				quickUpdateWikidataSharedFields(wikidataRecord);
 			});
-			var wikipediaSiteData = {
-				apiUrl: SisterSite.API_WIKIPEDIA,
-				selector: $('#input-wikipedia', form),
-				form,
-				ajaxData: {
-					namespace: 0
-				},
-				updateLinkFunction: wikipediaLink
-			};
-			SisterSite.initializeSisterSiteAutocomplete(wikipediaSiteData);
-			var commonsSiteData = {
-				apiUrl: SisterSite.API_COMMONS,
-				selector: $('#input-image', form),
-				form,
-				ajaxData: {
-					namespace: 6
-				},
-				updateLinkFunction: commonsLink
-			};
-			SisterSite.initializeSisterSiteAutocomplete(commonsSiteData);
 		};
 		var wikipediaLink = function(value, form) {
 			var wikipediaSiteLinkData = {
@@ -3066,14 +3330,10 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 				msg += `</div><p><small><a href="javascript:" class="clear">${translate( 'cancelAll' )}</a></small>`;
 				msg += '</form>';
 
-				// copied from dialog above. ideally should be global variable TODO
-				var windowWidth = $(window).width();
-				var dialogWidth = (windowWidth > Config.MAX_DIALOG_WIDTH) ? (0.85*Config.MAX_DIALOG_WIDTH) : 'auto';
 				var $syncDialogElement = $( msg );
 				dialog.open($syncDialogElement, {
 					title: translate( 'syncTitle' ),
-					width: dialogWidth,
-					dialogClass: 'listing-editor-dialog',
+					dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
 
 					buttons: [
 						{
@@ -3331,24 +3591,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			};
 			SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
 		};
-		var parseWikiDataResult = function(jsonObj) {
-			var results = [];
-			for (var i=0; i < $(jsonObj.search).length; i++) {
-				var result = $(jsonObj.search)[i];
-				var label = result.label;
-				if (result.match && result.match.text) {
-					label = result.match.text;
-				}
-				var data = {
-					value: label,
-					label,
-					description: result.description,
-					id: result.id
-				};
-				results.push(data);
-			}
-			return results;
-		};
 		var wikidataLink = function(form, value) {
 			var link = $("<a />", {
 				target: "_new",
@@ -3361,6 +3603,13 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			$('#div_wikidata_update', form).show();
 			if ( $(Config.SYNC_FORM_SELECTOR).prev().find(".ui-dialog-title").length ) { $(Config.SYNC_FORM_SELECTOR).prev().find(".ui-dialog-title").append( ' &mdash; ' ).append(link.clone()); } // add to title of Wikidata sync dialog, if it is open
 		};
+
+
+		// set up autocomplete to search for results as the user types
+		const autocompletes = requireAutocompletes();
+		CREATE_FORM_CALLBACKS.push( ( form ) => {
+			autocompletes( SisterSite, form, wikidataLink, wikipediaLink, commonsLink, Config.LANG );
+		} );
 		CREATE_FORM_CALLBACKS.push(wikidataLookup);
 
 		// --------------------------------------------------------------------
@@ -3460,208 +3709,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			CREATE_FORM_CALLBACKS,
 			SUBMIT_FORM_CALLBACKS,
 			VALIDATE_FORM_CALLBACKS
-		};
-	}();
-
-	var SisterSite = function() {
-		var API_WIKIDATA = `${Config.WIKIDATA_URL}/w/api.php`;
-		var API_WIKIPEDIA = `${Config.WIKIPEDIA_URL}/w/api.php`;
-		var API_COMMONS = `${Config.COMMONS_URL}/w/api.php`;
-		var WIKIDATA_PROP_WMURL = 'P143'; // Wikimedia import URL
-		var WIKIDATA_PROP_WMPRJ = 'P4656'; // Wikimedia project source of import
-
-		var _initializeSisterSiteAutocomplete = function(siteData) {
-			var currentValue = $(siteData.selector).val();
-			if (currentValue) {
-				siteData.updateLinkFunction(currentValue, siteData.form);
-			}
-			$(siteData.selector).change(function() {
-				siteData.updateLinkFunction($(siteData.selector).val(), siteData.form);
-			});
-			siteData.selectFunction = function(event, ui) {
-				siteData.updateLinkFunction(ui.item.value, siteData.form);
-			};
-			var ajaxData = siteData.ajaxData;
-			ajaxData.action = 'opensearch';
-			ajaxData.list = 'search';
-			ajaxData.limit = 10;
-			ajaxData.redirects = 'resolve';
-			var parseAjaxResponse = function(jsonObj) {
-				var results = [];
-				var titleResults = $(jsonObj[1]);
-				for (var i=0; i < titleResults.length; i++) {
-					var result = titleResults[i];
-					var valueWithoutFileNamespace = (result.indexOf("File:") != -1) ? result.substring("File:".length) : result;
-					var titleResult = { value: valueWithoutFileNamespace, label: result, description: $(jsonObj[2])[i], link: $(jsonObj[3])[i] };
-					results.push(titleResult);
-				}
-				return results;
-			};
-			_initializeAutocomplete(siteData, ajaxData, parseAjaxResponse);
-		};
-		var _initializeAutocomplete = function(siteData, ajaxData, parseAjaxResponse) {
-			var autocompleteOptions = {
-				// eslint-disable-next-line object-shorthand
-				source: function(request, response) {
-					ajaxData.search = request.term;
-					var ajaxSuccess = function(jsonObj) {
-						response(parseAjaxResponse(jsonObj));
-					};
-					_ajaxSisterSiteSearch(siteData.apiUrl, ajaxData, ajaxSuccess);
-				}
-			};
-			if (siteData.selectFunction) {
-				autocompleteOptions.select = siteData.selectFunction;
-			}
-			siteData.selector.autocomplete(autocompleteOptions);
-		};
-		// perform an ajax query of a sister site
-		var _ajaxSisterSiteSearch = function(ajaxUrl, ajaxData, ajaxSuccess) {
-			ajaxData.format = 'json';
-			$.ajax({
-				url: ajaxUrl,
-				data: ajaxData,
-				dataType: 'jsonp',
-				success: ajaxSuccess
-			});
-		};
-		// parse the wikidata "claim" object from the wikidata response
-		var _wikidataClaim = function(jsonObj, value, property, guidBool) {
-			var entity = _wikidataEntity(jsonObj, value);
-			if (!entity || !entity.claims || !entity.claims[property]) {
-				return null;
-			}
-			var propertyObj = entity.claims[property];
-			if (!propertyObj || propertyObj.length < 1 || !propertyObj[0].mainsnak || !propertyObj[0].mainsnak.datavalue) {
-				return null;
-			}
-			var index = 0;
-			if( propertyObj[index].mainsnak.datavalue.type === "monolingualtext" ) { // have to select correct language, Wikidata sends all despite specifying
-				while( propertyObj[index].mainsnak.datavalue.value.language !== Config.LANG ) {
-					index = index + 1;
-					if( !(propertyObj[index]) ) { return null; } // if we run out of langs and none of them matched
-				}
-				if (guidBool === true) { return propertyObj[index].id }
-				return propertyObj[index].mainsnak.datavalue.value.text;
-			}
-			if (guidBool === true) { return propertyObj[index].id }
-			return propertyObj[index].mainsnak.datavalue.value;
-		};
-		// parse the wikidata "entity" object from the wikidata response
-		var _wikidataEntity = function(jsonObj, value) {
-			if (!jsonObj || !jsonObj.entities || !jsonObj.entities[value]) {
-				return null;
-			}
-			return jsonObj.entities[value];
-		};
-		// parse the wikidata display label from the wikidata response
-		var _wikidataLabel = function(jsonObj, value) {
-			var entityObj = _wikidataEntity(jsonObj, value);
-			if (!entityObj || !entityObj.labels || !entityObj.labels.en) {
-				return null;
-			}
-			return entityObj.labels.en.value;
-		};
-		// parse the wikipedia link from the wikidata response
-		var _wikidataWikipedia = function(jsonObj, value) {
-			var entityObj = _wikidataEntity(jsonObj, value);
-			if (!entityObj || !entityObj.sitelinks || !entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA] || !entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA].title) {
-				return null;
-			}
-			return entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA].title;
-		};
-
-		var _wikipediaWikidata = function(jsonObj) {
-			if (!jsonObj || !jsonObj.query || jsonObj.query.pageids[0] == "-1" ) { // wikipedia returns -1 pageid when page is not found
-				return null;
-			}
-			var pageID = jsonObj.query.pageids[0];
-			return jsonObj['query']['pages'][pageID]['pageprops']['wikibase_item'];
-		};
-		var _sendToWikidata = function(prop, value, snaktype) {
-			var ajaxData = {
-				action: 'wbcreateclaim',
-				entity: $('#input-wikidata-value').val(),
-				property: prop,
-				snaktype,
-				value,
-				format: 'json',
-			};
-			var ajaxSuccess = function(jsonObj) {
-				SisterSite.referenceWikidata(jsonObj);
-			};
-			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} ); // async disabled because otherwise get edit conflicts with multiple changes submitted at once
-		};
-		var _removeFromWikidata = function(guidObj) {
-			var ajaxData = {
-				action: 'wbremoveclaims',
-				claim: guidObj,
-			};
-			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, { async: false } );
-		};
-		var _changeOnWikidata = function(guidObj, prop, value, snaktype) {
-			var ajaxData = {
-				action: 'wbsetclaimvalue',
-				claim: guidObj,
-				snaktype,
-				value
-			};
-			var ajaxSuccess = function(jsonObj) {
-				if( jsonObj.claim ) {
-					if( !(jsonObj.claim.references) ) { // if no references, add imported from
-						SisterSite.referenceWikidata(jsonObj);
-					}
-					else if ( jsonObj.claim.references.length === 1 ) { // skip if >1 reference; too complex to automatically set
-						var acceptedProps = [WIKIDATA_PROP_WMURL, WIKIDATA_PROP_WMPRJ]; // properties relating to Wikimedia import only
-						var diff = $(jsonObj.claim.references[0]['snaks-order']).not(acceptedProps).get(); // x-compatible method for diff on arrays, from https://stackoverflow.com/q/1187518
-						if( diff.length === 0 ) { // if the set of present properties is a subset of the set of acceptable properties
-							SisterSite.unreferenceWikidata(jsonObj.claim.id, jsonObj.claim.references[0].hash); // then remove the current reference
-							SisterSite.referenceWikidata(jsonObj); // and add imported from
-						}
-					}
-				}
-			};
-			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
-		};
-		var _referenceWikidata = function(jsonObj) {
-			var revUrl = `https:${mw.config.get('wgServer')}${mw.config.get('wgArticlePath').replace('$1', '')}${mw.config.get('wgPageName')}?oldid=${mw.config.get('wgCurRevisionId')}`; // surprising that there is no API call for this
-			var ajaxData = {
-				action: 'wbsetreference',
-				statement: jsonObj.claim.id,
-				snaks: `{"${WIKIDATA_PROP_WMURL}":[{"snaktype":"value","property":"${WIKIDATA_PROP_WMURL}","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":"${Config.WIKIDATAID}"}}}],` +
-					`"${WIKIDATA_PROP_WMPRJ}": [{"snaktype":"value","property":"${WIKIDATA_PROP_WMPRJ}","datavalue":{"type":"string","value":"${revUrl}"}}]}`,
-			};
-			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, { async: false } );
-		};
-		var _unreferenceWikidata = function(statement, references) {
-			var ajaxData = {
-				action: 'wbremovereferences',
-				statement,
-				references
-			};
-			var api = new mw.ForeignApi( SisterSite.API_WIKIDATA );
-			api.postWithToken( 'csrf', ajaxData, { async: false } );
-		};
-		// expose public members
-		return {
-			API_WIKIDATA,
-			API_WIKIPEDIA,
-			API_COMMONS,
-			initializeSisterSiteAutocomplete: _initializeSisterSiteAutocomplete,
-			ajaxSisterSiteSearch: _ajaxSisterSiteSearch,
-			wikidataClaim: _wikidataClaim,
-			wikidataWikipedia: _wikidataWikipedia,
-			wikidataLabel: _wikidataLabel,
-			wikipediaWikidata: _wikipediaWikidata,
-			sendToWikidata: _sendToWikidata,
-			removeFromWikidata: _removeFromWikidata,
-			changeOnWikidata: _changeOnWikidata,
-			referenceWikidata: _referenceWikidata,
-			unreferenceWikidata: _unreferenceWikidata
 		};
 	}();
 

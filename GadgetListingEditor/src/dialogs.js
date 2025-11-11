@@ -8,7 +8,14 @@ function destroy( selector ) {
 }
 
 function open( $element, options ) {
-    load().then( () => $element.dialog(options));
+    load().then( () =>
+        $element.dialog(
+            Object.assign( options, {
+                height: 'auto',
+                width: 'auto'
+            } )
+        )
+    );
     document.documentElement.classList.add( 'listing-editor-dialog-open' );
 }
 

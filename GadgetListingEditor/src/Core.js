@@ -476,8 +476,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 ];
             dialog.open(form, {
                 modal: true,
-                height: 'auto',
-                width: 'auto',
                 title: (mode == MODE_ADD) ?
                     translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
                 dialogClass: 'listing-editor-dialog',

@@ -1,7 +1,8 @@
-module.exports = function( wikidata, wikipedia, commons, Config ) {
-    var API_WIKIDATA = `${wikidata}/w/api.php`;
-    var API_WIKIPEDIA = `${wikipedia}/w/api.php`;
-    var API_COMMONS = `${commons}/w/api.php`;
+module.exports = function( Config ) {
+    const { WIKIDATA_URL, WIKIPEDIA_URL, COMMONS_URL } = Config;
+    var API_WIKIDATA = `${WIKIDATA_URL}/w/api.php`;
+    var API_WIKIPEDIA = `${WIKIPEDIA_URL}/w/api.php`;
+    var API_COMMONS = `${COMMONS_URL}/w/api.php`;
     var WIKIDATA_PROP_WMURL = 'P143'; // Wikimedia import URL
     var WIKIDATA_PROP_WMPRJ = 'P4656'; // Wikimedia project source of import
 

@@ -388,9 +388,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 
 
 		const SisterSite = require( './SisterSite.js' )(
-			Config.WIKIDATA_URL,
-			Config.WIKIPEDIA_URL,
-			Config.COMMONS_URL
+			Config
 		);
 		var setDefaultPlaceholders = function(form) {
 			[
@@ -443,33 +441,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				};
 				SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
 			}
-			// set up autocomplete to search for results as the user types
-			$('#input-wikidata-label', form).autocomplete({
-				// eslint-disable-next-line object-shorthand
-				source: function( request, response ) {
-					var ajaxUrl = SisterSite.API_WIKIDATA;
-					var ajaxData = {
-						action: 'wbsearchentities',
-						search: request.term,
-						language: Config.LANG
-					};
-					var ajaxSuccess = function (jsonObj) {
-						response(parseWikiDataResult(jsonObj));
-					};
-					SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
-				},
-				// eslint-disable-next-line object-shorthand
-				select: function(event, ui) {
-					$("#input-wikidata-value").val(ui.item.id);
-					wikidataLink("", ui.item.id);
-				}
-			}).data("ui-autocomplete")._renderItem = function(ul, item) {
-				var label = `${mw.html.escape(item.label)} <small>${mw.html.escape(item.id)}</small>`;
-				if (item.description) {
-					label += `<br /><small>${mw.html.escape(item.description)}</small>`;
-				}
-				return $("<li>").data('ui-autocomplete-item', item).append($("<a>").html(label)).appendTo(ul);
-			};
 			// add a listener to the "remove" button so that links can be deleted
 			$('#wikidata-remove', form).on( 'click', function() {
 				wikidataRemove(form);
@@ -497,26 +468,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				var wikidataRecord = $("#input-wikidata-value", form).val();
 				quickUpdateWikidataSharedFields(wikidataRecord);
 			});
-			var wikipediaSiteData = {
-				apiUrl: SisterSite.API_WIKIPEDIA,
-				selector: $('#input-wikipedia', form),
-				form,
-				ajaxData: {
-					namespace: 0
-				},
-				updateLinkFunction: wikipediaLink
-			};
-			SisterSite.initializeSisterSiteAutocomplete(wikipediaSiteData);
-			var commonsSiteData = {
-				apiUrl: SisterSite.API_COMMONS,
-				selector: $('#input-image', form),
-				form,
-				ajaxData: {
-					namespace: 6
-				},
-				updateLinkFunction: commonsLink
-			};
-			SisterSite.initializeSisterSiteAutocomplete(commonsSiteData);
 		};
 		var wikipediaLink = function(value, form) {
 			var wikipediaSiteLinkData = {
@@ -951,24 +902,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			};
 			SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
 		};
-		var parseWikiDataResult = function(jsonObj) {
-			var results = [];
-			for (var i=0; i < $(jsonObj.search).length; i++) {
-				var result = $(jsonObj.search)[i];
-				var label = result.label;
-				if (result.match && result.match.text) {
-					label = result.match.text;
-				}
-				var data = {
-					value: label,
-					label,
-					description: result.description,
-					id: result.id
-				};
-				results.push(data);
-			}
-			return results;
-		};
 		var wikidataLink = function(form, value) {
 			var link = $("<a />", {
 				target: "_new",
@@ -981,6 +914,13 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			$('#div_wikidata_update', form).show();
 			if ( $(Config.SYNC_FORM_SELECTOR).prev().find(".ui-dialog-title").length ) { $(Config.SYNC_FORM_SELECTOR).prev().find(".ui-dialog-title").append( ' &mdash; ' ).append(link.clone()); } // add to title of Wikidata sync dialog, if it is open
 		};
+
+
+		// set up autocomplete to search for results as the user types
+		const autocompletes = require( './autocompletes.js' );
+		CREATE_FORM_CALLBACKS.push( ( form ) => {
+			autocompletes( SisterSite, form, wikidataLink, wikipediaLink, commonsLink, Config.LANG );
+		} );
 		CREATE_FORM_CALLBACKS.push(wikidataLookup);
 
 		// --------------------------------------------------------------------

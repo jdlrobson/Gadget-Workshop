@@ -389,8 +389,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 dialog.destroy(Config.SYNC_FORM_SELECTOR);
             }
             var form = $(createForm(mode, listingParameters, listingTemplateAsMap));
-            // wide dialogs on huge screens look terrible
-            var windowWidth = $(window).width();
             // modal form - must submit or cancel
             const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
             const buttons = [

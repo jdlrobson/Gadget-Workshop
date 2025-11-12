@@ -3,6 +3,7 @@ const trimDecimal = require( './trimDecimal.js' );
 const dialog = require( './dialogs.js' );
 const makeTranslateFunction = require( './makeTranslateFunction.js' );
 const parseDMS = require( './parseDMS.js' );
+const iata = '{{IATA|%s}}';
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -537,7 +538,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 						}
 						else if (key === 'iata') {
 							msg += `\n${Config.WIKIDATA_CLAIMS[key].label}: ${res[key]}`;
-							res[key] = PROJECT_CONFIG.iata.replace( '%s', res[key] );
+							res[key] = iata.replace( '%s', res[key] );
 						}
 						else if (key === 'email') {
 							res[key] = res[key].replace('mailto:', '');
@@ -612,7 +613,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 					res[key].guidObj = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p, true);
 					if (key === 'iata') {
 						if( res[key].value ) {
-							res[key].value = PROJECT_CONFIG.iata.replace( '%s', res[key].value );
+							res[key].value = iata.replace( '%s', res[key].value );
 						}
 						msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 					}

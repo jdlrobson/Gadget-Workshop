@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.10.0
+ * Listing Editor v3.10.1
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.10.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.10.1'
 
 'use strict';
 
@@ -914,78 +914,70 @@ var makeTranslateFunction$1 = ( translations ) => {
  * 2) Empty string (provided from initial parsing section in parseDMS) are considered valid by isNaN function (i.e. isNaN('') is false)
  */
 
-var parseDMS_1;
-var hasRequiredParseDMS;
+var convertDMS2DD = function(degrees, minutes, seconds, direction) {
+    var dd = NaN;
+    if( isNaN(degrees) )
+        return NaN;
+    else {
+        degrees = Number(degrees);
+        if( degrees <= -180 || degrees > 180 )
+            return NaN;
+        else
+            dd = degrees;
+    }
+    if( isNaN(minutes) )
+        return NaN;
+    else {
+        degrees = Number(minutes);
+        if( minutes < 0 || minutes >= 60 )
+            return NaN;
+        else
+            dd = dd + minutes/60;
+    }
+    if( isNaN(seconds) )
+        return NaN;
+    else {
+        degrees = Number(seconds);
+        if( seconds < 0 || seconds >= 60 )
+            return NaN;
+        else
+            dd = dd + seconds/(3600);
+    }
+    if (direction == "S" || direction == "W") {
+        dd = dd * -1;
+    } // Don't do anything for N or E
+    return dd;
+};
 
-function requireParseDMS () {
-	if (hasRequiredParseDMS) return parseDMS_1;
-	hasRequiredParseDMS = 1;
-	var convertDMS2DD = function(degrees, minutes, seconds, direction) {
-	    var dd = NaN;
-	    if( isNaN(degrees) )
-	        return NaN;
-	    else {
-	        degrees = Number(degrees);
-	        if( degrees <= -180 || degrees > 180 )
-	            return NaN;
-	        else
-	            dd = degrees;
-	    }
-	    if( isNaN(minutes) )
-	        return NaN;
-	    else {
-	        degrees = Number(minutes);
-	        if( minutes < 0 || minutes >= 60 )
-	            return NaN;
-	        else
-	            dd = dd + minutes/60;
-	    }
-	    if( isNaN(seconds) )
-	        return NaN;
-	    else {
-	        degrees = Number(seconds);
-	        if( seconds < 0 || seconds >= 60 )
-	            return NaN;
-	        else
-	            dd = dd + seconds/(3600);
-	    }
-	    if (direction == "S" || direction == "W") {
-	        dd = dd * -1;
-	    } // Don't do anything for N or E
-	    return dd;
-	};
+/**
+ * Parse coordinates in DMS notation, to convert it into DD notation in Wikidata format (i.e. without "°" symbol).
+ * If the input is already in DD notation, input value is returned unchanged.
+ * Notes:
+ * 1) Common notation is use as a proforma for potential future use because the split currently works to be more flexible skipping any char that is not a number, a minus, a dot or a cardinal point
+ * 2) Missing parts are forced to be empty to use a common approach, altough M & S could be also "0" in fact North America coords 48°N 100°W are equivalent to 48° 0' 0" N, 100° 0' 0" W,
+ *    but for compatibility with the DD notation where there is no alternative way to write it (i.e. 48° -100°), so the following parts are just empty, not 0
+ * 3) The parsed parts could have also erroneous data if the input is badly formatted (e.g. 48°EE'00"N 100°00'4000""W"), but these checks will be performed inside convertDMS2DD
+ */
+var parseDMS$1 = function(input) {
+    // Uniform alternative notation, into one common notation DD° MM' SS" [NSEW], then the DMS components are splitted into its 4 atomic component
+    var parts = input.toString()
+        .replace(/[‘’′]/g, "'")
+        .replace(/[“”″]/g, '"')
+        .replace(/''/g, '"')
+        .replace(/−/g, '-')
+        .replace(/[_/\t\n\r]/g, " ")
+        .replace(/\s/g, '')
+        .replace(/([°'"])/g,"$1 ")
+        .replace(/([NSEW])/gi, function(v) { return ` ${v.toUpperCase()}`; })
+        // eslint-disable-next-line no-useless-escape
+        .replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
+    for (var i=0; i<4; i++)
+        if( !parts[i] )
+            parts[i] = '';
+    return convertDMS2DD( parts[0], parts[1], parts[2], parts[3] );
+};
 
-	/**
-	 * Parse coordinates in DMS notation, to convert it into DD notation in Wikidata format (i.e. without "°" symbol).
-	 * If the input is already in DD notation, input value is returned unchanged.
-	 * Notes:
-	 * 1) Common notation is use as a proforma for potential future use because the split currently works to be more flexible skipping any char that is not a number, a minus, a dot or a cardinal point
-	 * 2) Missing parts are forced to be empty to use a common approach, altough M & S could be also "0" in fact North America coords 48°N 100°W are equivalent to 48° 0' 0" N, 100° 0' 0" W,
-	 *    but for compatibility with the DD notation where there is no alternative way to write it (i.e. 48° -100°), so the following parts are just empty, not 0
-	 * 3) The parsed parts could have also erroneous data if the input is badly formatted (e.g. 48°EE'00"N 100°00'4000""W"), but these checks will be performed inside convertDMS2DD
-	 */
-	var parseDMS = function(input) {
-	    // Uniform alternative notation, into one common notation DD° MM' SS" [NSEW], then the DMS components are splitted into its 4 atomic component
-	    var parts = input.toString()
-	        .replace(/[‘’′]/g, "'")
-	        .replace(/[“”″]/g, '"')
-	        .replace(/''/g, '"')
-	        .replace(/−/g, '-')
-	        .replace(/[_/\t\n\r]/g, " ")
-	        .replace(/\s/g, '')
-	        .replace(/([°'"])/g,"$1 ")
-	        .replace(/([NSEW])/gi, function(v) { return ` ${v.toUpperCase()}`; })
-	        // eslint-disable-next-line no-useless-escape
-	        .replace(/(^ [NSEW])(.*)/g,"$2$1").split(/[^\d\w\.-]+/);
-	    for (var i=0; i<4; i++)
-	        if( !parts[i] )
-	            parts[i] = '';
-	    return convertDMS2DD( parts[0], parts[1], parts[2], parts[3] );
-	};
-
-	parseDMS_1 = parseDMS;
-	return parseDMS_1;
-}
+var parseDMS_1 = parseDMS$1;
 
 var html;
 var hasRequiredHtml;
@@ -2692,9 +2684,10 @@ const TRANSLATIONS_ALL = translations;
 const trimDecimal = trimDecimal_1;
 const dialog = dialogs;
 const makeTranslateFunction = makeTranslateFunction$1;
+const parseDMS = parseDMS_1;
+const iata = '{{IATA|%s}}';
 
 var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
-	const parseDMS = PROJECT_CONFIG.doNotParseDMS ? (a) => a : requireParseDMS();
 
 	var PROJECT_CONFIG_KEYS = [
 		'SHOW_LAST_EDITED_FIELD', 'SUPPORTED_SECTIONS', 'iata',
@@ -3226,7 +3219,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 						}
 						else if (key === 'iata') {
 							msg += `\n${Config.WIKIDATA_CLAIMS[key].label}: ${res[key]}`;
-							res[key] = PROJECT_CONFIG.iata.replace( '%s', res[key] );
+							res[key] = iata.replace( '%s', res[key] );
 						}
 						else if (key === 'email') {
 							res[key] = res[key].replace('mailto:', '');
@@ -3301,7 +3294,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 					res[key].guidObj = SisterSite.wikidataClaim(jsonObj, wikidataRecord, Config.WIKIDATA_CLAIMS[key].p, true);
 					if (key === 'iata') {
 						if( res[key].value ) {
-							res[key].value = PROJECT_CONFIG.iata.replace( '%s', res[key].value );
+							res[key].value = iata.replace( '%s', res[key].value );
 						}
 						msg += createRadio(Config.WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 					}

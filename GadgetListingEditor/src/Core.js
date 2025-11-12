@@ -60,6 +60,11 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
             Callbacks.CREATE_FORM_CALLBACKS[i](form, mode);
         }
+        // update SisterSite app values
+        const { wikipedia, image, wikidata } = listingTemplateAsMap;
+        $( '#input-wikipedia', form ).val( wikipedia );
+        $( '#input-wikidata-label', form ).val( wikidata );
+        $( '#input-image', form ).val( image );
         return form;
     };
 

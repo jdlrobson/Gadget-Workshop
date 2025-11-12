@@ -44,6 +44,7 @@ module.exports = function( Config ) {
                     console.log('gpot', jsonObj);
                     response(parseAjaxResponse(jsonObj));
                 };
+                console.log('do ajaxData', siteData.apiUrl, ajaxData, ajaxSuccess)
                 ajaxSisterSiteSearch(siteData.apiUrl, ajaxData, ajaxSuccess);
             }
         };
@@ -53,14 +54,14 @@ module.exports = function( Config ) {
         siteData.selector.autocomplete(autocompleteOptions);
     };
     // perform an ajax query of a sister site
-    var ajaxSisterSiteSearch = function(ajaxUrl, ajaxData, ajaxSuccess) {
-        ajaxData.format = 'json';
-        $.ajax({
+    const ajaxSisterSiteSearch = function(ajaxUrl, ajaxData, ajaxSuccess = ( json ) => json ) {
+        return $.ajax({
             url: ajaxUrl,
-            data: ajaxData,
-            dataType: 'jsonp',
-            success: ajaxSuccess
-        });
+            data: Object.assign( ajaxData, {
+                format: 'json',
+                origin: '*'
+            } )
+        }).then( ajaxSuccess );
     };
     // parse the wikidata "claim" object from the wikidata response
     var wikidataClaim = function(jsonObj, value, property, guidBool) {

@@ -1829,7 +1829,7 @@ setTimeout( () => {
 	mw.loader.load( 'mediawiki.util');
 	$.ajax = ( opts ) => {
 		console.log('index.html ajax', opts);
-		if ( opts.dataType === 'jsonp' ) {
+		if ( opts.data && ( opts.data.action.indexOf( 'entities' ) > -1 || opts.data.action === 'opensearch' || opts.data.action === 'query' ) ) {
 			let newUrl = opts.url;
 			if ( newUrl.indexOf( '//' ) === -1 ) {
 				newUrl = `https://en.wikivoyage.org${newUrl}`;
@@ -1842,11 +1842,12 @@ setTimeout( () => {
 			
 			return originalAjax( newOpts ).then((json) => {
 				console.log('jsonp reeq', json);
+				return json;
 			});
 		} else if ( opts.url.includes('action=parse') ) {
 			opts.url = `https://en.wikivoyage.org${opts.url}&origin=*`;
 			return originalAjax( opts );
-		} else if ( opts.data.includes( 'rvsection=') ) {
+		} else if ( opts.data && opts.data.rvsection ) {
 			return $.Deferred().resolve(
 				{"batchcomplete":true,"warnings":{"main":{"warnings":"Subscribe to the mediawiki-api-announce mailing list at <https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/> for notice of API deprecations and breaking changes. Use [[Special:ApiFeatureUsage]] to see usage of deprecated features by your application."},"revisions":{"warnings":"Because \"rvslots\" was not specified, a legacy format has been used for the output. This format is deprecated, and in the future the new format will always be used."}},"query":{"pages":[{"pageid":25364,"ns":0,"title":"Nottingham","revisions":[{"contentformat":"text/x-wiki","contentmodel":"wikitext","content":"===By train===\n* {{go\n| name=Nottingham railway station | alt= | url=http://www.nationalrail.co.uk/stations_destinations/NOT.aspx | email=\n| address= | lat=52.947 | long=-1.146 | directions=\n| phone= | tollfree=\n| hours= | price=\n| wikidata=Q1988621\n| lastedit=2022-07-16\n| content=On the main line out of [[London St Pancras]]. The cheapest tickets between London and Nottingham are available from [https://www.eastmidlandsrailway.co.uk East Midlands Railway] and can be booked online before travel. There are also regular connections to [[Manchester Piccadilly]], [[Birmingham (England)|Birmingham]], [[Derby]], [[Leicester]], [[Crewe (England)|Crewe]], [[Sheffield]], and [[Leeds]]. Trains from London to Sheffield do not stop at Nottingham.\n}}\n\nTurn right out of the station for an easy 10-minute walk to the city centre.\n\nThe tram stop is right above the station, giving access to all tram destinations since both lines pass through the station."}]}]}}
 			);

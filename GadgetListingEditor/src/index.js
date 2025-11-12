@@ -3,7 +3,7 @@ const trimDecimal = require( './trimDecimal.js' );
 const dialog = require( './dialogs.js' );
 const makeTranslateFunction = require( './makeTranslateFunction.js' );
 const parseDMS = require( './parseDMS.js' );
-const iata = '{{IATA|%s}}';
+const { iata } = require( './templates.js' );
 const htmlSisterSites = require( './htmlSisterSites.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {

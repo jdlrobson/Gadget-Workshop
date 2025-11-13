@@ -1,7 +1,31 @@
 var DB_NAME = mw.config.get( 'wgDBname' );
 const dialog = require( './dialogs.js' );
 const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
+
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
+    const {
+        ALLOW_UNRECOGNIZED_PARAMETERS,
+        EDITOR_FORM_HTML,
+        LISTING_TYPE_PARAMETER,
+        SECTION_TO_TEMPLATE_TYPE,
+        DEFAULT_LISTING_TEMPLATE,
+        EDITOR_SUMMARY_SELECTOR,
+        EDITOR_MINOR_EDIT_SELECTOR,
+        LISTING_CONTENT_PARAMETER,
+        LISTING_TEMPLATES,
+        EDITOR_FORM_SELECTOR,
+        EDITOR_CLOSED_SELECTOR,
+        SYNC_FORM_SELECTOR
+    } = Config;
+
+    const listingEditorSync = {
+        destroy: () => {
+            if ($(SYNC_FORM_SELECTOR).length > 0) {
+                dialog.close(SYNC_FORM_SELECTOR);
+            }
+        }
+    };
+
     var api = new mw.Api();
     var MODE_ADD = 'add';
     var MODE_EDIT = 'edit';
@@ -22,11 +46,11 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * listing, pre-populate the form input fields with the existing values.
      */
     var createForm = function(mode, listingParameters, listingTemplateAsMap) {
-        var form = $(Config.EDITOR_FORM_HTML);
+        var form = $(EDITOR_FORM_HTML);
         // make sure the select dropdown includes any custom "type" values
-        var listingType = listingTemplateAsMap[Config.LISTING_TYPE_PARAMETER];
+        var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
         if (isCustomListingType(listingType)) {
-            $(`#${listingParameters[Config.LISTING_TYPE_PARAMETER].id}`, form).append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
+            $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form).append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
         }
         // populate the empty form with existing values
         for (var parameter in listingParameters) {
@@ -128,7 +152,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      */
     const _findListingTypeForSection = require( './findListingTypeForSection.js' );
     const findListingTypeForSection = function(entry ) {
-        return _findListingTypeForSection( entry, Config.SECTION_TO_TEMPLATE_TYPE, Config.DEFAULT_LISTING_TEMPLATE );
+        return _findListingTypeForSection( entry, SECTION_TO_TEMPLATE_TYPE, DEFAULT_LISTING_TEMPLATE );
     };
 
     var replaceSpecial = function(str) {
@@ -144,7 +168,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      */
     var getListingTypesRegex = function() {
         var regex = [];
-        for (var key in Config.LISTING_TEMPLATES) {
+        for (var key in LISTING_TEMPLATES) {
             regex.push(key);
         }
         return new RegExp( PROJECT_CONFIG.listingTypeRegExp.replace( '%s', regex.join( '|' ) ), 'ig' );
@@ -203,7 +227,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     var wikiTextToListing = function(listingTemplateWikiSyntax) {
         var typeRegex = getListingTypesRegex();
         // convert "{{see" to {{listing|type=see"
-        listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${Config.LISTING_TYPE_PARAMETER}=$2$3`);
+        listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);
         // remove the trailing braces
         listingTemplateWikiSyntax = listingTemplateWikiSyntax.slice(0,-2);
         var listingTemplateAsMap = {};
@@ -231,17 +255,17 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             // displayed in the edit form
             listingTemplateAsMap[loopKey1] = restoreComments(listingTemplateAsMap[loopKey1], false);
         }
-        if (listingTemplateAsMap[Config.LISTING_CONTENT_PARAMETER]) {
+        if (listingTemplateAsMap[LISTING_CONTENT_PARAMETER]) {
             // convert paragraph tags to newlines so that the content is more
             // readable in the editor window
-            listingTemplateAsMap[Config.LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[Config.LISTING_CONTENT_PARAMETER].replace(/\s*<p>\s*/g, '\n\n');
-            listingTemplateAsMap[Config.LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[Config.LISTING_CONTENT_PARAMETER].replace(/\s*<br\s*\/?>\s*/g, '\n');
+            listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<p>\s*/g, '\n\n');
+            listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<br\s*\/?>\s*/g, '\n');
         }
         // sanitize the listing type param to match the configured values, so
         // if the listing contained "Do" it will still match the configured "do"
-        for (var loopKey2 in Config.LISTING_TEMPLATES) {
-            if (listingTemplateAsMap[Config.LISTING_TYPE_PARAMETER].toLowerCase() === loopKey2.toLowerCase()) {
-                listingTemplateAsMap[Config.LISTING_TYPE_PARAMETER] = loopKey2;
+        for (var loopKey2 in LISTING_TEMPLATES) {
+            if (listingTemplateAsMap[LISTING_TYPE_PARAMETER].toLowerCase() === loopKey2.toLowerCase()) {
+                listingTemplateAsMap[LISTING_TYPE_PARAMETER] = loopKey2;
                 break;
             }
         }
@@ -378,21 +402,19 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             var listingTemplateAsMap, listingTemplateWikiSyntax;
             if (mode == MODE_ADD) {
                 listingTemplateAsMap = {};
-                listingTemplateAsMap[Config.LISTING_TYPE_PARAMETER] = listingType;
+                listingTemplateAsMap[LISTING_TYPE_PARAMETER] = listingType;
             } else {
                 listingTemplateWikiSyntax = getListingWikitextBraces(listingIndex);
                 listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
-                listingType = listingTemplateAsMap[Config.LISTING_TYPE_PARAMETER];
+                listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
             }
             var listingParameters = getListingInfo(listingType);
             // if a listing editor dialog is already open, get rid of it
-            if ($(Config.EDITOR_FORM_SELECTOR).length > 0) {
-                dialog.destroy( Config.EDITOR_FORM_SELECTOR );
+            if ($(EDITOR_FORM_SELECTOR).length > 0) {
+                dialog.destroy( EDITOR_FORM_SELECTOR );
             }
             // if a sync editor dialog is already open, get rid of it
-            if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-                dialog.destroy(Config.SYNC_FORM_SELECTOR);
-            }
+            listingEditorSync.destroy();
             var form = $(createForm(mode, listingParameters, listingTemplateAsMap));
             // modal form - must submit or cancel
             const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
@@ -409,14 +431,12 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     text: translate( 'submit' ),
                     // eslint-disable-next-line object-shorthand
                     click: function() {
-                        if ($(Config.EDITOR_CLOSED_SELECTOR).is(':checked')) {
+                        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
                             // no need to validate the form upon deletion request
                             formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
                             dialog.close(this);
                             // if a sync editor dialog is open, get rid of it
-                            if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-                                dialog.close(Config.SYNC_FORM_SELECTOR);
-                            }
+                            listingEditorSync.destroy();
                         }
                         else if (
                             validateForm(
@@ -429,9 +449,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                             formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
                             dialog.close(this);
                             // if a sync editor dialog is open, get rid of it
-                            if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-                                dialog.close(Config.SYNC_FORM_SELECTOR);
-                            }
+                            listingEditorSync.destroy();
                         }
                     }
                 },
@@ -471,9 +489,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     click: function() {
                         dialog.destroy(this);
                         // if a sync editor dialog is open, get rid of it
-                        if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-                            dialog.destroy(Config.SYNC_FORM_SELECTOR);
-                        }
+                        listingEditorSync.destroy();
                     }
                 }
                 ];
@@ -517,11 +533,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     const bugUrl = 'https://github.com/jdlrobson/Gadget-Workshop/issues';
                     $( `<span class="listing-license">&nbsp;<a href="${bugUrl}">${translate( 'report-bug' )}</a></span>` )
                         .appendTo( $btnPane );
-                    $('body').on('dialogclose', Config.EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
+                    $('body').on('dialogclose', EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
                         // if a sync editor dialog is open, get rid of it
-                        if ($(Config.SYNC_FORM_SELECTOR).length > 0) {
-                            dialog.destroy(Config.SYNC_FORM_SELECTOR);
-                        }
+                        listingEditorSync.destroy();
                     });
                 }
             });
@@ -567,7 +581,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * listing template type if not enty exists for the specified type.
      */
     var getListingInfo = function(type) {
-        return (isCustomListingType(type)) ? Config.LISTING_TEMPLATES[Config.DEFAULT_LISTING_TEMPLATE] : Config.LISTING_TEMPLATES[type];
+        return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
     };
 
     /**
@@ -575,7 +589,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * instead of "see", "do", "listing", etc.
      */
     var isCustomListingType = function(listingType) {
-        return !(listingType in Config.LISTING_TEMPLATES);
+        return !(listingType in LISTING_TEMPLATES);
     };
 
     var validateForm = require( './validateForm.js' );
@@ -589,8 +603,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      */
     var formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
         var listing = listingTemplateAsMap;
-        var defaultListingParameters = getListingInfo(Config.DEFAULT_LISTING_TEMPLATE);
-        var listingTypeInput = defaultListingParameters[Config.LISTING_TYPE_PARAMETER].id;
+        var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
+        var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
         var listingType = $(`#${listingTypeInput}`).val();
         var listingParameters = getListingInfo(listingType);
         for (var parameter in listingParameters) {
@@ -607,18 +621,18 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             summary = updateSectionTextWithEditedListing(summary, text, listingTemplateWikiSyntax);
         }
         summary += $("#input-name").val();
-        if ($(Config.EDITOR_SUMMARY_SELECTOR).val() !== '') {
-            summary += ` - ${$(Config.EDITOR_SUMMARY_SELECTOR).val()}`;
+        if ($(EDITOR_SUMMARY_SELECTOR).val() !== '') {
+            summary += ` - ${$(EDITOR_SUMMARY_SELECTOR).val()}`;
         }
-        var minor = $(Config.EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
+        var minor = $(EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
         saveForm(summary, minor, sectionNumber, '', '');
         return;
     };
 
     var showPreview = function(listingTemplateAsMap) {
         var listing = listingTemplateAsMap;
-        var defaultListingParameters = getListingInfo(Config.DEFAULT_LISTING_TEMPLATE);
-        var listingTypeInput = defaultListingParameters[Config.LISTING_TYPE_PARAMETER].id;
+        var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
+        var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
         var listingType = $(`#${listingTypeInput}`).val();
         var listingParameters = getListingInfo(listingType);
         for (var parameter in listingParameters) {
@@ -712,8 +726,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         summary += translate( 'added' );
         //Creo un listing commentato dello stesso tipo di quello che aggiungerò.
         //Se nella sezione in cui andrò a scrivere troverò questo listing commentato, lo rimpiazzerò col nuovo.
-        var commentedListing = `<!--* {{${listing[Config.LISTING_TYPE_PARAMETER]}\n| nome= | alt= | sito= | email=\n| indirizzo= | lat= | long= | indicazioni=\n| tel= | numero verde= | fax=\n|`;
-        if (listing[Config.LISTING_TYPE_PARAMETER] !== 'sleep') {
+        var commentedListing = `<!--* {{${listing[LISTING_TYPE_PARAMETER]}\n| nome= | alt= | sito= | email=\n| indirizzo= | lat= | long= | indicazioni=\n| tel= | numero verde= | fax=\n|`;
+        if (listing[LISTING_TYPE_PARAMETER] !== 'sleep') {
             commentedListing += " orari= | prezzo=\n";
         } else {
             commentedListing += " checkin= | checkout= | prezzo=\n";
@@ -795,7 +809,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     var updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
         // escaping '$&' since in replace regex it means "substitute the whole content"
         listingWikiText = listingWikiText.replace( /\$&/g, '&#36;&');
-        if ($(Config.EDITOR_CLOSED_SELECTOR).is(':checked')) {
+        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
             listingWikiText = '';
             editSummary += translate( 'removed' );
             // TODO: RegEx change to delete the complete row when listing is preceeded by templates showing just icons
@@ -899,7 +913,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      */
     var saveFailed = function(msg) {
         dialog.destroy(SAVE_FORM_SELECTOR);
-        dialog.open($(Config.EDITOR_FORM_SELECTOR));
+        dialog.open($(EDITOR_FORM_SELECTOR));
         alert(msg);
     };
 
@@ -946,25 +960,25 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * Convert the listing map back to a wiki text string.
      */
     var listingToStr = function(listing) {
-        var listingType = listing[Config.LISTING_TYPE_PARAMETER];
+        var listingType = listing[LISTING_TYPE_PARAMETER];
         var listingParameters = getListingInfo(listingType);
         var saveStr = '{{';
         if( isCustomListingType(listingType) ) { // type parameter specified explicitly only on custom type
-            saveStr += Config.DEFAULT_LISTING_TEMPLATE;
-            saveStr += ` | ${Config.LISTING_TYPE_PARAMETER}=${listingType}`;
+            saveStr += DEFAULT_LISTING_TEMPLATE;
+            saveStr += ` | ${LISTING_TYPE_PARAMETER}=${listingType}`;
         } else {
             saveStr += listingType;
         }
-        if (!inlineListing && listingParameters[Config.LISTING_TYPE_PARAMETER].newline) {
+        if (!inlineListing && listingParameters[LISTING_TYPE_PARAMETER].newline) {
             saveStr += '\n';
         }
         for (var parameter in listingParameters) {
             var l = listingParameters[parameter];
-            if (parameter === Config.LISTING_TYPE_PARAMETER) {
+            if (parameter === LISTING_TYPE_PARAMETER) {
                 // "type" parameter was handled previously
                 continue;
             }
-            if (parameter === Config.LISTING_CONTENT_PARAMETER) {
+            if (parameter === LISTING_CONTENT_PARAMETER) {
                 // processed last
                 continue;
             }
@@ -979,7 +993,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 }
             }
         }
-        if (Config.ALLOW_UNRECOGNIZED_PARAMETERS) {
+        if (ALLOW_UNRECOGNIZED_PARAMETERS) {
             // append any unexpected values
             for (var key in listing) {
                 if (listingParameters[key]) {
@@ -994,8 +1008,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 saveStr += (inlineListing) ? ' ' : '\n';
             }
         }
-        saveStr += `| ${Config.LISTING_CONTENT_PARAMETER}=${listing[Config.LISTING_CONTENT_PARAMETER]}`;
-        saveStr += (inlineListing || !listingParameters[Config.LISTING_CONTENT_PARAMETER].newline) ? ' ' : '\n';
+        saveStr += `| ${LISTING_CONTENT_PARAMETER}=${listing[LISTING_CONTENT_PARAMETER]}`;
+        saveStr += (inlineListing || !listingParameters[LISTING_CONTENT_PARAMETER].newline) ? ' ' : '\n';
         saveStr += '}}';
         return saveStr;
     };

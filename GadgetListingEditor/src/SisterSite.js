@@ -1,7 +1,9 @@
 
-const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, WIKIDATA_SITELINK_WIKIPEDIA } = require( './globalConfig.js' );
+const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL,
+    LANG,
+    WIKIDATA_SITELINK_WIKIPEDIA } = require( './globalConfig.js' );
 module.exports = function( Config ) {
-    const { WIKIDATAID, LANG } = Config;
+    const { WIKIDATAID } = Config;
     var API_WIKIDATA = `${WIKIDATA_URL}/w/api.php`;
     var API_WIKIPEDIA = `${WIKIPEDIA_URL}/w/api.php`;
     var API_COMMONS = `${COMMONS_URL}/w/api.php`;

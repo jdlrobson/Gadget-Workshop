@@ -3,8 +3,10 @@ const COMMONS_URL = '//commons.wikimedia.org';
 const WIKIDATA_URL = '//www.wikidata.org';
 const WIKIPEDIA_URL = `//${PAGE_VIEW_LANGUAGE}.wikipedia.org`;
 const WIKIDATA_SITELINK_WIKIPEDIA = `${PAGE_VIEW_LANGUAGE}wiki`;
+const LANG = mw.config.get( 'wgUserLanguage', 'en' );
 
 module.exports = {
+    LANG,
     WIKIDATA_SITELINK_WIKIPEDIA,
     WIKIPEDIA_URL,
     WIKIDATA_URL,

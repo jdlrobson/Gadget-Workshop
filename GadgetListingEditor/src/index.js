@@ -5,7 +5,7 @@ const makeTranslateFunction = require( './makeTranslateFunction.js' );
 const parseDMS = require( './parseDMS.js' );
 const { iata } = require( './templates.js' );
 const htmlSisterSites = require( './htmlSisterSites.js' );
-const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, WIKIDATA_SITELINK_WIKIPEDIA } = require( './globalConfig.js' );
+const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, WIKIDATA_SITELINK_WIKIPEDIA, LANG } = require( './globalConfig.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -239,7 +239,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		 * Add listeners on various fields to update the "find on map" link.
 		 */
 		var initFindOnMapLink = function(form) {
-			var latlngStr = `?lang=${Config.LANG}`;
+			var latlngStr = `?lang=${LANG}`;
 			//*****
 			// page & location cause the geomap-link crash
 			// to investigate if it's a geomap-link bug/limitation or if those parameters shall not be used
@@ -426,7 +426,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				var ajaxData = {
 					action: 'wbgetentities',
 					ids: value,
-					languages: Config.LANG,
+					languages: LANG,
 					props: 'labels'
 				};
 				var ajaxSuccess = function(jsonObj) {
@@ -520,7 +520,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			var ajaxData = {
 				action: 'wbgetentities',
 				ids: wikidataRecord,
-				languages: Config.LANG
+				languages: LANG
 			};
 			var ajaxSuccess = function (jsonObj) {
 				var msg = '';
@@ -584,7 +584,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			var ajaxData = {
 				action: 'wbgetentities',
 				ids: wikidataRecord,
-				languages: Config.LANG
+				languages: LANG
 			};
 			var ajaxSuccess = function (jsonObj) {
 				var msg = `<form id="listing-editor-sync">${
@@ -834,7 +834,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 				};
 				var ajaxSuccess = function(jsonObj) {
 					//if ( TODO: add logic for detecting Wikipedia and not doing this test. Otherwise get an error trying to find undefined. Keep in mind that we would in the future call sitelink changing here maybe. Not urgent, error harmless ) { }
-					/*else*/ if ( jsonObj.entities[field.p].datatype === 'monolingualtext' ) { syncedValue = `{"text": ${syncedValue}, "language": "${Config.LANG}"}`; }
+					/*else*/ if ( jsonObj.entities[field.p].datatype === 'monolingualtext' ) { syncedValue = `{"text": ${syncedValue}, "language": "${LANG}"}`; }
 					if ( guidObj === "null" ) { // no value on Wikidata, string "null" gets saved in hidden field. There should be no cases in which there is no Wikidata item but this string does not equal "null"
 						if (syncedValue !== '') { SisterSite.sendToWikidata(field.p , syncedValue, 'value'); }
 					}
@@ -873,7 +873,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 					htmlPart += '">';
 					break;
 				case Config.WIKIDATA_CLAIMS.image.p:
-					htmlPart += `href="https://${Config.LANG}.wikivoyage.org/wiki/File:`;
+					htmlPart += `href="https://${LANG}.wikivoyage.org/wiki/File:`;
 					for (i = 0; i < value.length; i++) { htmlPart += (valBool ? $(value[i]).val() : value[i]); }
 					htmlPart += '">';
 					break;
@@ -922,7 +922,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		// set up autocomplete to search for results as the user types
 		const autocompletes = require( './autocompletes.js' );
 		CREATE_FORM_CALLBACKS.push( ( form ) => {
-			autocompletes( SisterSite, form, wikidataLink, wikipediaLink, commonsLink, Config.LANG );
+			autocompletes( SisterSite, form, wikidataLink, wikipediaLink, commonsLink, LANG );
 		} );
 		CREATE_FORM_CALLBACKS.push(wikidataLookup);
 

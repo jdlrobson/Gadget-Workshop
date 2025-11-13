@@ -1,3 +1,5 @@
+const { LANG } = require( './globalConfig.js' );
+
 const parseWikiDataResult = function(jsonObj) {
     var results = [];
     for (var i=0; i < $(jsonObj.search).length; i++) {
@@ -17,7 +19,7 @@ const parseWikiDataResult = function(jsonObj) {
     return results;
 };
 
-const setupWikidataAutocomplete = ( SisterSite, form, updateLinkFunction, language ) => {
+const setupWikidataAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
     $('#input-wikidata-label', form).autocomplete({
         // eslint-disable-next-line object-shorthand
         source: function( request, response ) {
@@ -25,7 +27,7 @@ const setupWikidataAutocomplete = ( SisterSite, form, updateLinkFunction, langua
             var ajaxData = {
                 action: 'wbsearchentities',
                 search: request.term,
-                language
+                language: LANG
             };
             var ajaxSuccess = function (jsonObj) {
                 response(parseWikiDataResult(jsonObj));
@@ -73,8 +75,8 @@ const setupCommonsAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
     SisterSite.initializeSisterSiteAutocomplete(commonsSiteData);
 };
 
-module.exports = ( SisterSite, form, wikidataLink, wikipediaLink, commonsLink, language ) => {
-    setupWikidataAutocomplete( SisterSite, form, wikidataLink, language );
+module.exports = ( SisterSite, form, wikidataLink, wikipediaLink, commonsLink ) => {
+    setupWikidataAutocomplete( SisterSite, form, wikidataLink );
     setupWikipediaAutocomplete( SisterSite, form, wikipediaLink );
     setupCommonsAutocomplete( SisterSite, form, commonsLink );
 };

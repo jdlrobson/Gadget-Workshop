@@ -5,6 +5,7 @@ const makeTranslateFunction = require( './makeTranslateFunction.js' );
 const parseDMS = require( './parseDMS.js' );
 const { iata } = require( './templates.js' );
 const htmlSisterSites = require( './htmlSisterSites.js' );
+const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, WIKIDATA_SITELINK_WIKIPEDIA } = require( './globalConfig.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -49,13 +50,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 	const translate = makeTranslateFunction( TRANSLATIONS );
 
 	var Config = function( ALLOWED_NAMESPACE ) {
-		var PAGE_VIEW_LANGUAGE = mw.config.get( 'wgPageViewLanguage' );
 		var LANG = mw.config.get( 'wgUserLanguage', 'en' );
 		var WIKIDATAID = PROJECT_CONFIG.WIKIDATAID;
-		var COMMONS_URL = '//commons.wikimedia.org';
-		var WIKIDATA_URL = '//www.wikidata.org';
-		var WIKIPEDIA_URL = `//${PAGE_VIEW_LANGUAGE}.wikipedia.org`;
-		var WIKIDATA_SITELINK_WIKIPEDIA = `${PAGE_VIEW_LANGUAGE}wiki`;
 
 		var lookupField = function ( property ) {
 			return TRANSLATIONS[`property${property}`] || [];

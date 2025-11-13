@@ -1,5 +1,7 @@
+
+const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, WIKIDATA_SITELINK_WIKIPEDIA } = require( './globalConfig.js' );
 module.exports = function( Config ) {
-    const { WIKIDATA_URL, WIKIPEDIA_URL, COMMONS_URL } = Config;
+    const { WIKIDATAID, LANG } = Config;
     var API_WIKIDATA = `${WIKIDATA_URL}/w/api.php`;
     var API_WIKIPEDIA = `${WIKIPEDIA_URL}/w/api.php`;
     var API_COMMONS = `${COMMONS_URL}/w/api.php`;
@@ -75,7 +77,7 @@ module.exports = function( Config ) {
         }
         var index = 0;
         if( propertyObj[index].mainsnak.datavalue.type === "monolingualtext" ) { // have to select correct language, Wikidata sends all despite specifying
-            while( propertyObj[index].mainsnak.datavalue.value.language !== Config.LANG ) {
+            while( propertyObj[index].mainsnak.datavalue.value.language !== LANG ) {
                 index = index + 1;
                 if( !(propertyObj[index]) ) { return null; } // if we run out of langs and none of them matched
             }
@@ -103,10 +105,10 @@ module.exports = function( Config ) {
     // parse the wikipedia link from the wikidata response
     var wikidataWikipedia = function(jsonObj, value) {
         var entityObj = _wikidataEntity(jsonObj, value);
-        if (!entityObj || !entityObj.sitelinks || !entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA] || !entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA].title) {
+        if (!entityObj || !entityObj.sitelinks || !entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA] || !entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA].title) {
             return null;
         }
-        return entityObj.sitelinks[Config.WIKIDATA_SITELINK_WIKIPEDIA].title;
+        return entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA].title;
     };
 
     var wikipediaWikidata = function(jsonObj) {
@@ -169,7 +171,7 @@ module.exports = function( Config ) {
         var ajaxData = {
             action: 'wbsetreference',
             statement: jsonObj.claim.id,
-            snaks: `{"${WIKIDATA_PROP_WMURL}":[{"snaktype":"value","property":"${WIKIDATA_PROP_WMURL}","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":"${Config.WIKIDATAID}"}}}],` +
+            snaks: `{"${WIKIDATA_PROP_WMURL}":[{"snaktype":"value","property":"${WIKIDATA_PROP_WMURL}","datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":"${WIKIDATAID}"}}}],` +
                 `"${WIKIDATA_PROP_WMPRJ}": [{"snaktype":"value","property":"${WIKIDATA_PROP_WMPRJ}","datavalue":{"type":"string","value":"${revUrl}"}}]}`,
         };
         var api = new mw.ForeignApi( API_WIKIDATA );

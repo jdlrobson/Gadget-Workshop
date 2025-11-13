@@ -15,6 +15,7 @@ module.exports = {
         "mw": "readonly"
     },
     "rules": {
+        "no-shadow": 2,
         "no-trailing-spaces": 2,
         "template-curly-spacing": 2,
         "no-useless-concat": 2,

@@ -1,6 +1,8 @@
 var DB_NAME = mw.config.get( 'wgDBname' );
 const dialog = require( './dialogs.js' );
 const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
+const listingEditorSync = require( './listingEditorSync.js' );
+const renderSisterSiteApp = require( './sisterSiteApp/render.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
@@ -14,17 +16,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         LISTING_CONTENT_PARAMETER,
         LISTING_TEMPLATES,
         EDITOR_FORM_SELECTOR,
-        EDITOR_CLOSED_SELECTOR,
-        SYNC_FORM_SELECTOR
+        EDITOR_CLOSED_SELECTOR
     } = Config;
-
-    const listingEditorSync = {
-        destroy: () => {
-            if ($(SYNC_FORM_SELECTOR).length > 0) {
-                dialog.close(SYNC_FORM_SELECTOR);
-            }
-        }
-    };
 
     var api = new mw.Api();
     var MODE_ADD = 'add';
@@ -85,10 +78,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             Callbacks.CREATE_FORM_CALLBACKS[i](form, mode);
         }
         // update SisterSite app values
-        const { wikipedia, image, wikidata } = listingTemplateAsMap;
-        $( '#input-wikipedia', form ).val( wikipedia );
-        $( '#input-wikidata-label', form ).val( wikidata );
-        $( '#input-image', form ).val( image );
+        renderSisterSiteApp( Config, translate, listingTemplateAsMap )( form );
         return form;
     };
 

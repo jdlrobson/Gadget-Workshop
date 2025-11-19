@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.11.0
+ * Listing Editor v3.12.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.11.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.12.0'
 
 'use strict';
 
@@ -143,7 +143,13 @@ var contentTransform$1 = {
 };
 
 // map section heading ID to the listing template to use for that section
-var sectionToTemplateType$1 = function ( DB_NAME = 'enwikivoyage' ) {
+var sectionToTemplateType$1 = function ( config, DB_NAME = 'enwikivoyage' ) {
+    if ( config.sectionType ) {
+        return config.sectionType;
+    }
+    mw.log.warn( `Please define config.sectionType in [[MediaWikiGadget-ListingEditor.json]].
+Failure to do this will break future versions of the listing editor.
+See https://en.wikivoyage.org/w/index.php?title=MediaWiki%3AGadget-ListingEditor.json for reference.` );
     switch ( DB_NAME ) {
         case 'frwikivoyage':
             return {
@@ -246,7 +252,6 @@ $(function() {
 	// --------------------------------------------------------------------
 
 	var DB_NAME = mw.config.get( 'wgDBname' );
-	const SECTION_TO_TEMPLATE_TYPE = sectionToTemplateType( DB_NAME );
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
 	var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
@@ -293,6 +298,10 @@ $(function() {
 		en: {
 			add: 'add listing',
 			edit: 'edit'
+		},
+		id: {
+			add: 'Tambah butir',
+			edit: 'sunting'
 		},
 		de: {
 			add: 'Eintrag hinzufügen',
@@ -361,16 +370,39 @@ $(function() {
 		}
 	}
 
+	let config;
+	function loadConfig() {
+		if ( config ) {
+			return Promise.resolve( config );
+		} else {
+			return mw.loader.using( GADGET_CONFIG_NAME ).then( ( req ) => {
+				config = req( GADGET_CONFIG_NAME );
+				return config;
+			} );
+		}
+	}
+
+	let sectionToTemplateTypeFn;
+	function loadSectionToTemplateType() {
+		if ( sectionToTemplateTypeFn ) {
+			return Promise.resolve( sectionToTemplateTypeFn );
+		} else {
+			return loadConfig().then( ( _config ) => {
+				sectionToTemplateTypeFn = sectionToTemplateType( _config, DB_NAME );
+				return sectionToTemplateTypeFn;
+			} );
+		}
+	}
+
 	function loadMain() {
 		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
-			localModuleForDebugging ? Promise.resolve() : importForeignModule(),
-			mw.loader.using( GADGET_CONFIG_NAME )
-		] ).then( function ( args ) {
-			var req = args[ 1 ];
-			var config = req( GADGET_CONFIG_NAME );
-			var module = localModuleForDebugging || req( GADGET_NAME );
-			return module( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, config );
+			localModuleForDebugging ? Promise.resolve( mw.loader.require ) : importForeignModule(),
+			loadConfig(),
+			loadSectionToTemplateType()
+		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
+			const module = localModuleForDebugging || req( GADGET_NAME );
+			return module( ALLOWED_NAMESPACE, _sectionToTemplateType, _config );
 		} );
 	}
 
@@ -415,11 +447,13 @@ $(function() {
 			if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
 				return false;
 			}
-			contentTransform.addListingButtons(
-				SECTION_TO_TEMPLATE_TYPE,
-				TRANSLATIONS.add
-			);
-			$('.listingeditor-add').on('click', function( ev ) {
+			loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
+				contentTransform.addListingButtons(
+					_sectionToTemplateType,
+					TRANSLATIONS.add
+				);
+			} );
+			$( document ).on( 'click', '.listingeditor-add', function( ev ) {
 				// dont collapse section on mobile.
 				ev.stopPropagation();
 				const $this = $(this);

@@ -1,6 +1,6 @@
 const contentTransform = require( '../../src/contentTransform' );
 const sectionToTemplateType = require( '../../src/sectionToTemplateType' );
-
+const config = require( '../../dist/Gadget-ListingEditor.json' );
 const EDIT_SECTION_BRACKET = `<span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Frankfurt&amp;veaction=edit&amp;section=1" title="Edit section: Understand" class="mw-editsection-visualeditor"><span>edit</span></a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Frankfurt&amp;action=edit&amp;section=1" title="Edit section's source code: Understand"><span>edit source</span></a><span class="mw-editsection-bracket">]</span></span>`;
 
 const oldHeadingMarkup = ( title, level ) => `<h${level}>
@@ -124,7 +124,7 @@ ${oldHeadingMarkup('Do', 2)}
 </div>`
         );
         contentTransform.wrapContent();
-        contentTransform.addListingButtons( sectionToTemplateType(), 'add' );
+        contentTransform.addListingButtons( sectionToTemplateType( config ), 'add' );
         expect( document.body.innerHTML ).toMatchSnapshot();
         expect( document.body.querySelectorAll( '.listingeditor-add' ).length ).toBe( 4 );
     } );
@@ -141,7 +141,7 @@ ${newHeadingMarkup('Do', 2)}
 </div>`
         );
         contentTransform.wrapContent();
-        contentTransform.addListingButtons( sectionToTemplateType(), 'add' );
+        contentTransform.addListingButtons( sectionToTemplateType( config ), 'add' );
         expect( document.body.innerHTML ).toMatchSnapshot();
         expect( document.body.querySelectorAll( '.listingeditor-add' ).length ).toBe( 4 );
     } );

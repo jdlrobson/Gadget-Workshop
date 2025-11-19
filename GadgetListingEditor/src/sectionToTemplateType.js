@@ -1,5 +1,11 @@
 // map section heading ID to the listing template to use for that section
-module.exports = function ( DB_NAME = 'enwikivoyage' ) {
+module.exports = function ( config, DB_NAME = 'enwikivoyage' ) {
+    if ( config.sectionType ) {
+        return config.sectionType;
+    }
+    mw.log.warn( `Please define config.sectionType in [[MediaWikiGadget-ListingEditor.json]].
+Failure to do this will break future versions of the listing editor.
+See https://en.wikivoyage.org/w/index.php?title=MediaWiki%3AGadget-ListingEditor.json for reference.` );
     switch ( DB_NAME ) {
         case 'frwikivoyage':
             return {

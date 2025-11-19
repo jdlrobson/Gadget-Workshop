@@ -13,7 +13,6 @@ $(function() {
 	// --------------------------------------------------------------------
 
 	var DB_NAME = mw.config.get( 'wgDBname' );
-	const SECTION_TO_TEMPLATE_TYPE = sectionToTemplateType( DB_NAME );
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
 	var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
@@ -132,16 +131,39 @@ $(function() {
 		}
 	}
 
+	let config;
+	function loadConfig() {
+		if ( config ) {
+			return Promise.resolve( config );
+		} else {
+			return mw.loader.using( GADGET_CONFIG_NAME ).then( ( req ) => {
+				config = req( GADGET_CONFIG_NAME );
+				return config;
+			} );
+		}
+	}
+
+	let sectionToTemplateTypeFn;
+	function loadSectionToTemplateType() {
+		if ( sectionToTemplateTypeFn ) {
+			return Promise.resolve( sectionToTemplateTypeFn );
+		} else {
+			return loadConfig().then( ( _config ) => {
+				sectionToTemplateTypeFn = sectionToTemplateType( _config, DB_NAME );
+				return sectionToTemplateTypeFn;
+			} );
+		}
+	}
+
 	function loadMain() {
 		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
-			localModuleForDebugging ? Promise.resolve() : importForeignModule(),
-			mw.loader.using( GADGET_CONFIG_NAME )
-		] ).then( function ( args ) {
-			var req = args[ 1 ];
-			var config = req( GADGET_CONFIG_NAME );
-			var module = localModuleForDebugging || req( GADGET_NAME );
-			return module( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, config );
+			localModuleForDebugging ? Promise.resolve( mw.loader.require ) : importForeignModule(),
+			loadConfig(),
+			loadSectionToTemplateType()
+		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
+			const module = localModuleForDebugging || req( GADGET_NAME );
+			return module( ALLOWED_NAMESPACE, _sectionToTemplateType, _config );
 		} );
 	}
 
@@ -186,11 +208,13 @@ $(function() {
 			if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
 				return false;
 			}
-			contentTransform.addListingButtons(
-				SECTION_TO_TEMPLATE_TYPE,
-				TRANSLATIONS.add
-			);
-			$('.listingeditor-add').on('click', function( ev ) {
+			loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
+				contentTransform.addListingButtons(
+					_sectionToTemplateType,
+					TRANSLATIONS.add
+				);
+			} );
+			$( document ).on( 'click', '.listingeditor-add', function( ev ) {
 				// dont collapse section on mobile.
 				ev.stopPropagation();
 				const $this = $(this);

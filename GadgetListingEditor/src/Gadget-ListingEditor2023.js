@@ -61,6 +61,10 @@ $(function() {
 			add: 'add listing',
 			edit: 'edit'
 		},
+		id: {
+			add: 'Tambah butir',
+			edit: 'sunting'
+		},
 		de: {
 			add: 'Eintrag hinzufügen',
 			edit: 'bearbeiten'

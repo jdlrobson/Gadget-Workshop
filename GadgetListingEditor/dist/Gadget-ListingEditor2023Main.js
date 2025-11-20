@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.12.0
+ * Listing Editor v3.13.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.12.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.13.0'
 
 'use strict';
 
@@ -1132,7 +1132,7 @@ function requireHtml$1 () {
             </div>
         </div>
     </div>
-    <div id="listing-preview" style="display: none;">
+    <div id="listing-preview">
         <div class="listing-divider"></div>
         <div class="editor-row">
             <div title="Preview">${translate( 'preview' )}</div>
@@ -2939,36 +2939,6 @@ function requireCore () {
 	                    }
 	                },
 	                {
-	                    text: translate( 'preview' ),
-	                    title: translate( 'preview' ),
-	                    id: 'listing-preview-button',
-	                    // eslint-disable-next-line object-shorthand
-	                    click: function() {
-	                        formToPreview(listingTemplateAsMap);
-	                    }
-	                },
-	                {
-	                    text: translate( 'previewOff' ),
-	                    title: translate( 'previewOff' ),
-	                    id: 'listing-previewOff',
-	                    style: 'display: none',
-	                    // eslint-disable-next-line object-shorthand
-	                    click: function() {
-	                        hidePreview();
-	                    }
-	                },
-	                {
-	                    text: translate( 'refresh' ),
-	                    title: translate( 'refreshTitle' ),
-	                    icon: 'ui-icon-refresh',
-	                    id: 'listing-refresh',
-	                    style: 'display: none',
-	                    // eslint-disable-next-line object-shorthand
-	                    click: function() {
-	                        refreshPreview(listingTemplateAsMap);
-	                    }
-	                },
-	                {
 	                    text: translate( 'cancel' ),
 	                    // eslint-disable-next-line object-shorthand
 	                    click: function() {
@@ -2977,7 +2947,19 @@ function requireCore () {
 	                        listingEditorSync.destroy();
 	                    }
 	                }
-	                ];
+	            ];
+	            let previewTimeout;
+	            $( form, 'textarea,input' ).on( 'change', () => {
+	                clearInterval( previewTimeout );
+	                mw.util.throttle( () => {
+	                    previewTimeout = setTimeout( () => {
+	                        showPreview(listingTemplateAsMap);
+	                    }, 200 );
+	                }, 300 )();
+	            } );
+	            if (mode !== MODE_ADD) {
+	                showPreview(listingTemplateAsMap);
+	            }
 	            dialog.open(form, {
 	                modal: true,
 	                title: (mode == MODE_ADD) ?
@@ -3133,38 +3115,9 @@ function requireCore () {
 	                text,
 	            })}`
 	        } ).then( ( data ) => {
+	            console.log('got', data );
 	            $('#listing-preview-text').html(data.parse.text['*']);
-	        }, () => {
-	            $('#listing-preview').hide();
-	        });
-	    };
-
-	    var formToPreview = function(listingTemplateAsMap) {
-	        if ( !$('#listing-preview').is(':visible') ) {
-	            $('#listing-preview').show();
-	            $('#listing-refresh').show();
-	            $('#listing-preview-button').hide();
-	            $('#listing-previewOff').show();
-	            showPreview(listingTemplateAsMap);
-	        } else {
-	            $('#listing-preview').hide();
-	            $('#listing-refresh').hide();
-	            $('#listing-previewOff').hide();
-	            $('#listing-preview-button').show();
-	        }
-	    };
-
-	    var refreshPreview = function(listingTemplateAsMap) {
-	        if ( $('#listing-preview').is(':visible') ) {
-	            showPreview(listingTemplateAsMap);
-	        }
-	    };
-
-	    var hidePreview = function() {
-	        $('#listing-preview').hide();
-	        $('#listing-previewOff').hide();
-	        $('#listing-refresh').hide();
-	        $('#listing-preview-button').show();
+	        } );
 	    };
 
 	    /**

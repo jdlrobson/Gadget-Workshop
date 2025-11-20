@@ -184,7 +184,7 @@ module.exports = ( translate, SPECIAL_CHARS, showLastEditedField ) => {
             </div>
         </div>
     </div>
-    <div id="listing-preview" style="display: none;">
+    <div id="listing-preview">
         <div class="listing-divider"></div>
         <div class="editor-row">
             <div title="Preview">${translate( 'preview' )}</div>

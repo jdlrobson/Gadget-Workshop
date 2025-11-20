@@ -444,36 +444,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     }
                 },
                 {
-                    text: translate( 'preview' ),
-                    title: translate( 'preview' ),
-                    id: 'listing-preview-button',
-                    // eslint-disable-next-line object-shorthand
-                    click: function() {
-                        formToPreview(listingTemplateAsMap);
-                    }
-                },
-                {
-                    text: translate( 'previewOff' ),
-                    title: translate( 'previewOff' ),
-                    id: 'listing-previewOff',
-                    style: 'display: none',
-                    // eslint-disable-next-line object-shorthand
-                    click: function() {
-                        hidePreview();
-                    }
-                },
-                {
-                    text: translate( 'refresh' ),
-                    title: translate( 'refreshTitle' ),
-                    icon: 'ui-icon-refresh',
-                    id: 'listing-refresh',
-                    style: 'display: none',
-                    // eslint-disable-next-line object-shorthand
-                    click: function() {
-                        refreshPreview(listingTemplateAsMap);
-                    }
-                },
-                {
                     text: translate( 'cancel' ),
                     // eslint-disable-next-line object-shorthand
                     click: function() {
@@ -482,7 +452,19 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                         listingEditorSync.destroy();
                     }
                 }
-                ];
+            ];
+            let previewTimeout;
+            $( form, 'textarea,input' ).on( 'change', () => {
+                clearInterval( previewTimeout );
+                mw.util.throttle( () => {
+                    previewTimeout = setTimeout( () => {
+                        showPreview(listingTemplateAsMap)
+                    }, 200 );
+                }, 300 )();
+            } );
+            if (mode !== MODE_ADD) {
+                showPreview(listingTemplateAsMap);
+            }
             dialog.open(form, {
                 modal: true,
                 title: (mode == MODE_ADD) ?
@@ -638,38 +620,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 text,
             })}`
         } ).then( ( data ) => {
+            console.log('got', data );
             $('#listing-preview-text').html(data.parse.text['*']);
-        }, () => {
-            $('#listing-preview').hide();
-        });
-    };
-
-    var formToPreview = function(listingTemplateAsMap) {
-        if ( !$('#listing-preview').is(':visible') ) {
-            $('#listing-preview').show();
-            $('#listing-refresh').show();
-            $('#listing-preview-button').hide();
-            $('#listing-previewOff').show();
-            showPreview(listingTemplateAsMap);
-        } else {
-            $('#listing-preview').hide();
-            $('#listing-refresh').hide();
-            $('#listing-previewOff').hide();
-            $('#listing-preview-button').show();
-        }
-    };
-
-    var refreshPreview = function(listingTemplateAsMap) {
-        if ( $('#listing-preview').is(':visible') ) {
-            showPreview(listingTemplateAsMap);
-        }
-    };
-
-    var hidePreview = function() {
-        $('#listing-preview').hide();
-        $('#listing-previewOff').hide();
-        $('#listing-refresh').hide();
-        $('#listing-preview-button').show();
+        } );
     };
 
     /**

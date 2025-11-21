@@ -343,6 +343,7 @@ module.exports = ( Config, translate, listingTemplateAsMap ) => {
         ( () => {
             const { wikipedia, image, wikidata } = listingTemplateAsMap;
             $( '#input-wikipedia', form ).val( wikipedia );
+            $( '#input-wikidata-value', form ).val( wikidata );
             $( '#input-wikidata-label', form ).val( wikidata );
             $( '#input-image', form ).val( image );
         } )();

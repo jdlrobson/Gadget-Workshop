@@ -462,9 +462,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     }, 200 );
                 }, 300 )();
             } );
-            if (mode !== MODE_ADD) {
-                showPreview(listingTemplateAsMap);
-            }
             dialog.open(form, {
                 modal: true,
                 title: (mode == MODE_ADD) ?
@@ -620,7 +617,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 text,
             })}`
         } ).then( ( data ) => {
-            console.log('got', data );
             $('#listing-preview-text').html(data.parse.text['*']);
         } );
     };

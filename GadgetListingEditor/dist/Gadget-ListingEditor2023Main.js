@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.13.0
+ * Listing Editor v3.14.1
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.13.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.14.1'
 
 'use strict';
 
@@ -2292,6 +2292,7 @@ function requireRender () {
 	        ( () => {
 	            const { wikipedia, image, wikidata } = listingTemplateAsMap;
 	            $( '#input-wikipedia', form ).val( wikipedia );
+	            $( '#input-wikidata-value', form ).val( wikidata );
 	            $( '#input-wikidata-label', form ).val( wikidata );
 	            $( '#input-image', form ).val( image );
 	        } )();
@@ -2957,9 +2958,6 @@ function requireCore () {
 	                    }, 200 );
 	                }, 300 )();
 	            } );
-	            if (mode !== MODE_ADD) {
-	                showPreview(listingTemplateAsMap);
-	            }
 	            dialog.open(form, {
 	                modal: true,
 	                title: (mode == MODE_ADD) ?
@@ -3115,7 +3113,6 @@ function requireCore () {
 	                text,
 	            })}`
 	        } ).then( ( data ) => {
-	            console.log('got', data );
 	            $('#listing-preview-text').html(data.parse.text['*']);
 	        } );
 	    };

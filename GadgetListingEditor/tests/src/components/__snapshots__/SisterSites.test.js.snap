@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SisterSites renders 1`] = `
+"<div id="div_wikidata" class="editor-row">
+  <div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>
+  <div>
+    <div class="cdx-lookup">
+      <div class="cdx-text-input cdx-text-input--status-default cdx-lookup__input"><input id="input-wikidata-label" class="cdx-text-input__input cdx-text-input__input--has-value" placeholder="wikidata record" role="combobox" autocomplete="off" aria-autocomplete="list" aria-controls="v-0" aria-expanded="false" type="text" size="1">
+        <!--v-if-->
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+      <!--teleport start-->
+      <div class="cdx-menu" style="display: none;">
+        <ul class="cdx-menu__listbox" role="listbox" tabindex="-1" id="v-0">
+          <!--v-if-->
+          <li class="cdx-menu__no-results cdx-menu-item" role="option"> No results found. </li>
+          <!--v-if-->
+        </ul>
+      </div>
+      <!--teleport end-->
+    </div><input type="hidden" id="input-wikidata-value" value="Q17642916"><a id="wp-wd" title="Get ID from Wikipedia article"><small>&nbsp;WP</small></a><span id="wikidata-value-display-container"><small>&nbsp; <span id="wikidata-value-link"><a target="_new" href="//www.wikidata.org/wiki/Q17642916" title="view Wikidata record">Q17642916</a></span> &nbsp;|&nbsp;<a id="wikidata-remove" title="Delete the Wikidata entry from this listing">remove</a></small></span>
+  </div>
+</div>
+<div id="div_wikidata_update">
+  <div class="editor-label-col">&nbsp;</div>
+  <div><span class="wikidata-update"></span><a id="wikidata-shared">Sync shared fields to/from Wikidata</a><small>&nbsp;<a title="This simply gets the values from Wikidata and replaces the local values. Useful for new listings." class="listing-tooltip" id="wikidata-shared-quick">(quick fetch)</a></small></div>
+</div>
+<div id="div_wikipedia" class="editor-row">
+  <div class="editor-label-col"><label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label></div>
+  <div>
+    <div class="cdx-lookup">
+      <div class="cdx-text-input cdx-text-input--status-default cdx-lookup__input"><input id="input-wikipedia" class="cdx-text-input__input cdx-text-input__input--has-value" placeholder="wikipedia article" role="combobox" autocomplete="off" aria-autocomplete="list" aria-controls="v-2" aria-expanded="false" type="text" size="1">
+        <!--v-if-->
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+      <!--teleport start-->
+      <div class="cdx-menu" style="display: none;">
+        <ul class="cdx-menu__listbox" role="listbox" tabindex="-1" id="v-2">
+          <!--v-if-->
+          <li class="cdx-menu__no-results cdx-menu-item" role="option"></li>
+          <!--v-if-->
+        </ul>
+      </div>
+      <!--teleport end-->
+    </div><span id="wikipedia-value-display-container"><small>&nbsp;<span id="wikipedia-value-link"><a target="_new" href="//en.wikipedia.org/wiki/Nottingham Castle" title="view Wikipedia page">view Wikipedia page</a></span></small></span>
+  </div>
+</div>
+<div id="div_image" class="editor-row">
+  <div class="editor-label-col"><label for="input-image">Image<span class="wikidata-update"></span></label></div>
+  <div>
+    <div class="cdx-lookup">
+      <div class="cdx-text-input cdx-text-input--status-default cdx-lookup__input"><input id="input-image" class="cdx-text-input__input cdx-text-input__input--has-value" placeholder="image of place" role="combobox" autocomplete="off" aria-autocomplete="list" aria-controls="v-4" aria-expanded="false" type="text" size="1">
+        <!--v-if-->
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+      <!--teleport start-->
+      <div class="cdx-menu" style="display: none;">
+        <ul class="cdx-menu__listbox" role="listbox" tabindex="-1" id="v-4">
+          <!--v-if-->
+          <li class="cdx-menu__no-results cdx-menu-item" role="option"></li>
+          <!--v-if-->
+        </ul>
+      </div>
+      <!--teleport end-->
+    </div><span id="image-value-display-container"><small>&nbsp;<span id="image-value-link"><a target="_new" href="//commons.wikimedia.org/wiki/File:Nottingham Castle Gate 2009.jpg" title="view Commons page">view Commons page</a></span></small></span>
+  </div>
+</div>"
+`;

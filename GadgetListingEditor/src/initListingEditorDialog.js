@@ -39,7 +39,7 @@ var initListingEditorDialog = function(mode, clicked) {
     }
     var sectionHeading = findSectionHeading(clicked);
     var sectionIndex = findSectionIndex(sectionHeading);
-    var listingIndex = (mode === MODE_ADD) ? -1 : findListingIndex(sectionHeading, clicked);
+    var listingIndex = mode === MODE_ADD ? -1 : findListingIndex(sectionHeading, clicked);
     currentEdit.setInlineListing( mode === MODE_EDIT && isInline(clicked) );
 
     const {

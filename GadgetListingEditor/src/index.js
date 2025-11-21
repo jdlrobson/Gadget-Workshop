@@ -4,7 +4,7 @@ const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
 const translate = translateModule.translate;
 const { loadCallbacks } = require( './Callbacks.js' );
-const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
+const { MODE_ADD } = require( './mode.js' );
 const { loadConfig } = require( './Config.js' );
 const initColor = require( './initColor' );
 const initStringFormFields = require( './initStringFormFields.js' );
@@ -273,12 +273,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			return coord;
 		};
 
-		var hideEditOnlyFields = function(form, mode) {
-			if (mode !== MODE_EDIT) {
-				$('#div_status', form).hide();
-			}
-		};
-		CREATE_FORM_CALLBACKS.push(hideEditOnlyFields);
 		CREATE_FORM_CALLBACKS.push(initColor);
 		CREATE_FORM_CALLBACKS.push(autoDirParameters);
 

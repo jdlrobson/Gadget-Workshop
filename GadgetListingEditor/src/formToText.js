@@ -19,7 +19,7 @@ const { getConfig } = require( './Config.js' );
  * updated entry, and then submits the section text to be saved on the
  * server.
  */
-const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog) {
+const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
     const { LISTING_TYPE_PARAMETER, DEFAULT_LISTING_TEMPLATE } = getConfig();
     var listing = listingTemplateAsMap;
     var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
@@ -45,7 +45,7 @@ const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMa
         summary += ` - ${$(EDITOR_SUMMARY_SELECTOR).val()}`;
     }
     var minor = $(EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
-    return saveForm(summary, minor, sectionNumber, '', '', dialog);
+    return saveForm(summary, minor, sectionNumber, '', '');
 };
 
 module.exports = formToText;

@@ -12,53 +12,6 @@ module.exports = function() {
     var WIKIDATA_PROP_WMURL = 'P143'; // Wikimedia import URL
     var WIKIDATA_PROP_WMPRJ = 'P4656'; // Wikimedia project source of import
 
-    var initializeSisterSiteAutocomplete = function(siteData) {
-        var currentValue = $(siteData.selector).val();
-        if (currentValue) {
-            siteData.updateLinkFunction(currentValue, siteData.form);
-        }
-        $(siteData.selector).change(function() {
-            siteData.updateLinkFunction($(siteData.selector).val(), siteData.form);
-        });
-        siteData.selectFunction = function(event, ui) {
-            siteData.updateLinkFunction(ui.item.value, siteData.form);
-        };
-        var ajaxData = siteData.ajaxData;
-        ajaxData.action = 'opensearch';
-        ajaxData.list = 'search';
-        ajaxData.limit = 10;
-        ajaxData.redirects = 'resolve';
-        var parseAjaxResponse = function(jsonObj) {
-            var results = [];
-            var titleResults = $(jsonObj[1]);
-            for (var i=0; i < titleResults.length; i++) {
-                var result = titleResults[i];
-                var valueWithoutFileNamespace = (result.indexOf("File:") != -1) ? result.substring("File:".length) : result;
-                var titleResult = { value: valueWithoutFileNamespace, label: result, description: $(jsonObj[2])[i], link: $(jsonObj[3])[i] };
-                results.push(titleResult);
-            }
-            return results;
-        };
-        _initializeAutocomplete(siteData, ajaxData, parseAjaxResponse);
-    };
-    var _initializeAutocomplete = function(siteData, ajaxData, parseAjaxResponse) {
-        var autocompleteOptions = {
-            // eslint-disable-next-line object-shorthand
-            source: function(request, response) {
-                ajaxData.search = request.term;
-                var ajaxSuccess = function(jsonObj) {
-                    console.log('gpot', jsonObj);
-                    response(parseAjaxResponse(jsonObj));
-                };
-                console.log('do ajaxData', siteData.apiUrl, ajaxData, ajaxSuccess)
-                ajaxSisterSiteSearch(siteData.apiUrl, ajaxData, ajaxSuccess);
-            }
-        };
-        if (siteData.selectFunction) {
-            autocompleteOptions.select = siteData.selectFunction;
-        }
-        siteData.selector.autocomplete(autocompleteOptions);
-    };
     // perform an ajax query of a sister site
     const ajaxSisterSiteSearch = function(ajaxUrl, ajaxData, ajaxSuccess = ( json ) => json ) {
         return $.ajax({
@@ -190,12 +143,20 @@ module.exports = function() {
         var api = new mw.ForeignApi( API_WIKIDATA );
         api.postWithToken( 'csrf', ajaxData, { async: false } );
     };
+
+    const SEARCH_PARAMS = {
+        action: 'opensearch',
+        list: 'search',
+        limit: 10,
+        redirects: 'resolve'
+    };
+
     // expose public members
     return {
+        SEARCH_PARAMS,
         API_WIKIDATA,
         API_WIKIPEDIA,
         API_COMMONS,
-        initializeSisterSiteAutocomplete,
         ajaxSisterSiteSearch,
         wikidataClaim,
         wikidataWikipedia,

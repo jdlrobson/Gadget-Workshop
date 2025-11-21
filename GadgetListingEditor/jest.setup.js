@@ -17,6 +17,7 @@ global.mw.config = {
     }
 };
 global.$ = require( 'jquery' );
+global.mw.util.wikiUrlencode = ( a ) => a;
 global.mw.util.showPortlet = function () {};
 global.mw.Api.prototype.saveOption = function () {};
 global.mw.loader.require = ( name ) => {
@@ -254,3 +255,6 @@ loadConfig( {
         }
     }
 } );
+
+window.Vue = require( 'vue' );
+window.VueCompilerDOM = require( '@vue/compiler-dom' );

@@ -11,7 +11,7 @@ module.exports = {
 	// An array of glob patterns indicating a set of files fo
 	//  which coverage information should be collected
 	collectCoverageFrom: [
-		'src/*'
+		'src/**'
 	],
 
 	// The directory where Jest should output its coverage files
@@ -41,6 +41,9 @@ module.exports = {
 	setupFiles: [
 		'./jest.setup.js'
 	],
+	testEnvironmentOptions: {
+		customExportConditions: ["node", "node-addons"]
+	},
 
 	testEnvironment: 'jsdom'
 };

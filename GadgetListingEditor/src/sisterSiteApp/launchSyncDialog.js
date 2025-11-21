@@ -7,20 +7,17 @@ const updateFieldIfNotNull = require( './updateFieldIfNotNull.js' );
 const listingEditorSync = require( '../listingEditorSync.js' );
 const { translate } = require( '../translate.js' );
 const { getConfig } = require( '../Config.js' );
-const {
-    showWikidataFields,
-    hideWikidataFields
-} = require( './ui.js' );
+    const SisterSite = require( '../SisterSite.js' );
 
-const makeSubmitFunction = function(SisterSite, commonsLink, wikipediaLink, $syncDialogElement) {
-    return () => {
+const makeSubmitFunction = function(updateModel ) {
+    return ( close ) => {
         const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
         const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
-            removeFromWikidata, ajaxSisterSiteSearch } = SisterSite;
+            removeFromWikidata, ajaxSisterSiteSearch } = SisterSite();
 
         $('#listing-editor-sync input[id]:radio:checked').each(function () {
             var label = $(`label[for="${$(this).attr('id')}"]`);
-            var syncedValue = label.text().split('\n');
+            var syncedValue = label.text().split(' ');
             var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
             var editorField = [];
             for( var i = 0; i < field.fields.length; i++ ) {
@@ -48,10 +45,10 @@ const makeSubmitFunction = function(SisterSite, commonsLink, wikipediaLink, $syn
                 //After the sync with WD force the link to the WP & Common resource to be hidden as naturally happen in quickUpdateWikidataSharedFields
                 //a nice alternative is to update the links in both functions
                 if( $(this).attr('name') == 'wikipedia' ) {
-                    wikipediaLink(syncedValue, $("#listing-editor"));
+                    updateModel( { wikipedia: syncedValue } );
                 }
                 if( field.p === WIKIDATA_CLAIMS.image.p ) {
-                    commonsLink(syncedValue, $("#listing-editor"));
+                    updateModel( { commons: syncedValue } );
                 }
                 if( syncedValue !== '') {
                     if( field.p === WIKIDATA_CLAIMS.email.p ) {
@@ -87,50 +84,31 @@ const makeSubmitFunction = function(SisterSite, commonsLink, wikipediaLink, $syn
                             removeFromWikidata(guidObj);
                         }
                     }
-                } );
+                } ).then( () => close() );
+            } else {
+                close();
             }
         });
-
-        dialog.close( $syncDialogElement );
     }
 };
 
-module.exports = function (jsonObj, wikidataRecord, SisterSite, commonsLink, wikipediaLink) {
-    const $syncDialogElement = listingEditorSync.init(
-        SisterSite, jsonObj, wikidataRecord
+module.exports = function (jsonObj, wikidataRecord, updateModel) {
+    const ListingEditorSync = listingEditorSync(
+        jsonObj, wikidataRecord
     );
-    const submitFunction = makeSubmitFunction( SisterSite, commonsLink, wikipediaLink, $syncDialogElement );
-    dialog.open($syncDialogElement, {
+    const ListingEditorSyncDialog = require( '../ListingEditorSyncDialog.js' )(
+        ListingEditorSync
+    );
+    const submitFunction = makeSubmitFunction( updateModel );
+    dialog.render( ListingEditorSyncDialog, {
         title: translate( 'syncTitle' ),
         dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
+        onSubmit: submitFunction
+    }, translate );
 
-        buttons: [
-            {
-                text: translate( 'submit' ),
-                click: submitFunction,
-            },
-            {
-                text: translate( 'cancel' ),
-                // eslint-disable-next-line object-shorthand
-                click: function() {
-                    dialog.close(this);
-                }
-            },
-        ],
-        // eslint-disable-next-line object-shorthand
-        open: function() {
-            hideWikidataFields();
-        },
-        // eslint-disable-next-line object-shorthand
-        close: function() {
-            showWikidataFields();
-            //listingEditorSync.destroy();
-            document.getElementById("listing-editor-sync").outerHTML = ""; // delete the dialog. Direct DOM manipulation so the model gets updated. This is to avoid issues with subsequent dialogs no longer matching labels with inputs because IDs are already in use.
-        }
-    });
+    const $syncDialogElement = $('#listing-editor-sync');
     if($syncDialogElement.find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
         submitFunction();
-        listingEditorSync.destroy();
         alert( translate( 'wikidataSharedMatch' ) );
     }
 

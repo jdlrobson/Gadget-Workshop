@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`listingEditorSync renders 1`] = `
+"<form id="listing-editor-sync">
+  <p>Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally. You are encouraged to go to the Wikidata item and add references for any data you change.</p>
+  <fieldset><span><span class="wikidata-update"></span><a href="javascript:" class="syncSelect" name="wd" title="Select all">Wikidata</a></span><a href="javascript:" id="autoSelect" class="listing-tooltip" title="Select all values where the alternative is empty.">Auto</a><span><a href="javascript:" class="syncSelect" name="wv" title="Select all">Wikivoyage</a><span class="wikivoyage-update"></span></span></fieldset>
+  <div class="editor-fullwidth">
+    <div class="sync_label">coordinates</div>
+    <div class="choose-row">
+      <div>&nbsp;<label for="coordinates-wd"><a target="_blank" rel="noopener noreferrer" href="https://geohack.toolforge.org/geohack.php?params=52.949167;-1.154722;_type:landmark">52.949167 -1.154722</a></label></div>
+      <div id="has-guid"><input type="radio" id="coordinates-wd" name="coordinates"><input type="hidden" value="Q17642916$A234478C-82BA-4387-816D-B62C542763A2"></div>
+      <div><input type="radio" name="coordinates" checked=""></div>
+      <div id="has-json"><input type="radio" id="coordinates-wv" name="coordinates"><input type="hidden" value="{&quot;p&quot;:&quot;P625&quot;,&quot;label&quot;:&quot;coordinates&quot;,&quot;fields&quot;:[&quot;lat&quot;,&quot;long&quot;],&quot;remotely_sync&quot;:false}"></div>
+      <div>&nbsp;<label for="coordinates-wv"><a target="_blank" rel="noopener noreferrer" href="https://geohack.toolforge.org/geohack.php?params=1;2;_type:landmark">1 2</a></label></div>
+    </div>
+    <div class="sync_label">website</div>
+    <div class="choose-row">
+      <div>&nbsp;<label for="website-wd"><a target="_blank" rel="noopener noreferrer" href="https://www.nottinghamcastle.org.uk/">https://www.nottinghamcastle.org.uk/</a></label></div>
+      <div id="has-guid"><input type="radio" id="website-wd" name="website"><input type="hidden" value="Q17642916$0CECD25F-25EC-49BF-9314-BEBFF209CAA2"></div>
+      <div><input type="radio" name="website" checked=""></div>
+      <div id="has-json"><input type="radio" id="website-wv" name="website"><input type="hidden" value="{&quot;p&quot;:&quot;P856&quot;,&quot;label&quot;:&quot;website&quot;,&quot;fields&quot;:[&quot;url&quot;]}"></div>
+      <div>&nbsp;<label for="website-wv"></label></div>
+    </div>
+    <div class="sync_label">e-mail</div>
+    <div class="choose-row">
+      <div>&nbsp;<label for="e-mail-wd"></label></div>
+      <div id="has-guid"><input type="radio" id="e-mail-wd" name="e-mail"><input type="hidden" value="null"></div>
+      <div><input type="radio" name="e-mail" checked=""></div>
+      <div id="has-json"><input type="radio" id="e-mail-wv" name="e-mail"><input type="hidden" value="{&quot;p&quot;:&quot;P968&quot;,&quot;label&quot;:&quot;e-mail&quot;,&quot;fields&quot;:[&quot;email&quot;]}"></div>
+      <div>&nbsp;<label for="e-mail-wv"></label></div>
+    </div>
+    <div class="sync_label">image</div>
+    <div class="choose-row">
+      <div>&nbsp;<label for="image-wd"><a target="_blank" rel="noopener noreferrer" href="https://en.wikivoyage.org/wiki/File:Nottingham Castle Gate 2009.jpg">Nottingham Castle Gate 2009.jpg</a></label></div>
+      <div id="has-guid"><input type="radio" id="image-wd" name="image"><input type="hidden" value="Q17642916$E8CC2F27-6315-4376-9F24-855810770399"></div>
+      <div><input type="radio" name="image" checked=""></div>
+      <div id="has-json"><input type="radio" id="image-wv" name="image"><input type="hidden" value="{&quot;p&quot;:&quot;P18&quot;,&quot;label&quot;:&quot;image&quot;,&quot;fields&quot;:[&quot;image&quot;],&quot;remotely_sync&quot;:true}"></div>
+      <div>&nbsp;<label for="image-wv"><a target="_blank" rel="noopener noreferrer" href="https://en.wikivoyage.org/wiki/File:Foo.jpg">Foo.jpg</a></label></div>
+    </div>
+    <div class="sync_label">wikipedia</div>
+    <div class="choose-row">
+      <div>&nbsp;<label for="wikipedia-wd">Nottingham Castle</label></div>
+      <div id="has-guid"><input type="radio" id="wikipedia-wd" name="wikipedia"><input type="hidden" value="Q42"></div>
+      <div><input type="radio" name="wikipedia" checked=""></div>
+      <div id="has-json"><input type="radio" disabled=""><input type="hidden" value="{&quot;label&quot;:&quot;wikipedia&quot;,&quot;fields&quot;:[&quot;wikipedia&quot;],&quot;doNotUpload&quot;:true,&quot;remotely_sync&quot;:true}"></div>
+      <div>&nbsp;<label for="wikipedia-wv"></label></div>
+    </div>
+  </div><small><a href="javascript:" class="clear">Clear all</a></small>
+</form>"
+`;

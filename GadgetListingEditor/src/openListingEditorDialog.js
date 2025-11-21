@@ -1,11 +1,12 @@
 const dialog = require( './dialogs.js' );
-const createForm = require( './createForm.js' );
-const getListingInfo = require( './getListingInfo.js' );
+const ListingEditorFormDialog = require( './components/ListingEditorFormDialog.js' );
 const getListingWikitextBraces = require( './getListingWikitextBraces' );
-const { EDITOR_FORM_SELECTOR, EDITOR_CLOSED_SELECTOR } = require( './selectors.js' );
-const { MODE_ADD } = require( './mode.js' );
+const saveForm = require( './saveForm' );
+const { EDITOR_CLOSED_SELECTOR } = require( './selectors.js' );
+const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
 const fixupFormValues = require( './fixupFormValues.js' );
 const stripComments = require( './stripComments.js' );
+const isCustomListingType = require( './isCustomListingType.js' );
 const formToText = require( './formToText.js' );
 const wikiTextToListing = require( './wikiTextToListing.js' );
 const { translate } = require( './translate.js' );
@@ -14,21 +15,30 @@ const { getCallbacks } = require( './Callbacks.js' );
 const { getConfig } = require( './Config' );
 const showPreview = require( './showPreview.js' );
 
-const listingEditorSync = require( './listingEditorSync.js' );
-
+/**
+ * This method is called asynchronously after the initListingEditorDialog()
+ * method has retrieved the existing wiki section content that the
+ * listing is being added to (and that contains the listing wiki syntax
+ * when editing).
+ */
 var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType, {
     telephoneCodes,
     NATL_CURRENCY
-} ) {
-    const {
-        LISTING_TYPE_PARAMETER
+}) {
+     const {
+        LISTING_TYPE_PARAMETER,
+        SPECIAL_CHARS,
+        LISTING_TEMPLATES_OMIT,
+        SUPPORTED_SECTIONS,
+        SHOW_LAST_EDITED_FIELD
     } = getConfig();
 
     setSectionText(
         stripComments(
             getSectionText()
         )
-);
+    );
+
     var listingTemplateAsMap, listingTemplateWikiSyntax;
     if (mode == MODE_ADD) {
         listingTemplateAsMap = {};
@@ -38,116 +48,109 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
         listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
     }
-    var listingParameters = getListingInfo(listingType);
-    // if a listing editor dialog is already open, get rid of it
-    if ($(EDITOR_FORM_SELECTOR).length > 0) {
-        dialog.destroy( EDITOR_FORM_SELECTOR );
-    }
-    // if a sync editor dialog is already open, get rid of it
-    listingEditorSync.destroy();
-    var form = $(createForm(mode, listingParameters, listingTemplateAsMap, {
-        telephoneCodes,
-        NATL_CURRENCY
-    }));
     // modal form - must submit or cancel
     const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
-    const buttons = [
-        {
-            text: '?',
-            id: 'listing-help',
-            // eslint-disable-next-line object-shorthand
-            click: function() {
-                window.open( translate( 'helpPage' ) );
-            }
-        },
-        {
-            text: translate( 'submit' ),
-            // eslint-disable-next-line object-shorthand
-            click: function() {
-                if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
-                    // no need to validate the form upon deletion request
-                    formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog);
-                    dialog.close(this);
-                    // if a sync editor dialog is open, get rid of it
-                    listingEditorSync.destroy();
-                }
-                else if (
-                    fixupFormValues(
-                        getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
-                    )
-                ) {
-                    formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog);
-                    dialog.close(this);
-                    // if a sync editor dialog is open, get rid of it
-                    listingEditorSync.destroy();
-                }
-            }
-        },
-        {
-            text: translate( 'cancel' ),
-            // eslint-disable-next-line object-shorthand
-            click: function() {
-                dialog.destroy(this);
-                // if a sync editor dialog is open, get rid of it
-                listingEditorSync.destroy();
+
+    let captchaSaveArgs;
+
+    const handleCaptchaError = ( setCaptcha, reset ) => {
+        return ( { edit, args } ) => {
+            if ( edit && edit.captcha ) {
+                captchaSaveArgs = args;
+                setCaptcha( edit.captcha.url );
+            } else {
+                reset();
             }
         }
-    ];
-    let previewTimeout;
-    $( form, 'textarea,input' ).on( 'change', () => {
-        clearInterval( previewTimeout );
-        mw.util.throttle( () => {
-            previewTimeout = setTimeout( () => {
-                showPreview(listingTemplateAsMap)
-            }, 200 );
-        }, 300 )();
-    } );
-    dialog.open(form, {
-        modal: true,
+    };
+
+    const onCaptchaSubmit = ( setCaptcha, closeAction ) => {
+        if ( captchaSaveArgs ) {
+            captchaSaveArgs.push( $('#input-captcha').val() );
+            setCaptcha( '' );
+            saveForm.apply( null, captchaSaveArgs ).then( () => {
+                captchaSaveArgs = null;
+                closeAction();
+            }, handleCaptchaError( setCaptcha, closeAction ) );
+        }
+    };
+    const onSubmit = ( closeDialog, reset, setCaptcha ) => {
+        const teardown = handleCaptchaError( setCaptcha, reset );
+
+        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
+            // no need to validate the form upon deletion request
+            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
+                .then(
+                    closeDialog,
+                    handleCaptchaError()
+                );
+        }
+        else if (
+            fixupFormValues(
+                getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
+            )
+        ) {
+            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
+                .then( closeDialog, teardown );
+        } else {
+            // form validation failed.
+            reset();
+        }
+    };
+
+    const customListingType = isCustomListingType(listingType) ? listingType : undefined;
+    const { wikipedia, wikidata, image, lat, long,
+        alt, address, email, directions, phone, tollfree, fax,
+        hours, checkin, checkout, price,
+        name, content, lastedit, url } = listingTemplateAsMap;
+
+    dialog.render( ListingEditorFormDialog, {
+        wikipedia, wikidata, image,
+        lat, url, long, content,
+        lastedit,
+        address,
+        email,
+        directions,
+        phone,
+        tollfree,
+        fax,
+        hours,
+        checkin, checkout,
+        price,
+        aka: alt,
+        listingName: name,
+        listingType,
+        nationalCurrencies: NATL_CURRENCY,
+        listingTypes: (
+                customListingType ? SUPPORTED_SECTIONS.concat( listingType ) : SUPPORTED_SECTIONS
+            ).filter( ( a ) => !LISTING_TEMPLATES_OMIT.includes( a ) ),
+        mode,
+        onCaptchaSubmit,
+        onSubmit,
+        telephoneCodes,
+        characters: SPECIAL_CHARS,
+        showLastEditedField: mode === MODE_EDIT && SHOW_LAST_EDITED_FIELD,
+        onMount: ( form ) => {
+            let previewTimeout;
+            $( form, 'textarea,input' ).on( 'change', () => {
+                clearInterval( previewTimeout );
+                mw.util.throttle( () => {
+                    previewTimeout = setTimeout( () => {
+                        showPreview(listingTemplateAsMap)
+                    }, 200 );
+                }, 300 )();
+            } );
+            if (mode !== MODE_ADD) {
+                showPreview(listingTemplateAsMap);
+            }
+        },
+        onHelp: () => {
+            window.open( translate( 'helpPage' ) );
+        },
         title: (mode == MODE_ADD) ?
             translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
-        dialogClass: 'listing-editor-dialog',
-        // eslint-disable-next-line object-shorthand
-        create: function() {
-            // Make button pane
-            const $dialog = form.parent();
-            const $btnPane = $( '<div>' )
-                .addClass( 'ui-dialog-buttonpane ui-widget-content ui-helper-clearfix' )
-                .appendTo( $dialog );
-            const $buttonSet = $( '<div>' ).addClass( 'ui-dialog-buttonset' ).appendTo( $btnPane );
-            buttons.forEach( ( props ) => {
-                const btn = document.createElement( 'button' );
-                btn.classList.add( 'cdx-button', 'cdx-button--action-default' );
-                if ( props.id ) {
-                    btn.id = props.id;
-                }
-                if ( props.title ) {
-                    btn.setAttribute( 'title', props.title );
-                }
-                if ( props.style ) {
-                    btn.setAttribute( 'style', props.style );
-                }
-                btn.textContent = props.text;
-                btn.addEventListener( 'click', () => {
-                    props.click.apply( form );
-                } );
-                $buttonSet.append( btn );
-            } );
-            $btnPane.append(`<div class="listing-license">${translate( 'licenseText' )}</div>`);
-            if ( window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ) {
-                $(
-                    `<span class="listing-license">${translate('listing-editor-version', [ window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ])}</span>`
-                ).appendTo( $btnPane );
-            }
-            const bugUrl = 'https://github.com/jdlrobson/Gadget-Workshop/issues';
-            $( `<span class="listing-license">&nbsp;<a href="${bugUrl}">${translate( 'report-bug' )}</a></span>` )
-                .appendTo( $btnPane );
-            $('body').on('dialogclose', EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
-                // if a sync editor dialog is open, get rid of it
-                listingEditorSync.destroy();
-            });
-        }
-    });
+        dialogClass: 'listing-editor-dialog'
+    } );
 };
 
 module.exports = openListingEditorDialog;

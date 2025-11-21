@@ -2,76 +2,14 @@ const getSectionName = require( './getSectionName.js' );
 const { translate } = require( './translate.js' );
 const savePayload = require( './savePayload.js' );
 const { getSectionText } = require( './currentEdit.js' );
-const { EDITOR_FORM_SELECTOR } = require( './selectors.js' );
 const { getConfig } = require( './Config.js' );
-var SAVE_FORM_SELECTOR = '#progress-dialog';
-var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
-/**
- * If the result of an attempt to save the listing editor content is a
- * Captcha challenge then display a form to allow the user to respond to
- * the challenge and resubmit.
- */
-var captchaDialog = function(summary, minor, sectionNumber, captchaImgSrc, captchaId, dialog) {
-    // if a captcha dialog is already open, get rid of it
-    if ($(CAPTCHA_FORM_SELECTOR).length > 0) {
-        dialog.destroy(CAPTCHA_FORM_SELECTOR);
-    }
-    var captcha = $('<div id="captcha-dialog">').text(translate( 'externalLinks' ));
-    $('<img class="fancycaptcha-image">')
-            .attr('src', captchaImgSrc)
-            .appendTo(captcha);
-    $('<label for="input-captcha">').text(translate( 'enterCaptcha' )).appendTo(captcha);
-    $('<input id="input-captcha" type="text">').appendTo(captcha);
-    dialog.open(captcha, {
-        modal: true,
-        title: translate( 'enterCaptcha' ),
-        buttons: [
-            {
-                text: translate( 'submit' ),
-                // eslint-disable-next-line object-shorthand
-                click: function() {
-                    saveForm(summary, minor, sectionNumber, captchaId, $('#input-captcha').val(), dialog);
-                    dialog.destroy(this);
-                }
-            },
-            {
-                text: translate( 'cancel' ),
-                // eslint-disable-next-line object-shorthand
-                click: function() {
-                    dialog.destroy(this);
-                }
-            }
-        ]
-    });
-};
-
-/**
- * Render a dialog that notifies the user that the listing editor changes
- * are being saved.
- */
-var savingForm = function( dialog ) {
-    // if a progress dialog is already open, get rid of it
-    if ($(SAVE_FORM_SELECTOR).length > 0) {
-        dialog.destroy(SAVE_FORM_SELECTOR);
-    }
-    var progress = $(`<div id="progress-dialog">${translate( 'saving' )}</div>`);
-    dialog.open(progress, {
-        modal: true,
-        height: 100,
-        width: 300,
-        title: ''
-    });
-    $(".ui-dialog-titlebar").hide();
-};
 
 /**
  * If an error occurs while saving the form, remove the "saving" dialog,
  * restore the original listing editor form (with all user content), and
  * display an alert with a failure message.
  */
-var saveFailedInternal = function(msg, dialog) {
-    dialog.destroy(SAVE_FORM_SELECTOR);
-    dialog.open($(EDITOR_FORM_SELECTOR));
+const saveFailed = function(msg) {
     alert(msg);
 };
 
@@ -80,8 +18,7 @@ var saveFailedInternal = function(msg, dialog) {
  * they are saved. After saving the page is refreshed to show the updated
  * article.
  */
-const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
-    var saveFailed = ( msg ) => saveFailedInternal( msg, dialog );
+const saveForm = function(summary, minor, sectionNumber, cid, answer) {
     const { EDITOR_TAG } = getConfig();
     var editPayload = {
         action: "edit",
@@ -96,12 +33,11 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
     if (minor) {
         $.extend( editPayload, { minor: 'true' } );
     }
-    const payload = savePayload( editPayload).then(function(data) {
+    return savePayload( editPayload ).then(function(data) {
         if (data && data.edit && data.edit.result == 'Success') {
             if ( data.edit.nochange !== undefined ) {
                 alert( 'Save skipped as there was no change to the content!' );
-                dialog.destroy(SAVE_FORM_SELECTOR);
-                return Promise.resolve();
+                return;
             }
             // since the listing editor can be used on diff pages, redirect
             // to the canonical URL if it is different from the current URL
@@ -123,8 +59,6 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
             saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
             return Promise.reject( {} );
         } else if (data && data.edit.captcha) {
-            dialog.destroy(SAVE_FORM_SELECTOR);
-            captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id, dialog);
             return Promise.reject( {
                 edit: data.edit,
                     args: [
@@ -148,8 +82,6 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
         }
         return Promise.reject( {} );
     });
-    savingForm( dialog );
-    return payload;
 };
 
 module.exports = saveForm;

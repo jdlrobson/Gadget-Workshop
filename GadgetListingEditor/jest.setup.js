@@ -6,3 +6,17 @@ global.mw = mockMediaWiki();
 global.$ = require( 'jquery' );
 global.mw.util.showPortlet = function () {};
 global.mw.Api.prototype.saveOption = function () {};
+global.mw.loader.require = ( name ) => {
+    switch( name ) {
+        case 'vue':
+            return {
+                defineComponent: ( name ) => {
+                    return name
+                }
+            }
+        default:
+            return {};
+    }
+};
+const { init } = require( './src/translate' );
+init( require( './src/i18n/en' ) );

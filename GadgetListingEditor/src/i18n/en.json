@@ -79,7 +79,7 @@
     "wikidataSharedMatch": "No differences found between local and Wikidata values",
     "wikidataShared": "The following data was found in the shared Wikidata record. Update shared fields using these values?",
     "wikidataSharedNotFound": "No shared data found in the Wikidata repository",
-    "wikidataSyncBlurb": "Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally.<p>You are encouraged to go to the Wikidata item and add references for any data you change.",
+    "wikidataSyncBlurb": "Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally. You are encouraged to go to the Wikidata item and add references for any data you change.",
     "editSummary": "Edit Summary",
     "name": "Name",
     "alt": "Alt",

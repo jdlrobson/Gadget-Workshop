@@ -154,9 +154,8 @@ label .wikidata-update {
     border: none;
     border-bottom: 1px dotted;
     padding: 0;
-}
-#listing-editor-sync fieldset > span {
-	width: 48.5%;
+	display: flex;
+	justify-content: space-between;
 }
 @media only screen and (max-width: 640px) {
 	#listing-editor-sync fieldset > span {
@@ -242,5 +241,9 @@ label .wikidata-update {
 		right: 0;
 		top: 0;
 	}
+}
+
+.cdx-dialog .ui-dialog-buttonset {
+	float: right;
 }
 /* END: sync editor form */

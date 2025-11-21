@@ -1,27 +1,27 @@
-const autocompletes = require( '../autocompletes.js' );
 const trimDecimal = require( '../trimDecimal.js' );
 const dialog = require( '../dialogs.js' );
 const parseDMS = require( '../parseDMS.js' );
 const { iata } = require( '../templates.js' );
-const htmlSisterSites = require( './html.js' );
-const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, LANG } = require( '../globalConfig.js' );
+const { LANG } = require( '../globalConfig.js' );
 const listingEditorSync = require( '../listingEditorSync.js' );
-const {
-    wikidataRemove,
-    setWikidataInputFields,
-    showWikidataFields,
-    hideWikidataFields,
-    updateFieldIfNotNull,
-    updateWikidataInputLabel, sisterSiteLinkDisplay
-} = require( './ui.js' );
+const { getConfig } = require( '../Config.js' );
+const { translate } = require( '../translate.js' );
 
-const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLink) {
+const updateFieldIfNotNull = function(selector, value, placeholderBool) {
+    if ( value !== null ) {
+        if ( placeholderBool !== true ) {
+            $(selector).val(value);
+        }
+    }
+};
+
+const makeSubmitFunction = function(SisterSite, updateModel ) {
     return () => {
-        const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = Config;
+        const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
         const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
             removeFromWikidata, ajaxSisterSiteSearch } = SisterSite;
 
-        listingEditorSync.$element().find('input[id]:radio:checked').each(function () {
+        $('#listing-editor-sync input[id]:radio:checked').each(function () {
             var label = $(`label[for="${$(this).attr('id')}"]`);
             var syncedValue = label.text().split('\n');
             var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
@@ -49,10 +49,10 @@ const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLi
                 //After the sync with WD force the link to the WP & Common resource to be hidden as naturally happen in quickUpdateWikidataSharedFields
                 //a nice alternative is to update the links in both functions
                 if( $(this).attr('name') == 'wikipedia' ) {
-                    wikipediaLink(syncedValue, $("#listing-editor"));
+                    updateModel( { wikipedia: syncedValue } );
                 }
                 if( field.p === WIKIDATA_CLAIMS.image.p ) {
-                    commonsLink(syncedValue, $("#listing-editor"));
+                    updateModel( { commons: syncedValue } );
                 }
                 if( syncedValue !== '') {
                     if( field.p === WIKIDATA_CLAIMS.email.p ) {
@@ -91,8 +91,6 @@ const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLi
                 } );
             }
         });
-
-        dialog.close(this);
     }
 };
 
@@ -111,42 +109,24 @@ const updateWikidataSharedFields = function(
     );
 }
 
-const launchSyncDialog = function (jsonObj, wikidataRecord, SisterSite, Config, translate, commonsLink, wikipediaLink) {
-    const $syncDialogElement = listingEditorSync.init(
-        SisterSite, Config, translate, jsonObj, wikidataRecord
+/** @todo use Vue component */
+const launchSyncDialog = function (jsonObj, wikidataRecord, SisterSite, updateModel) {
+    const ListingEditorSync = listingEditorSync(
+        SisterSite, jsonObj, wikidataRecord
     );
-    const submitFunction = makeSubmitFunction( SisterSite, Config, commonsLink, wikipediaLink );
-    dialog.open($syncDialogElement, {
+    const ListingEditorSyncDialog = require( '../ListingEditorSyncDialog.js' )(
+        ListingEditorSync
+    );
+    const submitFunction = makeSubmitFunction( SisterSite, updateModel );
+    dialog.render( ListingEditorSyncDialog, {
         title: translate( 'syncTitle' ),
         dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
+        onSubmit: submitFunction
+    }, translate );
 
-        buttons: [
-            {
-                text: translate( 'submit' ),
-                click: submitFunction,
-            },
-            {
-                text: translate( 'cancel' ),
-                // eslint-disable-next-line object-shorthand
-                click: function() {
-                    dialog.close(this);
-                }
-            },
-        ],
-        // eslint-disable-next-line object-shorthand
-        open: function() {
-            hideWikidataFields();
-        },
-        // eslint-disable-next-line object-shorthand
-        close: function() {
-            showWikidataFields();
-            //listingEditorSync.destroy();
-            document.getElementById("listing-editor-sync").outerHTML = ""; // delete the dialog. Direct DOM manipulation so the model gets updated. This is to avoid issues with subsequent dialogs no longer matching labels with inputs because IDs are already in use.
-        }
-    });
+    const $syncDialogElement = $('#listing-editor-sync');
     if($syncDialogElement.find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
         submitFunction();
-        listingEditorSync.destroy();
         alert( translate( 'wikidataSharedMatch' ) );
     }
 
@@ -188,67 +168,10 @@ const getWikidataFromWikipedia = function(titles, SisterSite) {
     ).then( ( jsonObj ) => wikipediaWikidata(jsonObj) );
 };
 
-const makeWikidataLink = ( translate ) => {
-    return function(form, value) {
-        const link = $("<a />", {
-            target: "_new",
-            href: `${WIKIDATA_URL}/wiki/${mw.util.wikiUrlencode(value)}`,
-            title: translate( 'viewWikidataPage' ),
-            text: value
-        });
-        $("#wikidata-value-link", form).html(link);
-        $("#wikidata-value-display-container", form).show();
-        $('#div_wikidata_update', form).show();
-        const $listingEditorSync = listingEditorSync.$element();
-        if ( $listingEditorSync.prev().find(".ui-dialog-title").length ) {
-            $listingEditorSync.prev()
-                .find(".ui-dialog-title")
-                .append( ' &mdash; ' )
-                .append(link.clone());
-        } // add to title of Wikidata sync dialog, if it is open
-    };
-};
-
-const makeWikipediaLink = ( translate ) => {
-    return function(value, form) {
-        const wikipediaSiteLinkData = {
-            inputSelector: '#input-wikipedia',
-            containerSelector: '#wikipedia-value-display-container',
-            linkContainerSelector: '#wikipedia-value-link',
-            href: `${WIKIPEDIA_URL}/wiki/${mw.util.wikiUrlencode(value)}`,
-            linkTitle: translate( 'viewWikipediaPage' )
-        };
-        sisterSiteLinkDisplay(wikipediaSiteLinkData, form, translate);
-        $("#wp-wd", form).show();
-        if ( value === '' ) {
-            $("#wp-wd").hide();
-        }
-    };
-};
-
-const makeCommonsLink = ( translate ) => {
-    const commonsLink = function(value, form) {
-        var commonsSiteLinkData = {
-            inputSelector: '#input-image',
-            containerSelector: '#image-value-display-container',
-            linkContainerSelector: '#image-value-link',
-            href: `${COMMONS_URL}/wiki/${mw.util.wikiUrlencode(`File:${value}`)}`,
-            linkTitle: translate( 'viewCommonsPage' )
-        };
-        sisterSiteLinkDisplay(commonsSiteLinkData, form, translate);
-    };
-    return commonsLink;
-};
-
-const quickUpdateWikidataSharedFields = function(wikidataRecord, SisterSite, Config, translate) {
+const quickUpdateWikidataSharedFields = function(wikidataRecord, SisterSite) {
     const { API_WIKIDATA, wikidataClaim, wikidataWikipedia,
         ajaxSisterSiteSearch } = SisterSite;
-    const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = Config;
-    const ajaxData = {
-        action: 'wbgetentities',
-        ids: wikidataRecord,
-        languages: LANG
-    };
+    const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
     const ajaxSuccess = function (jsonObj) {
         let msg = '';
         const res = [];
@@ -301,115 +224,21 @@ const quickUpdateWikidataSharedFields = function(wikidataRecord, SisterSite, Con
                         }
                     }
                 }
-                updateFieldIfNotNull('#input-wikipedia', wikipedia, true);
                 return result;
             }
         }
         return false;
     };
-    return ajaxSisterSiteSearch(API_WIKIDATA, ajaxData, ajaxSuccess);
+    return ajaxSisterSiteSearch(API_WIKIDATA, {
+        action: 'wbgetentities',
+        ids: wikidataRecord,
+        languages: LANG
+    } ).then( ajaxSuccess );
 };
 
-const wikidataLookup = function(ids, SisterSite) {
-    const {
-        API_WIKIDATA,
-        ajaxSisterSiteSearch,
-        wikidataLabel
-    } = SisterSite;
-    // get the display value for the pre-existing wikidata record ID
-    return ajaxSisterSiteSearch(
-        API_WIKIDATA,
-        {
-            action: 'wbgetentities',
-            ids,
-            languages: LANG,
-            props: 'labels'
-        }
-    ).then( ( jsonObj ) =>
-        wikidataLabel( jsonObj, ids )
-    );
+module.exports = {
+    updateWikidataSharedFields,
+    launchSyncDialog,
+    getWikidataFromWikipedia,
+    quickUpdateWikidataSharedFields
 };
-
-module.exports = ( Config, translate, listingTemplateAsMap ) => {
-    const SisterSite = require( '../SisterSite.js' )( Config );
-    const wikidataLink = makeWikidataLink( translate );
-    const wikipediaLink = makeWikipediaLink( translate );
-    const commonsLink = makeCommonsLink( translate );
-
-    return ( form ) => {
-        const div = document.createElement( 'div' );
-        div.innerHTML = htmlSisterSites( translate );
-        form[ 0 ].querySelector( 'sistersites' ).replaceWith(div);
-        ( () => {
-            const { wikipedia, image, wikidata } = listingTemplateAsMap;
-            $( '#input-wikipedia', form ).val( wikipedia );
-            $( '#input-wikidata-value', form ).val( wikidata );
-            $( '#input-wikidata-label', form ).val( wikidata );
-            $( '#input-image', form ).val( image );
-        } )();
-
-        // get the display value for the pre-existing wikidata record ID
-        const value = $("#input-wikidata-value", form).val();
-        if (value) {
-            wikidataLink(form, value);
-            wikidataLookup( value, SisterSite ).then( ( label ) => {
-                updateWikidataInputLabel( label );
-            } )
-        }
-        $('#wikidata-shared-quick', form).on( 'click', function() {
-            var wikidataRecord = $("#input-wikidata-value", form).val();
-            quickUpdateWikidataSharedFields(wikidataRecord, SisterSite, Config, translate).then( ( { wikipedia, commons } ) => {
-                if ( wikipedia || commons ) {
-                    if (wikipedia) {
-                        wikipediaLink(wikipedia);
-                    }
-                    if ( commons ) {
-                        commonsLink( commons );
-                    }
-                } else {
-                    alert( translate( 'wikidataSharedNotFound' ) );
-                }
-            } );
-        });
-
-        $('#wikidata-shared', form).on( 'click', function() {
-            const wikidataRecord = $("#input-wikidata-value", form).val();
-            updateWikidataSharedFields(
-                wikidataRecord, SisterSite
-            ).then(( jsonObj ) => {
-                wikidataLink("", $("#input-wikidata-value").val()); // called to append the Wikidata link to the dialog title
-                launchSyncDialog(
-                    jsonObj, wikidataRecord, SisterSite, Config, translate, commonsLink, wikipediaLink
-                );
-            });
-        });
-
-        // add a listener to the "remove" button so that links can be deleted
-        $('#wikidata-remove', form).on( 'click', function() {
-            wikidataRemove(form);
-        });
-        $('#input-wikidata-label', form).change(function() {
-            if (!$(this).val()) {
-                wikidataRemove(form);
-            }
-        });
-        $('#wp-wd', form).on( 'click', function() {
-            getWikidataFromWikipedia(
-                $("#input-wikipedia", form).val(),
-                SisterSite
-            ).then( ( wikidataID ) => {
-                if( wikidataID ) {
-                    setWikidataInputFields( wikidataID );
-                    wikidataLink(form, wikidataID);
-                }
-            })
-        });
-        autocompletes(
-            SisterSite,
-            form,
-            wikidataLink,
-            wikipediaLink,
-            commonsLink
-        );
-    };
-}

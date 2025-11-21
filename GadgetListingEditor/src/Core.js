@@ -1,30 +1,26 @@
 const dialog = require( './dialogs.js' );
 const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
-const listingEditorSync = require( './listingEditorSync.js' );
-const renderSisterSiteApp = require( './sisterSiteApp/render.js' );
+const sistersites = require( './components/SisterSites.js' );
+const ListingEditorDialog = require( './components/ListingEditorDialog.js' );
 const currentEdit = require( './currentEdit.js' );
 const { getSectionText, setSectionText } = currentEdit;
+const { onMounted, ref } = require( 'vue' );
+const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 const listingToStr = require( './listingToStr.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
-        EDITOR_FORM_HTML,
         LISTING_TYPE_PARAMETER,
         SECTION_TO_TEMPLATE_TYPE,
         DEFAULT_LISTING_TEMPLATE,
         EDITOR_SUMMARY_SELECTOR,
         EDITOR_MINOR_EDIT_SELECTOR,
-        EDITOR_FORM_SELECTOR,
         EDITOR_CLOSED_SELECTOR
     } = Config;
 
     var api = new mw.Api();
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
-    var SAVE_FORM_SELECTOR = '#progress-dialog';
-    var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
-    var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
     var NATL_CURRENCY = [];
-    var CC_SELECTOR = '.input-cc'; // Country calling code
     var CC = '';
     var LC = '';
 
@@ -32,13 +28,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * Generate the form UI for the listing editor. If editing an existing
      * listing, pre-populate the form input fields with the existing values.
      */
-    var createForm = function(mode, listingParameters, listingTemplateAsMap) {
-        var form = $(EDITOR_FORM_HTML);
-        // make sure the select dropdown includes any custom "type" values
-        var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
-        if (isCustomListingType(listingType)) {
-            $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form).append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
-        }
+    // @todo: move to template
+    const onFormMounted = ( form, listingParameters, listingTemplateAsMap ) => {
         // populate the empty form with existing values
         for (var parameter in listingParameters) {
             var parameterInfo = listingParameters[parameter];
@@ -48,32 +39,84 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
             }
         }
-        // Adding national currency symbols
-        var natlCurrency = $(NATL_CURRENCY_SELECTOR, form);
-        if (NATL_CURRENCY.length > 0) {
-            for (i = 0; i < NATL_CURRENCY.length; i++) {
-                natlCurrency.append(`<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${NATL_CURRENCY[i]}</a></span>`);
-            }
-            natlCurrency.append(' |');
-        } else natlCurrency.hide();
-        // Adding country calling code
-        var phones = $(CC_SELECTOR, form);
-        if (CC !== '' || LC !== '') {
-            phones.each( function() {
-                i = $(this).attr('data-for');
-                if (CC !== '')
-                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${CC} </a></span>` );
-                if (LC !== '')
-                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${LC} </a></span>` );
-            });
-        } else phones.hide();
+    };
 
-        for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
-            Callbacks.CREATE_FORM_CALLBACKS[i](form, mode);
-        }
-        // update SisterSite app values
-        renderSisterSiteApp( Config, translate, listingTemplateAsMap )( form );
-        return form;
+    // @todo: Move to ListingEditorForm.js when onFormMounted removed.
+    const createForm = function(listingParameters, listingTemplateAsMap) {
+        return {
+            name: 'ListingEditorForm',
+            props: {
+                customListingType: {
+                    type: String
+                },
+                wikipedia: {
+                    type: String
+                },
+                wikidata: {
+                    type: String
+                },
+                image: {
+                    type: String
+                },
+                mode: {
+                    type: String
+                },
+                telephoneCodes: {
+                    type: Array
+                },
+                nationalCurrencies: {
+                    type: Array,
+                    default: NATL_CURRENCY
+                },
+                showLastEditedField: {
+                    type: Boolean
+                },
+                currencies: {
+                    type: Array,
+                    default: [ '€', '$', '£', '¥', '₩' ]
+                },
+                characters: {
+                    type: Array
+                }
+            },
+            template: require( './html.js' ),
+            components: {
+                CdxTabs,
+                CdxTab,
+                TelephoneCharInsert: require( './components/TelephoneCharInsert.js' ),
+                CdxTextInput,
+                CdxTextArea,
+                SpecialCharactersString: require( './components/specialCharactersString.js' ),
+                sistersites
+            },
+            setup( { showLastEditedField, mode } ) {
+                const tabsData = ref( [
+                    {
+                        name: 'edit',
+                        label: 'edit'
+                    }, {
+                        name: 'preview',
+                        label: 'preview'
+                    }
+                ] );
+                const form = ref(null);
+                onMounted( () => {
+                    if ( form.value ) {
+                        // @todo: move into template
+                        onFormMounted( form.value, listingParameters, listingTemplateAsMap );
+                        for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
+                            Callbacks.CREATE_FORM_CALLBACKS[i]( form.value, mode );
+                        }
+                    }
+                } );
+
+                return {
+                    tabsData,
+                    form,
+                    showLastEditedField
+                };
+            }
+        };
     };
 
     var isInline = require( './isInline.js' );
@@ -122,7 +165,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         }
         var sectionHeading = findSectionHeading(clicked);
         var sectionIndex = findSectionIndex(sectionHeading);
-        var listingIndex = (mode === MODE_ADD) ? -1 : findListingIndex(sectionHeading, clicked);
+        var listingIndex = mode === MODE_ADD ? -1 : findListingIndex(sectionHeading, clicked);
         currentEdit.setInlineListing( mode === MODE_EDIT && isInline(clicked) );
 
         NATL_CURRENCY = [];
@@ -175,127 +218,154 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 getSectionText()
             )
         );
-        mw.loader.using( ['jquery.ui'], function () {
-            var listingTemplateAsMap, listingTemplateWikiSyntax;
-            if (mode == MODE_ADD) {
-                listingTemplateAsMap = {};
-                listingTemplateAsMap[LISTING_TYPE_PARAMETER] = listingType;
+        var listingTemplateAsMap, listingTemplateWikiSyntax;
+        if (mode == MODE_ADD) {
+            listingTemplateAsMap = {};
+            listingTemplateAsMap[LISTING_TYPE_PARAMETER] = listingType;
+        } else {
+            listingTemplateWikiSyntax = getListingWikitextBraces(listingIndex);
+            listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
+            listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
+        }
+        var listingParameters = getListingInfo(listingType);
+        // modal form - must submit or cancel
+        const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
+
+        let captchaSaveArgs;
+
+        const handleCaptchaError = ( setCaptcha, reset ) => {
+            return ( { edit, args } ) => {
+                if ( edit && edit.captcha ) {
+                    captchaSaveArgs = args;
+                    setCaptcha( edit.captcha.url );
+                } else {
+                    reset();
+                }
+            }
+        };
+
+        const onCaptchaSubmit = ( setCaptcha, closeAction ) => {
+            if ( captchaSaveArgs ) {
+                captchaSaveArgs.push( $('#input-captcha').val() );
+                setCaptcha( '' );
+                saveForm.apply( null, captchaSaveArgs ).then( () => {
+                    captchaSaveArgs = null;
+                    closeAction();
+                }, handleCaptchaError( setCaptcha, closeAction ) );
+            }
+        };
+        const onSubmit = ( closeDialog, reset, setCaptcha ) => {
+            const teardown = handleCaptchaError( setCaptcha, reset );
+
+            if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
+                // no need to validate the form upon deletion request
+                formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
+                    .then(
+                        closeDialog,
+                        handleCaptchaError()
+                    );
+            }
+            else if (
+                validateForm(
+                    Callbacks.VALIDATE_FORM_CALLBACKS,
+                    PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS,
+                    PROJECT_CONFIG.APPEND_FULL_STOP_TO_DESCRIPTION,
+                    translate
+                )
+            ) {
+                formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
+                    .then( closeDialog, teardown );
             } else {
-                listingTemplateWikiSyntax = getListingWikitextBraces(listingIndex);
-                listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
-                listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
+                // form validation failed.
+                reset();
             }
-            var listingParameters = getListingInfo(listingType);
-            // if a listing editor dialog is already open, get rid of it
-            if ($(EDITOR_FORM_SELECTOR).length > 0) {
-                dialog.destroy( EDITOR_FORM_SELECTOR );
+        };
+
+        const telephoneCodes = [];
+        if ( CC ) {
+            telephoneCodes.push( CC );
+        }
+        if ( LC ) {
+            telephoneCodes.push( LC );
+        }
+
+        const customListingType = isCustomListingType(listingType) ? listingType : undefined;
+        const ListingEditorFormDialog = {
+            name: 'ListingEditorFormDialog',
+            template: `<ListingEditorDialog>
+            <ListingForm
+                :custom-listing-type="customListingType"
+                :wikidata="wikidata"
+                :wikipedia="wikipedia"
+                :image="image"
+                :mode="mode"
+                :telephoneCodes="telephoneCodes"
+                :characters="characters"
+                :show-last-edited-field="showLastEditedField" />
+</ListingEditorDialog>`,
+            props: {
+                customListingType: {
+                    type: String
+                },
+                wikipedia: {
+                    type: String
+                },
+                wikidata: {
+                    type: String
+                },
+                image: {
+                    type: String
+                },
+                mode: {
+                    type: String
+                },
+                telephoneCodes: {
+                    type: Array
+                },
+                characters: {
+                    type: Array
+                },
+                showLastEditedField: {
+                    type: Boolean
+                }
+            },
+            components: {
+                ListingEditorDialog,
+                // @todo: move to props
+                ListingForm: createForm( listingParameters, listingTemplateAsMap )
             }
-            // if a sync editor dialog is already open, get rid of it
-            listingEditorSync.destroy();
-            var form = $(createForm(mode, listingParameters, listingTemplateAsMap));
-            // modal form - must submit or cancel
-            const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
-            const buttons = [
-                {
-                    text: '?',
-                    id: 'listing-help',
-                    // eslint-disable-next-line object-shorthand
-                    click: function() {
-                        window.open( translate( 'helpPage' ) );
-                    }
-                },
-                {
-                    text: translate( 'submit' ),
-                    // eslint-disable-next-line object-shorthand
-                    click: function() {
-                        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
-                            // no need to validate the form upon deletion request
-                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
-                            dialog.close(this);
-                            // if a sync editor dialog is open, get rid of it
-                            listingEditorSync.destroy();
-                        }
-                        else if (
-                            validateForm(
-                                Callbacks.VALIDATE_FORM_CALLBACKS,
-                                PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS,
-                                PROJECT_CONFIG.APPEND_FULL_STOP_TO_DESCRIPTION,
-                                translate
-                            )
-                        ) {
-                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
-                            dialog.close(this);
-                            // if a sync editor dialog is open, get rid of it
-                            listingEditorSync.destroy();
-                        }
-                    }
-                },
-                {
-                    text: translate( 'cancel' ),
-                    // eslint-disable-next-line object-shorthand
-                    click: function() {
-                        dialog.destroy(this);
-                        // if a sync editor dialog is open, get rid of it
-                        listingEditorSync.destroy();
-                    }
+        }
+        const { wikipedia, wikidata, image } = listingTemplateAsMap;
+        dialog.render( ListingEditorFormDialog, {
+            wikipedia, wikidata, image,
+            customListingType,
+            mode,
+            onCaptchaSubmit,
+            onSubmit,
+            telephoneCodes,
+            characters: PROJECT_CONFIG.SPECIAL_CHARS,
+            showLastEditedField: mode === MODE_EDIT && PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD,
+            onMount: ( form ) => {
+                let previewTimeout;
+                $( form, 'textarea,input' ).on( 'change', () => {
+                    clearInterval( previewTimeout );
+                    mw.util.throttle( () => {
+                        previewTimeout = setTimeout( () => {
+                            showPreview(listingTemplateAsMap)
+                        }, 200 );
+                    }, 300 )();
+                } );
+                if (mode !== MODE_ADD) {
+                    showPreview(listingTemplateAsMap);
                 }
-            ];
-            let previewTimeout;
-            $( form, 'textarea,input' ).on( 'change', () => {
-                clearInterval( previewTimeout );
-                mw.util.throttle( () => {
-                    previewTimeout = setTimeout( () => {
-                        showPreview(listingTemplateAsMap)
-                    }, 200 );
-                }, 300 )();
-            } );
-            dialog.open(form, {
-                modal: true,
-                title: (mode == MODE_ADD) ?
-                    translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
-                dialogClass: 'listing-editor-dialog',
-                // eslint-disable-next-line object-shorthand
-                create: function() {
-                    // Make button pane
-                    const $dialog = form.parent();
-                    const $btnPane = $( '<div>' )
-                        .addClass( 'ui-dialog-buttonpane ui-widget-content ui-helper-clearfix' )
-                        .appendTo( $dialog );
-                    const $buttonSet = $( '<div>' ).addClass( 'ui-dialog-buttonset' ).appendTo( $btnPane );
-                    buttons.forEach( ( props ) => {
-                        const btn = document.createElement( 'button' );
-                        btn.classList.add( 'cdx-button', 'cdx-button--action-default' );
-                        if ( props.id ) {
-                            btn.id = props.id;
-                        }
-                        if ( props.title ) {
-                            btn.setAttribute( 'title', props.title );
-                        }
-                        if ( props.style ) {
-                            btn.setAttribute( 'style', props.style );
-                        }
-                        btn.textContent = props.text;
-                        btn.addEventListener( 'click', () => {
-                            props.click.apply( form );
-                        } );
-                        $buttonSet.append( btn );
-                    } );
-                    $btnPane.append(`<div class="listing-license">${translate( 'licenseText' )}</div>`);
-                    if ( window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ) {
-                        $(
-                            `<span class="listing-license">${translate('listing-editor-version', [ window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ])}</span>`
-                        ).appendTo( $btnPane );
-                    }
-                    const bugUrl = 'https://github.com/jdlrobson/Gadget-Workshop/issues';
-                    $( `<span class="listing-license">&nbsp;<a href="${bugUrl}">${translate( 'report-bug' )}</a></span>` )
-                        .appendTo( $btnPane );
-                    $('body').on('dialogclose', EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
-                        // if a sync editor dialog is open, get rid of it
-                        listingEditorSync.destroy();
-                    });
-                }
-            });
-        });
+            },
+            onHelp: () => {
+                window.open( translate( 'helpPage' ) );
+            },
+            title: (mode == MODE_ADD) ?
+                translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
+            dialogClass: 'listing-editor-dialog'
+        }, translate);
     };
 
     /**
@@ -347,8 +417,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             summary += ` - ${$(EDITOR_SUMMARY_SELECTOR).val()}`;
         }
         var minor = $(EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
-        saveForm(summary, minor, sectionNumber, '', '');
-        return;
+        return saveForm(summary, minor, sectionNumber, '', '');
     };
 
     var showPreview = function(listingTemplateAsMap) {
@@ -382,25 +451,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     var updateSectionTextWithAddedListing = require( './updateSectionTextWithAddedListing' );
     var updateSectionTextWithEditedListing = require( './updateSectionTextWithEditedListing' );
 
-    /**
-     * Render a dialog that notifies the user that the listing editor changes
-     * are being saved.
-     */
-    var savingForm = function() {
-        // if a progress dialog is already open, get rid of it
-        if ($(SAVE_FORM_SELECTOR).length > 0) {
-            dialog.destroy(SAVE_FORM_SELECTOR);
-        }
-        var progress = $(`<div id="progress-dialog">${translate( 'saving' )}</div>`);
-        dialog.open(progress, {
-            modal: true,
-            height: 100,
-            width: 300,
-            title: ''
-        });
-        $(".ui-dialog-titlebar").hide();
-    };
-
     const savePayload = require( './savePayload.js' );
 
     /**
@@ -421,11 +471,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         if (minor) {
             $.extend( editPayload, { minor: 'true' } );
         }
-        savePayload( editPayload).then(function(data) {
+        return savePayload( editPayload ).then(function(data) {
             if (data && data.edit && data.edit.result == 'Success') {
                 if ( data.edit.nochange !== undefined ) {
                     alert( 'Save skipped as there was no change to the content!' );
-                    dialog.destroy(SAVE_FORM_SELECTOR);
                     return;
                 }
                 // since the listing editor can be used on diff pages, redirect
@@ -443,13 +492,23 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 }
             } else if (data && data.error) {
                 saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
+                return Promise.reject( {} );
             } else if (data && data.edit.spamblacklist) {
                 saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
+                return Promise.reject( {} );
             } else if (data && data.edit.captcha) {
-                dialog.destroy(SAVE_FORM_SELECTOR);
-                captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id);
+                return Promise.reject( {
+                    edit: data.edit,
+                        args: [
+                        summary,
+                        minor,
+                        sectionNumber,
+                        data.edit.captcha.id
+                    ]
+                } );
             } else {
                 saveFailed(translate( 'submitUnknownError' ));
+                return Promise.reject( {} );
             }
         }, function(code, result) {
             if (code === "http") {
@@ -459,8 +518,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             } else {
                 saveFailed(`${translate( 'submitUnknownError' )}: ${code}` );
             }
+            return Promise.reject( {} );
         });
-        savingForm();
     };
 
     /**
@@ -469,48 +528,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * display an alert with a failure message.
      */
     var saveFailed = function(msg) {
-        dialog.destroy(SAVE_FORM_SELECTOR);
-        dialog.open($(EDITOR_FORM_SELECTOR));
         alert(msg);
-    };
-
-    /**
-     * If the result of an attempt to save the listing editor content is a
-     * Captcha challenge then display a form to allow the user to respond to
-     * the challenge and resubmit.
-     */
-    var captchaDialog = function(summary, minor, sectionNumber, captchaImgSrc, captchaId) {
-        // if a captcha dialog is already open, get rid of it
-        if ($(CAPTCHA_FORM_SELECTOR).length > 0) {
-            dialog.destroy(CAPTCHA_FORM_SELECTOR);
-        }
-        var captcha = $('<div id="captcha-dialog">').text(translate( 'externalLinks' ));
-        $('<img class="fancycaptcha-image">')
-                .attr('src', captchaImgSrc)
-                .appendTo(captcha);
-        $('<label for="input-captcha">').text(translate( 'enterCaptcha' )).appendTo(captcha);
-        $('<input id="input-captcha" type="text">').appendTo(captcha);
-        dialog.open(captcha, {
-            modal: true,
-            title: translate( 'enterCaptcha' ),
-            buttons: [
-                {
-                    text: translate( 'submit' ),
-                    // eslint-disable-next-line object-shorthand
-                    click: function() {
-                        saveForm(summary, minor, sectionNumber, captchaId, $('#input-captcha').val());
-                        dialog.destroy(this);
-                    }
-                },
-                {
-                    text: translate( 'cancel' ),
-                    // eslint-disable-next-line object-shorthand
-                    click: function() {
-                        dialog.destroy(this);
-                    }
-                }
-            ]
-        });
     };
 
     // expose public members

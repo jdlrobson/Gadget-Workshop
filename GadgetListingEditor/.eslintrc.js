@@ -17,7 +17,7 @@ module.exports = {
     "rules": {
         "no-shadow": 2,
         "no-trailing-spaces": 2,
-        "template-curly-spacing": 2,
+        "template-curly-spacing": [ "error", "never" ],
         "no-useless-concat": 2,
         "object-shorthand": 2,
         "prefer-template": 2

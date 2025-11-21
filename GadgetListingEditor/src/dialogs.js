@@ -1,35 +1,30 @@
-function load() {
-    return mw.loader.using( 'jquery.ui' );
-}
+const createApp = require( './createApp' );
 
-function destroy( selector ) {
+function close() {
     document.documentElement.classList.remove( 'listing-editor-dialog-open' );
-    load().then( () => $(selector).dialog( 'destroy' ).remove() );
 }
 
-function open( $element, options = {} ) {
-    load().then( () =>
-        $element.dialog(
-            Object.assign( options, {
-                height: 'auto',
-                width: 'auto'
-            } )
-        )
+function render( Dialog, options ) {
+    const vueAppContainer = document.createElement( 'div' );
+    document.body.appendChild(vueAppContainer);
+    const app = createApp(
+        Dialog,
+        Object.assign( {}, options || {}, {
+            onClose: () => {
+                close();
+            }
+        } )
     );
+    app.mount( vueAppContainer );
     document.documentElement.classList.add( 'listing-editor-dialog-open' );
-}
-
-/**
- * Closes dialog, also triggers dialogclose event.
- * @param {string} selector
- */
-function close( selector ) {
-    load().then( () => $(selector).dialog('close') );
-    document.documentElement.classList.remove( 'listing-editor-dialog-open' );
+    return {
+        unmount: () => {
+            app.unmount();
+            close();
+        }
+    }
 }
 
 module.exports = {
-    destroy,
-    open,
-    close
+    render
 };

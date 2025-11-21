@@ -5,7 +5,6 @@
 // the selector will not match anything and the functionality tied to
 // the selector will never execute.
 module.exports = {
-    EDITOR_FORM_SELECTOR: '#listing-editor',
     EDITOR_MINOR_EDIT_SELECTOR: '#input-minor',
     EDITOR_CLOSED_SELECTOR: '#input-closed',
     EDITOR_SUMMARY_SELECTOR: '#input-summary'

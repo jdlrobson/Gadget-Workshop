@@ -1,8 +1,8 @@
 const TRANSLATIONS_ALL = require( './translations.js' );
-const makeTranslateFunction = require( './makeTranslateFunction.js' );
 const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
+const translate = translateModule.translate;
 const { loadCallbacks } = require( './Callbacks.js' );
 const { MODE_ADD } = require( './mode.js' );
 const { loadConfig } = require( './Config.js' );
@@ -47,7 +47,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		} );
 	} );
 
-	const translate = makeTranslateFunction( TRANSLATIONS );
 	translateModule.init( TRANSLATIONS );
 
 	const Config = function() {
@@ -135,24 +134,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		} );
 
 		const {
-			EDITOR_FORM_SELECTOR,
 			EDITOR_CLOSED_SELECTOR,
 			EDITOR_SUMMARY_SELECTOR,
 			EDITOR_MINOR_EDIT_SELECTOR
 		} = require( './selectors.js' );
 
-		// the below HTML is the UI that will be loaded into the listing editor
-		// dialog box when a listing is added or edited. EACH WIKIVOYAGE
-		// LANGUAGE SITE CAN CUSTOMIZE THIS HTML - fields can be removed,
-		// added, displayed differently, etc. Note that it is important that
-		// any changes to the HTML structure are also made to the
-		// LISTING_TEMPLATES parameter arrays since that array provides the
-		// mapping between the editor HTML and the listing template fields.
-		const EDITOR_FORM_HTML = require( './html.js' )(
-			translate,
-			PROJECT_CONFIG.SPECIAL_CHARS,
-			PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD
-		);
 		// expose public members
 		return {
 			LANG,
@@ -166,11 +152,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			ALLOW_UNRECOGNIZED_PARAMETERS,
 			SECTION_TO_TEMPLATE_TYPE,
 			LISTING_TEMPLATES,
-			EDITOR_FORM_SELECTOR,
 			EDITOR_CLOSED_SELECTOR,
 			EDITOR_SUMMARY_SELECTOR,
-			EDITOR_MINOR_EDIT_SELECTOR,
-			EDITOR_FORM_HTML
+			EDITOR_MINOR_EDIT_SELECTOR
 		};
 	}();
 
@@ -300,13 +284,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			coord.lon = parseDMS(coord.lon);
 			return coord;
 		};
-
-		var hideEditOnlyFields = function(form, mode) {
-			if (mode !== Core.MODE_EDIT) {
-				$('#div_status', form).hide();
-			}
-		};
-		CREATE_FORM_CALLBACKS.push(hideEditOnlyFields);
 
 		var typeToColor = function(listingType, form) {
 			$('#input-type', form).css( 'box-shadow', 'unset' );
@@ -504,15 +481,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 	loadCallbacks( Callbacks );
 	loadConfig( Config, PROJECT_CONFIG );
 
-	/* ***********************************************************************
-	 * Core contains code that should be shared across different
-	 * Wikivoyage languages. This code uses the custom configurations in the
-	 * Config and Callback modules to initialize
-	 * the listing editor and process add and update requests for listings.
-	 * ***********************************************************************/
-	var Core = require( './Core.js' )( Callbacks, Config, PROJECT_CONFIG, translate );
-
-	return Core;
+	return {
+		initListingEditorDialog: require( './initListingEditorDialog.js' )
+	}
 } );
 
 //</nowiki>

@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.14.1
+ * Listing Editor v3.14.2
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.14.1'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.14.2'
 
 'use strict';
 
@@ -410,7 +410,7 @@ $(function() {
 	 * Place an "edit" link next to all existing listing tags.
 	 */
 	var addEditButtons = function() {
-		const editMsg = USE_LISTING_BETA ? TRANSLATIONS.editBeta : TRANSLATIONS.edit;
+		const editMsg = TRANSLATIONS.edit;
 		var editButton = $('<span class="vcard-edit-button noprint">')
 			.html(`<a href="javascript:" class="listingeditor-edit">${editMsg}</a>` )
 			.on('click', function() {

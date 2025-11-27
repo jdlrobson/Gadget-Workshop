@@ -171,7 +171,7 @@ $(function() {
 	 * Place an "edit" link next to all existing listing tags.
 	 */
 	var addEditButtons = function() {
-		const editMsg = USE_LISTING_BETA ? TRANSLATIONS.editBeta : TRANSLATIONS.edit;
+		const editMsg = TRANSLATIONS.edit;
 		var editButton = $('<span class="vcard-edit-button noprint">')
 			.html(`<a href="javascript:" class="listingeditor-edit">${editMsg}</a>` )
 			.on('click', function() {

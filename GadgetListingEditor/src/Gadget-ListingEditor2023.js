@@ -214,14 +214,17 @@ $(function() {
 					TRANSLATIONS.add
 				);
 			} );
-			$( document ).on( 'click', '.listingeditor-add', function( ev ) {
+			document.addEventListener( 'click', ( ev ) => {
+				if ( !ev.target.matches( '.listingeditor-add' ) ) {
+					return;
+				}
 				// dont collapse section on mobile.
 				ev.stopPropagation();
 				const $this = $(this);
 				loadMain().then( function ( core ) {
 					core.initListingEditorDialog(core.MODE_ADD, $this);
 				} );
-			});
+			}, true );
 		};
 		mw.hook( 'wikipage.content' ).add(
 			init

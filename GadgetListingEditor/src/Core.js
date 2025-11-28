@@ -782,6 +782,46 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         $(".ui-dialog-titlebar").hide();
     };
 
+    const savePayload = ( editPayload ) => {
+        const delayedPromise = ( res ) =>
+            new Promise( ( resolve ) => {
+                setTimeout(() => {
+                    resolve( res )
+                }, 5000 );
+            } );
+        switch ( window.__save_debug ) {
+            case -1:
+                return delayedPromise( { error: 'error' } );
+            case -2:
+                return delayedPromise( {
+                    edit: {
+                        captcha: {
+                            id: 1,
+                            url: 'foo.gif'
+                        }
+                    }
+                } );
+            case 0:
+                return delayedPromise( {
+                    edit: {
+                        nochange: true,
+                        result: 'Success'
+                    }
+                } );
+            case 1:
+                return delayedPromise( {
+                    edit: {
+                        result: 'Success'
+                    }
+                } );
+            default:
+                return api.postWithToken(
+                    "csrf",
+                    editPayload
+                )
+        }
+    }
+
     /**
      * Execute the logic to post listing editor changes to the server so that
      * they are saved. After saving the page is refreshed to show the updated
@@ -800,10 +840,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         if (minor) {
             $.extend( editPayload, { minor: 'true' } );
         }
-        api.postWithToken(
-            "csrf",
-            editPayload
-        ).then(function(data) {
+        savePayload( editPayload).then(function(data) {
             if (data && data.edit && data.edit.result == 'Success') {
                 if ( data.edit.nochange !== undefined ) {
                     alert( 'Save skipped as there was no change to the content!' );

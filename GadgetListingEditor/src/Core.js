@@ -97,26 +97,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         return (entry.closest('p').length !== 0 && entry.closest('span.vcard').length !== 0);
     };
 
-    /**
-     * Given a DOM element, find the nearest editable section (h2 or h3) that
-     * it is contained within.
-     */
-    var findSectionHeading = function(element) {
-        // mw-h3section and mw-h2section can be removed when useparsoid=1 is everywhere.
-        return element.closest('div.mw-h3section, div.mw-h2section, section');
-    };
+    var findSectionHeading = require( './findSectionHeading.js' );
 
-    /**
-     * Given an editable heading, examine it to determine what section index
-     * the heading represents. First heading is 1, second is 2, etc.
-     */
-    var findSectionIndex = function(heading) {
-        if (heading === undefined) {
-            return 0;
-        }
-        var link = heading.find('.mw-editsection a').attr('href');
-        return (link !== undefined) ? link.split('=').pop() : 0;
-    };
+    var findSectionIndex = require( './findSectionIndex.js' );
 
     /**
      * Given an edit link that was clicked for a listing, determine what index

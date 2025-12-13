@@ -265,39 +265,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * content to deal with nested templates or wikilinks that might contain
      * pipe characters that should not be used as delimiters.
      */
-    var listingTemplateToParamsArray = function(listingTemplateWikiSyntax) {
-        var results = [];
-        var paramValue = '';
-        var pos = 0;
-        while (pos < listingTemplateWikiSyntax.length) {
-            var remainingString = listingTemplateWikiSyntax.substr(pos);
-            // check for a nested template or wikilink
-            var patternMatch = findPatternMatch(remainingString, "{{", "}}");
-            if (patternMatch.length === 0) {
-                patternMatch = findPatternMatch(remainingString, "[[", "]]");
-            }
-            if (patternMatch.length > 0) {
-                paramValue += patternMatch;
-                pos += patternMatch.length;
-            } else if (listingTemplateWikiSyntax.charAt(pos) === '|') {
-                // delimiter - push the previous param and move on to the next
-                results.push(paramValue);
-                paramValue = '';
-                pos++;
-            } else {
-                // append the character to the param value being built
-                paramValue += listingTemplateWikiSyntax.charAt(pos);
-                pos++;
-            }
-        }
-        if (paramValue.length > 0) {
-            // append the last param value
-            results.push(paramValue);
-        }
-        return results;
-    };
-
-    var findPatternMatch = require( './findPatternMatch.js' );
+    var listingTemplateToParamsArray = require( './listingTemplateToParamsArray.js' );
 
     /**
      * This method is invoked when an "add" or "edit" listing button is

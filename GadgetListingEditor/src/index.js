@@ -2,6 +2,7 @@ const TRANSLATIONS_ALL = require( './translations.js' );
 const makeTranslateFunction = require( './makeTranslateFunction.js' );
 const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
+const translateModule = require( './translate.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -44,6 +45,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 	} );
 
 	const translate = makeTranslateFunction( TRANSLATIONS );
+	translateModule.init( TRANSLATIONS );
 
 	const Config = function() {
 		var WIKIDATAID = PROJECT_CONFIG.WIKIDATAID;

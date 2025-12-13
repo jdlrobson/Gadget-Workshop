@@ -1834,6 +1834,7 @@ mw.config.values = RLCONF;
 <script>
 const scrpt = document.createElement( 'script' );
 scrpt.src = './Gadget-ListingEditor2023.js';
+scrpt.type = 'module';
 const originalAjax = $.ajax;
 setTimeout( () => {
 	mw.loader.load( 'mediawiki.api');

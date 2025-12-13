@@ -145,9 +145,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         return _findListingTypeForSection( entry, SECTION_TO_TEMPLATE_TYPE, DEFAULT_LISTING_TEMPLATE );
     };
 
-    var replaceSpecial = function(str) {
-        return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
-    };
+    var replaceSpecial = require( './replaceSpecial.js' );
 
     /**
      * Return a regular expression that can be used to find all listing

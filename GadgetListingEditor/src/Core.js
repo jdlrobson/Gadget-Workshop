@@ -20,8 +20,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     } = Config;
 
     var api = new mw.Api();
-    var MODE_ADD = 'add';
-    var MODE_EDIT = 'edit';
+    const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
     // selector that identifies the edit link as created by the
     // addEditButtons() function
     var EDIT_LINK_SELECTOR = '.vcard-edit-button';

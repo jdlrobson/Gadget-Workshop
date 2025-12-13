@@ -21,9 +21,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 
     var api = new mw.Api();
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
-    // selector that identifies the edit link as created by the
-    // addEditButtons() function
-    var EDIT_LINK_SELECTOR = '.vcard-edit-button';
     var SAVE_FORM_SELECTOR = '#progress-dialog';
     var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
     var sectionText, inlineListing, replacements = {};
@@ -105,16 +102,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * Given an edit link that was clicked for a listing, determine what index
      * that listing is within a section. First listing is 0, second is 1, etc.
      */
-    var findListingIndex = function(sectionHeading, clicked) {
-        var count = 0;
-        $(EDIT_LINK_SELECTOR, sectionHeading).each(function() {
-            if (clicked.is($(this))) {
-                return false;
-            }
-            count++;
-        });
-        return count;
-    };
+    var findListingIndex = require( './findListingIndex.js' );
 
     /**
      * Return the listing template type appropriate for the section that

@@ -23,7 +23,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
     var SAVE_FORM_SELECTOR = '#progress-dialog';
     var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
-    var sectionText, inlineListing, replacements = {};
+    var sectionText, inlineListing;
     var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
     var NATL_CURRENCY = [];
     var CC_SELECTOR = '.input-cc'; // Country calling code
@@ -427,33 +427,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * strip out any comments and replace them with placeholders that can be
      * restored prior to saving changes.
      */
-    var stripComments = function(text) {
-        var comments = text.match(/<!--[\s\S]*?-->/mig);
-        if (comments !== null ) {
-            for (var i = 0; i < comments.length; i++) {
-                var comment = comments[i];
-                var rep = `<<<COMMENT${i}>>>`;
-                text = text.replace(comment, rep);
-                replacements[rep] = comment;
-            }
-        }
-        return text;
-    };
+    var stripComments = require( './stripComments.js' );
 
     /**
      * Search the text provided, and if it contains any text that was
      * previously stripped out for replacement purposes, restore it.
      */
-    var restoreComments = function(text, resetReplacements) {
-        for (var key in replacements) {
-            var val = replacements[key];
-            text = text.replace(key, val);
-        }
-        if (resetReplacements) {
-            replacements = {};
-        }
-        return text;
-    };
+    var restoreComments = require( './restoreComments.js' );
 
     /**
      * Given a listing type, return the appropriate entry from the

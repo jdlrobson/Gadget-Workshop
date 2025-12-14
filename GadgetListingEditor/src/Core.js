@@ -6,6 +6,8 @@ const { getSectionText, setSectionText } = currentEdit;
 const listingToStr = require( './listingToStr.js' );
 const saveForm = require( './saveForm.js' );
 const localData = require( './localData.js' );
+const { getCallbacks } = require( './Callbacks.js' );
+const { getConfig } = require( './Config.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
@@ -115,6 +117,12 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         telephoneCodes,
         NATL_CURRENCY
     } ) {
+        const {
+            REPLACE_NEW_LINE_CHARS,
+            SPECIAL_CHARS,
+            SHOW_LAST_EDITED_FIELD,
+            APPEND_FULL_STOP_TO_DESCRIPTION,
+        } = getConfig();
          setSectionText(
             stripComments(
                 getSectionText()
@@ -169,9 +177,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             }
             else if (
                 validateForm(
-                    Callbacks.VALIDATE_FORM_CALLBACKS,
-                    PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS,
-                    PROJECT_CONFIG.APPEND_FULL_STOP_TO_DESCRIPTION,
+                    getCallbacks( 'VALIDATE_FORM_CALLBACKS' ),
+                    REPLACE_NEW_LINE_CHARS,
+                    APPEND_FULL_STOP_TO_DESCRIPTION,
                     translate
                 )
             ) {
@@ -239,8 +247,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             onCaptchaSubmit,
             onSubmit,
             telephoneCodes,
-            characters: PROJECT_CONFIG.SPECIAL_CHARS,
-            showLastEditedField: mode === MODE_EDIT && PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD,
+            characters: SPECIAL_CHARS,
+            showLastEditedField: mode === MODE_EDIT && SHOW_LAST_EDITED_FIELD,
             onMount: ( form ) => {
                 let previewTimeout;
                 $( form, 'textarea,input' ).on( 'change', () => {

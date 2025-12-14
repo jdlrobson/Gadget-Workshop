@@ -1,27 +1,16 @@
-const dialog = require( './dialogs.js' );
 const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
-const ListingEditorDialog = require( './components/ListingEditorDialog.js' );
 const currentEdit = require( './currentEdit.js' );
-const { getSectionText, setSectionText } = currentEdit;
-const listingToStr = require( './listingToStr.js' );
-const saveForm = require( './saveForm.js' );
+const { setSectionText } = currentEdit;
 const localData = require( './localData.js' );
-const { getCallbacks } = require( './Callbacks.js' );
-const { getConfig } = require( './Config.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
-        LISTING_TYPE_PARAMETER,
         SECTION_TO_TEMPLATE_TYPE,
-        DEFAULT_LISTING_TEMPLATE,
-        EDITOR_CLOSED_SELECTOR
+        DEFAULT_LISTING_TEMPLATE
     } = Config;
 
     var api = new mw.Api();
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
-
-    // @todo: Move to ListingEditorForm.js when onFormMounted removed.
-    const createForm = require( './createForm.js' );
 
     var isInline = require( './isInline.js' );
 
@@ -45,15 +34,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const findListingTypeForSection = function(entry ) {
         return _findListingTypeForSection( entry, SECTION_TO_TEMPLATE_TYPE, DEFAULT_LISTING_TEMPLATE );
     };
-
-    /**
-     * Given a listing index, return the full wikitext for that listing
-     * ("{{listing|key=value|...}}"). An index of 0 returns the first listing
-     * template invocation, 1 returns the second, etc.
-     */
-    var getListingWikitextBraces = require( './getListingWikitextBraces' );
-
-    var wikiTextToListing = require( './wikiTextToListing' );
 
     /**
      * This method is invoked when an "add" or "edit" listing button is
@@ -113,214 +93,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * listing is being added to (and that contains the listing wiki syntax
      * when editing).
      */
-    var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType, {
-        telephoneCodes,
-        NATL_CURRENCY
-    } ) {
-        const {
-            REPLACE_NEW_LINE_CHARS,
-            SPECIAL_CHARS,
-            SHOW_LAST_EDITED_FIELD,
-            APPEND_FULL_STOP_TO_DESCRIPTION,
-        } = getConfig();
-         setSectionText(
-            stripComments(
-                getSectionText()
-            )
-        );
-        var listingTemplateAsMap, listingTemplateWikiSyntax;
-        if (mode == MODE_ADD) {
-            listingTemplateAsMap = {};
-            listingTemplateAsMap[LISTING_TYPE_PARAMETER] = listingType;
-        } else {
-            listingTemplateWikiSyntax = getListingWikitextBraces(listingIndex);
-            listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
-            listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
-        }
-        var listingParameters = getListingInfo(listingType);
-        // modal form - must submit or cancel
-        const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
-
-        let captchaSaveArgs;
-
-        const handleCaptchaError = ( setCaptcha, reset ) => {
-            return ( { edit, args } ) => {
-                if ( edit && edit.captcha ) {
-                    captchaSaveArgs = args;
-                    setCaptcha( edit.captcha.url );
-                } else {
-                    reset();
-                }
-            }
-        };
-
-        const onCaptchaSubmit = ( setCaptcha, closeAction ) => {
-            if ( captchaSaveArgs ) {
-                captchaSaveArgs.push( $('#input-captcha').val() );
-                setCaptcha( '' );
-                saveForm.apply( null, captchaSaveArgs ).then( () => {
-                    captchaSaveArgs = null;
-                    closeAction();
-                }, handleCaptchaError( setCaptcha, closeAction ) );
-            }
-        };
-        const onSubmit = ( closeDialog, reset, setCaptcha ) => {
-            const teardown = handleCaptchaError( setCaptcha, reset );
-
-            if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
-                // no need to validate the form upon deletion request
-                formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
-                    .then(
-                        closeDialog,
-                        handleCaptchaError()
-                    );
-            }
-            else if (
-                validateForm(
-                    getCallbacks( 'VALIDATE_FORM_CALLBACKS' ),
-                    REPLACE_NEW_LINE_CHARS,
-                    APPEND_FULL_STOP_TO_DESCRIPTION,
-                    translate
-                )
-            ) {
-                formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
-                    .then( closeDialog, teardown );
-            } else {
-                // form validation failed.
-                reset();
-            }
-        };
-
-        const customListingType = isCustomListingType(listingType) ? listingType : undefined;
-        const ListingEditorFormDialog = {
-            name: 'ListingEditorFormDialog',
-            template: `<ListingEditorDialog>
-            <ListingForm
-                :custom-listing-type="customListingType"
-                :wikidata="wikidata"
-                :wikipedia="wikipedia"
-                :image="image"
-                :mode="mode"
-                :telephoneCodes="telephoneCodes"
-                :characters="characters"
-                :show-last-edited-field="showLastEditedField" />
-</ListingEditorDialog>`,
-            props: {
-                customListingType: {
-                    type: String
-                },
-                wikipedia: {
-                    type: String
-                },
-                wikidata: {
-                    type: String
-                },
-                image: {
-                    type: String
-                },
-                mode: {
-                    type: String
-                },
-                telephoneCodes: {
-                    type: Array
-                },
-                characters: {
-                    type: Array
-                },
-                showLastEditedField: {
-                    type: Boolean
-                }
-            },
-            components: {
-                ListingEditorDialog,
-                // @todo: move to props
-                ListingForm: createForm( listingParameters, listingTemplateAsMap, {
-                    NATL_CURRENCY
-                } )
-            }
-        }
-        const { wikipedia, wikidata, image } = listingTemplateAsMap;
-        dialog.render( ListingEditorFormDialog, {
-            wikipedia, wikidata, image,
-            customListingType,
-            mode,
-            onCaptchaSubmit,
-            onSubmit,
-            telephoneCodes,
-            characters: SPECIAL_CHARS,
-            showLastEditedField: mode === MODE_EDIT && SHOW_LAST_EDITED_FIELD,
-            onMount: ( form ) => {
-                let previewTimeout;
-                $( form, 'textarea,input' ).on( 'change', () => {
-                    clearInterval( previewTimeout );
-                    mw.util.throttle( () => {
-                        previewTimeout = setTimeout( () => {
-                            showPreview(listingTemplateAsMap)
-                        }, 200 );
-                    }, 300 )();
-                } );
-                if (mode !== MODE_ADD) {
-                    showPreview(listingTemplateAsMap);
-                }
-            },
-            onHelp: () => {
-                window.open( translate( 'helpPage' ) );
-            },
-            title: (mode == MODE_ADD) ?
-                translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
-            dialogClass: 'listing-editor-dialog'
-        }, translate);
-    };
-
-    /**
-     * Commented-out listings can result in the wrong listing being edited, so
-     * strip out any comments and replace them with placeholders that can be
-     * restored prior to saving changes.
-     */
-    var stripComments = require( './stripComments.js' );
-
-    /**
-     * Given a listing type, return the appropriate entry from the
-     * LISTING_TEMPLATES array. This method returns the entry for the default
-     * listing template type if not enty exists for the specified type.
-     */
-    var getListingInfo = require( './getListingInfo.js' );
-
-    var isCustomListingType = require( './isCustomListingType.js' );
-
-    var validateForm = require( './validateForm.js' );
-
-    /**
-     * Convert the listing editor form entry fields into wiki text. This
-     * method converts the form entry fields into a listing template string,
-     * replaces the original template string in the section text with the
-     * updated entry, and then submits the section text to be saved on the
-     * server.
-     */
-    var formToText = require( './formToText.js' );
-
-    var showPreview = function(listingTemplateAsMap) {
-        var listing = listingTemplateAsMap;
-        var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
-        var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
-        var listingType = $(`#${listingTypeInput}`).val();
-        var listingParameters = getListingInfo(listingType);
-        for (var parameter in listingParameters) {
-            listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
-        }
-        var text = listingToStr(listing);
-        $.ajax ({
-            url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
-                action: 'parse',
-                prop: 'text',
-                contentmodel: 'wikitext',
-                format: 'json',
-                text,
-            })}`
-        } ).then( ( data ) => {
-            $('#listing-preview-text').html(data.parse.text['*']);
-        } );
-    };
+    var openListingEditorDialog = require( './openListingEditorDialog.js' );
 
     // expose public members
     return {

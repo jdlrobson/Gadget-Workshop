@@ -430,17 +430,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     /**
      * Begin building the edit summary by trying to find the section name.
      */
-    var editSummarySection = function() {
-        var sectionName = getSectionName();
-        return (sectionName.length) ? `/* ${sectionName} */ ` : "";
-    };
-
-    var getSectionName = function() {
-        const sectionText = getSectionText();
-        var HEADING_REGEX = /^=+\s*([^=]+)\s*=+\s*\n/;
-        var result = HEADING_REGEX.exec(sectionText);
-        return (result !== null) ? result[1].trim() : "";
-    };
+    var editSummarySection = require( './editSummarySection.js' );
+    var getSectionName = require( './getSectionName.js' );
 
     /**
      * After the listing has been converted to a string, add additional

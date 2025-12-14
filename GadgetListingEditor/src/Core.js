@@ -103,20 +103,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 
     var replaceSpecial = require( './replaceSpecial.js' );
 
-    /**
-     * Return a regular expression that can be used to find all listing
-     * template invocations (as configured via the LISTING_TEMPLATES map)
-     * within a section of wikitext. Note that the returned regex simply
-     * matches the start of the template ("{{listing") and not the full
-     * template ("{{listing|key=value|...}}").
-     */
-    var getListingTypesRegex = function() {
-        var regex = [];
-        for (var key in LISTING_TEMPLATES) {
-            regex.push(key);
-        }
-        return new RegExp( PROJECT_CONFIG.listingTypeRegExp.replace( '%s', regex.join( '|' ) ), 'ig' );
-    };
+    var getListingTypesRegex = require( './getListingTypesRegex.js' );
 
     /**
      * Given a listing index, return the full wikitext for that listing

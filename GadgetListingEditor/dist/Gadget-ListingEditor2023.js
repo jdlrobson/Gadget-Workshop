@@ -237,8 +237,14 @@ See https://en.wikivoyage.org/w/index.php?title=MediaWiki%3AGadget-ListingEditor
     }
 };
 
+var mode = {
+    MODE_ADD: 'add',
+    MODE_EDIT: 'edit'
+};
+
 const contentTransform = contentTransform$1;
 const sectionToTemplateType = sectionToTemplateType$1;
+const { MODE_ADD, MODE_EDIT } = mode;
 
 $(function() {
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' );
@@ -255,7 +261,6 @@ $(function() {
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
 	var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
-	var MODE_EDIT = 'edit';
 
 	// List of namespaces where the editor is allowed
 	var ALLOWED_NAMESPACE = [
@@ -371,7 +376,7 @@ $(function() {
 	}
 
 	let config;
-	function loadConfig() {
+	function loadConfigFromSite() {
 		if ( config ) {
 			return Promise.resolve( config );
 		} else {
@@ -387,7 +392,7 @@ $(function() {
 		if ( sectionToTemplateTypeFn ) {
 			return Promise.resolve( sectionToTemplateTypeFn );
 		} else {
-			return loadConfig().then( ( _config ) => {
+			return loadConfigFromSite().then( ( _config ) => {
 				sectionToTemplateTypeFn = sectionToTemplateType( _config, DB_NAME );
 				return sectionToTemplateTypeFn;
 			} );
@@ -398,7 +403,7 @@ $(function() {
 		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
 			localModuleForDebugging ? Promise.resolve( mw.loader.require ) : importForeignModule(),
-			loadConfig(),
+			loadConfigFromSite(),
 			loadSectionToTemplateType()
 		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
 			const module = localModuleForDebugging || req( GADGET_NAME );
@@ -461,7 +466,7 @@ $(function() {
 				ev.stopPropagation();
 				const $this = $(this);
 				loadMain().then( function ( core ) {
-					core.initListingEditorDialog(core.MODE_ADD, $this);
+					core.initListingEditorDialog(MODE_ADD, $this);
 				} );
 			}, true );
 		};

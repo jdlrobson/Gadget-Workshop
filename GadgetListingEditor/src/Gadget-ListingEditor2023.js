@@ -132,7 +132,7 @@ $(function() {
 	}
 
 	let config;
-	function loadConfig() {
+	function loadConfigFromSite() {
 		if ( config ) {
 			return Promise.resolve( config );
 		} else {
@@ -148,7 +148,7 @@ $(function() {
 		if ( sectionToTemplateTypeFn ) {
 			return Promise.resolve( sectionToTemplateTypeFn );
 		} else {
-			return loadConfig().then( ( _config ) => {
+			return loadConfigFromSite().then( ( _config ) => {
 				sectionToTemplateTypeFn = sectionToTemplateType( _config, DB_NAME );
 				return sectionToTemplateTypeFn;
 			} );
@@ -159,7 +159,7 @@ $(function() {
 		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
 			localModuleForDebugging ? Promise.resolve( mw.loader.require ) : importForeignModule(),
-			loadConfig(),
+			loadConfigFromSite(),
 			loadSectionToTemplateType()
 		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
 			const module = localModuleForDebugging || req( GADGET_NAME );

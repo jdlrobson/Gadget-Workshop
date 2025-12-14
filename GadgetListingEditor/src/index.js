@@ -3,6 +3,7 @@ const makeTranslateFunction = require( './makeTranslateFunction.js' );
 const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
+const { loadCallbacks } = require( './Callbacks.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -502,6 +503,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			VALIDATE_FORM_CALLBACKS
 		};
 	}();
+	loadCallbacks( Callbacks );
 
 	/* ***********************************************************************
 	 * Core contains code that should be shared across different

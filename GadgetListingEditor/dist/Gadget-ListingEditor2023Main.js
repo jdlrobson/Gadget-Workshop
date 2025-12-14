@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.14.2
+ * Listing Editor v3.15.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.14.2'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.15.0'
 
 'use strict';
 
@@ -838,7 +838,7 @@ var translations = {
  * @return {string}
  */
 
-var makeTranslateFunction$1 = ( translations ) => {
+var makeTranslateFunction$2 = ( translations ) => {
     return ( key, params = [] ) => {
         let msg =  translations[ key ];
         if ( msg === undefined ) {
@@ -939,6 +939,80 @@ var globalConfig = {
     WIKIDATA_URL,
     COMMONS_URL
 };
+
+const makeTranslateFunction$1 = makeTranslateFunction$2;
+let internalTranslateFn;
+
+const translate = ( key, ...parameters ) => {
+    if ( !internalTranslateFn ) {
+        throw 'Translations not setup';
+    } else {
+        return internalTranslateFn( key, ...parameters );
+    }
+};
+
+const init = ( TRANSLATIONS ) => {
+    internalTranslateFn = makeTranslateFunction$1( TRANSLATIONS );
+};
+
+var translate_1 = {
+    translate,
+    init
+};
+
+let Callbacks = {};
+
+const loadCallbacks$1 = ( callbacks ) => {
+    Callbacks = callbacks;
+};
+
+const getCallbacks = ( key ) => {
+    return Callbacks[key] || [];
+};
+
+var Callbacks_1 = {
+    getCallbacks,
+    loadCallbacks: loadCallbacks$1
+};
+
+let config = {};
+
+let _loaded = false;
+const loadConfig$1 = ( newConfig, projectConfig ) => {
+    if ( _loaded ) {
+        throw new Error( 'Configuration was already loaded.' );
+    }
+    _loaded = true;
+    config = Object.assign( {}, newConfig, projectConfig );
+};
+
+const getConfig = () => config;
+
+var Config = {
+    loadConfig: loadConfig$1,
+    getConfig
+};
+
+var selectors;
+var hasRequiredSelectors;
+
+function requireSelectors () {
+	if (hasRequiredSelectors) return selectors;
+	hasRequiredSelectors = 1;
+	// these selectors should match a value defined in the EDITOR_FORM_HTML
+	// if the selector refers to a field that is not used by a Wikivoyage
+	// language version the variable should still be defined, but the
+	// corresponding element in EDITOR_FORM_HTML can be removed and thus
+	// the selector will not match anything and the functionality tied to
+	// the selector will never execute.
+	selectors = {
+	    EDITOR_FORM_SELECTOR: '#listing-editor',
+	    EDITOR_MINOR_EDIT_SELECTOR: '#input-minor',
+	    EDITOR_CLOSED_SELECTOR: '#input-closed',
+	    EDITOR_SUMMARY_SELECTOR: '#input-summary'
+	};
+	return selectors;
+}
 
 var html$1;
 var hasRequiredHtml$1;
@@ -2365,6 +2439,118 @@ function requireRender () {
 	return render;
 }
 
+var mode;
+var hasRequiredMode;
+
+function requireMode () {
+	if (hasRequiredMode) return mode;
+	hasRequiredMode = 1;
+	mode = {
+	    MODE_ADD: 'add',
+	    MODE_EDIT: 'edit'
+	};
+	return mode;
+}
+
+/**
+ * Determine whether a listing entry is within a paragraph rather than
+ * an entry in a list; inline listings will be formatted slightly
+ * differently than entries in lists (no newlines in the template syntax,
+ * skip empty fields).
+ */
+
+var isInline_1;
+var hasRequiredIsInline;
+
+function requireIsInline () {
+	if (hasRequiredIsInline) return isInline_1;
+	hasRequiredIsInline = 1;
+	const isInline = function(entry) {
+	    // if the edit link clicked is within a paragraph AND, since
+	    // newlines in a listing description will cause the Mediawiki parser
+	    // to close an HTML list (thus triggering the "is edit link within a
+	    // paragraph" test condition), also verify that the listing is
+	    // within the expected listing template span tag and thus hasn't
+	    // been incorrectly split due to newlines.
+	    return (entry.closest('p').length !== 0 && entry.closest('span.vcard').length !== 0);
+	};
+
+	isInline_1 = isInline;
+	return isInline_1;
+}
+
+/**
+ * Given a DOM element, find the nearest editable section (h2 or h3) that
+ * it is contained within.
+ */
+
+var findSectionHeading_1;
+var hasRequiredFindSectionHeading;
+
+function requireFindSectionHeading () {
+	if (hasRequiredFindSectionHeading) return findSectionHeading_1;
+	hasRequiredFindSectionHeading = 1;
+	const findSectionHeading = function(element) {
+	    // mw-h3section and mw-h2section can be removed when useparsoid=1 is everywhere.
+	    return element.closest('div.mw-h3section, div.mw-h2section, section');
+	};
+
+	findSectionHeading_1 = findSectionHeading;
+	return findSectionHeading_1;
+}
+
+/**
+ * Given an editable heading, examine it to determine what section index
+ * the heading represents. First heading is 1, second is 2, etc.
+ */
+
+var findSectionIndex_1;
+var hasRequiredFindSectionIndex;
+
+function requireFindSectionIndex () {
+	if (hasRequiredFindSectionIndex) return findSectionIndex_1;
+	hasRequiredFindSectionIndex = 1;
+	const findSectionIndex = function(heading) {
+	    if (heading === undefined) {
+	        return 0;
+	    }
+	    var link = heading.find('.mw-editsection a').attr('href');
+	    return (link !== undefined) ? link.split('=').pop() : 0;
+	};
+
+	findSectionIndex_1 = findSectionIndex;
+	return findSectionIndex_1;
+}
+
+var findListingIndex_1;
+var hasRequiredFindListingIndex;
+
+function requireFindListingIndex () {
+	if (hasRequiredFindListingIndex) return findListingIndex_1;
+	hasRequiredFindListingIndex = 1;
+	// selector that identifies the edit link as created by the
+	// addEditButtons() function
+	const EDIT_LINK_SELECTOR = '.vcard-edit-button';
+
+	/**
+	 * Given an edit link that was clicked for a listing, determine what index
+	 * that listing is within a section. First listing is 0, second is 1, etc.
+	 */
+	const findListingIndex = function(sectionHeading, clicked) {
+	    var count = 0;
+	    $(EDIT_LINK_SELECTOR, sectionHeading).each(function() {
+	        if (clicked.is($(this))) {
+	            return false;
+	        }
+	        count++;
+	    });
+	    return count;
+	};
+
+	findListingIndex_1 = findListingIndex;
+	return findListingIndex_1;
+}
+
 var findListingTypeForSection;
 var hasRequiredFindListingTypeForSection;
 
@@ -2387,6 +2573,330 @@ function requireFindListingTypeForSection () {
 	    return defaultType;
 	};
 	return findListingTypeForSection;
+}
+
+var replaceSpecial_1;
+var hasRequiredReplaceSpecial;
+
+function requireReplaceSpecial () {
+	if (hasRequiredReplaceSpecial) return replaceSpecial_1;
+	hasRequiredReplaceSpecial = 1;
+	const replaceSpecial = function(str) {
+	    return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
+	};
+
+	replaceSpecial_1 = replaceSpecial;
+	return replaceSpecial_1;
+}
+
+var getListingTypesRegex_1;
+var hasRequiredGetListingTypesRegex;
+
+function requireGetListingTypesRegex () {
+	if (hasRequiredGetListingTypesRegex) return getListingTypesRegex_1;
+	hasRequiredGetListingTypesRegex = 1;
+	const { getConfig } = Config;
+	/**
+	 * Return a regular expression that can be used to find all listing
+	 * template invocations (as configured via the LISTING_TEMPLATES map)
+	 * within a section of wikitext. Note that the returned regex simply
+	 * matches the start of the template ("{{listing") and not the full
+	 * template ("{{listing|key=value|...}}").
+	 */
+	const getListingTypesRegex = function() {
+	    const { LISTING_TEMPLATES, listingTypeRegExp } = getConfig();
+	    var regex = [];
+	    for (var key in LISTING_TEMPLATES) {
+	        regex.push(key);
+	    }
+	    return new RegExp( listingTypeRegExp.replace( '%s', regex.join( '|' ) ), 'ig' );
+	};
+
+	getListingTypesRegex_1 = getListingTypesRegex;
+	return getListingTypesRegex_1;
+}
+
+var findPatternMatch_1;
+var hasRequiredFindPatternMatch;
+
+function requireFindPatternMatch () {
+	if (hasRequiredFindPatternMatch) return findPatternMatch_1;
+	hasRequiredFindPatternMatch = 1;
+	const replaceSpecial = requireReplaceSpecial();
+
+	/**
+	 * Utility method for finding a matching end pattern for a specified start
+	 * pattern, including nesting. The specified value must start with the
+	 * start value, otherwise an empty string will be returned.
+	 */
+	const findPatternMatch = function(value, startPattern, endPattern) {
+	    var matchString = '';
+	    var startRegex = new RegExp(`^${replaceSpecial(startPattern)}`, 'i');
+	    if (startRegex.test(value)) {
+	        var endRegex = new RegExp(`^${replaceSpecial(endPattern)}`, 'i');
+	        var matchCount = 1;
+	        for (var i = startPattern.length; i < value.length; i++) {
+	            var remainingValue = value.substr(i);
+	            if (startRegex.test(remainingValue)) {
+	                matchCount++;
+	            } else if (endRegex.test(remainingValue)) {
+	                matchCount--;
+	            }
+	            if (matchCount === 0) {
+	                matchString = value.substr(0, i);
+	                break;
+	            }
+	        }
+	    }
+	    return matchString;
+	};
+
+	findPatternMatch_1 = findPatternMatch;
+	return findPatternMatch_1;
+}
+
+var listingTemplateToParamsArray_1;
+var hasRequiredListingTemplateToParamsArray;
+
+function requireListingTemplateToParamsArray () {
+	if (hasRequiredListingTemplateToParamsArray) return listingTemplateToParamsArray_1;
+	hasRequiredListingTemplateToParamsArray = 1;
+	const findPatternMatch = requireFindPatternMatch();
+
+	/**
+	 * Split the raw template wikitext into an array of params. The pipe
+	 * symbol delimits template params, but this method will also inspect the
+	 * content to deal with nested templates or wikilinks that might contain
+	 * pipe characters that should not be used as delimiters.
+	 */
+	const listingTemplateToParamsArray = function(listingTemplateWikiSyntax) {
+	    var results = [];
+	    var paramValue = '';
+	    var pos = 0;
+	    while (pos < listingTemplateWikiSyntax.length) {
+	        var remainingString = listingTemplateWikiSyntax.substr(pos);
+	        // check for a nested template or wikilink
+	        var patternMatch = findPatternMatch(remainingString, "{{", "}}");
+	        if (patternMatch.length === 0) {
+	            patternMatch = findPatternMatch(remainingString, "[[", "]]");
+	        }
+	        if (patternMatch.length > 0) {
+	            paramValue += patternMatch;
+	            pos += patternMatch.length;
+	        } else if (listingTemplateWikiSyntax.charAt(pos) === '|') {
+	            // delimiter - push the previous param and move on to the next
+	            results.push(paramValue);
+	            paramValue = '';
+	            pos++;
+	        } else {
+	            // append the character to the param value being built
+	            paramValue += listingTemplateWikiSyntax.charAt(pos);
+	            pos++;
+	        }
+	    }
+	    if (paramValue.length > 0) {
+	        // append the last param value
+	        results.push(paramValue);
+	    }
+	    return results;
+	};
+
+	listingTemplateToParamsArray_1 = listingTemplateToParamsArray;
+	return listingTemplateToParamsArray_1;
+}
+
+var replacements_1;
+var hasRequiredReplacements;
+
+function requireReplacements () {
+	if (hasRequiredReplacements) return replacements_1;
+	hasRequiredReplacements = 1;
+	let replacements = {};
+
+	const clear = () => {
+	    replacements = {};
+	};
+
+	const addReplacement = ( rep, comment ) => {
+	    replacements[rep] = comment;
+	};
+
+	replacements_1 = {
+	    replacements,
+	    addReplacement,
+	    clear
+	};
+	return replacements_1;
+}
+
+var restoreComments_1;
+var hasRequiredRestoreComments;
+
+function requireRestoreComments () {
+	if (hasRequiredRestoreComments) return restoreComments_1;
+	hasRequiredRestoreComments = 1;
+	const { replacements, clear } = requireReplacements();
+
+	/**
+	 * Search the text provided, and if it contains any text that was
+	 * previously stripped out for replacement purposes, restore it.
+	 */
+	const restoreComments = function(text, resetReplacements) {
+	    for (var key in replacements) {
+	        var val = replacements[key];
+	        text = text.replace(key, val);
+	    }
+	    if (resetReplacements) {
+	        clear();
+	    }
+	    return text;
+	};
+
+	restoreComments_1 = restoreComments;
+	return restoreComments_1;
+}
+
+var wikiTextToListing_1;
+var hasRequiredWikiTextToListing;
+
+function requireWikiTextToListing () {
+	if (hasRequiredWikiTextToListing) return wikiTextToListing_1;
+	hasRequiredWikiTextToListing = 1;
+	const getListingTypesRegex = requireGetListingTypesRegex();
+	const listingTemplateToParamsArray = requireListingTemplateToParamsArray();
+	const restoreComments = requireRestoreComments();
+	const { getConfig } = Config;
+
+	/**
+	 * Convert raw wiki listing syntax into a mapping of key-value pairs
+	 * corresponding to the listing template parameters.
+	 */
+	const wikiTextToListing = function(listingTemplateWikiSyntax) {
+	    const { LISTING_TYPE_PARAMETER,
+	        LISTING_CONTENT_PARAMETER, LISTING_TEMPLATES } = getConfig();
+	    var typeRegex = getListingTypesRegex();
+	    // convert "{{see" to {{listing|type=see"
+	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);
+	    // remove the trailing braces
+	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.slice(0,-2);
+	    var listingTemplateAsMap = {};
+	    var lastKey;
+	    var listParams = listingTemplateToParamsArray(listingTemplateWikiSyntax);
+	    for (var j=1; j < listParams.length; j++) {
+	        var param = listParams[j];
+	        var index = param.indexOf('=');
+	        if (index > 0) {
+	            // param is of the form key=value
+	            var key = param.substr(0, index).trim();
+	            var value = param.substr(index+1).trim();
+	            listingTemplateAsMap[key] = value;
+	            lastKey = key;
+	        } else if (lastKey && listingTemplateAsMap[lastKey].length) {
+	            // there was a pipe character within a param value, such as
+	            // "key=value1|value2", so just append to the previous param
+	            listingTemplateAsMap[lastKey] += `|${param}`;
+	        }
+	    }
+	    for (var loopKey1 in listingTemplateAsMap) {
+	        // if the template value contains an HTML comment that was
+	        // previously converted to a placehold then it needs to be
+	        // converted back to a comment so that the placeholder is not
+	        // displayed in the edit form
+	        listingTemplateAsMap[loopKey1] = restoreComments(listingTemplateAsMap[loopKey1], false);
+	    }
+	    if (listingTemplateAsMap[LISTING_CONTENT_PARAMETER]) {
+	        // convert paragraph tags to newlines so that the content is more
+	        // readable in the editor window
+	        listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<p>\s*/g, '\n\n');
+	        listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<br\s*\/?>\s*/g, '\n');
+	    }
+	    // sanitize the listing type param to match the configured values, so
+	    // if the listing contained "Do" it will still match the configured "do"
+	    for (var loopKey2 in LISTING_TEMPLATES) {
+	        if (listingTemplateAsMap[LISTING_TYPE_PARAMETER].toLowerCase() === loopKey2.toLowerCase()) {
+	            listingTemplateAsMap[LISTING_TYPE_PARAMETER] = loopKey2;
+	            break;
+	        }
+	    }
+	    return listingTemplateAsMap;
+	};
+
+	wikiTextToListing_1 = wikiTextToListing;
+	return wikiTextToListing_1;
+}
+
+var stripComments_1;
+var hasRequiredStripComments;
+
+function requireStripComments () {
+	if (hasRequiredStripComments) return stripComments_1;
+	hasRequiredStripComments = 1;
+	const { addReplacement } = requireReplacements();
+
+	/**
+	 * Commented-out listings can result in the wrong listing being edited, so
+	 * strip out any comments and replace them with placeholders that can be
+	 * restored prior to saving changes.
+	 */
+	const stripComments = function(text) {
+	    var comments = text.match(/<!--[\s\S]*?-->/mig);
+	    if (comments !== null ) {
+	        for (var i = 0; i < comments.length; i++) {
+	            var comment = comments[i];
+	            var rep = `<<<COMMENT${i}>>>`;
+	            text = text.replace(comment, rep);
+	            addReplacement( rep, comment );
+	        }
+	    }
+	    return text;
+	};
+
+	stripComments_1 = stripComments;
+	return stripComments_1;
+}
+
+var isCustomListingType_1;
+var hasRequiredIsCustomListingType;
+
+function requireIsCustomListingType () {
+	if (hasRequiredIsCustomListingType) return isCustomListingType_1;
+	hasRequiredIsCustomListingType = 1;
+	const { getConfig } = Config;
+
+	/**
+	 * Determine if the specified listing type is a custom type - for example "go"
+	 * instead of "see", "do", "listing", etc.
+	 */
+	const isCustomListingType = function(listingType) {
+	    const { LISTING_TEMPLATES } = getConfig();
+	    return !(listingType in LISTING_TEMPLATES);
+	};
+
+	isCustomListingType_1 = isCustomListingType;
+	return isCustomListingType_1;
+}
+
+var getListingInfo_1;
+var hasRequiredGetListingInfo;
+
+function requireGetListingInfo () {
+	if (hasRequiredGetListingInfo) return getListingInfo_1;
+	hasRequiredGetListingInfo = 1;
+	const isCustomListingType = requireIsCustomListingType();
+	const { getConfig } = Config;
+
+	/**
+	 * Given a listing type, return the appropriate entry from the
+	 * LISTING_TEMPLATES array. This method returns the entry for the default
+	 * listing template type if not enty exists for the specified type.
+	 */
+	const getListingInfo = function(type) {
+	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
+	    return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
+	};
+
+	getListingInfo_1 = getListingInfo;
+	return getListingInfo_1;
 }
 
 var validateForm_1;
@@ -2488,6 +2998,58 @@ function requireValidateForm () {
 	return validateForm_1;
 }
 
+var savePayload_1;
+var hasRequiredSavePayload;
+
+function requireSavePayload () {
+	if (hasRequiredSavePayload) return savePayload_1;
+	hasRequiredSavePayload = 1;
+	const api = new mw.Api();
+
+	const savePayload = ( editPayload ) => {
+	    const delayedPromise = ( res ) =>
+	        new Promise( ( resolve ) => {
+	            setTimeout(() => {
+	                resolve( res );
+	            }, 5000 );
+	        } );
+	    switch ( window.__save_debug ) {
+	        case -1:
+	            return delayedPromise( { error: 'error' } );
+	        case -2:
+	            return delayedPromise( {
+	                edit: {
+	                    captcha: {
+	                        id: 1,
+	                        url: 'foo.gif'
+	                    }
+	                }
+	            } );
+	        case 0:
+	            return delayedPromise( {
+	                edit: {
+	                    nochange: true,
+	                    result: 'Success'
+	                }
+	            } );
+	        case 1:
+	            return delayedPromise( {
+	                edit: {
+	                    result: 'Success'
+	                }
+	            } );
+	        default:
+	            return api.postWithToken(
+	                "csrf",
+	                editPayload
+	            )
+	    }
+	};
+
+	savePayload_1 = savePayload;
+	return savePayload_1;
+}
+
 var Core_1;
 var hasRequiredCore;
 
@@ -2510,20 +3072,15 @@ function requireCore () {
 	        EDITOR_SUMMARY_SELECTOR,
 	        EDITOR_MINOR_EDIT_SELECTOR,
 	        LISTING_CONTENT_PARAMETER,
-	        LISTING_TEMPLATES,
 	        EDITOR_FORM_SELECTOR,
 	        EDITOR_CLOSED_SELECTOR
 	    } = Config;
 
 	    var api = new mw.Api();
-	    var MODE_ADD = 'add';
-	    var MODE_EDIT = 'edit';
-	    // selector that identifies the edit link as created by the
-	    // addEditButtons() function
-	    var EDIT_LINK_SELECTOR = '.vcard-edit-button';
+	    const { MODE_ADD, MODE_EDIT } = requireMode();
 	    var SAVE_FORM_SELECTOR = '#progress-dialog';
 	    var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
-	    var sectionText, inlineListing, replacements = {};
+	    var sectionText, inlineListing;
 	    var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
 	    var NATL_CURRENCY = [];
 	    var CC_SELECTOR = '.input-cc'; // Country calling code
@@ -2578,57 +3135,17 @@ function requireCore () {
 	        return form;
 	    };
 
-	    /**
-	     * Determine whether a listing entry is within a paragraph rather than
-	     * an entry in a list; inline listings will be formatted slightly
-	     * differently than entries in lists (no newlines in the template syntax,
-	     * skip empty fields).
-	     */
-	    var isInline = function(entry) {
-	        // if the edit link clicked is within a paragraph AND, since
-	        // newlines in a listing description will cause the Mediawiki parser
-	        // to close an HTML list (thus triggering the "is edit link within a
-	        // paragraph" test condition), also verify that the listing is
-	        // within the expected listing template span tag and thus hasn't
-	        // been incorrectly split due to newlines.
-	        return (entry.closest('p').length !== 0 && entry.closest('span.vcard').length !== 0);
-	    };
+	    var isInline = requireIsInline();
 
-	    /**
-	     * Given a DOM element, find the nearest editable section (h2 or h3) that
-	     * it is contained within.
-	     */
-	    var findSectionHeading = function(element) {
-	        // mw-h3section and mw-h2section can be removed when useparsoid=1 is everywhere.
-	        return element.closest('div.mw-h3section, div.mw-h2section, section');
-	    };
+	    var findSectionHeading = requireFindSectionHeading();
 
-	    /**
-	     * Given an editable heading, examine it to determine what section index
-	     * the heading represents. First heading is 1, second is 2, etc.
-	     */
-	    var findSectionIndex = function(heading) {
-	        if (heading === undefined) {
-	            return 0;
-	        }
-	        var link = heading.find('.mw-editsection a').attr('href');
-	        return (link !== undefined) ? link.split('=').pop() : 0;
-	    };
+	    var findSectionIndex = requireFindSectionIndex();
 
 	    /**
 	     * Given an edit link that was clicked for a listing, determine what index
 	     * that listing is within a section. First listing is 0, second is 1, etc.
 	     */
-	    var findListingIndex = function(sectionHeading, clicked) {
-	        var count = 0;
-	        $(EDIT_LINK_SELECTOR, sectionHeading).each(function() {
-	            if (clicked.is($(this))) {
-	                return false;
-	            }
-	            count++;
-	        });
-	        return count;
-	    };
+	    var findListingIndex = requireFindListingIndex();
 
 	    /**
 	     * Return the listing template type appropriate for the section that
@@ -2641,24 +3158,9 @@ function requireCore () {
 	        return _findListingTypeForSection( entry, SECTION_TO_TEMPLATE_TYPE, DEFAULT_LISTING_TEMPLATE );
 	    };
 
-	    var replaceSpecial = function(str) {
-	        return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
-	    };
+	    var replaceSpecial = requireReplaceSpecial();
 
-	    /**
-	     * Return a regular expression that can be used to find all listing
-	     * template invocations (as configured via the LISTING_TEMPLATES map)
-	     * within a section of wikitext. Note that the returned regex simply
-	     * matches the start of the template ("{{listing") and not the full
-	     * template ("{{listing|key=value|...}}").
-	     */
-	    var getListingTypesRegex = function() {
-	        var regex = [];
-	        for (var key in LISTING_TEMPLATES) {
-	            regex.push(key);
-	        }
-	        return new RegExp( PROJECT_CONFIG.listingTypeRegExp.replace( '%s', regex.join( '|' ) ), 'ig' );
-	    };
+	    var getListingTypesRegex = requireGetListingTypesRegex();
 
 	    /**
 	     * Given a listing index, return the full wikitext for that listing
@@ -2706,122 +3208,7 @@ function requireCore () {
 	        return listingSyntax.trim();
 	    };
 
-	    /**
-	     * Convert raw wiki listing syntax into a mapping of key-value pairs
-	     * corresponding to the listing template parameters.
-	     */
-	    var wikiTextToListing = function(listingTemplateWikiSyntax) {
-	        var typeRegex = getListingTypesRegex();
-	        // convert "{{see" to {{listing|type=see"
-	        listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);
-	        // remove the trailing braces
-	        listingTemplateWikiSyntax = listingTemplateWikiSyntax.slice(0,-2);
-	        var listingTemplateAsMap = {};
-	        var lastKey;
-	        var listParams = listingTemplateToParamsArray(listingTemplateWikiSyntax);
-	        for (var j=1; j < listParams.length; j++) {
-	            var param = listParams[j];
-	            var index = param.indexOf('=');
-	            if (index > 0) {
-	                // param is of the form key=value
-	                var key = param.substr(0, index).trim();
-	                var value = param.substr(index+1).trim();
-	                listingTemplateAsMap[key] = value;
-	                lastKey = key;
-	            } else if (lastKey && listingTemplateAsMap[lastKey].length) {
-	                // there was a pipe character within a param value, such as
-	                // "key=value1|value2", so just append to the previous param
-	                listingTemplateAsMap[lastKey] += `|${param}`;
-	            }
-	        }
-	        for (var loopKey1 in listingTemplateAsMap) {
-	            // if the template value contains an HTML comment that was
-	            // previously converted to a placehold then it needs to be
-	            // converted back to a comment so that the placeholder is not
-	            // displayed in the edit form
-	            listingTemplateAsMap[loopKey1] = restoreComments(listingTemplateAsMap[loopKey1], false);
-	        }
-	        if (listingTemplateAsMap[LISTING_CONTENT_PARAMETER]) {
-	            // convert paragraph tags to newlines so that the content is more
-	            // readable in the editor window
-	            listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<p>\s*/g, '\n\n');
-	            listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<br\s*\/?>\s*/g, '\n');
-	        }
-	        // sanitize the listing type param to match the configured values, so
-	        // if the listing contained "Do" it will still match the configured "do"
-	        for (var loopKey2 in LISTING_TEMPLATES) {
-	            if (listingTemplateAsMap[LISTING_TYPE_PARAMETER].toLowerCase() === loopKey2.toLowerCase()) {
-	                listingTemplateAsMap[LISTING_TYPE_PARAMETER] = loopKey2;
-	                break;
-	            }
-	        }
-	        return listingTemplateAsMap;
-	    };
-
-	    /**
-	     * Split the raw template wikitext into an array of params. The pipe
-	     * symbol delimits template params, but this method will also inspect the
-	     * content to deal with nested templates or wikilinks that might contain
-	     * pipe characters that should not be used as delimiters.
-	     */
-	    var listingTemplateToParamsArray = function(listingTemplateWikiSyntax) {
-	        var results = [];
-	        var paramValue = '';
-	        var pos = 0;
-	        while (pos < listingTemplateWikiSyntax.length) {
-	            var remainingString = listingTemplateWikiSyntax.substr(pos);
-	            // check for a nested template or wikilink
-	            var patternMatch = findPatternMatch(remainingString, "{{", "}}");
-	            if (patternMatch.length === 0) {
-	                patternMatch = findPatternMatch(remainingString, "[[", "]]");
-	            }
-	            if (patternMatch.length > 0) {
-	                paramValue += patternMatch;
-	                pos += patternMatch.length;
-	            } else if (listingTemplateWikiSyntax.charAt(pos) === '|') {
-	                // delimiter - push the previous param and move on to the next
-	                results.push(paramValue);
-	                paramValue = '';
-	                pos++;
-	            } else {
-	                // append the character to the param value being built
-	                paramValue += listingTemplateWikiSyntax.charAt(pos);
-	                pos++;
-	            }
-	        }
-	        if (paramValue.length > 0) {
-	            // append the last param value
-	            results.push(paramValue);
-	        }
-	        return results;
-	    };
-
-	    /**
-	     * Utility method for finding a matching end pattern for a specified start
-	     * pattern, including nesting. The specified value must start with the
-	     * start value, otherwise an empty string will be returned.
-	     */
-	    var findPatternMatch = function(value, startPattern, endPattern) {
-	        var matchString = '';
-	        var startRegex = new RegExp(`^${replaceSpecial(startPattern)}`, 'i');
-	        if (startRegex.test(value)) {
-	            var endRegex = new RegExp(`^${replaceSpecial(endPattern)}`, 'i');
-	            var matchCount = 1;
-	            for (var i = startPattern.length; i < value.length; i++) {
-	                var remainingValue = value.substr(i);
-	                if (startRegex.test(remainingValue)) {
-	                    matchCount++;
-	                } else if (endRegex.test(remainingValue)) {
-	                    matchCount--;
-	                }
-	                if (matchCount === 0) {
-	                    matchString = value.substr(0, i);
-	                    break;
-	                }
-	            }
-	        }
-	        return matchString;
-	    };
+	    var wikiTextToListing = requireWikiTextToListing();
 
 	    /**
 	     * This method is invoked when an "add" or "edit" listing button is
@@ -3012,50 +3399,22 @@ function requireCore () {
 	     * strip out any comments and replace them with placeholders that can be
 	     * restored prior to saving changes.
 	     */
-	    var stripComments = function(text) {
-	        var comments = text.match(/<!--[\s\S]*?-->/mig);
-	        if (comments !== null ) {
-	            for (var i = 0; i < comments.length; i++) {
-	                var comment = comments[i];
-	                var rep = `<<<COMMENT${i}>>>`;
-	                text = text.replace(comment, rep);
-	                replacements[rep] = comment;
-	            }
-	        }
-	        return text;
-	    };
+	    var stripComments = requireStripComments();
 
 	    /**
 	     * Search the text provided, and if it contains any text that was
 	     * previously stripped out for replacement purposes, restore it.
 	     */
-	    var restoreComments = function(text, resetReplacements) {
-	        for (var key in replacements) {
-	            var val = replacements[key];
-	            text = text.replace(key, val);
-	        }
-	        if (resetReplacements) {
-	            replacements = {};
-	        }
-	        return text;
-	    };
+	    var restoreComments = requireRestoreComments();
 
 	    /**
 	     * Given a listing type, return the appropriate entry from the
 	     * LISTING_TEMPLATES array. This method returns the entry for the default
 	     * listing template type if not enty exists for the specified type.
 	     */
-	    var getListingInfo = function(type) {
-	        return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
-	    };
+	    var getListingInfo = requireGetListingInfo();
 
-	    /**
-	     * Determine if the specified listing type is a custom type - for example "go"
-	     * instead of "see", "do", "listing", etc.
-	     */
-	    var isCustomListingType = function(listingType) {
-	        return !(listingType in LISTING_TEMPLATES);
-	    };
+	    var isCustomListingType = requireIsCustomListingType();
 
 	    var validateForm = requireValidateForm();
 
@@ -3278,45 +3637,7 @@ function requireCore () {
 	        $(".ui-dialog-titlebar").hide();
 	    };
 
-	    const savePayload = ( editPayload ) => {
-	        const delayedPromise = ( res ) =>
-	            new Promise( ( resolve ) => {
-	                setTimeout(() => {
-	                    resolve( res );
-	                }, 5000 );
-	            } );
-	        switch ( window.__save_debug ) {
-	            case -1:
-	                return delayedPromise( { error: 'error' } );
-	            case -2:
-	                return delayedPromise( {
-	                    edit: {
-	                        captcha: {
-	                            id: 1,
-	                            url: 'foo.gif'
-	                        }
-	                    }
-	                } );
-	            case 0:
-	                return delayedPromise( {
-	                    edit: {
-	                        nochange: true,
-	                        result: 'Success'
-	                    }
-	                } );
-	            case 1:
-	                return delayedPromise( {
-	                    edit: {
-	                        result: 'Success'
-	                    }
-	                } );
-	            default:
-	                return api.postWithToken(
-	                    "csrf",
-	                    editPayload
-	                )
-	        }
-	    };
+	    const savePayload = requireSavePayload();
 
 	    /**
 	     * Execute the logic to post listing editor changes to the server so that
@@ -3506,9 +3827,12 @@ function requireCore () {
 }
 
 const TRANSLATIONS_ALL = translations;
-const makeTranslateFunction = makeTranslateFunction$1;
+const makeTranslateFunction = makeTranslateFunction$2;
 const parseDMS = parseDMS_1;
 const { LANG } = globalConfig;
+const translateModule = translate_1;
+const { loadCallbacks } = Callbacks_1;
+const { loadConfig } = Config;
 
 var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 
@@ -3550,6 +3874,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 	} );
 
 	const translate = makeTranslateFunction( TRANSLATIONS );
+	translateModule.init( TRANSLATIONS );
 
 	const Config = function() {
 		var WIKIDATAID = PROJECT_CONFIG.WIKIDATAID;
@@ -3635,16 +3960,12 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			delete LISTING_TEMPLATES[ key ];
 		} );
 
-		// these selectors should match a value defined in the EDITOR_FORM_HTML
-		// if the selector refers to a field that is not used by a Wikivoyage
-		// language version the variable should still be defined, but the
-		// corresponding element in EDITOR_FORM_HTML can be removed and thus
-		// the selector will not match anything and the functionality tied to
-		// the selector will never execute.
-		var EDITOR_FORM_SELECTOR = '#listing-editor';
-		var EDITOR_CLOSED_SELECTOR = '#input-closed';
-		var EDITOR_SUMMARY_SELECTOR = '#input-summary';
-		var EDITOR_MINOR_EDIT_SELECTOR = '#input-minor';
+		const {
+			EDITOR_FORM_SELECTOR,
+			EDITOR_CLOSED_SELECTOR,
+			EDITOR_SUMMARY_SELECTOR,
+			EDITOR_MINOR_EDIT_SELECTOR
+		} = requireSelectors();
 
 		// the below HTML is the UI that will be loaded into the listing editor
 		// dialog box when a listing is added or edited. EACH WIKIVOYAGE
@@ -4006,6 +4327,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			VALIDATE_FORM_CALLBACKS
 		};
 	}();
+	loadCallbacks( Callbacks );
+	loadConfig( Config, PROJECT_CONFIG );
 
 	/* ***********************************************************************
 	 * Core contains code that should be shared across different

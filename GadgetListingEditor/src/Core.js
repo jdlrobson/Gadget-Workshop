@@ -8,6 +8,7 @@ const { onMounted, ref } = require( 'vue' );
 const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 const listingToStr = require( './listingToStr.js' );
 const saveForm = require( './saveForm.js' );
+const localData = require( './localData.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
@@ -19,9 +20,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 
     var api = new mw.Api();
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
-    var NATL_CURRENCY = [];
-    var CC = '';
-    var LC = '';
 
     /**
      * Generate the form UI for the listing editor. If editing an existing
@@ -41,7 +39,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     };
 
     // @todo: Move to ListingEditorForm.js when onFormMounted removed.
-    const createForm = function(listingParameters, listingTemplateAsMap) {
+    const createForm = function(listingParameters, listingTemplateAsMap, {
+        NATL_CURRENCY
+    }) {
         return {
             name: 'ListingEditorForm',
             props: {
@@ -167,19 +167,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         var listingIndex = mode === MODE_ADD ? -1 : findListingIndex(sectionHeading, clicked);
         currentEdit.setInlineListing( mode === MODE_EDIT && isInline(clicked) );
 
-        NATL_CURRENCY = [];
-        var dataSel = $( '.countryData' ).attr('data-currency');
-        if ((dataSel !== undefined) && (dataSel !== '')) {
-            NATL_CURRENCY = dataSel.split( ',' ).map( function( item ) {
-                return item.trim();
-            });
-        }
-        CC = '';
-        dataSel = $( '.countryData' ).attr('data-country-calling-code');
-        if ((dataSel !== undefined) && (dataSel !== '')) CC = dataSel;
-        LC = '';
-        dataSel = $( '.countryData' ).attr('data-local-dialing-code');
-        if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
+        const {
+            telephoneCodes,
+            NATL_CURRENCY
+        } = localData.loadFromCountryData( $( '.countryData' ) );
 
         api.ajax({
             prop: 'revisions',
@@ -199,7 +190,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 alert( 'Error occurred loading content for this section.' );
                 return;
             }
-            openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
+            openListingEditorDialog(
+                mode, sectionIndex, listingIndex, listingType,
+                {
+                    telephoneCodes,
+                    NATL_CURRENCY
+                }
+            );
         }, function( _jqXHR, textStatus, errorThrown ) {
             alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
         });
@@ -211,7 +208,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * listing is being added to (and that contains the listing wiki syntax
      * when editing).
      */
-    var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType) {
+    var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType, {
+        telephoneCodes,
+        NATL_CURRENCY
+    } ) {
          setSectionText(
             stripComments(
                 getSectionText()
@@ -280,14 +280,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             }
         };
 
-        const telephoneCodes = [];
-        if ( CC ) {
-            telephoneCodes.push( CC );
-        }
-        if ( LC ) {
-            telephoneCodes.push( LC );
-        }
-
         const customListingType = isCustomListingType(listingType) ? listingType : undefined;
         const ListingEditorFormDialog = {
             name: 'ListingEditorFormDialog',
@@ -331,7 +323,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             components: {
                 ListingEditorDialog,
                 // @todo: move to props
-                ListingForm: createForm( listingParameters, listingTemplateAsMap )
+                ListingForm: createForm( listingParameters, listingTemplateAsMap, {
+                    NATL_CURRENCY
+                } )
             }
         }
         const { wikipedia, wikidata, image } = listingTemplateAsMap;

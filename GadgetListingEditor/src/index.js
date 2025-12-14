@@ -133,16 +133,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			delete LISTING_TEMPLATES[ key ];
 		} );
 
-		// these selectors should match a value defined in the EDITOR_FORM_HTML
-		// if the selector refers to a field that is not used by a Wikivoyage
-		// language version the variable should still be defined, but the
-		// corresponding element in EDITOR_FORM_HTML can be removed and thus
-		// the selector will not match anything and the functionality tied to
-		// the selector will never execute.
-		var EDITOR_FORM_SELECTOR = '#listing-editor';
-		var EDITOR_CLOSED_SELECTOR = '#input-closed';
-		var EDITOR_SUMMARY_SELECTOR = '#input-summary';
-		var EDITOR_MINOR_EDIT_SELECTOR = '#input-minor';
+		const {
+			EDITOR_FORM_SELECTOR,
+			EDITOR_CLOSED_SELECTOR,
+			EDITOR_SUMMARY_SELECTOR,
+			EDITOR_MINOR_EDIT_SELECTOR
+		} = require( './selectors.js' );
 
 		// the below HTML is the UI that will be loaded into the listing editor
 		// dialog box when a listing is added or edited. EACH WIKIVOYAGE

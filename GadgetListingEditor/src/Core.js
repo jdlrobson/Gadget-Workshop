@@ -359,13 +359,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
     };
 
-    /**
-     * Determine if the specified listing type is a custom type - for example "go"
-     * instead of "see", "do", "listing", etc.
-     */
-    var isCustomListingType = function(listingType) {
-        return !(listingType in LISTING_TEMPLATES);
-    };
+    var isCustomListingType = require( './isCustomListingType.js' );
 
     var validateForm = require( './validateForm.js' );
 

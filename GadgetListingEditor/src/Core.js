@@ -14,7 +14,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         EDITOR_SUMMARY_SELECTOR,
         EDITOR_MINOR_EDIT_SELECTOR,
         LISTING_CONTENT_PARAMETER,
-        LISTING_TEMPLATES,
         EDITOR_FORM_SELECTOR,
         EDITOR_CLOSED_SELECTOR
     } = Config;
@@ -355,9 +354,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * LISTING_TEMPLATES array. This method returns the entry for the default
      * listing template type if not enty exists for the specified type.
      */
-    var getListingInfo = function(type) {
-        return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
-    };
+    var getListingInfo = require( './getListingInfo.js' );
 
     var isCustomListingType = require( './isCustomListingType.js' );
 

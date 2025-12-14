@@ -2439,6 +2439,36 @@ function requireRender () {
 	return render;
 }
 
+var currentEdit;
+var hasRequiredCurrentEdit;
+
+function requireCurrentEdit () {
+	if (hasRequiredCurrentEdit) return currentEdit;
+	hasRequiredCurrentEdit = 1;
+	let sectionText, inlineListing;
+
+	const setInlineListing = ( isInline ) => {
+	    inlineListing = isInline;
+	};
+
+	const isInlineListing = () => inlineListing;
+
+	const getSectionText = () => sectionText;
+
+	const setSectionText = ( text ) => {
+	    sectionText = text;
+	    return sectionText;
+	};
+
+	currentEdit = {
+	    setSectionText,
+	    getSectionText,
+	    isInlineListing,
+	    setInlineListing
+	};
+	return currentEdit;
+}
+
 var mode;
 var hasRequiredMode;
 
@@ -3061,6 +3091,8 @@ function requireCore () {
 	const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
 	const listingEditorSync = requireListingEditorSync();
 	const renderSisterSiteApp = requireRender();
+	const currentEdit = requireCurrentEdit();
+	const { getSectionText, setSectionText } = currentEdit;
 
 	var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 	    const {
@@ -3080,7 +3112,6 @@ function requireCore () {
 	    const { MODE_ADD, MODE_EDIT } = requireMode();
 	    var SAVE_FORM_SELECTOR = '#progress-dialog';
 	    var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
-	    var sectionText, inlineListing;
 	    var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
 	    var NATL_CURRENCY = [];
 	    var CC_SELECTOR = '.input-cc'; // Country calling code
@@ -3168,8 +3199,10 @@ function requireCore () {
 	     * template invocation, 1 returns the second, etc.
 	     */
 	    var getListingWikitextBraces = function(listingIndex) {
-
-	        sectionText = sectionText.replace(/[^\S\n]+/g,' ');
+	        let sectionText = getSectionText();
+	        sectionText = setSectionText(
+	            sectionText.replace(/[^\S\n]+/g,' ')
+	        );
 	        // find the listing wikitext that matches the same index as the listing index
 	        var listingRegex = getListingTypesRegex();
 	        // look through all matches for "{{listing|see|do...}}" within the section
@@ -3225,7 +3258,7 @@ function requireCore () {
 	        var sectionHeading = findSectionHeading(clicked);
 	        var sectionIndex = findSectionIndex(sectionHeading);
 	        var listingIndex = (mode === MODE_ADD) ? -1 : findListingIndex(sectionHeading, clicked);
-	        inlineListing = (mode === MODE_EDIT && isInline(clicked));
+	        currentEdit.setInlineListing( mode === MODE_EDIT && isInline(clicked) );
 
 	        NATL_CURRENCY = [];
 	        var dataSel = $( '.countryData' ).attr('data-currency');
@@ -3252,7 +3285,9 @@ function requireCore () {
 	            rvsection: sectionIndex
 	        }).then(function( data ) {
 	            try {
-	                sectionText = data.query.pages[ 0 ].revisions[ 0 ].content;
+	                setSectionText(
+	                    data.query.pages[ 0 ].revisions[ 0 ].content
+	                );
 	            } catch ( e ) {
 	                alert( 'Error occurred loading content for this section.' );
 	                return;
@@ -3270,7 +3305,11 @@ function requireCore () {
 	     * when editing).
 	     */
 	    var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType) {
-	        sectionText = stripComments(sectionText);
+	         setSectionText(
+	            stripComments(
+	                getSectionText()
+	            )
+	        );
 	        mw.loader.using( ['jquery.ui'], function () {
 	            var listingTemplateAsMap, listingTemplateWikiSyntax;
 	            if (mode == MODE_ADD) {
@@ -3485,6 +3524,7 @@ function requireCore () {
 	    };
 
 	    var getSectionName = function() {
+	        const sectionText = getSectionText();
 	        var HEADING_REGEX = /^=+\s*([^=]+)\s*=+\s*\n/;
 	        var result = HEADING_REGEX.exec(sectionText);
 	        return (result !== null) ? result[1].trim() : "";
@@ -3496,6 +3536,7 @@ function requireCore () {
 	     * appropriate edit summary string.
 	     */
 	    var updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText) {
+	        let sectionText = getSectionText();
 	        var summary = originalEditSummary;
 	        summary += translate( 'added' );
 	        // add the new listing to the end of the section. if there are
@@ -3511,12 +3552,15 @@ function requireCore () {
 	            sectionText += `\n* ${listingWikiText}`;
 	        }
 	        sectionText = restoreComments(sectionText, true);
+	        setSectionText( sectionText );
 	        return summary;
 	    };
 
 	    var updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing) {
+	        let sectionText = getSectionText();
 	        var summary = originalEditSummary;
 	        sectionText = restoreComments(sectionText, true);
+	        setSectionText( sectionText );
 	        summary += translate( 'added' );
 	        //Creo un listing commentato dello stesso tipo di quello che aggiungerò.
 	        //Se nella sezione in cui andrò a scrivere troverò questo listing commentato, lo rimpiazzerò col nuovo.
@@ -3583,6 +3627,7 @@ function requireCore () {
 	                sectionText = `${sectionText.replace(commentedListing,'')}\n* ${listingWikiText}`;
 	            }
 	        }
+	        setSectionText( sectionText );
 	        return summary;
 	    };
 
@@ -3601,6 +3646,7 @@ function requireCore () {
 	     * appropriate edit summary string.
 	     */
 	    var updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
+	        let sectionText = getSectionText();
 	        // escaping '$&' since in replace regex it means "substitute the whole content"
 	        listingWikiText = listingWikiText.replace( /\$&/g, '&#36;&');
 	        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
@@ -3615,6 +3661,7 @@ function requireCore () {
 	        }
 	        sectionText = restoreComments(sectionText, true);
 	        sectionText = sectionText.replace( /&#36;/g, '$' ); // '&#36;'->'$' restore on global sectionText var
+	        setSectionText( sectionText );
 	        return editSummary;
 	    };
 
@@ -3649,7 +3696,7 @@ function requireCore () {
 	            action: "edit",
 	            title: mw.config.get( "wgPageName" ),
 	            section: sectionNumber,
-	            text: sectionText,
+	            text: getSectionText(),
 	            summary,
 	            captchaid: cid,
 	            captchaword: answer
@@ -3753,6 +3800,7 @@ function requireCore () {
 	     * Convert the listing map back to a wiki text string.
 	     */
 	    var listingToStr = function(listing) {
+	        const inlineListing = currentEdit.isInlineListing();
 	        var listingType = listing[LISTING_TYPE_PARAMETER];
 	        var listingParameters = getListingInfo(listingType);
 	        var saveStr = '{{';

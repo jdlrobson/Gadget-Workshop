@@ -1,11 +1,8 @@
 const dialog = require( './dialogs.js' );
 const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
-const sistersites = require( './components/SisterSites.js' );
 const ListingEditorDialog = require( './components/ListingEditorDialog.js' );
 const currentEdit = require( './currentEdit.js' );
 const { getSectionText, setSectionText } = currentEdit;
-const { onMounted, ref } = require( 'vue' );
-const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 const listingToStr = require( './listingToStr.js' );
 const saveForm = require( './saveForm.js' );
 const localData = require( './localData.js' );
@@ -21,102 +18,8 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     var api = new mw.Api();
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
 
-    /**
-     * Generate the form UI for the listing editor. If editing an existing
-     * listing, pre-populate the form input fields with the existing values.
-     */
-    // @todo: move to template
-    const onFormMounted = ( form, listingParameters, listingTemplateAsMap ) => {
-        // populate the empty form with existing values
-        for (var parameter in listingParameters) {
-            var parameterInfo = listingParameters[parameter];
-            if (listingTemplateAsMap[parameter]) {
-                $(`#${parameterInfo.id}`, form).val(listingTemplateAsMap[parameter]);
-            } else if (parameterInfo.hideDivIfEmpty) {
-                $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
-            }
-        }
-    };
-
     // @todo: Move to ListingEditorForm.js when onFormMounted removed.
-    const createForm = function(listingParameters, listingTemplateAsMap, {
-        NATL_CURRENCY
-    }) {
-        return {
-            name: 'ListingEditorForm',
-            props: {
-                customListingType: {
-                    type: String
-                },
-                wikipedia: {
-                    type: String
-                },
-                wikidata: {
-                    type: String
-                },
-                image: {
-                    type: String
-                },
-                mode: {
-                    type: String
-                },
-                telephoneCodes: {
-                    type: Array
-                },
-                nationalCurrencies: {
-                    type: Array,
-                    default: NATL_CURRENCY
-                },
-                showLastEditedField: {
-                    type: Boolean
-                },
-                currencies: {
-                    type: Array,
-                    default: [ '€', '$', '£', '¥', '₩' ]
-                },
-                characters: {
-                    type: Array
-                }
-            },
-            template: require( './html.js' ),
-            components: {
-                CdxTabs,
-                CdxTab,
-                TelephoneCharInsert: require( './components/TelephoneCharInsert.js' ),
-                CdxTextInput,
-                CdxTextArea,
-                SpecialCharactersString: require( './components/specialCharactersString.js' ),
-                sistersites
-            },
-            setup( { showLastEditedField, mode } ) {
-                const tabsData = ref( [
-                    {
-                        name: 'edit',
-                        label: 'edit'
-                    }, {
-                        name: 'preview',
-                        label: 'preview'
-                    }
-                ] );
-                const form = ref(null);
-                onMounted( () => {
-                    if ( form.value ) {
-                        // @todo: move into template
-                        onFormMounted( form.value, listingParameters, listingTemplateAsMap );
-                        for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
-                            Callbacks.CREATE_FORM_CALLBACKS[i]( form.value, mode );
-                        }
-                    }
-                } );
-
-                return {
-                    tabsData,
-                    form,
-                    showLastEditedField
-                };
-            }
-        };
-    };
+    const createForm = require( './createForm.js' );
 
     var isInline = require( './isInline.js' );
 

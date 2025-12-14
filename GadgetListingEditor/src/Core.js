@@ -3,6 +3,8 @@ const dialog = require( './dialogs.js' );
 const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
 const listingEditorSync = require( './listingEditorSync.js' );
 const renderSisterSiteApp = require( './sisterSiteApp/render.js' );
+const currentEdit = require( './currentEdit.js' );
+const { getSectionText, setSectionText } = currentEdit;
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
@@ -22,7 +24,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
     var SAVE_FORM_SELECTOR = '#progress-dialog';
     var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
-    var sectionText, inlineListing;
     var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
     var NATL_CURRENCY = [];
     var CC_SELECTOR = '.input-cc'; // Country calling code
@@ -110,8 +111,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * template invocation, 1 returns the second, etc.
      */
     var getListingWikitextBraces = function(listingIndex) {
-
-        sectionText = sectionText.replace(/[^\S\n]+/g,' ');
+        let sectionText = getSectionText();
+        sectionText = setSectionText(
+            sectionText.replace(/[^\S\n]+/g,' ')
+        );
         // find the listing wikitext that matches the same index as the listing index
         var listingRegex = getListingTypesRegex();
         // look through all matches for "{{listing|see|do...}}" within the section
@@ -167,7 +170,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         var sectionHeading = findSectionHeading(clicked);
         var sectionIndex = findSectionIndex(sectionHeading);
         var listingIndex = (mode === MODE_ADD) ? -1 : findListingIndex(sectionHeading, clicked);
-        inlineListing = (mode === MODE_EDIT && isInline(clicked));
+        currentEdit.setInlineListing( mode === MODE_EDIT && isInline(clicked) );
 
         NATL_CURRENCY = [];
         var dataSel = $( '.countryData' ).attr('data-currency');
@@ -194,7 +197,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             rvsection: sectionIndex
         }).then(function( data ) {
             try {
-                sectionText = data.query.pages[ 0 ].revisions[ 0 ].content;
+                setSectionText(
+                    data.query.pages[ 0 ].revisions[ 0 ].content
+                );
             } catch ( e ) {
                 alert( 'Error occurred loading content for this section.' );
                 return;
@@ -212,7 +217,11 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * when editing).
      */
     var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType) {
-        sectionText = stripComments(sectionText);
+         setSectionText(
+            stripComments(
+                getSectionText()
+            )
+        );
         mw.loader.using( ['jquery.ui'], function () {
             var listingTemplateAsMap, listingTemplateWikiSyntax;
             if (mode == MODE_ADD) {
@@ -427,6 +436,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     };
 
     var getSectionName = function() {
+        const sectionText = getSectionText();
         var HEADING_REGEX = /^=+\s*([^=]+)\s*=+\s*\n/;
         var result = HEADING_REGEX.exec(sectionText);
         return (result !== null) ? result[1].trim() : "";
@@ -438,6 +448,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * appropriate edit summary string.
      */
     var updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText) {
+        let sectionText = getSectionText();
         var summary = originalEditSummary;
         summary += translate( 'added' );
         // add the new listing to the end of the section. if there are
@@ -453,12 +464,15 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             sectionText += `\n* ${listingWikiText}`;
         }
         sectionText = restoreComments(sectionText, true);
+        setSectionText( sectionText );
         return summary;
     };
 
     var updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing) {
+        let sectionText = getSectionText();
         var summary = originalEditSummary;
         sectionText = restoreComments(sectionText, true);
+        setSectionText( sectionText );
         summary += translate( 'added' );
         //Creo un listing commentato dello stesso tipo di quello che aggiungerò.
         //Se nella sezione in cui andrò a scrivere troverò questo listing commentato, lo rimpiazzerò col nuovo.
@@ -525,6 +539,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 sectionText = `${sectionText.replace(commentedListing,'')}\n* ${listingWikiText}`;
             }
         }
+        setSectionText( sectionText );
         return summary;
     };
 
@@ -543,6 +558,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * appropriate edit summary string.
      */
     var updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
+        let sectionText = getSectionText();
         // escaping '$&' since in replace regex it means "substitute the whole content"
         listingWikiText = listingWikiText.replace( /\$&/g, '&#36;&');
         if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
@@ -557,6 +573,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         }
         sectionText = restoreComments(sectionText, true);
         sectionText = sectionText.replace( /&#36;/g, '$' ); // '&#36;'->'$' restore on global sectionText var
+        setSectionText( sectionText );
         return editSummary;
     };
 
@@ -591,7 +608,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             action: "edit",
             title: mw.config.get( "wgPageName" ),
             section: sectionNumber,
-            text: sectionText,
+            text: getSectionText(),
             summary,
             captchaid: cid,
             captchaword: answer
@@ -695,6 +712,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * Convert the listing map back to a wiki text string.
      */
     var listingToStr = function(listing) {
+        const inlineListing = currentEdit.isInlineListing();
         var listingType = listing[LISTING_TYPE_PARAMETER];
         var listingParameters = getListingInfo(listingType);
         var saveStr = '{{';

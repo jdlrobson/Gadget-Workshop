@@ -1,5 +1,6 @@
 const contentTransform = require( './contentTransform' );
 const sectionToTemplateType = require( './sectionToTemplateType' );
+const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
 
 $(function() {
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' );
@@ -16,7 +17,6 @@ $(function() {
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
 	var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
-	var MODE_EDIT = 'edit';
 
 	// List of namespaces where the editor is allowed
 	var ALLOWED_NAMESPACE = [
@@ -222,7 +222,7 @@ $(function() {
 				ev.stopPropagation();
 				const $this = $(this);
 				loadMain().then( function ( core ) {
-					core.initListingEditorDialog(core.MODE_ADD, $this);
+					core.initListingEditorDialog(MODE_ADD, $this);
 				} );
 			}, true );
 		};

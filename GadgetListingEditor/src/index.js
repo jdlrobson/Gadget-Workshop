@@ -4,6 +4,7 @@ const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
 const { loadCallbacks } = require( './Callbacks.js' );
+const { MODE_ADD } = require( './mode.js' );
 const { loadConfig } = require( './Config.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
@@ -426,7 +427,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		var updateLastEditDate = function(listing, mode) {
 			var LISTING_LAST_EDIT_PARAMETER = 'lastedit';
 			var EDITOR_LAST_EDIT_SELECTOR = '#input-last-edit';
-			if (mode == Core.MODE_ADD || $(EDITOR_LAST_EDIT_SELECTOR).is(':checked')) {
+			if (mode == MODE_ADD || $(EDITOR_LAST_EDIT_SELECTOR).is(':checked')) {
 				listing[LISTING_LAST_EDIT_PARAMETER] = currentLastEditDate();
 			}
 		};

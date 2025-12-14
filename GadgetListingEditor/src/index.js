@@ -1,8 +1,8 @@
 const TRANSLATIONS_ALL = require( './translations.js' );
-const makeTranslateFunction = require( './makeTranslateFunction.js' );
 const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
+const translate = translateModule.translate;
 const { loadCallbacks } = require( './Callbacks.js' );
 const { MODE_ADD } = require( './mode.js' );
 const { loadConfig } = require( './Config.js' );
@@ -47,7 +47,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		} );
 	} );
 
-	const translate = makeTranslateFunction( TRANSLATIONS );
 	translateModule.init( TRANSLATIONS );
 
 	const Config = function() {
@@ -482,15 +481,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 	loadCallbacks( Callbacks );
 	loadConfig( Config, PROJECT_CONFIG );
 
-	/* ***********************************************************************
-	 * Core contains code that should be shared across different
-	 * Wikivoyage languages. This code uses the custom configurations in the
-	 * Config and Callback modules to initialize
-	 * the listing editor and process add and update requests for listings.
-	 * ***********************************************************************/
-	var Core = require( './Core.js' )( Callbacks, Config, PROJECT_CONFIG, translate );
-
-	return Core;
+	return {
+		initListingEditorDialog: require( './initListingEditorDialog.js' )
+	}
 } );
 
 //</nowiki>

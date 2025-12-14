@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.15.0
+ * Listing Editor v3.16.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.15.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.16.0'
 
 'use strict';
 
@@ -2469,6 +2469,135 @@ function requireCurrentEdit () {
 	return currentEdit;
 }
 
+var isCustomListingType_1;
+var hasRequiredIsCustomListingType;
+
+function requireIsCustomListingType () {
+	if (hasRequiredIsCustomListingType) return isCustomListingType_1;
+	hasRequiredIsCustomListingType = 1;
+	const { getConfig } = Config;
+
+	/**
+	 * Determine if the specified listing type is a custom type - for example "go"
+	 * instead of "see", "do", "listing", etc.
+	 */
+	const isCustomListingType = function(listingType) {
+	    const { LISTING_TEMPLATES } = getConfig();
+	    return !(listingType in LISTING_TEMPLATES);
+	};
+
+	isCustomListingType_1 = isCustomListingType;
+	return isCustomListingType_1;
+}
+
+var getListingInfo_1;
+var hasRequiredGetListingInfo;
+
+function requireGetListingInfo () {
+	if (hasRequiredGetListingInfo) return getListingInfo_1;
+	hasRequiredGetListingInfo = 1;
+	const isCustomListingType = requireIsCustomListingType();
+	const { getConfig } = Config;
+
+	/**
+	 * Given a listing type, return the appropriate entry from the
+	 * LISTING_TEMPLATES array. This method returns the entry for the default
+	 * listing template type if not enty exists for the specified type.
+	 */
+	const getListingInfo = function(type) {
+	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
+	    return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
+	};
+
+	getListingInfo_1 = getListingInfo;
+	return getListingInfo_1;
+}
+
+var listingToStr_1;
+var hasRequiredListingToStr;
+
+function requireListingToStr () {
+	if (hasRequiredListingToStr) return listingToStr_1;
+	hasRequiredListingToStr = 1;
+	const isCustomListingType = requireIsCustomListingType();
+	const currentEdit = requireCurrentEdit();
+	const getListingInfo = requireGetListingInfo();
+	const { getConfig } = Config;
+
+	/**
+	 * Trim whitespace at the end of a string.
+	 */
+	const rtrim = function(str) {
+	    return str.replace(/\s+$/, '');
+	};
+
+	/**
+	 * Convert the listing map back to a wiki text string.
+	 */
+	const listingToStr = function(listing) {
+	    const { LISTING_TYPE_PARAMETER,
+	        ALLOW_UNRECOGNIZED_PARAMETERS,
+	        LISTING_CONTENT_PARAMETER,
+	        DEFAULT_LISTING_TEMPLATE } = getConfig();
+	    const inlineListing = currentEdit.isInlineListing();
+	    var listingType = listing[LISTING_TYPE_PARAMETER];
+	    var listingParameters = getListingInfo(listingType);
+	    var saveStr = '{{';
+	    if( isCustomListingType(listingType) ) { // type parameter specified explicitly only on custom type
+	        saveStr += DEFAULT_LISTING_TEMPLATE;
+	        saveStr += ` | ${LISTING_TYPE_PARAMETER}=${listingType}`;
+	    } else {
+	        saveStr += listingType;
+	    }
+	    if (!inlineListing && listingParameters[LISTING_TYPE_PARAMETER].newline) {
+	        saveStr += '\n';
+	    }
+	    for (var parameter in listingParameters) {
+	        var l = listingParameters[parameter];
+	        if (parameter === LISTING_TYPE_PARAMETER) {
+	            // "type" parameter was handled previously
+	            continue;
+	        }
+	        if (parameter === LISTING_CONTENT_PARAMETER) {
+	            // processed last
+	            continue;
+	        }
+	        if (listing[parameter] !== '' || (!l.skipIfEmpty && !inlineListing)) {
+	            saveStr += `| ${parameter}=${listing[parameter]}`;
+	        }
+	        if (!saveStr.match(/\n$/)) {
+	            if (!inlineListing && l.newline) {
+	                saveStr = `${rtrim(saveStr)}\n`;
+	            } else if (!saveStr.match(/ $/)) {
+	                saveStr += ' ';
+	            }
+	        }
+	    }
+	    if (ALLOW_UNRECOGNIZED_PARAMETERS) {
+	        // append any unexpected values
+	        for (var key in listing) {
+	            if (listingParameters[key]) {
+	                // this is a known field
+	                continue;
+	            }
+	            if (listing[key] === '') {
+	                // skip unrecognized fields without values
+	                continue;
+	            }
+	            saveStr += `| ${key}=${listing[key]}`;
+	            saveStr += (inlineListing) ? ' ' : '\n';
+	        }
+	    }
+	    saveStr += `| ${LISTING_CONTENT_PARAMETER}=${listing[LISTING_CONTENT_PARAMETER]}`;
+	    saveStr += (inlineListing || !listingParameters[LISTING_CONTENT_PARAMETER].newline) ? ' ' : '\n';
+	    saveStr += '}}';
+	    return saveStr;
+	};
+
+	listingToStr_1 = listingToStr;
+	return listingToStr_1;
+}
+
 var mode;
 var hasRequiredMode;
 
@@ -2605,20 +2734,6 @@ function requireFindListingTypeForSection () {
 	return findListingTypeForSection;
 }
 
-var replaceSpecial_1;
-var hasRequiredReplaceSpecial;
-
-function requireReplaceSpecial () {
-	if (hasRequiredReplaceSpecial) return replaceSpecial_1;
-	hasRequiredReplaceSpecial = 1;
-	const replaceSpecial = function(str) {
-	    return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
-	};
-
-	replaceSpecial_1 = replaceSpecial;
-	return replaceSpecial_1;
-}
-
 var getListingTypesRegex_1;
 var hasRequiredGetListingTypesRegex;
 
@@ -2644,6 +2759,80 @@ function requireGetListingTypesRegex () {
 
 	getListingTypesRegex_1 = getListingTypesRegex;
 	return getListingTypesRegex_1;
+}
+
+var getListingWikitextBraces_1;
+var hasRequiredGetListingWikitextBraces;
+
+function requireGetListingWikitextBraces () {
+	if (hasRequiredGetListingWikitextBraces) return getListingWikitextBraces_1;
+	hasRequiredGetListingWikitextBraces = 1;
+	const getListingTypesRegex = requireGetListingTypesRegex();
+	const { getSectionText, setSectionText } = requireCurrentEdit();
+	/**
+	 * Given a listing index, return the full wikitext for that listing
+	 * ("{{listing|key=value|...}}"). An index of 0 returns the first listing
+	 * template invocation, 1 returns the second, etc.
+	 */
+	const getListingWikitextBraces = function(listingIndex) {
+	    let sectionText = getSectionText();
+	    sectionText = setSectionText(
+	        sectionText.replace(/[^\S\n]+/g,' ')
+	    );
+	    // find the listing wikitext that matches the same index as the listing index
+	    var listingRegex = getListingTypesRegex();
+	    // look through all matches for "{{listing|see|do...}}" within the section
+	    // wikitext, returning the nth match, where 'n' is equal to the index of the
+	    // edit link that was clicked
+	    var listingSyntax, regexResult, listingMatchIndex;
+
+	    for (var i = 0; i <= listingIndex; i++) {
+	        regexResult = listingRegex.exec(sectionText);
+	        listingMatchIndex = regexResult.index;
+	        listingSyntax = regexResult[1];
+	    }
+	    // listings may contain nested templates, so step through all section
+	    // text after the matched text to find MATCHING closing braces
+	    // the first two braces are matched by the listing regex and already
+	    // captured in the listingSyntax variable
+	    var curlyBraceCount = 2;
+	    var endPos = sectionText.length;
+	    var startPos = listingMatchIndex + listingSyntax.length;
+	    var matchFound = false;
+	    for (var j = startPos; j < endPos; j++) {
+	        if (sectionText[j] === '{') {
+	            ++curlyBraceCount;
+	        } else if (sectionText[j] === '}') {
+	            --curlyBraceCount;
+	        }
+	        if (curlyBraceCount === 0 && (j + 1) < endPos) {
+	            listingSyntax = sectionText.substring(listingMatchIndex, j + 1);
+	            matchFound = true;
+	            break;
+	        }
+	    }
+	    if (!matchFound) {
+	        listingSyntax = sectionText.substring(listingMatchIndex);
+	    }
+	    return listingSyntax.trim();
+	};
+
+	getListingWikitextBraces_1 = getListingWikitextBraces;
+	return getListingWikitextBraces_1;
+}
+
+var replaceSpecial_1;
+var hasRequiredReplaceSpecial;
+
+function requireReplaceSpecial () {
+	if (hasRequiredReplaceSpecial) return replaceSpecial_1;
+	hasRequiredReplaceSpecial = 1;
+	const replaceSpecial = function(str) {
+	    return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
+	};
+
+	replaceSpecial_1 = replaceSpecial;
+	return replaceSpecial_1;
 }
 
 var findPatternMatch_1;
@@ -2885,50 +3074,6 @@ function requireStripComments () {
 	return stripComments_1;
 }
 
-var isCustomListingType_1;
-var hasRequiredIsCustomListingType;
-
-function requireIsCustomListingType () {
-	if (hasRequiredIsCustomListingType) return isCustomListingType_1;
-	hasRequiredIsCustomListingType = 1;
-	const { getConfig } = Config;
-
-	/**
-	 * Determine if the specified listing type is a custom type - for example "go"
-	 * instead of "see", "do", "listing", etc.
-	 */
-	const isCustomListingType = function(listingType) {
-	    const { LISTING_TEMPLATES } = getConfig();
-	    return !(listingType in LISTING_TEMPLATES);
-	};
-
-	isCustomListingType_1 = isCustomListingType;
-	return isCustomListingType_1;
-}
-
-var getListingInfo_1;
-var hasRequiredGetListingInfo;
-
-function requireGetListingInfo () {
-	if (hasRequiredGetListingInfo) return getListingInfo_1;
-	hasRequiredGetListingInfo = 1;
-	const isCustomListingType = requireIsCustomListingType();
-	const { getConfig } = Config;
-
-	/**
-	 * Given a listing type, return the appropriate entry from the
-	 * LISTING_TEMPLATES array. This method returns the entry for the default
-	 * listing template type if not enty exists for the specified type.
-	 */
-	const getListingInfo = function(type) {
-	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
-	    return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
-	};
-
-	getListingInfo_1 = getListingInfo;
-	return getListingInfo_1;
-}
-
 var validateForm_1;
 var hasRequiredValidateForm;
 
@@ -3028,6 +3173,211 @@ function requireValidateForm () {
 	return validateForm_1;
 }
 
+var getSectionName_1;
+var hasRequiredGetSectionName;
+
+function requireGetSectionName () {
+	if (hasRequiredGetSectionName) return getSectionName_1;
+	hasRequiredGetSectionName = 1;
+	const { getSectionText } = requireCurrentEdit();
+
+	const getSectionName = function() {
+	    const sectionText = getSectionText();
+	    var HEADING_REGEX = /^=+\s*([^=]+)\s*=+\s*\n/;
+	    var result = HEADING_REGEX.exec(sectionText);
+	    return (result !== null) ? result[1].trim() : "";
+	};
+
+	getSectionName_1 = getSectionName;
+	return getSectionName_1;
+}
+
+var editSummarySection_1;
+var hasRequiredEditSummarySection;
+
+function requireEditSummarySection () {
+	if (hasRequiredEditSummarySection) return editSummarySection_1;
+	hasRequiredEditSummarySection = 1;
+	const getSectionName = requireGetSectionName();
+
+	/**
+	 * Begin building the edit summary by trying to find the section name.
+	 */
+	const editSummarySection = function() {
+	    var sectionName = getSectionName();
+	    return (sectionName.length) ? `/* ${sectionName} */ ` : "";
+	};
+
+	editSummarySection_1 = editSummarySection;
+	return editSummarySection_1;
+}
+
+var updateSectionTextWithAddedListing_1;
+var hasRequiredUpdateSectionTextWithAddedListing;
+
+function requireUpdateSectionTextWithAddedListing () {
+	if (hasRequiredUpdateSectionTextWithAddedListing) return updateSectionTextWithAddedListing_1;
+	hasRequiredUpdateSectionTextWithAddedListing = 1;
+	const { translate } = translate_1;
+	const restoreComments = requireRestoreComments();
+	const DB_NAME = mw.config.get( 'wgDBname' );
+	const { getSectionText, setSectionText } = requireCurrentEdit();
+
+	/**
+	 * After the listing has been converted to a string, add additional
+	 * processing required for adds (as opposed to edits), returning an
+	 * appropriate edit summary string.
+	 */
+	const updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText) {
+	    let sectionText = getSectionText();
+	    var summary = originalEditSummary;
+	    summary += translate( 'added' );
+	    // add the new listing to the end of the section. if there are
+	    // sub-sections, add it prior to the start of the sub-sections.
+	    var index = sectionText.indexOf('===');
+	    if (index === 0) {
+	        index = sectionText.indexOf('====');
+	    }
+	    if (index > 0) {
+	        sectionText = `${sectionText.substr(0, index)}* ${listingWikiText
+	                    }\n${sectionText.substr(index)}`;
+	    } else {
+	        sectionText += `\n* ${listingWikiText}`;
+	    }
+	    sectionText = restoreComments(sectionText, true);
+	    setSectionText( sectionText );
+	    return summary;
+	};
+
+	const updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing, LISTING_TYPE_PARAMETER) {
+	    let sectionText = getSectionText();
+	    var summary = originalEditSummary;
+	    sectionText = restoreComments(sectionText, true);
+	    setSectionText( sectionText );
+	    summary += translate( 'added' );
+	    //Creo un listing commentato dello stesso tipo di quello che aggiungerò.
+	    //Se nella sezione in cui andrò a scrivere troverò questo listing commentato, lo rimpiazzerò col nuovo.
+	    var commentedListing = `<!--* {{${listing[LISTING_TYPE_PARAMETER]}\n| nome= | alt= | sito= | email=\n| indirizzo= | lat= | long= | indicazioni=\n| tel= | numero verde= | fax=\n|`;
+	    if (listing[LISTING_TYPE_PARAMETER] !== 'sleep') {
+	        commentedListing += " orari= | prezzo=\n";
+	    } else {
+	        commentedListing += " checkin= | checkout= | prezzo=\n";
+	    }
+	    commentedListing += "| descrizione=\n}}-->\n";
+	    var index = 0;
+	    var index1 = sectionText.indexOf('===');
+	    var index2 = sectionText.indexOf('<!--===');
+	    var index3 = sectionText.indexOf('====');
+	    var index4 = sectionText.indexOf(`=== ${translate( 'budget' )} ===`);
+	    var index5 = sectionText.indexOf(`<!--=== ${translate( 'midrange' )} ===-->`);
+	    var index6 = sectionText.indexOf(`=== ${translate( 'splurge' )} ===`);
+	    var index7 = sectionText.indexOf(`<!--=== ${translate( 'splurge' )} ===`);
+	    var splurgeOffset = 0;
+	    if (index7 > 0) {
+	        splurgeOffset = 4;
+	    }
+	    if ( (index1 === 0) && (index2 === 0) ) {
+	        index = index3;
+	    } else if (index1 === 0) {
+	        index = index2;
+	    } else if (index2 === 0) {
+	        index = index1;
+	    } else if (index1 < index2) {
+	        index = index1;
+	    } else if (index6 > 0) {
+	        index = index6;
+	    } else {
+	        index = index2;
+	    }
+	    if (index > 0) {
+	        var strApp = sectionText.substr(0, index).replace(/(\r\n|\n|\r)/gm," ").trim();
+	        if (strApp.substring(strApp.length-5) == '{{-}}') {
+	            var indexApp = sectionText.lastIndexOf('{{-}}');
+	            sectionText = `${sectionText.substr(0, indexApp).replace(commentedListing,'')}* ${listingWikiText}\n{{-}}${sectionText.substr(indexApp+5)}`;
+	        } else {
+	            if( (index4 > 0) && (index6 > 0) ) {
+	                //Mi assicuro di essere in Dove mangiare/dormire (le uniche divise per fascia di prezzo)
+	                if ( index5 > 0) {
+	                    //Il primo elemento viene aggiunto nella sottosezione "Prezzi medi" (rimuovendone il commento)
+	                    sectionText = `${sectionText.substr(0, index6-splurgeOffset).replace(`<!--=== ${translate( 'midrange' )} ===-->\n${commentedListing}`,`=== ${translate( 'midrange' )} ===\n`)}* ${listingWikiText}\n\n${sectionText.substr(index6-splurgeOffset)}`;
+	                } else {
+	                    //I successivi elementi vengono accodati nella sottosezione "Prezzi medi" (già priva di commento)
+	                    sectionText = `${sectionText.substr(0, index6-splurgeOffset).replace(/\n+$/,'\n')}* ${listingWikiText}\n\n${sectionText.substr(index6-splurgeOffset)}`;
+	                }
+	            } else {
+	                var addbr = '';
+	                if( sectionText.substr(index-2, 1).charCodeAt(0) != 10 )
+	                    addbr = '\n';
+	                sectionText = `${sectionText.substr(0, index-1).replace(commentedListing,'') + addbr}* ${listingWikiText}\n${sectionText.substr(index-1)}`;
+	            }
+	        }
+	    } else {
+	        var strApp2 = sectionText.replace(/(\r\n|\n|\r)/gm," ").trim();
+	        if (strApp2.substring(strApp2.length-5) == '{{-}}') {
+	            var indexApp2 = sectionText.lastIndexOf('{{-}}');
+	            sectionText = `${sectionText.substr(0, indexApp2).replace(commentedListing,'')}* ${listingWikiText}\n{{-}}`;
+	        } else {
+	            sectionText = `${sectionText.replace(commentedListing,'')}\n* ${listingWikiText}`;
+	        }
+	    }
+	    setSectionText( sectionText );
+	    return summary;
+	};
+
+	const updateSectionTextWithAddedListing = function (originalEditSummary, listingWikiText, listing, LISTING_TYPE_PARAMETER) {
+	    switch ( DB_NAME ) {
+	        case 'itwikivoyage':
+	            return updateSectionTextWithAddedListingIt(originalEditSummary, listingWikiText, listing, LISTING_TYPE_PARAMETER);
+	        default:
+	            return updateSectionTextWithAddedListingDefault(originalEditSummary, listingWikiText);
+	    }
+	};
+
+	updateSectionTextWithAddedListing_1 = updateSectionTextWithAddedListing;
+	return updateSectionTextWithAddedListing_1;
+}
+
+var updateSectionTextWithEditedListing_1;
+var hasRequiredUpdateSectionTextWithEditedListing;
+
+function requireUpdateSectionTextWithEditedListing () {
+	if (hasRequiredUpdateSectionTextWithEditedListing) return updateSectionTextWithEditedListing_1;
+	hasRequiredUpdateSectionTextWithEditedListing = 1;
+	const { translate } = translate_1;
+	const restoreComments = requireRestoreComments();
+	const replaceSpecial = requireReplaceSpecial();
+	const { getSectionText, setSectionText } = requireCurrentEdit();
+	const { EDITOR_CLOSED_SELECTOR } = requireSelectors();
+
+	/**
+	 * After the listing has been converted to a string, add additional
+	 * processing required for edits (as opposed to adds), returning an
+	 * appropriate edit summary string.
+	 */
+	const updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
+	    let sectionText = getSectionText();
+	    // escaping '$&' since in replace regex it means "substitute the whole content"
+	    listingWikiText = listingWikiText.replace( /\$&/g, '&#36;&');
+	    if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
+	        listingWikiText = '';
+	        editSummary += translate( 'removed' );
+	        // TODO: RegEx change to delete the complete row when listing is preceeded by templates showing just icons
+	        var listRegex = new RegExp(`(\\n+[\\:\\*\\#]*)?\\s*${replaceSpecial(listingTemplateWikiSyntax)}`);
+	        sectionText = sectionText.replace(listRegex, listingWikiText);
+	    } else {
+	        editSummary += translate( 'updated' );
+	        sectionText = sectionText.replace(listingTemplateWikiSyntax, listingWikiText);
+	    }
+	    sectionText = restoreComments(sectionText, true);
+	    sectionText = sectionText.replace( /&#36;/g, '$' ); // '&#36;'->'$' restore on global sectionText var
+	    setSectionText( sectionText );
+	    return editSummary;
+	};
+
+	updateSectionTextWithEditedListing_1 = updateSectionTextWithEditedListing;
+	return updateSectionTextWithEditedListing_1;
+}
+
 var savePayload_1;
 var hasRequiredSavePayload;
 
@@ -3086,24 +3436,22 @@ var hasRequiredCore;
 function requireCore () {
 	if (hasRequiredCore) return Core_1;
 	hasRequiredCore = 1;
-	var DB_NAME = mw.config.get( 'wgDBname' );
 	const dialog = requireDialogs();
 	const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
 	const listingEditorSync = requireListingEditorSync();
 	const renderSisterSiteApp = requireRender();
 	const currentEdit = requireCurrentEdit();
 	const { getSectionText, setSectionText } = currentEdit;
+	const listingToStr = requireListingToStr();
 
 	var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 	    const {
-	        ALLOW_UNRECOGNIZED_PARAMETERS,
 	        EDITOR_FORM_HTML,
 	        LISTING_TYPE_PARAMETER,
 	        SECTION_TO_TEMPLATE_TYPE,
 	        DEFAULT_LISTING_TEMPLATE,
 	        EDITOR_SUMMARY_SELECTOR,
 	        EDITOR_MINOR_EDIT_SELECTOR,
-	        LISTING_CONTENT_PARAMETER,
 	        EDITOR_FORM_SELECTOR,
 	        EDITOR_CLOSED_SELECTOR
 	    } = Config;
@@ -3189,57 +3537,12 @@ function requireCore () {
 	        return _findListingTypeForSection( entry, SECTION_TO_TEMPLATE_TYPE, DEFAULT_LISTING_TEMPLATE );
 	    };
 
-	    var replaceSpecial = requireReplaceSpecial();
-
-	    var getListingTypesRegex = requireGetListingTypesRegex();
-
 	    /**
 	     * Given a listing index, return the full wikitext for that listing
 	     * ("{{listing|key=value|...}}"). An index of 0 returns the first listing
 	     * template invocation, 1 returns the second, etc.
 	     */
-	    var getListingWikitextBraces = function(listingIndex) {
-	        let sectionText = getSectionText();
-	        sectionText = setSectionText(
-	            sectionText.replace(/[^\S\n]+/g,' ')
-	        );
-	        // find the listing wikitext that matches the same index as the listing index
-	        var listingRegex = getListingTypesRegex();
-	        // look through all matches for "{{listing|see|do...}}" within the section
-	        // wikitext, returning the nth match, where 'n' is equal to the index of the
-	        // edit link that was clicked
-	        var listingSyntax, regexResult, listingMatchIndex;
-
-	        for (var i = 0; i <= listingIndex; i++) {
-	            regexResult = listingRegex.exec(sectionText);
-	            listingMatchIndex = regexResult.index;
-	            listingSyntax = regexResult[1];
-	        }
-	        // listings may contain nested templates, so step through all section
-	        // text after the matched text to find MATCHING closing braces
-	        // the first two braces are matched by the listing regex and already
-	        // captured in the listingSyntax variable
-	        var curlyBraceCount = 2;
-	        var endPos = sectionText.length;
-	        var startPos = listingMatchIndex + listingSyntax.length;
-	        var matchFound = false;
-	        for (var j = startPos; j < endPos; j++) {
-	            if (sectionText[j] === '{') {
-	                ++curlyBraceCount;
-	            } else if (sectionText[j] === '}') {
-	                --curlyBraceCount;
-	            }
-	            if (curlyBraceCount === 0 && (j + 1) < endPos) {
-	                listingSyntax = sectionText.substring(listingMatchIndex, j + 1);
-	                matchFound = true;
-	                break;
-	            }
-	        }
-	        if (!matchFound) {
-	            listingSyntax = sectionText.substring(listingMatchIndex);
-	        }
-	        return listingSyntax.trim();
-	    };
+	    var getListingWikitextBraces = requireGetListingWikitextBraces();
 
 	    var wikiTextToListing = requireWikiTextToListing();
 
@@ -3441,12 +3744,6 @@ function requireCore () {
 	    var stripComments = requireStripComments();
 
 	    /**
-	     * Search the text provided, and if it contains any text that was
-	     * previously stripped out for replacement purposes, restore it.
-	     */
-	    var restoreComments = requireRestoreComments();
-
-	    /**
 	     * Given a listing type, return the appropriate entry from the
 	     * LISTING_TEMPLATES array. This method returns the entry for the default
 	     * listing template type if not enty exists for the specified type.
@@ -3518,152 +3815,10 @@ function requireCore () {
 	    /**
 	     * Begin building the edit summary by trying to find the section name.
 	     */
-	    var editSummarySection = function() {
-	        var sectionName = getSectionName();
-	        return (sectionName.length) ? `/* ${sectionName} */ ` : "";
-	    };
-
-	    var getSectionName = function() {
-	        const sectionText = getSectionText();
-	        var HEADING_REGEX = /^=+\s*([^=]+)\s*=+\s*\n/;
-	        var result = HEADING_REGEX.exec(sectionText);
-	        return (result !== null) ? result[1].trim() : "";
-	    };
-
-	    /**
-	     * After the listing has been converted to a string, add additional
-	     * processing required for adds (as opposed to edits), returning an
-	     * appropriate edit summary string.
-	     */
-	    var updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText) {
-	        let sectionText = getSectionText();
-	        var summary = originalEditSummary;
-	        summary += translate( 'added' );
-	        // add the new listing to the end of the section. if there are
-	        // sub-sections, add it prior to the start of the sub-sections.
-	        var index = sectionText.indexOf('===');
-	        if (index === 0) {
-	            index = sectionText.indexOf('====');
-	        }
-	        if (index > 0) {
-	            sectionText = `${sectionText.substr(0, index)}* ${listingWikiText
-	                     }\n${sectionText.substr(index)}`;
-	        } else {
-	            sectionText += `\n* ${listingWikiText}`;
-	        }
-	        sectionText = restoreComments(sectionText, true);
-	        setSectionText( sectionText );
-	        return summary;
-	    };
-
-	    var updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing) {
-	        let sectionText = getSectionText();
-	        var summary = originalEditSummary;
-	        sectionText = restoreComments(sectionText, true);
-	        setSectionText( sectionText );
-	        summary += translate( 'added' );
-	        //Creo un listing commentato dello stesso tipo di quello che aggiungerò.
-	        //Se nella sezione in cui andrò a scrivere troverò questo listing commentato, lo rimpiazzerò col nuovo.
-	        var commentedListing = `<!--* {{${listing[LISTING_TYPE_PARAMETER]}\n| nome= | alt= | sito= | email=\n| indirizzo= | lat= | long= | indicazioni=\n| tel= | numero verde= | fax=\n|`;
-	        if (listing[LISTING_TYPE_PARAMETER] !== 'sleep') {
-	            commentedListing += " orari= | prezzo=\n";
-	        } else {
-	            commentedListing += " checkin= | checkout= | prezzo=\n";
-	        }
-	        commentedListing += "| descrizione=\n}}-->\n";
-	        var index = 0;
-	        var index1 = sectionText.indexOf('===');
-	        var index2 = sectionText.indexOf('<!--===');
-	        var index3 = sectionText.indexOf('====');
-	        var index4 = sectionText.indexOf(`=== ${translate( 'budget' )} ===`);
-	        var index5 = sectionText.indexOf(`<!--=== ${translate( 'midrange' )} ===-->`);
-	        var index6 = sectionText.indexOf(`=== ${translate( 'splurge' )} ===`);
-	        var index7 = sectionText.indexOf(`<!--=== ${translate( 'splurge' )} ===`);
-	        var splurgeOffset = 0;
-	        if (index7 > 0) {
-	            splurgeOffset = 4;
-	        }
-	        if ( (index1 === 0) && (index2 === 0) ) {
-	            index = index3;
-	        } else if (index1 === 0) {
-	            index = index2;
-	        } else if (index2 === 0) {
-	            index = index1;
-	        } else if (index1 < index2) {
-	            index = index1;
-	        } else if (index6 > 0) {
-	            index = index6;
-	        } else {
-	            index = index2;
-	        }
-	        if (index > 0) {
-	            var strApp = sectionText.substr(0, index).replace(/(\r\n|\n|\r)/gm," ").trim();
-	            if (strApp.substring(strApp.length-5) == '{{-}}') {
-	                var indexApp = sectionText.lastIndexOf('{{-}}');
-	                sectionText = `${sectionText.substr(0, indexApp).replace(commentedListing,'')}* ${listingWikiText}\n{{-}}${sectionText.substr(indexApp+5)}`;
-	            } else {
-	                if( (index4 > 0) && (index6 > 0) ) {
-	                    //Mi assicuro di essere in Dove mangiare/dormire (le uniche divise per fascia di prezzo)
-	                    if ( index5 > 0) {
-	                        //Il primo elemento viene aggiunto nella sottosezione "Prezzi medi" (rimuovendone il commento)
-	                        sectionText = `${sectionText.substr(0, index6-splurgeOffset).replace(`<!--=== ${translate( 'midrange' )} ===-->\n${commentedListing}`,`=== ${translate( 'midrange' )} ===\n`)}* ${listingWikiText}\n\n${sectionText.substr(index6-splurgeOffset)}`;
-	                    } else {
-	                        //I successivi elementi vengono accodati nella sottosezione "Prezzi medi" (già priva di commento)
-	                        sectionText = `${sectionText.substr(0, index6-splurgeOffset).replace(/\n+$/,'\n')}* ${listingWikiText}\n\n${sectionText.substr(index6-splurgeOffset)}`;
-	                    }
-	                } else {
-	                    var addbr = '';
-	                    if( sectionText.substr(index-2, 1).charCodeAt(0) != 10 )
-	                        addbr = '\n';
-	                    sectionText = `${sectionText.substr(0, index-1).replace(commentedListing,'') + addbr}* ${listingWikiText}\n${sectionText.substr(index-1)}`;
-	                }
-	            }
-	        } else {
-	            var strApp2 = sectionText.replace(/(\r\n|\n|\r)/gm," ").trim();
-	            if (strApp2.substring(strApp2.length-5) == '{{-}}') {
-	                var indexApp2 = sectionText.lastIndexOf('{{-}}');
-	                sectionText = `${sectionText.substr(0, indexApp2).replace(commentedListing,'')}* ${listingWikiText}\n{{-}}`;
-	            } else {
-	                sectionText = `${sectionText.replace(commentedListing,'')}\n* ${listingWikiText}`;
-	            }
-	        }
-	        setSectionText( sectionText );
-	        return summary;
-	    };
-
-	    var updateSectionTextWithAddedListing = function (originalEditSummary, listingWikiText, listing) {
-	        switch ( DB_NAME ) {
-	            case 'itwikivoyage':
-	                return updateSectionTextWithAddedListingIt(originalEditSummary, listingWikiText, listing);
-	            default:
-	                return updateSectionTextWithAddedListingDefault(originalEditSummary, listingWikiText);
-	        }
-	    };
-
-	    /**
-	     * After the listing has been converted to a string, add additional
-	     * processing required for edits (as opposed to adds), returning an
-	     * appropriate edit summary string.
-	     */
-	    var updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
-	        let sectionText = getSectionText();
-	        // escaping '$&' since in replace regex it means "substitute the whole content"
-	        listingWikiText = listingWikiText.replace( /\$&/g, '&#36;&');
-	        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
-	            listingWikiText = '';
-	            editSummary += translate( 'removed' );
-	            // TODO: RegEx change to delete the complete row when listing is preceeded by templates showing just icons
-	            var listRegex = new RegExp(`(\\n+[\\:\\*\\#]*)?\\s*${replaceSpecial(listingTemplateWikiSyntax)}`);
-	            sectionText = sectionText.replace(listRegex, listingWikiText);
-	        } else {
-	            editSummary += translate( 'updated' );
-	            sectionText = sectionText.replace(listingTemplateWikiSyntax, listingWikiText);
-	        }
-	        sectionText = restoreComments(sectionText, true);
-	        sectionText = sectionText.replace( /&#36;/g, '$' ); // '&#36;'->'$' restore on global sectionText var
-	        setSectionText( sectionText );
-	        return editSummary;
-	    };
+	    var editSummarySection = requireEditSummarySection();
+	    var getSectionName = requireGetSectionName();
+	    var updateSectionTextWithAddedListing = requireUpdateSectionTextWithAddedListing();
+	    var updateSectionTextWithEditedListing = requireUpdateSectionTextWithEditedListing();
 
 	    /**
 	     * Render a dialog that notifies the user that the listing editor changes
@@ -3794,72 +3949,6 @@ function requireCore () {
 	                }
 	            ]
 	        });
-	    };
-
-	    /**
-	     * Convert the listing map back to a wiki text string.
-	     */
-	    var listingToStr = function(listing) {
-	        const inlineListing = currentEdit.isInlineListing();
-	        var listingType = listing[LISTING_TYPE_PARAMETER];
-	        var listingParameters = getListingInfo(listingType);
-	        var saveStr = '{{';
-	        if( isCustomListingType(listingType) ) { // type parameter specified explicitly only on custom type
-	            saveStr += DEFAULT_LISTING_TEMPLATE;
-	            saveStr += ` | ${LISTING_TYPE_PARAMETER}=${listingType}`;
-	        } else {
-	            saveStr += listingType;
-	        }
-	        if (!inlineListing && listingParameters[LISTING_TYPE_PARAMETER].newline) {
-	            saveStr += '\n';
-	        }
-	        for (var parameter in listingParameters) {
-	            var l = listingParameters[parameter];
-	            if (parameter === LISTING_TYPE_PARAMETER) {
-	                // "type" parameter was handled previously
-	                continue;
-	            }
-	            if (parameter === LISTING_CONTENT_PARAMETER) {
-	                // processed last
-	                continue;
-	            }
-	            if (listing[parameter] !== '' || (!l.skipIfEmpty && !inlineListing)) {
-	                saveStr += `| ${parameter}=${listing[parameter]}`;
-	            }
-	            if (!saveStr.match(/\n$/)) {
-	                if (!inlineListing && l.newline) {
-	                    saveStr = `${rtrim(saveStr)}\n`;
-	                } else if (!saveStr.match(/ $/)) {
-	                    saveStr += ' ';
-	                }
-	            }
-	        }
-	        if (ALLOW_UNRECOGNIZED_PARAMETERS) {
-	            // append any unexpected values
-	            for (var key in listing) {
-	                if (listingParameters[key]) {
-	                    // this is a known field
-	                    continue;
-	                }
-	                if (listing[key] === '') {
-	                    // skip unrecognized fields without values
-	                    continue;
-	                }
-	                saveStr += `| ${key}=${listing[key]}`;
-	                saveStr += (inlineListing) ? ' ' : '\n';
-	            }
-	        }
-	        saveStr += `| ${LISTING_CONTENT_PARAMETER}=${listing[LISTING_CONTENT_PARAMETER]}`;
-	        saveStr += (inlineListing || !listingParameters[LISTING_CONTENT_PARAMETER].newline) ? ' ' : '\n';
-	        saveStr += '}}';
-	        return saveStr;
-	    };
-
-	    /**
-	     * Trim whitespace at the end of a string.
-	     */
-	    var rtrim = function(str) {
-	        return str.replace(/\s+$/, '');
 	    };
 
 	    // expose public members

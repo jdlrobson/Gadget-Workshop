@@ -13,6 +13,6 @@ const TEMPLATE_TYPE = {
 describe( 'Gadget-ListingEditor', () => {
 	it( 'exports', () => {
 		const le = listingEditor( [ 0 ], TEMPLATE_TYPE, require( '../dist/en:Gadget-ListingEditor.json' ) );
-		expect( le.MODE_ADD ).toBe( 'add' );
+		expect( le.initListingEditorDialog ).not.toBe( undefined );
 	} );
 } );

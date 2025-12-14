@@ -122,7 +122,7 @@ const launchSyncDialog = function (jsonObj, wikidataRecord, SisterSite, updateMo
         title: translate( 'syncTitle' ),
         dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
         onSubmit: submitFunction
-    }, translate );
+    } );
 
     const $syncDialogElement = $('#listing-editor-sync');
     if($syncDialogElement.find('.sync_label').length === 0) { // if no choices, close the dialog and display a message

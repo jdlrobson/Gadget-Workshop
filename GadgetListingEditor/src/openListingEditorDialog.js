@@ -210,7 +210,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         title: (mode == MODE_ADD) ?
             translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
         dialogClass: 'listing-editor-dialog'
-    }, translate);
+    } );
 };
 
 module.exports = openListingEditorDialog;

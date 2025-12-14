@@ -1,6 +1,7 @@
 const { createApp } = require( 'vue' );
+const { translate } = require( './translate.js' );
 
-const createListingEditorApp = ( component, props, translate ) => {
+const createListingEditorApp = ( component, props ) => {
     const translatePlugin = {
         install: ( app ) => {
             const $translate = ( key, ...parameters ) => {

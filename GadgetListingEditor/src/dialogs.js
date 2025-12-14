@@ -4,7 +4,7 @@ function close() {
     document.documentElement.classList.remove( 'listing-editor-dialog-open' );
 }
 
-function render( Dialog, options, translate ) {
+function render( Dialog, options ) {
     const vueAppContainer = document.createElement( 'div' );
     document.body.appendChild(vueAppContainer);
     const app = createApp(
@@ -13,8 +13,7 @@ function render( Dialog, options, translate ) {
             onClose: () => {
                 close();
             }
-        } ),
-        translate
+        } )
     );
     app.mount( vueAppContainer );
     document.documentElement.classList.add( 'listing-editor-dialog-open' );

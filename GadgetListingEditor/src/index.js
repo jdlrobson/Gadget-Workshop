@@ -4,6 +4,7 @@ const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
 const { loadCallbacks } = require( './Callbacks.js' );
+const { loadConfig } = require( './Config.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -504,6 +505,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		};
 	}();
 	loadCallbacks( Callbacks );
+	loadConfig( Config, PROJECT_CONFIG );
 
 	/* ***********************************************************************
 	 * Core contains code that should be shared across different

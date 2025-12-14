@@ -7,6 +7,7 @@ const { getSectionText, setSectionText } = currentEdit;
 const { onMounted, ref } = require( 'vue' );
 const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 const listingToStr = require( './listingToStr.js' );
+const { getCallbacks } = require( './Callbacks.js' );
 const saveForm = require( './saveForm.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
@@ -403,8 +404,9 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         for (var parameter in listingParameters) {
             listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
         }
-        for (var i=0; i < Callbacks.SUBMIT_FORM_CALLBACKS.length; i++) {
-            Callbacks.SUBMIT_FORM_CALLBACKS[i](listing, mode);
+        const submitCallbacks = getCallbacks( 'SUBMIT_FORM_CALLBACKS' );
+        for (var i=0; i < submitCallbacks.length; i++) {
+            submitCallbacks[i](listing, mode);
         }
         var text = listingToStr(listing);
         var summary = editSummarySection();

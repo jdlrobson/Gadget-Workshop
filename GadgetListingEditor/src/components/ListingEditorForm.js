@@ -1,4 +1,70 @@
-module.exports = `<cdx-tabs :framed="true">
+const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require( '@wikimedia/codex' );
+const sistersites = require( './SisterSites.js' );
+const { onMounted, ref } = require( 'vue' );
+const getListingInfo = require( '../getListingInfo.js' );
+const { getCallbacks } = require( '../Callbacks.js' );
+const TelephoneCharInsert = require( './TelephoneCharInsert.js' );
+const SpecialCharactersString = require( './specialCharactersString.js' );
+
+/**
+ * Generate the form UI for the listing editor. If editing an existing
+ * listing, pre-populate the form input fields with the existing values.
+ */
+// @todo: move to template
+const onFormMounted = ( form, listingParameters, listingTemplateAsMap ) => {
+    // populate the empty form with existing values
+    for (var parameter in listingParameters) {
+        var parameterInfo = listingParameters[parameter];
+        if (listingTemplateAsMap[parameter]) {
+            $(`#${parameterInfo.id}`, form).val(listingTemplateAsMap[parameter]);
+        } else if (parameterInfo.hideDivIfEmpty) {
+            $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
+        }
+    }
+};
+
+module.exports = {
+    name: 'ListingEditorForm',
+    props: {
+        customListingType: {
+            type: String
+        },
+        wikipedia: {
+            type: String
+        },
+        wikidata: {
+            type: String
+        },
+        image: {
+            type: String
+        },
+        mode: {
+            type: String
+        },
+        telephoneCodes: {
+            type: Array
+        },
+        nationalCurrencies: {
+            type: Array
+        },
+        showLastEditedField: {
+            type: Boolean
+        },
+        currencies: {
+            type: Array,
+            default: [ '€', '$', '£', '¥', '₩' ]
+        },
+        characters: {
+            type: Array
+        },
+        listingType: {
+            type: String
+        },
+        listingTemplateAsMap: {
+            type: Object
+        }
+    },
+    template: `<cdx-tabs :framed="true">
 <cdx-tab
     v-for="( tab, index ) in tabsData"
     :key="index"
@@ -210,4 +276,43 @@ module.exports = `<cdx-tabs :framed="true">
     </template>
     </form>
     </cdx-tab>
-</cdx-tabs>`;
+</cdx-tabs>`,
+    components: {
+        CdxTabs,
+        CdxTab,
+        TelephoneCharInsert,
+        CdxTextInput,
+        CdxTextArea,
+        SpecialCharactersString,
+        sistersites
+    },
+    setup( { showLastEditedField, mode, listingType, listingTemplateAsMap } ) {
+        const listingParameters = getListingInfo(listingType);
+        const tabsData = ref( [
+            {
+                name: 'edit',
+                label: 'edit'
+            }, {
+                name: 'preview',
+                label: 'preview'
+            }
+        ] );
+        const form = ref(null);
+        onMounted( () => {
+            const callbacks = getCallbacks( 'CREATE_FORM_CALLBACKS' );
+            if ( form.value ) {
+                // @todo: move into template
+                onFormMounted( form.value, listingParameters, listingTemplateAsMap );
+                for (var i=0; i < callbacks.length; i++) {
+                    callbacks[i]( form.value, mode );
+                }
+            }
+        } );
+
+        return {
+            tabsData,
+            form,
+            showLastEditedField
+        };
+    }
+};

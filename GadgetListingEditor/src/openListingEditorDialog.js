@@ -1,6 +1,6 @@
 const ListingEditorDialog = require( './components/ListingEditorDialog' );
 const dialog = require( './dialogs.js' );
-const createForm = require( './createForm.js' );
+const ListingEditorForm = require( './components/ListingEditorForm' );
 const getListingInfo = require( './getListingInfo.js' );
 const listingToStr = require( './listingToStr.js' );
 const getListingWikitextBraces = require( './getListingWikitextBraces' );
@@ -77,7 +77,6 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
         listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
     }
-    var listingParameters = getListingInfo(listingType);
     // modal form - must submit or cancel
     const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
 
@@ -135,7 +134,10 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
     const ListingEditorFormDialog = {
         name: 'ListingEditorFormDialog',
         template: `<ListingEditorDialog>
-        <ListingForm
+        <ListingEditorForm
+            :listing-template-as-map="listingTemplateAsMap"
+            :listing-type="listingType"
+            :nationalCurrencies="nationalCurrencies"
             :custom-listing-type="customListingType"
             :wikidata="wikidata"
             :wikipedia="wikipedia"
@@ -146,6 +148,9 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             :show-last-edited-field="showLastEditedField" />
 </ListingEditorDialog>`,
         props: {
+            listingTemplateAsMap: {
+                type: Object
+            },
             customListingType: {
                 type: String
             },
@@ -169,20 +174,26 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             },
             showLastEditedField: {
                 type: Boolean
+            },
+            nationalCurrencies: {
+                type: Array,
+                default: NATL_CURRENCY
+            },
+            listingType: {
+                type: String
             }
         },
         components: {
             ListingEditorDialog,
-            // @todo: move to props
-            ListingForm: createForm( listingParameters, listingTemplateAsMap, {
-                NATL_CURRENCY
-            } )
+            ListingEditorForm
         }
     }
     const { wikipedia, wikidata, image } = listingTemplateAsMap;
 
     dialog.render( ListingEditorFormDialog, {
         wikipedia, wikidata, image,
+        listingType,
+        listingTemplateAsMap,
         customListingType,
         mode,
         onCaptchaSubmit,

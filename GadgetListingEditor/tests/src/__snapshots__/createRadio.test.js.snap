@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createRadio creates radios 1`] = `
+"<div class="sync_label">wikipedia</div><div class="choose-row"><div>&nbsp;<label for="wikipedia-wd">Nottingham Forest F.C.
+</label>
+</div>
+<div id="has-guid">
+<input type="radio" id="wikipedia-wd" name="wikipedia">
+<input type="hidden" value="Q19490">
+</div><div>
+    <input type="radio" name="wikipedia" checked>
+</div><div id="has-json"><input type="radio" disabled><input type="hidden" value='{"label":"wikipedia","fields":["wikipedia"],"doNotUpload":true,"remotely_sync":true}'>
+</div>
+<div>&nbsp;<label for="wikipedia-wv">City Ground
+</label></div></div>
+"
+`;

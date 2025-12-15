@@ -1,9 +1,11 @@
 const makeSyncLinks = require( './makeSyncLinks' );
 const parseDMS = require( './parseDMS.js' );
 const trimDecimal = require( './trimDecimal.js' );
+const { getConfig } = require( './Config.js' );
 
-const createRadio = function(field, claimValue, guid, Config) {
-    const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = Config;
+// @todo: move to template
+const createRadio = function(field, claimValue, guid) {
+    const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
 
     var j = 0;
     for (j = 0; j < claimValue.length; j++) {
@@ -53,9 +55,11 @@ const createRadio = function(field, claimValue, guid, Config) {
     }
     if ( remoteFlag === true ) {
         html += '<div class="choose-row" style="display:none">';
-    } else { html += `<div class="sync_label">${field.label}</div><div class="choose-row">`; } // usual case, create heading
-        html += `<div>` +
-            `&nbsp;<label for="${field.label}-wd">`;
+    } else {
+        html += `<div class="sync_label">${field.label}</div><div class="choose-row">`;
+    } // usual case, create heading
+    html += `<div>` +
+        `&nbsp;<label for="${field.label}-wd">`;
 
     if (
         [
@@ -64,7 +68,7 @@ const createRadio = function(field, claimValue, guid, Config) {
             WIKIDATA_CLAIMS.image.p
         ].indexOf(field.p) >= 0
     ) {
-        html += makeSyncLinks(claimValue, field.p, false, Config);
+        html += makeSyncLinks(claimValue, field.p, false);
     }
     for (j = 0; j < claimValue.length; j++) {
         html += `${claimValue[j]}\n`;
@@ -111,7 +115,7 @@ const createRadio = function(field, claimValue, guid, Config) {
             WIKIDATA_CLAIMS.image.p
         ].indexOf(field.p) >= 0
     ) {
-        html += makeSyncLinks(editorField, field.p, true, Config);
+        html += makeSyncLinks(editorField, field.p, true);
     }
     for (i = 0; i < editorField.length; i++ ) {
         html += `${$(editorField[i]).val()}\n`;

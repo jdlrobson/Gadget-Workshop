@@ -1,6 +1,5 @@
-const ListingEditorDialog = require( './components/ListingEditorDialog' );
 const dialog = require( './dialogs.js' );
-const ListingEditorForm = require( './components/ListingEditorForm' );
+const ListingEditorFormDialog = require( './components/ListingEditorFormDialog.js' );
 const getListingInfo = require( './getListingInfo.js' );
 const listingToStr = require( './listingToStr.js' );
 const getListingWikitextBraces = require( './getListingWikitextBraces' );
@@ -131,69 +130,13 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
     };
 
     const customListingType = isCustomListingType(listingType) ? listingType : undefined;
-    const ListingEditorFormDialog = {
-        name: 'ListingEditorFormDialog',
-        template: `<ListingEditorDialog>
-        <ListingEditorForm
-            :listing-template-as-map="listingTemplateAsMap"
-            :listing-type="listingType"
-            :nationalCurrencies="nationalCurrencies"
-            :custom-listing-type="customListingType"
-            :wikidata="wikidata"
-            :wikipedia="wikipedia"
-            :image="image"
-            :mode="mode"
-            :telephoneCodes="telephoneCodes"
-            :characters="characters"
-            :show-last-edited-field="showLastEditedField" />
-</ListingEditorDialog>`,
-        props: {
-            listingTemplateAsMap: {
-                type: Object
-            },
-            customListingType: {
-                type: String
-            },
-            wikipedia: {
-                type: String
-            },
-            wikidata: {
-                type: String
-            },
-            image: {
-                type: String
-            },
-            mode: {
-                type: String
-            },
-            telephoneCodes: {
-                type: Array
-            },
-            characters: {
-                type: Array
-            },
-            showLastEditedField: {
-                type: Boolean
-            },
-            nationalCurrencies: {
-                type: Array,
-                default: NATL_CURRENCY
-            },
-            listingType: {
-                type: String
-            }
-        },
-        components: {
-            ListingEditorDialog,
-            ListingEditorForm
-        }
-    }
     const { wikipedia, wikidata, image } = listingTemplateAsMap;
 
     dialog.render( ListingEditorFormDialog, {
         wikipedia, wikidata, image,
         listingType,
         listingTemplateAsMap,
+        nationalCurrencies: [ NATL_CURRENCY ],
         customListingType,
         mode,
         onCaptchaSubmit,

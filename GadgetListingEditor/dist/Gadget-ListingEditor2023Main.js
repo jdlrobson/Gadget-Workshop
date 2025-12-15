@@ -32,8 +32,8 @@ window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.0.0-alpha-10'
 
 'use strict';
 
-var require$$0$1 = require('@wikimedia/codex');
-var require$$1$1 = require('vue');
+var require$$0$1 = require('vue');
+var require$$0$2 = require('@wikimedia/codex');
 
 function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -1049,14 +1049,91 @@ function requireIsInline () {
 	return isInline_1;
 }
 
+var createApp_1;
+var hasRequiredCreateApp;
+
+function requireCreateApp () {
+	if (hasRequiredCreateApp) return createApp_1;
+	hasRequiredCreateApp = 1;
+	const { createApp } = require$$0$1;
+	const { translate } = translate_1;
+
+	const createListingEditorApp = ( component, props ) => {
+	    const translatePlugin = {
+	        install: ( app ) => {
+	            const $translate = ( key, ...parameters ) => {
+	                return translate( key, ...parameters );
+	            };
+	            app.config.globalProperties.$translate = $translate;
+	            app.provide( 'translate', $translate );
+	        }
+	    };
+
+	    const app = createApp( component, props );
+	    app.use( translatePlugin );
+
+	    const renderI18nHtml = ( el, binding ) => {
+	        el.innerHTML = translate( binding.arg || binding.value );
+	    };
+
+	    app.directive( 'translate-html', {
+	        mounted: renderI18nHtml
+	    } );
+
+	    return app;
+	};
+
+	createApp_1 = createListingEditorApp;
+	return createApp_1;
+}
+
+var dialogs;
+var hasRequiredDialogs;
+
+function requireDialogs () {
+	if (hasRequiredDialogs) return dialogs;
+	hasRequiredDialogs = 1;
+	const createApp = requireCreateApp();
+
+	function close() {
+	    document.documentElement.classList.remove( 'listing-editor-dialog-open' );
+	}
+
+	function render( Dialog, options ) {
+	    const vueAppContainer = document.createElement( 'div' );
+	    document.body.appendChild(vueAppContainer);
+	    const app = createApp(
+	        Dialog,
+	        Object.assign( {}, options, {
+	            onClose: () => {
+	                close();
+	            }
+	        } )
+	    );
+	    app.mount( vueAppContainer );
+	    document.documentElement.classList.add( 'listing-editor-dialog-open' );
+	    return {
+	        unmount: () => {
+	            app.unmount();
+	            close();
+	        }
+	    }
+	}
+
+	dialogs = {
+	    render
+	};
+	return dialogs;
+}
+
 var ListingEditorDialog;
 var hasRequiredListingEditorDialog;
 
 function requireListingEditorDialog () {
 	if (hasRequiredListingEditorDialog) return ListingEditorDialog;
 	hasRequiredListingEditorDialog = 1;
-	const { CdxDialog, CdxTextInput, CdxButton, CdxProgressBar } = require$$0$1;
-	const { defineComponent, ref, onMounted } = require$$1$1;
+	const { CdxDialog, CdxTextInput, CdxButton, CdxProgressBar } = require$$0$2;
+	const { defineComponent, ref, onMounted } = require$$0$1;
 
 	ListingEditorDialog = defineComponent( {
 	    name: 'ListingEditorDialog',
@@ -1199,83 +1276,6 @@ v-model:open="isOpen"
 	    }
 	} );
 	return ListingEditorDialog;
-}
-
-var createApp_1;
-var hasRequiredCreateApp;
-
-function requireCreateApp () {
-	if (hasRequiredCreateApp) return createApp_1;
-	hasRequiredCreateApp = 1;
-	const { createApp } = require$$1$1;
-	const { translate } = translate_1;
-
-	const createListingEditorApp = ( component, props ) => {
-	    const translatePlugin = {
-	        install: ( app ) => {
-	            const $translate = ( key, ...parameters ) => {
-	                return translate( key, ...parameters );
-	            };
-	            app.config.globalProperties.$translate = $translate;
-	            app.provide( 'translate', $translate );
-	        }
-	    };
-
-	    const app = createApp( component, props );
-	    app.use( translatePlugin );
-
-	    const renderI18nHtml = ( el, binding ) => {
-	        el.innerHTML = translate( binding.arg || binding.value );
-	    };
-
-	    app.directive( 'translate-html', {
-	        mounted: renderI18nHtml
-	    } );
-
-	    return app;
-	};
-
-	createApp_1 = createListingEditorApp;
-	return createApp_1;
-}
-
-var dialogs;
-var hasRequiredDialogs;
-
-function requireDialogs () {
-	if (hasRequiredDialogs) return dialogs;
-	hasRequiredDialogs = 1;
-	const createApp = requireCreateApp();
-
-	function close() {
-	    document.documentElement.classList.remove( 'listing-editor-dialog-open' );
-	}
-
-	function render( Dialog, options ) {
-	    const vueAppContainer = document.createElement( 'div' );
-	    document.body.appendChild(vueAppContainer);
-	    const app = createApp(
-	        Dialog,
-	        Object.assign( {}, options, {
-	            onClose: () => {
-	                close();
-	            }
-	        } )
-	    );
-	    app.mount( vueAppContainer );
-	    document.documentElement.classList.add( 'listing-editor-dialog-open' );
-	    return {
-	        unmount: () => {
-	            app.unmount();
-	            close();
-	        }
-	    }
-	}
-
-	dialogs = {
-	    render
-	};
-	return dialogs;
 }
 
 var mapSearchResult_1;
@@ -2085,9 +2085,9 @@ function requireSisterSites () {
 	    quickUpdateWikidataSharedFields } = requireFunctions();
 	const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL,
 	    LANG } = globalConfig;
-	const { ref, computed, nextTick } = require$$1$1;
+	const { ref, computed, nextTick } = require$$0$1;
 	const { translate } = translate_1;
-	const { CdxLookup } = require$$0$1;
+	const { CdxLookup } = require$$0$2;
 
 	SisterSites = {
 	    props: {
@@ -2380,6 +2380,50 @@ function requireSisterSites () {
 	return SisterSites;
 }
 
+var isCustomListingType_1;
+var hasRequiredIsCustomListingType;
+
+function requireIsCustomListingType () {
+	if (hasRequiredIsCustomListingType) return isCustomListingType_1;
+	hasRequiredIsCustomListingType = 1;
+	const { getConfig } = Config;
+
+	/**
+	 * Determine if the specified listing type is a custom type - for example "go"
+	 * instead of "see", "do", "listing", etc.
+	 */
+	const isCustomListingType = function(listingType) {
+	    const { LISTING_TEMPLATES } = getConfig();
+	    return !(listingType in LISTING_TEMPLATES);
+	};
+
+	isCustomListingType_1 = isCustomListingType;
+	return isCustomListingType_1;
+}
+
+var getListingInfo_1;
+var hasRequiredGetListingInfo;
+
+function requireGetListingInfo () {
+	if (hasRequiredGetListingInfo) return getListingInfo_1;
+	hasRequiredGetListingInfo = 1;
+	const isCustomListingType = requireIsCustomListingType();
+	const { getConfig } = Config;
+
+	/**
+	 * Given a listing type, return the appropriate entry from the
+	 * LISTING_TEMPLATES array. This method returns the entry for the default
+	 * listing template type if not enty exists for the specified type.
+	 */
+	const getListingInfo = function(type) {
+	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
+	    return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
+	};
+
+	getListingInfo_1 = getListingInfo;
+	return getListingInfo_1;
+}
+
 var TelephoneCharInsert;
 var hasRequiredTelephoneCharInsert;
 
@@ -2427,13 +2471,79 @@ function requireSpecialCharactersString () {
 	return specialCharactersString;
 }
 
-var html;
-var hasRequiredHtml;
+var ListingEditorForm;
+var hasRequiredListingEditorForm;
 
-function requireHtml () {
-	if (hasRequiredHtml) return html;
-	hasRequiredHtml = 1;
-	html = `<cdx-tabs :framed="true">
+function requireListingEditorForm () {
+	if (hasRequiredListingEditorForm) return ListingEditorForm;
+	hasRequiredListingEditorForm = 1;
+	const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require$$0$2;
+	const sistersites = requireSisterSites();
+	const { onMounted, ref } = require$$0$1;
+	const getListingInfo = requireGetListingInfo();
+	const { getCallbacks } = Callbacks_1;
+	const TelephoneCharInsert = requireTelephoneCharInsert();
+	const SpecialCharactersString = requireSpecialCharactersString();
+
+	/**
+	 * Generate the form UI for the listing editor. If editing an existing
+	 * listing, pre-populate the form input fields with the existing values.
+	 */
+	// @todo: move to template
+	const onFormMounted = ( form, listingParameters, listingTemplateAsMap ) => {
+	    // populate the empty form with existing values
+	    for (var parameter in listingParameters) {
+	        var parameterInfo = listingParameters[parameter];
+	        if (listingTemplateAsMap[parameter]) {
+	            $(`#${parameterInfo.id}`, form).val(listingTemplateAsMap[parameter]);
+	        } else if (parameterInfo.hideDivIfEmpty) {
+	            $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
+	        }
+	    }
+	};
+
+	ListingEditorForm = {
+	    name: 'ListingEditorForm',
+	    props: {
+	        customListingType: {
+	            type: String
+	        },
+	        wikipedia: {
+	            type: String
+	        },
+	        wikidata: {
+	            type: String
+	        },
+	        image: {
+	            type: String
+	        },
+	        mode: {
+	            type: String
+	        },
+	        telephoneCodes: {
+	            type: Array
+	        },
+	        nationalCurrencies: {
+	            type: Array
+	        },
+	        showLastEditedField: {
+	            type: Boolean
+	        },
+	        currencies: {
+	            type: Array,
+	            default: [ '€', '$', '£', '¥', '₩' ]
+	        },
+	        characters: {
+	            type: Array
+	        },
+	        listingType: {
+	            type: String
+	        },
+	        listingTemplateAsMap: {
+	            type: Object
+	        }
+	    },
+	    template: `<cdx-tabs :framed="true">
 <cdx-tab
     v-for="( tab, index ) in tabsData"
     :key="index"
@@ -2645,167 +2755,115 @@ function requireHtml () {
     </template>
     </form>
     </cdx-tab>
-</cdx-tabs>`;
-	return html;
-}
+</cdx-tabs>`,
+	    components: {
+	        CdxTabs,
+	        CdxTab,
+	        TelephoneCharInsert,
+	        CdxTextInput,
+	        CdxTextArea,
+	        SpecialCharactersString,
+	        sistersites
+	    },
+	    setup( { showLastEditedField, mode, listingType, listingTemplateAsMap } ) {
+	        const listingParameters = getListingInfo(listingType);
+	        const tabsData = ref( [
+	            {
+	                name: 'edit',
+	                label: 'edit'
+	            }, {
+	                name: 'preview',
+	                label: 'preview'
+	            }
+	        ] );
+	        const form = ref(null);
+	        onMounted( () => {
+	            const callbacks = getCallbacks( 'CREATE_FORM_CALLBACKS' );
+	            if ( form.value ) {
+	                // @todo: move into template
+	                onFormMounted( form.value, listingParameters, listingTemplateAsMap );
+	                for (var i=0; i < callbacks.length; i++) {
+	                    callbacks[i]( form.value, mode );
+	                }
+	            }
+	        } );
 
-var createForm_1;
-var hasRequiredCreateForm;
-
-function requireCreateForm () {
-	if (hasRequiredCreateForm) return createForm_1;
-	hasRequiredCreateForm = 1;
-	const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require$$0$1;
-	const sistersites = requireSisterSites();
-	const { onMounted, ref } = require$$1$1;
-	const { getCallbacks } = Callbacks_1;
-	const TelephoneCharInsert = requireTelephoneCharInsert();
-	const SpecialCharactersString = requireSpecialCharactersString();
-
-	/**
-	 * Generate the form UI for the listing editor. If editing an existing
-	 * listing, pre-populate the form input fields with the existing values.
-	 */
-	// @todo: move to template
-	const onFormMounted = ( form, listingParameters, listingTemplateAsMap ) => {
-	    // populate the empty form with existing values
-	    for (var parameter in listingParameters) {
-	        var parameterInfo = listingParameters[parameter];
-	        if (listingTemplateAsMap[parameter]) {
-	            $(`#${parameterInfo.id}`, form).val(listingTemplateAsMap[parameter]);
-	        } else if (parameterInfo.hideDivIfEmpty) {
-	            $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
-	        }
+	        return {
+	            tabsData,
+	            form,
+	            showLastEditedField
+	        };
 	    }
 	};
+	return ListingEditorForm;
+}
 
-	// @todo: Move to ListingEditorForm.js when onFormMounted removed.
-	const createForm = function(listingParameters, listingTemplateAsMap, {
-	    NATL_CURRENCY
-	} ) {
-	    return {
-	        name: 'ListingEditorForm',
-	        props: {
-	            customListingType: {
-	                type: String
-	            },
-	            wikipedia: {
-	                type: String
-	            },
-	            wikidata: {
-	                type: String
-	            },
-	            image: {
-	                type: String
-	            },
-	            mode: {
-	                type: String
-	            },
-	            telephoneCodes: {
-	                type: Array
-	            },
-	            nationalCurrencies: {
-	                type: Array,
-	                default: NATL_CURRENCY
-	            },
-	            showLastEditedField: {
-	                type: Boolean
-	            },
-	            currencies: {
-	                type: Array,
-	                default: [ '€', '$', '£', '¥', '₩' ]
-	            },
-	            characters: {
-	                type: Array
-	            }
-	        },
-	        template: requireHtml(),
-	        components: {
-	            CdxTabs,
-	            CdxTab,
-	            TelephoneCharInsert,
-	            CdxTextInput,
-	            CdxTextArea,
-	            SpecialCharactersString,
-	            sistersites
-	        },
-	        setup( { showLastEditedField, mode } ) {
-	            const tabsData = ref( [
-	                {
-	                    name: 'edit',
-	                    label: 'edit'
-	                }, {
-	                    name: 'preview',
-	                    label: 'preview'
-	                }
-	            ] );
-	            const form = ref(null);
-	            onMounted( () => {
-	                const callbacks = getCallbacks( 'CREATE_FORM_CALLBACKS' );
-	                if ( form.value ) {
-	                    // @todo: move into template
-	                    onFormMounted( form.value, listingParameters, listingTemplateAsMap );
-	                    for (var i=0; i < callbacks.length; i++) {
-	                        callbacks[i]( form.value, mode );
-	                    }
-	                }
-	            } );
+var ListingEditorFormDialog;
+var hasRequiredListingEditorFormDialog;
 
-	            return {
-	                tabsData,
-	                form,
-	                showLastEditedField
-	            };
+function requireListingEditorFormDialog () {
+	if (hasRequiredListingEditorFormDialog) return ListingEditorFormDialog;
+	hasRequiredListingEditorFormDialog = 1;
+	const ListingEditorDialog = requireListingEditorDialog();
+	const ListingEditorForm = requireListingEditorForm();
+
+	ListingEditorFormDialog = {
+	    name: 'ListingEditorFormDialog',
+	    template: `<ListingEditorDialog>
+    <ListingEditorForm
+        :listing-template-as-map="listingTemplateAsMap"
+        :listing-type="listingType"
+        :nationalCurrencies="nationalCurrencies"
+        :custom-listing-type="customListingType"
+        :wikidata="wikidata"
+        :wikipedia="wikipedia"
+        :image="image"
+        :mode="mode"
+        :telephoneCodes="telephoneCodes"
+        :characters="characters"
+        :show-last-edited-field="showLastEditedField" />
+</ListingEditorDialog>`,
+	    props: {
+	        listingTemplateAsMap: {
+	            type: Object
+	        },
+	        customListingType: {
+	            type: String
+	        },
+	        wikipedia: {
+	            type: String
+	        },
+	        wikidata: {
+	            type: String
+	        },
+	        image: {
+	            type: String
+	        },
+	        mode: {
+	            type: String
+	        },
+	        telephoneCodes: {
+	            type: Array
+	        },
+	        characters: {
+	            type: Array
+	        },
+	        showLastEditedField: {
+	            type: Boolean
+	        },
+	        nationalCurrencies: {
+	            type: Array
+	        },
+	        listingType: {
+	            type: String
 	        }
-	    };
+	    },
+	    components: {
+	        ListingEditorDialog,
+	        ListingEditorForm
+	    }
 	};
-
-	createForm_1 = createForm;
-	return createForm_1;
-}
-
-var isCustomListingType_1;
-var hasRequiredIsCustomListingType;
-
-function requireIsCustomListingType () {
-	if (hasRequiredIsCustomListingType) return isCustomListingType_1;
-	hasRequiredIsCustomListingType = 1;
-	const { getConfig } = Config;
-
-	/**
-	 * Determine if the specified listing type is a custom type - for example "go"
-	 * instead of "see", "do", "listing", etc.
-	 */
-	const isCustomListingType = function(listingType) {
-	    const { LISTING_TEMPLATES } = getConfig();
-	    return !(listingType in LISTING_TEMPLATES);
-	};
-
-	isCustomListingType_1 = isCustomListingType;
-	return isCustomListingType_1;
-}
-
-var getListingInfo_1;
-var hasRequiredGetListingInfo;
-
-function requireGetListingInfo () {
-	if (hasRequiredGetListingInfo) return getListingInfo_1;
-	hasRequiredGetListingInfo = 1;
-	const isCustomListingType = requireIsCustomListingType();
-	const { getConfig } = Config;
-
-	/**
-	 * Given a listing type, return the appropriate entry from the
-	 * LISTING_TEMPLATES array. This method returns the entry for the default
-	 * listing template type if not enty exists for the specified type.
-	 */
-	const getListingInfo = function(type) {
-	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
-	    return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
-	};
-
-	getListingInfo_1 = getListingInfo;
-	return getListingInfo_1;
+	return ListingEditorFormDialog;
 }
 
 var currentEdit;
@@ -3778,9 +3836,8 @@ var hasRequiredOpenListingEditorDialog;
 function requireOpenListingEditorDialog () {
 	if (hasRequiredOpenListingEditorDialog) return openListingEditorDialog_1;
 	hasRequiredOpenListingEditorDialog = 1;
-	const ListingEditorDialog = requireListingEditorDialog();
 	const dialog = requireDialogs();
-	const createForm = requireCreateForm();
+	const ListingEditorFormDialog = requireListingEditorFormDialog();
 	const getListingInfo = requireGetListingInfo();
 	const listingToStr = requireListingToStr();
 	const getListingWikitextBraces = requireGetListingWikitextBraces();
@@ -3857,7 +3914,6 @@ function requireOpenListingEditorDialog () {
 	        listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
 	        listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
 	    }
-	    var listingParameters = getListingInfo(listingType);
 	    // modal form - must submit or cancel
 	    const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
 
@@ -3912,57 +3968,13 @@ function requireOpenListingEditorDialog () {
 	    };
 
 	    const customListingType = isCustomListingType(listingType) ? listingType : undefined;
-	    const ListingEditorFormDialog = {
-	        name: 'ListingEditorFormDialog',
-	        template: `<ListingEditorDialog>
-        <ListingForm
-            :custom-listing-type="customListingType"
-            :wikidata="wikidata"
-            :wikipedia="wikipedia"
-            :image="image"
-            :mode="mode"
-            :telephoneCodes="telephoneCodes"
-            :characters="characters"
-            :show-last-edited-field="showLastEditedField" />
-</ListingEditorDialog>`,
-	        props: {
-	            customListingType: {
-	                type: String
-	            },
-	            wikipedia: {
-	                type: String
-	            },
-	            wikidata: {
-	                type: String
-	            },
-	            image: {
-	                type: String
-	            },
-	            mode: {
-	                type: String
-	            },
-	            telephoneCodes: {
-	                type: Array
-	            },
-	            characters: {
-	                type: Array
-	            },
-	            showLastEditedField: {
-	                type: Boolean
-	            }
-	        },
-	        components: {
-	            ListingEditorDialog,
-	            // @todo: move to props
-	            ListingForm: createForm( listingParameters, listingTemplateAsMap, {
-	                NATL_CURRENCY
-	            } )
-	        }
-	    };
 	    const { wikipedia, wikidata, image } = listingTemplateAsMap;
 
 	    dialog.render( ListingEditorFormDialog, {
 	        wikipedia, wikidata, image,
+	        listingType,
+	        listingTemplateAsMap,
+	        nationalCurrencies: [ NATL_CURRENCY ],
 	        customListingType,
 	        mode,
 	        onCaptchaSubmit,

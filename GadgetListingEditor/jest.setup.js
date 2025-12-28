@@ -58,6 +58,10 @@ loadConfig( {
             "remotely_sync": true
         }
     },
+    DEFAULT_LISTING_TEMPLATE: 'listing',
+    ALLOW_UNRECOGNIZED_PARAMETERS: true,
+    LISTING_CONTENT_PARAMETER: 'content',
+    LISTING_TYPE_PARAMETER: 'type',
     LISTING_TEMPLATES: {
         "listing": {
             "type": {

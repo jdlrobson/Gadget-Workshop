@@ -94,14 +94,7 @@ module.exports = ( translate, SPECIAL_CHARS, showLastEditedField ) => {
             </div>
             <div>
                 <select id="input-type">
-                    <option value="listing">listing</option>
-                    <option value="see">see</option>
-                    <option value="do">do</option>
-                    <option value="buy">buy</option>
-                    <option value="eat">eat</option>
-                    <option value="drink">drink</option>
-                    <option value="go">go</option>
-                    <option value="sleep">sleep</option>
+                    <!-- appended dynamically -->
                 </select>
             </div>
             <div class="editor-fullwidth">

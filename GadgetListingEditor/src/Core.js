@@ -36,8 +36,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         var form = $(EDITOR_FORM_HTML);
         // make sure the select dropdown includes any custom "type" values
         var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
+        const $dropdown = $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form);
+        const SUPPORTED_SECTIONS = PROJECT_CONFIG.SUPPORTED_SECTIONS;
+        SUPPORTED_SECTIONS.forEach( ( value ) => {
+            $( '<option>' ).val( value ).text( value ).appendTo( $dropdown );
+        } );
         if (isCustomListingType(listingType)) {
-            $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form).append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
+            $dropdown.append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
         }
         // populate the empty form with existing values
         for (var parameter in listingParameters) {

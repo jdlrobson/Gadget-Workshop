@@ -3472,7 +3472,9 @@ function requireCore () {
 	        // make sure the select dropdown includes any custom "type" values
 	        var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
 	        const $dropdown = $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form);
-	        const SUPPORTED_SECTIONS = PROJECT_CONFIG.SUPPORTED_SECTIONS;
+	        const LISTING_TEMPLATES_OMIT = PROJECT_CONFIG.LISTING_TEMPLATES_OMIT;
+	        const SUPPORTED_SECTIONS = PROJECT_CONFIG.SUPPORTED_SECTIONS
+	            .filter( ( a ) => !LISTING_TEMPLATES_OMIT.includes( a ) );
 	        SUPPORTED_SECTIONS.forEach( ( value ) => {
 	            $( '<option>' ).val( value ).text( value ).appendTo( $dropdown );
 	        } );

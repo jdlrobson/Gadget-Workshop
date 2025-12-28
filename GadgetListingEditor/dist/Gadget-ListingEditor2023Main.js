@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.16.0
+ * Listing Editor v3.18.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.16.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.18.0'
 
 'use strict';
 
@@ -980,7 +980,7 @@ let config = {};
 let _loaded = false;
 const loadConfig$1 = ( newConfig, projectConfig ) => {
     if ( _loaded ) {
-        throw new Error( 'Configuration was already loaded.' );
+        mw.log.warn( 'Configuration was already loaded. @todo: fix this!' );
     }
     _loaded = true;
     config = Object.assign( {}, newConfig, projectConfig );
@@ -1116,14 +1116,7 @@ function requireHtml$1 () {
             </div>
             <div>
                 <select id="input-type">
-                    <option value="listing">listing</option>
-                    <option value="see">see</option>
-                    <option value="do">do</option>
-                    <option value="buy">buy</option>
-                    <option value="eat">eat</option>
-                    <option value="drink">drink</option>
-                    <option value="go">go</option>
-                    <option value="sleep">sleep</option>
+                    <!-- appended dynamically -->
                 </select>
             </div>
             <div class="editor-fullwidth">
@@ -1346,9 +1339,11 @@ function requireCreateRadio () {
 	const makeSyncLinks = requireMakeSyncLinks();
 	const parseDMS = parseDMS_1;
 	const trimDecimal = requireTrimDecimal();
+	const { getConfig } = Config;
 
-	const createRadio = function(field, claimValue, guid, Config) {
-	    const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = Config;
+	// @todo: move to template
+	const createRadio = function(field, claimValue, guid) {
+	    const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
 
 	    var j = 0;
 	    for (j = 0; j < claimValue.length; j++) {
@@ -1398,9 +1393,11 @@ function requireCreateRadio () {
 	    }
 	    if ( remoteFlag === true ) {
 	        html += '<div class="choose-row" style="display:none">';
-	    } else { html += `<div class="sync_label">${field.label}</div><div class="choose-row">`; } // usual case, create heading
-	        html += `<div>` +
-	            `&nbsp;<label for="${field.label}-wd">`;
+	    } else {
+	        html += `<div class="sync_label">${field.label}</div><div class="choose-row">`;
+	    } // usual case, create heading
+	    html += `<div>` +
+	        `&nbsp;<label for="${field.label}-wd">`;
 
 	    if (
 	        [
@@ -1409,7 +1406,7 @@ function requireCreateRadio () {
 	            WIKIDATA_CLAIMS.image.p
 	        ].indexOf(field.p) >= 0
 	    ) {
-	        html += makeSyncLinks(claimValue, field.p, false, Config);
+	        html += makeSyncLinks(claimValue, field.p, false);
 	    }
 	    for (j = 0; j < claimValue.length; j++) {
 	        html += `${claimValue[j]}\n`;
@@ -1456,7 +1453,7 @@ function requireCreateRadio () {
 	            WIKIDATA_CLAIMS.image.p
 	        ].indexOf(field.p) >= 0
 	    ) {
-	        html += makeSyncLinks(editorField, field.p, true, Config);
+	        html += makeSyncLinks(editorField, field.p, true);
 	    }
 	    for (i = 0; i < editorField.length; i++ ) {
 	        html += `${$(editorField[i]).val()}\n`;
@@ -3474,8 +3471,13 @@ function requireCore () {
 	        var form = $(EDITOR_FORM_HTML);
 	        // make sure the select dropdown includes any custom "type" values
 	        var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
+	        const $dropdown = $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form);
+	        const SUPPORTED_SECTIONS = PROJECT_CONFIG.SUPPORTED_SECTIONS;
+	        SUPPORTED_SECTIONS.forEach( ( value ) => {
+	            $( '<option>' ).val( value ).text( value ).appendTo( $dropdown );
+	        } );
 	        if (isCustomListingType(listingType)) {
-	            $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form).append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
+	            $dropdown.append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
 	        }
 	        // populate the empty form with existing values
 	        for (var parameter in listingParameters) {

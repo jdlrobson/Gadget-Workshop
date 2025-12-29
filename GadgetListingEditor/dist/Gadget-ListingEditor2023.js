@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.18.0
+ * Listing Editor v3.19.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.18.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.19.0'
 
 'use strict';
 
@@ -237,8 +237,14 @@ See https://en.wikivoyage.org/w/index.php?title=MediaWiki%3AGadget-ListingEditor
     }
 };
 
+var mode = {
+    MODE_ADD: 'add',
+    MODE_EDIT: 'edit'
+};
+
 const contentTransform = contentTransform$1;
 const sectionToTemplateType = sectionToTemplateType$1;
+const { MODE_ADD, MODE_EDIT } = mode;
 
 $(function() {
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' );
@@ -255,7 +261,6 @@ $(function() {
 	// selector that identifies the HTML elements into which the 'edit' link
 	// for each listing will be placed
 	var EDIT_LINK_CONTAINER_SELECTOR = 'span.listing-metadata-items';
-	var MODE_EDIT = 'edit';
 
 	// List of namespaces where the editor is allowed
 	var ALLOWED_NAMESPACE = [
@@ -461,7 +466,7 @@ $(function() {
 				ev.stopPropagation();
 				const $this = $(this);
 				loadMain().then( function ( core ) {
-					core.initListingEditorDialog(core.MODE_ADD, $this);
+					core.initListingEditorDialog(MODE_ADD, $this);
 				} );
 			}, true );
 		};

@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.18.0
+ * Listing Editor v3.19.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.18.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.19.0'
 
 'use strict';
 
@@ -975,6 +975,11 @@ var Callbacks_1 = {
     loadCallbacks: loadCallbacks$1
 };
 
+var mode = {
+    MODE_ADD: 'add',
+    MODE_EDIT: 'edit'
+};
+
 let config = {};
 
 let _loaded = false;
@@ -1275,9 +1280,10 @@ function requireMakeSyncLinks () {
 	hasRequiredMakeSyncLinks = 1;
 	const parseDMS = parseDMS_1;
 	const { LANG } = globalConfig;
+	const { getConfig } = Config;
 
-	const makeSyncLinks = function(value, mode, valBool, Config) {
-	    const { WIKIDATA_CLAIMS } = Config;
+	const makeSyncLinks = function(value, mode, valBool) {
+	    const { WIKIDATA_CLAIMS } = getConfig();
 	    var htmlPart = '<a target="_blank" rel="noopener noreferrer"';
 	    var i;
 	    switch(mode) {
@@ -2595,19 +2601,6 @@ function requireListingToStr () {
 	return listingToStr_1;
 }
 
-var mode;
-var hasRequiredMode;
-
-function requireMode () {
-	if (hasRequiredMode) return mode;
-	hasRequiredMode = 1;
-	mode = {
-	    MODE_ADD: 'add',
-	    MODE_EDIT: 'edit'
-	};
-	return mode;
-}
-
 /**
  * Determine whether a listing entry is within a paragraph rather than
  * an entry in a list; inline listings will be formatted slightly
@@ -3454,7 +3447,7 @@ function requireCore () {
 	    } = Config;
 
 	    var api = new mw.Api();
-	    const { MODE_ADD, MODE_EDIT } = requireMode();
+	    const { MODE_ADD, MODE_EDIT } = mode;
 	    var SAVE_FORM_SELECTOR = '#progress-dialog';
 	    var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
 	    var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
@@ -3973,6 +3966,7 @@ const parseDMS = parseDMS_1;
 const { LANG } = globalConfig;
 const translateModule = translate_1;
 const { loadCallbacks } = Callbacks_1;
+const { MODE_ADD } = mode;
 const { loadConfig } = Config;
 
 var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
@@ -4394,7 +4388,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		var updateLastEditDate = function(listing, mode) {
 			var LISTING_LAST_EDIT_PARAMETER = 'lastedit';
 			var EDITOR_LAST_EDIT_SELECTOR = '#input-last-edit';
-			if (mode == Core.MODE_ADD || $(EDITOR_LAST_EDIT_SELECTOR).is(':checked')) {
+			if (mode == MODE_ADD || $(EDITOR_LAST_EDIT_SELECTOR).is(':checked')) {
 				listing[LISTING_LAST_EDIT_PARAMETER] = currentLastEditDate();
 			}
 		};

@@ -96,7 +96,7 @@
 	"wikidataSharedMatch": "Nessuna differenza trovata tra i valori locali e quelli su Wikidata",
 	"wikidataShared": "I seguenti dati sono stati trovati su Wikidata. Aggiorno i relativi campi con questi valori?",
 	"wikidataSharedNotFound": "Nessun dato è stato recuperato da Wikidata",
-	"wikidataSyncBlurb": "Il valore selezionato cambierà in entrambi i siti Web in modo che corrispondano (selezionando un valore vuoto verrà eliminato da entrambi). Non selezionare nessuno dei due, non comporterà alcuna modifica. Si prega rischiare di sbagliare scegliendo uno dei valori piuttosto che non fare niente - ci sono alcuni casi in cui è preferibile avere intenzionalmente un valore diverso tra i due siti. <p> Sei incoraggiato ad andare nell'elemento Wikidata per aggiungere i riferimenti di un qualsiasi dato che cambi.",
+	"wikidataSyncBlurb": "Il valore selezionato cambierà in entrambi i siti Web in modo che corrispondano (selezionando un valore vuoto verrà eliminato da entrambi). Non selezionare nessuno dei due, non comporterà alcuna modifica. Si prega rischiare di sbagliare scegliendo uno dei valori piuttosto che non fare niente - ci sono alcuni casi in cui è preferibile avere intenzionalmente un valore diverso tra i due siti. Sei incoraggiato ad andare nell'elemento Wikidata per aggiungere i riferimenti di un qualsiasi dato che cambi.",
 	"natlCurrencyTitle": "Simboli della valuta nazionale",
 	"intlCurrenciesTitle": "Simboli di valute internazionali"
 }

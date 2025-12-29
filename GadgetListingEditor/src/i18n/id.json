@@ -57,7 +57,7 @@
 	"wikidataSharedMatch": "Tidak ditemukan perbedaan antara nilai data lokal dengan Wikidata",
 	"wikidataShared": "Data berikut ditemukan dalam rekaman bersama Wikidata. Perbarui kolom bersama menggunakan nilai-nilai itu?",
 	"wikidataSharedNotFound": "Tidak ada data bersama yang ditemukan di repositori Wikidata",
-	"wikidataSyncBlurb": "Memilih salah satu nilai data akan mengubah kedua situs web agar sesuai (memilih nilai kosong akan menghapus data dari keduanya). Tidak memilih salah satu pun juga takkan mengubah apa pun. Mohon pilih salah satu nilai alih-alih melewatkannya - ada beberapa kasus di mana kita sebaiknya sengaja memilih nilai yang berbeda.<p>Anda disarankan untuk membuka butir Wikidata dan menambahkan referensi untuk setiap data yang Anda ubah.",
+	"wikidataSyncBlurb": "Memilih salah satu nilai data akan mengubah kedua situs web agar sesuai (memilih nilai kosong akan menghapus data dari keduanya). Tidak memilih salah satu pun juga takkan mengubah apa pun. Mohon pilih salah satu nilai alih-alih melewatkannya - ada beberapa kasus di mana kita sebaiknya sengaja memilih nilai yang berbeda. Anda disarankan untuk membuka butir Wikidata dan menambahkan referensi untuk setiap data yang Anda ubah.",
 	"editSummary": "Ringkasan Suntingan",
 	"name": "Nama",
 	"website": "Situs web",

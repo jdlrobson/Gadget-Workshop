@@ -15,7 +15,7 @@ const {
     updateWikidataInputLabel, sisterSiteLinkDisplay
 } = require( './ui.js' );
 
-const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLink) {
+const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLink, $syncDialogElement) {
     return () => {
         const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = Config;
         const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
@@ -92,7 +92,7 @@ const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLi
             }
         });
 
-        dialog.close(this);
+        dialog.close( $syncDialogElement );
     }
 };
 
@@ -115,7 +115,7 @@ const launchSyncDialog = function (jsonObj, wikidataRecord, SisterSite, Config, 
     const $syncDialogElement = listingEditorSync.init(
         SisterSite, Config, translate, jsonObj, wikidataRecord
     );
-    const submitFunction = makeSubmitFunction( SisterSite, Config, commonsLink, wikipediaLink );
+    const submitFunction = makeSubmitFunction( SisterSite, Config, commonsLink, wikipediaLink, $syncDialogElement );
     dialog.open($syncDialogElement, {
         title: translate( 'syncTitle' ),
         dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',

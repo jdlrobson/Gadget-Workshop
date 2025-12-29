@@ -1,4 +1,5 @@
 const trimDecimal = require( './trimDecimal.js' );
+const { translate } = require( './translate.js' );
 
 /**
  * Logic invoked on form submit to analyze the values entered into the
@@ -14,8 +15,7 @@ const trimDecimal = require( './trimDecimal.js' );
 const validateForm = function(
     VALIDATE_FORM_CALLBACKS,
     REPLACE_NEW_LINE_CHARS,
-    APPEND_FULL_STOP_TO_DESCRIPTION,
-    translate = () => {}
+    APPEND_FULL_STOP_TO_DESCRIPTION
 ) {
     const coordsError = () => {
         alert( translate( 'coordinates-error' ) );

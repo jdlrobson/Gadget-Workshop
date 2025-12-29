@@ -96,20 +96,7 @@ const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLi
     }
 };
 
-const updateWikidataSharedFields = function(
-    wikidataRecord, SisterSite
-) {
-    const { API_WIKIDATA, ajaxSisterSiteSearch } = SisterSite;
-
-    return ajaxSisterSiteSearch(
-        API_WIKIDATA,
-        {
-            action: 'wbgetentities',
-            ids: wikidataRecord,
-            languages: LANG
-        }
-    );
-}
+const updateWikidataSharedFields = require( './updateWikidataSharedFields.js' );
 
 const launchSyncDialog = function (jsonObj, wikidataRecord, SisterSite, Config, translate, commonsLink, wikipediaLink) {
     const $syncDialogElement = listingEditorSync.init(

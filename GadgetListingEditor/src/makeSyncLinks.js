@@ -1,8 +1,9 @@
 const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
+const { getConfig } = require( './Config.js' );
 
-const makeSyncLinks = function(value, mode, valBool, Config) {
-    const { WIKIDATA_CLAIMS } = Config;
+const makeSyncLinks = function(value, mode, valBool) {
+    const { WIKIDATA_CLAIMS } = getConfig();
     var htmlPart = '<a target="_blank" rel="noopener noreferrer"';
     var i;
     switch(mode) {

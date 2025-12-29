@@ -6,12 +6,12 @@ const { iata } = require( '../templates.js' );
 const htmlSisterSites = require( './html.js' );
 const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, LANG } = require( '../globalConfig.js' );
 const listingEditorSync = require( '../listingEditorSync.js' );
+const updateFieldIfNotNull = require( './updateFieldIfNotNull.js' );
 const {
     wikidataRemove,
     setWikidataInputFields,
     showWikidataFields,
     hideWikidataFields,
-    updateFieldIfNotNull,
     updateWikidataInputLabel, sisterSiteLinkDisplay
 } = require( './ui.js' );
 

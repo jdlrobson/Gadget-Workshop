@@ -30,16 +30,6 @@ const sisterSiteLinkDisplay = function(siteLinkData, form, translate) {
     }
 };
 
-const updateFieldIfNotNull = function(selector, value, placeholderBool) {
-    if ( value !== null ) {
-        if ( placeholderBool !== true ) {
-            $(selector).val(value);
-        } else {
-            $(selector).val('').attr('placeholder', value).attr('disabled', true);
-        }
-    }
-};
-
 const setWikidataInputFields = ( wikidataID ) => {
     $("#input-wikidata-value").val(wikidataID);
     $("#input-wikidata-label").val(wikidataID);
@@ -61,7 +51,6 @@ module.exports =  {
     setWikidataInputFields,
     showWikidataFields,
     hideWikidataFields,
-    updateFieldIfNotNull,
     sisterSiteLinkDisplay,
     wikidataRemove,
     updateWikidataInputLabel

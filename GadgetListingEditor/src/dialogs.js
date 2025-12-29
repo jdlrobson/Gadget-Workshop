@@ -7,7 +7,7 @@ function destroy( selector ) {
     load().then( () => $(selector).dialog( 'destroy' ).remove() );
 }
 
-function open( $element, options ) {
+function open( $element, options = {} ) {
     load().then( () =>
         $element.dialog(
             Object.assign( options, {

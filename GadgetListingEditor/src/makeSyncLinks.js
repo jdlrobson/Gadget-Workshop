@@ -7,35 +7,32 @@ const prepareSyncValues = ( value, valBool ) => {
         $(selectorOrValue).val() : selectorOrValue );
 };
 
-const makeSyncLinks = function(unprocessedValue, mode, valBool) {
+const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
     const value = prepareSyncValues( unprocessedValue, valBool );
     const { WIKIDATA_CLAIMS } = getConfig();
-    var htmlPart = '<a target="_blank" rel="noopener noreferrer"';
-    var i;
+    let prefix = '';
+    let suffix = '';
     switch(mode) {
         case WIKIDATA_CLAIMS.coords.p:
-            htmlPart += 'href="https://geohack.toolforge.org/geohack.php?params=';
-            for (i = 0; i < value.length; i++) {
-                htmlPart += `${parseDMS(value[i])};`;
-            }
-            htmlPart += '_type:landmark">'; // sets the default zoom
-            break;
-        case WIKIDATA_CLAIMS.url.p:
-            htmlPart += 'href="';
-            for (i = 0; i < value.length; i++) {
-                htmlPart += value[i];
-            }
-            htmlPart += '">';
+            prefix += 'https://geohack.toolforge.org/geohack.php?params=';
+            prefix += value.map(v=>parseDMS(v)).join(';');
+            suffix = ';_type:landmark'; // sets the default zoom
             break;
         case WIKIDATA_CLAIMS.image.p:
-            htmlPart += `href="https://${LANG}.wikivoyage.org/wiki/File:`;
-            for (i = 0; i < value.length; i++) {
-                htmlPart += value[i];
-            }
-            htmlPart += '">';
+            prefix += `https://${LANG}.wikivoyage.org/wiki/File:`;
+            prefix += value.map(v=>v).join('');
+            break;
+        default:
+            prefix += value.map(v=>v).join('');
             break;
     }
-    return htmlPart;
+    return `${prefix}${suffix}`;
 };
+
+const makeSyncLinks = function(unprocessedValue, mode, valBool) {
+    const href = prepareSyncUrl( unprocessedValue, mode, valBool );
+    return `<a target="_blank" rel="noopener noreferrer"href="${href}">`
+};
+
 
 module.exports = makeSyncLinks;

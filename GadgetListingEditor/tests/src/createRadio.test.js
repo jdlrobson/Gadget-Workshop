@@ -9,7 +9,7 @@ describe( 'createRadio', () => {
 
         const commonsInput = document.createElement( 'input' );
         commonsInput.id = 'input-image';
-        commonsInput.value = '';
+        commonsInput.value = 'City Ground Remastered.jpg';
         document.body.appendChild( commonsInput );
 
         const latInput = document.createElement( 'input' );
@@ -104,4 +104,65 @@ describe( 'createRadio', () => {
         const radios = output.querySelectorAll('input[type="radio"]');
         expect(radios[2].disabled).toBe(false);
 	} );
+
+    it( 'can create radios for lat / lon with values', () => {
+		const html = createRadio(
+            {
+                p: 'P625',
+                label: 'coordinates',
+                fields: [
+                    'lat',
+                    'long'
+                ],
+                remotely_sync: false
+            },
+            [
+                '52.94',
+                '12.2209'
+            ],
+            null
+        );
+        expect(html).toMatchSnapshot();
+	} );
+
+    it( 'has edge cases', () => {
+        const html = createRadio(
+            {
+                label: 'edgecase1',
+                fields: [],
+                doNotUpload: true
+            },
+            [
+                ''
+            ],
+            null
+        );
+        expect(html).toBe('');
+    } );
+
+    it( 'has edge cases (2)', () => {
+        const html = createRadio(
+            {
+                label: 'edgecase2',
+                fields: [],
+                remotely_sync: false
+            },
+            [],
+            null
+        );
+        expect(html).toBe('');
+    } );
+
+    it( 'when remote flag is set creates hidden div', () => {
+        const html = createRadio(
+            {
+                label: 'radiolabel',
+                fields: [],
+                remotely_sync: true
+            },
+            [],
+            null
+        );
+        expect(html).toMatchSnapshot();
+    } );
 } );

@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`createRadio can create radios for lat / lon with values 1`] = `
+"<div class="sync_label">coordinates</div><div class="choose-row"><div>&nbsp;<label for="coordinates-wd"><a target="_blank" rel="noopener noreferrer"href="https://geohack.toolforge.org/geohack.php?params=52.94;12.2209;_type:landmark">52.94
+12.2209
+</a></label>
+</div>
+<div id="has-guid">
+<input type="radio" id="coordinates-wd" name="coordinates">
+<input type="hidden" value="null">
+</div><div>
+    <input type="radio" name="coordinates" checked>
+</div><div id="has-json"><input type="radio" id="coordinates-wv" name="coordinates"><input type="hidden" value='{"p":"P625","label":"coordinates","fields":["lat","long"],"remotely_sync":false}'>
+</div>
+<div>&nbsp;<label for="coordinates-wv"><a target="_blank" rel="noopener noreferrer"href="https://geohack.toolforge.org/geohack.php?params=52.94;-1.1328;_type:landmark">52.94
+-1.1328
+</a></label></div></div>
+"
+`;
+
 exports[`createRadio creates radios 1`] = `
 "<div class="sync_label">wikipedia</div><div class="choose-row"><div>&nbsp;<label for="wikipedia-wd">Nottingham Forest F.C.
 </label>
@@ -13,5 +31,17 @@ exports[`createRadio creates radios 1`] = `
 </div>
 <div>&nbsp;<label for="wikipedia-wv">City Ground
 </label></div></div>
+"
+`;
+
+exports[`createRadio when remote flag is set creates hidden div 1`] = `
+"<div class="choose-row" style="display:none"><div>&nbsp;<label for="radiolabel-wd"></label>
+</div>
+<div id="has-guid">
+<input type="radio" id="radiolabel-wd" name="radiolabel"checked>
+<input type="hidden" value="null">
+</div><div id="has-json"><input type="radio" disabled><input type="hidden" value='{"label":"radiolabel","fields":[],"remotely_sync":true}'>
+</div>
+<div>&nbsp;<label for="radiolabel-wv"></label></div></div>
 "
 `;

@@ -1837,6 +1837,7 @@ scrpt.src = './Gadget-ListingEditor2023.js';
 scrpt.type = 'module';
 const originalAjax = $.ajax;
 setTimeout( () => {
+	mw.loader.load( 'jquery.ui');
 	mw.loader.load( 'mediawiki.api');
 	mw.loader.load( 'mediawiki.util');
 

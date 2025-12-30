@@ -1,7 +1,6 @@
 const dialog = require( './dialogs.js' );
 const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
 const listingEditorSync = require( './listingEditorSync.js' );
-const renderSisterSiteApp = require( './sisterSiteApp/render.js' );
 const currentEdit = require( './currentEdit.js' );
 const { getSectionText, setSectionText } = currentEdit;
 const listingToStr = require( './listingToStr.js' );
@@ -9,7 +8,6 @@ const localData = require( './localData.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
-        EDITOR_FORM_HTML,
         LISTING_TYPE_PARAMETER,
         SECTION_TO_TEMPLATE_TYPE,
         DEFAULT_LISTING_TEMPLATE,
@@ -19,64 +17,12 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 
     var api = new mw.Api();
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
-    var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
 
     /**
      * Generate the form UI for the listing editor. If editing an existing
      * listing, pre-populate the form input fields with the existing values.
      */
-    var createForm = function(mode, listingParameters, listingTemplateAsMap, {
-        telephoneCodes,
-        NATL_CURRENCY
-    }) {
-        var form = $(EDITOR_FORM_HTML);
-        // make sure the select dropdown includes any custom "type" values
-        var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
-        const $dropdown = $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form);
-        const LISTING_TEMPLATES_OMIT = PROJECT_CONFIG.LISTING_TEMPLATES_OMIT;
-        const SUPPORTED_SECTIONS = PROJECT_CONFIG.SUPPORTED_SECTIONS
-            .filter( ( a ) => !LISTING_TEMPLATES_OMIT.includes( a ) );
-        SUPPORTED_SECTIONS.forEach( ( value ) => {
-            $( '<option>' ).val( value ).text( value ).appendTo( $dropdown );
-        } );
-        if (isCustomListingType(listingType)) {
-            $dropdown.append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
-        }
-        // populate the empty form with existing values
-        for (var parameter in listingParameters) {
-            var parameterInfo = listingParameters[parameter];
-            if (listingTemplateAsMap[parameter]) {
-                $(`#${parameterInfo.id}`, form).val(listingTemplateAsMap[parameter]);
-            } else if (parameterInfo.hideDivIfEmpty) {
-                $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
-            }
-        }
-        // Adding national currency symbols
-        var natlCurrency = $(NATL_CURRENCY_SELECTOR, form);
-        if (NATL_CURRENCY.length > 0) {
-            for (i = 0; i < NATL_CURRENCY.length; i++) {
-                natlCurrency.append(`<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${NATL_CURRENCY[i]}</a></span>`);
-            }
-            natlCurrency.append(' |');
-        } else natlCurrency.hide();
-        // Adding country calling code
-        var phones = $('.input-cc', form);
-        if ( telephoneCodes.length ) {
-            phones.each( function() {
-                i = $(this).attr('data-for');
-                telephoneCodes.forEach( ( CC ) => {
-                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${CC} </a></span>` );
-                } );
-            });
-        } else phones.hide();
-
-        for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
-            Callbacks.CREATE_FORM_CALLBACKS[i](form, mode);
-        }
-        // update SisterSite app values
-        renderSisterSiteApp( Config, translate, listingTemplateAsMap )( form );
-        return form;
-    };
+    var createForm = require( './createForm.js' );
 
     var isInline = require( './isInline.js' );
 
@@ -316,8 +262,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * listing template type if not enty exists for the specified type.
      */
     var getListingInfo = require( './getListingInfo.js' );
-
-    var isCustomListingType = require( './isCustomListingType.js' );
 
     var validateForm = require( './validateForm.js' );
 

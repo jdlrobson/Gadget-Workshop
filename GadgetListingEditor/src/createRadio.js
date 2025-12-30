@@ -4,7 +4,7 @@ const trimDecimal = require( './trimDecimal.js' );
 const { getConfig } = require( './Config.js' );
 
 // @todo: move to template
-const createRadio = function(field, claimValue, guid) {
+const prepareRadio = function(field, claimValue) {
     const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
 
     var j = 0;
@@ -14,7 +14,6 @@ const createRadio = function(field, claimValue, guid) {
         }
     }
     field.label = field.label.split(/(\s+)/)[0]; // take first word
-    var html = '';
     var editorField = [];
     var remoteFlag = false;
     for ( var i = 0; i < field.fields.length; i++ ) {
@@ -38,20 +37,38 @@ const createRadio = function(field, claimValue, guid) {
             break;
         }
     }
-    if ( (j === claimValue.length) && (field.remotely_sync !== true) ) {
-        return '';
-    }
-    // if everything on WV equals everything on WD, skip this field
-
-    if ( (field.doNotUpload === true) && (claimValue[0] === '') ) {
-        return '';
-    }
-    // if do not upload is set and there is nothing on WD, skip
 
     // if remotely synced, and there aren't any value(s) here or they are identical, skip with a message
     // also create an invisible radio button so that updateFieldIfNotNull is called
     if ( (field.remotely_sync === true) && ( j === claimValue.length || ( ( $(editorField[0]).val() === '' ) && ( ($(editorField[1]).val() === '' ) || ($(editorField[1]).val() === undefined) ) ) ) ) {
         remoteFlag = true;
+    }
+
+    return {
+        editorField,
+        skip: ( j === claimValue.length && field.remotely_sync !== true ) ||
+            ( field.doNotUpload === true && claimValue[0] === '' ),
+        claimValue,
+        remoteFlag,
+        hasSyncLink: [
+            WIKIDATA_CLAIMS.coords.p,
+            WIKIDATA_CLAIMS.url.p,
+            WIKIDATA_CLAIMS.image.p
+        ].indexOf(field.p) >= 0
+    };
+}
+
+const createRadio = function(field, value, guid) {
+    let html = '';
+    const {
+        editorField,
+        skip,
+        remoteFlag,
+        claimValue,
+        hasSyncLink
+    } = prepareRadio(field, value);
+    if ( skip ) {
+        return '';
     }
     if ( remoteFlag === true ) {
         html += '<div class="choose-row" style="display:none">';
@@ -62,23 +79,15 @@ const createRadio = function(field, claimValue, guid) {
         `&nbsp;<label for="${field.label}-wd">`;
 
     if (
-        [
-            WIKIDATA_CLAIMS.coords.p,
-            WIKIDATA_CLAIMS.url.p,
-            WIKIDATA_CLAIMS.image.p
-        ].indexOf(field.p) >= 0
+        hasSyncLink
     ) {
         html += makeSyncLinks(claimValue, field.p, false);
     }
-    for (j = 0; j < claimValue.length; j++) {
+    for (let j = 0; j < claimValue.length; j++) {
         html += `${claimValue[j]}\n`;
     }
     if (
-        [
-            WIKIDATA_CLAIMS.coords.p,
-            WIKIDATA_CLAIMS.url.p,
-            WIKIDATA_CLAIMS.image.p
-        ].indexOf(field.p) >= 0
+        hasSyncLink
     ) {
         html += '</a>';
     }
@@ -109,23 +118,15 @@ const createRadio = function(field, claimValue, guid) {
 <div>&nbsp;<label for="${field.label}-wv">`;
 
     if (
-        [
-            WIKIDATA_CLAIMS.coords.p,
-            WIKIDATA_CLAIMS.url.p,
-            WIKIDATA_CLAIMS.image.p
-        ].indexOf(field.p) >= 0
+        hasSyncLink
     ) {
         html += makeSyncLinks(editorField, field.p, true);
     }
-    for (i = 0; i < editorField.length; i++ ) {
+    for (let i = 0; i < editorField.length; i++ ) {
         html += `${$(editorField[i]).val()}\n`;
     }
     if (
-        [
-            WIKIDATA_CLAIMS.coords.p,
-            WIKIDATA_CLAIMS.url.p,
-            WIKIDATA_CLAIMS.image.p
-        ].indexOf(field.p) >= 0
+        hasSyncLink
     ) {
         html += '</a>';
     }

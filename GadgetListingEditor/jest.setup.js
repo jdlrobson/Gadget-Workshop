@@ -3,6 +3,18 @@
 
 const mockMediaWiki = require( '@wikimedia/mw-node-qunit/src/mockMediaWiki.js' );
 global.mw = mockMediaWiki();
+global.mw.config = {
+    get: ( key ) => {
+        switch ( key ) {
+            case 'wgUserLanguage':
+                return 'en';
+            case 'wgPageViewLanguage':
+                return 'en';
+            default:
+                return `-- ${key} --`;
+        }
+    }
+};
 global.$ = require( 'jquery' );
 global.mw.util.showPortlet = function () {};
 global.mw.Api.prototype.saveOption = function () {};

@@ -16,7 +16,7 @@ const { getConfig } = require( './Config' );
 
 const listingEditorSync = require( './listingEditorSync.js' );
 
-var showPreview = function(listingTemplateAsMap) {
+const showPreview = function(listingTemplateAsMap) {
     const {
         LISTING_TYPE_PARAMETER,
         DEFAULT_LISTING_TEMPLATE

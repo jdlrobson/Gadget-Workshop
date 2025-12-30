@@ -134,24 +134,11 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		} );
 
 		const {
-			EDITOR_FORM_SELECTOR,
 			EDITOR_CLOSED_SELECTOR,
 			EDITOR_SUMMARY_SELECTOR,
 			EDITOR_MINOR_EDIT_SELECTOR
 		} = require( './selectors.js' );
 
-		// the below HTML is the UI that will be loaded into the listing editor
-		// dialog box when a listing is added or edited. EACH WIKIVOYAGE
-		// LANGUAGE SITE CAN CUSTOMIZE THIS HTML - fields can be removed,
-		// added, displayed differently, etc. Note that it is important that
-		// any changes to the HTML structure are also made to the
-		// LISTING_TEMPLATES parameter arrays since that array provides the
-		// mapping between the editor HTML and the listing template fields.
-		const EDITOR_FORM_HTML = require( './html.js' )(
-			translate,
-			PROJECT_CONFIG.SPECIAL_CHARS,
-			PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD
-		);
 		// expose public members
 		return {
 			LANG,
@@ -165,11 +152,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			ALLOW_UNRECOGNIZED_PARAMETERS,
 			SECTION_TO_TEMPLATE_TYPE,
 			LISTING_TEMPLATES,
-			EDITOR_FORM_SELECTOR,
 			EDITOR_CLOSED_SELECTOR,
 			EDITOR_SUMMARY_SELECTOR,
-			EDITOR_MINOR_EDIT_SELECTOR,
-			EDITOR_FORM_HTML
+			EDITOR_MINOR_EDIT_SELECTOR
 		};
 	}();
 

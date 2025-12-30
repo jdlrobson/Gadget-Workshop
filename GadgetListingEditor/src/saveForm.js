@@ -2,8 +2,7 @@ const getSectionName = require( './getSectionName.js' );
 const { translate } = require( './translate.js' );
 const savePayload = require( './savePayload.js' );
 const { getSectionText } = require( './currentEdit.js' );
-const { getConfig } = require( './Config.js' );
-
+const { EDITOR_FORM_SELECTOR } = require( './selectors.js' );
 var SAVE_FORM_SELECTOR = '#progress-dialog';
 var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
 /**
@@ -70,7 +69,6 @@ var savingForm = function( dialog ) {
  * display an alert with a failure message.
  */
 var saveFailedInternal = function(msg, dialog) {
-    const { EDITOR_FORM_SELECTOR } = getConfig();
     dialog.destroy(SAVE_FORM_SELECTOR);
     dialog.open($(EDITOR_FORM_SELECTOR));
     alert(msg);
@@ -100,7 +98,7 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
             if ( data.edit.nochange !== undefined ) {
                 alert( 'Save skipped as there was no change to the content!' );
                 dialog.destroy(SAVE_FORM_SELECTOR);
-                return;
+                return Promise.resolve();
             }
             // since the listing editor can be used on diff pages, redirect
             // to the canonical URL if it is different from the current URL
@@ -117,13 +115,25 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
             }
         } else if (data && data.error) {
             saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
+            return Promise.reject( {} );
         } else if (data && data.edit.spamblacklist) {
             saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
+            return Promise.reject( {} );
         } else if (data && data.edit.captcha) {
             dialog.destroy(SAVE_FORM_SELECTOR);
             captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id, dialog);
+            return Promise.reject( {
+                edit: data.edit,
+                    args: [
+                    summary,
+                    minor,
+                    sectionNumber,
+                    data.edit.captcha.id
+                ]
+            } );
         } else {
             saveFailed(translate( 'submitUnknownError' ));
+            return Promise.reject( {} );
         }
     }, function(code, result) {
         if (code === "http") {
@@ -133,6 +143,7 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
         } else {
             saveFailed(`${translate( 'submitUnknownError' )}: ${code}` );
         }
+        return Promise.reject( {} );
     });
     savingForm( dialog );
 };

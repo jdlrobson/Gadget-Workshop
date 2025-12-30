@@ -11,11 +11,17 @@ const createForm = function(mode, listingParameters, listingTemplateAsMap, {
 }) {
     const Config = getConfig();
     const {
-        EDITOR_FORM_HTML,
         LISTING_TYPE_PARAMETER,
         SUPPORTED_SECTIONS,
+        SPECIAL_CHARS,
+        SHOW_LAST_EDITED_FIELD,
         LISTING_TEMPLATES_OMIT
     } = Config;
+    const EDITOR_FORM_HTML = require( './html.js' )(
+        translate,
+        SPECIAL_CHARS,
+        SHOW_LAST_EDITED_FIELD
+    );
     var form = $(EDITOR_FORM_HTML);
     // make sure the select dropdown includes any custom "type" values
     var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];

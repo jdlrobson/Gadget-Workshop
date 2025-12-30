@@ -18,12 +18,14 @@ const makeSubmitFunction = function(SisterSite, commonsLink, wikipediaLink, $syn
         const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
             removeFromWikidata, ajaxSisterSiteSearch } = SisterSite;
 
-        listingEditorSync.$element().find('input[id]:radio:checked').each(function () {
+        $('#listing-editor-sync input[id]:radio:checked').each(function () {
             var label = $(`label[for="${$(this).attr('id')}"]`);
             var syncedValue = label.text().split('\n');
             var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
             var editorField = [];
-            for( var i = 0; i < field.fields.length; i++ ) { editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`; }
+            for( var i = 0; i < field.fields.length; i++ ) {
+                editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`;
+            }
             var guidObj = $(this).parents('.choose-row').find('#has-guid > input:hidden:not(:radio)').val();
 
             if ( field.p === WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude

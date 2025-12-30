@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`makeSyncLinks makes half a link 1`] = `"<a target="_blank" rel="noopener noreferrer"href="https://en.wikivoyage.org/wiki/File:City Ground.jpg">"`;
+
+exports[`makeSyncLinks makes half a link 2`] = `"<a target="_blank" rel="noopener noreferrer"href="https://nottinghamforest.co.uk">"`;
+
+exports[`makeSyncLinks makes half a link 3`] = `"<a target="_blank" rel="noopener noreferrer"href="https://geohack.toolforge.org/geohack.php?params=52.94;-1.1328;_type:landmark">"`;

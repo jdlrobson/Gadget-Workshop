@@ -3,6 +3,7 @@ const { translate } = require( './translate.js' );
 const savePayload = require( './savePayload.js' );
 const { getSectionText } = require( './currentEdit.js' );
 const { EDITOR_FORM_SELECTOR } = require( './selectors.js' );
+const { getConfig } = require( './Config.js' );
 var SAVE_FORM_SELECTOR = '#progress-dialog';
 var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
 /**
@@ -81,9 +82,11 @@ var saveFailedInternal = function(msg, dialog) {
  */
 const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
     var saveFailed = ( msg ) => saveFailedInternal( msg, dialog );
+    const { EDITOR_TAG } = getConfig();
     var editPayload = {
         action: "edit",
         title: mw.config.get( "wgPageName" ),
+        tags: EDITOR_TAG,
         section: sectionNumber,
         text: getSectionText(),
         summary,

@@ -220,7 +220,7 @@ $(function() {
 				}
 				// dont collapse section on mobile.
 				ev.stopPropagation();
-				const $this = $(this);
+				const $this = $(ev.target);
 				loadMain().then( function ( core ) {
 					core.initListingEditorDialog(MODE_ADD, $this);
 				} );

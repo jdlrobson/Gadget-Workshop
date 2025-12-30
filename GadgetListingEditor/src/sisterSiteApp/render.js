@@ -137,7 +137,7 @@ module.exports = ( Config, translate, listingTemplateAsMap ) => {
             ).then(( jsonObj ) => {
                 wikidataLink("", $("#input-wikidata-value").val()); // called to append the Wikidata link to the dialog title
                 launchSyncDialog(
-                    jsonObj, wikidataRecord, SisterSite, Config, translate, commonsLink, wikipediaLink
+                    jsonObj, wikidataRecord, SisterSite, commonsLink, wikipediaLink
                 );
             });
         });

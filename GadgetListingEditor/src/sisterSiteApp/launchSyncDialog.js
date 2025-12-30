@@ -5,14 +5,16 @@ const dialog = require( '../dialogs.js' );
 const parseDMS = require( '../parseDMS.js' );
 const updateFieldIfNotNull = require( './updateFieldIfNotNull.js' );
 const listingEditorSync = require( '../listingEditorSync.js' );
+const { translate } = require( '../translate.js' );
+const { getConfig } = require( '../Config.js' );
 const {
     showWikidataFields,
     hideWikidataFields
 } = require( './ui.js' );
 
-const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLink, $syncDialogElement) {
+const makeSubmitFunction = function(SisterSite, commonsLink, wikipediaLink, $syncDialogElement) {
     return () => {
-        const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = Config;
+        const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
         const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
             removeFromWikidata, ajaxSisterSiteSearch } = SisterSite;
 
@@ -91,11 +93,11 @@ const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLi
     }
 };
 
-module.exports = function (jsonObj, wikidataRecord, SisterSite, Config, translate, commonsLink, wikipediaLink) {
+module.exports = function (jsonObj, wikidataRecord, SisterSite, commonsLink, wikipediaLink) {
     const $syncDialogElement = listingEditorSync.init(
-        SisterSite, Config, translate, jsonObj, wikidataRecord
+        SisterSite, jsonObj, wikidataRecord
     );
-    const submitFunction = makeSubmitFunction( SisterSite, Config, commonsLink, wikipediaLink, $syncDialogElement );
+    const submitFunction = makeSubmitFunction( SisterSite, commonsLink, wikipediaLink, $syncDialogElement );
     dialog.open($syncDialogElement, {
         title: translate( 'syncTitle' ),
         dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',

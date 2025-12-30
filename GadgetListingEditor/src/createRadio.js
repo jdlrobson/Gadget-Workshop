@@ -50,6 +50,7 @@ const prepareRadio = function(field, claimValue) {
             ( field.doNotUpload === true && claimValue[0] === '' ),
         claimValue,
         remoteFlag,
+        labelText: editorField.map( ( selector ) => $(selector).val() ).join( '\n' ),
         hasSyncLink: [
             WIKIDATA_CLAIMS.coords.p,
             WIKIDATA_CLAIMS.url.p,
@@ -61,6 +62,7 @@ const prepareRadio = function(field, claimValue) {
 const createRadio = function(field, value, guid) {
     let html = '';
     const {
+        labelText,
         editorField,
         skip,
         remoteFlag,
@@ -122,9 +124,7 @@ const createRadio = function(field, value, guid) {
     ) {
         html += makeSyncLinks(editorField, field.p, true);
     }
-    for (let i = 0; i < editorField.length; i++ ) {
-        html += `${$(editorField[i]).val()}\n`;
-    }
+    html += labelText;
     if (
         hasSyncLink
     ) {

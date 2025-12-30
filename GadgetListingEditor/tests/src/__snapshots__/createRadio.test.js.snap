@@ -13,8 +13,7 @@ exports[`createRadio can create radios for lat / lon with values 1`] = `
 </div><div id="has-json"><input type="radio" id="coordinates-wv" name="coordinates"><input type="hidden" value='{"p":"P625","label":"coordinates","fields":["lat","long"],"remotely_sync":false}'>
 </div>
 <div>&nbsp;<label for="coordinates-wv"><a target="_blank" rel="noopener noreferrer"href="https://geohack.toolforge.org/geohack.php?params=52.94;-1.1328;_type:landmark">52.94
--1.1328
-</a></label></div></div>
+-1.1328</a></label></div></div>
 "
 `;
 
@@ -29,8 +28,7 @@ exports[`createRadio creates radios 1`] = `
     <input type="radio" name="wikipedia" checked>
 </div><div id="has-json"><input type="radio" disabled><input type="hidden" value='{"label":"wikipedia","fields":["wikipedia"],"doNotUpload":true,"remotely_sync":true}'>
 </div>
-<div>&nbsp;<label for="wikipedia-wv">City Ground
-</label></div></div>
+<div>&nbsp;<label for="wikipedia-wv">City Ground</label></div></div>
 "
 `;
 

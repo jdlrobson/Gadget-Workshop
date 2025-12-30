@@ -55,7 +55,11 @@ module.exports = [
                 format: 'cjs'
             }
 		],
-		external: [/node_modules/],
+		external: [
+			/node_modules/,
+			'vue',
+			'@wikimedia/codex'
+		],
         plugins: [
 			vue(),
 			json(),

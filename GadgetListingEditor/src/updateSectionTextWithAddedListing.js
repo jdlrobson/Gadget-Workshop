@@ -113,4 +113,9 @@ const updateSectionTextWithAddedListing = function (originalEditSummary, listing
     }
 };
 
+updateSectionTextWithAddedListing.test = {
+    updateSectionTextWithAddedListingIt
+};
+
+
 module.exports = updateSectionTextWithAddedListing;

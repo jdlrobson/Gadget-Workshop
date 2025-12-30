@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`updateSectionTextWithAddedListing updates section text differently for Italian wikipedia with added listing 1`] = `"/* Theatres */Added listing for "`;
+
+exports[`updateSectionTextWithAddedListing updates section text with added listing 1`] = `"/* Theatres */Added listing for "`;

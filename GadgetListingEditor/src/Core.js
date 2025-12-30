@@ -5,6 +5,7 @@ const renderSisterSiteApp = require( './sisterSiteApp/render.js' );
 const currentEdit = require( './currentEdit.js' );
 const { getSectionText, setSectionText } = currentEdit;
 const listingToStr = require( './listingToStr.js' );
+const localData = require( './localData.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
@@ -19,16 +20,15 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     var api = new mw.Api();
     const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
     var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
-    var NATL_CURRENCY = [];
-    var CC_SELECTOR = '.input-cc'; // Country calling code
-    var CC = '';
-    var LC = '';
 
     /**
      * Generate the form UI for the listing editor. If editing an existing
      * listing, pre-populate the form input fields with the existing values.
      */
-    var createForm = function(mode, listingParameters, listingTemplateAsMap) {
+    var createForm = function(mode, listingParameters, listingTemplateAsMap, {
+        telephoneCodes,
+        NATL_CURRENCY
+    }) {
         var form = $(EDITOR_FORM_HTML);
         // make sure the select dropdown includes any custom "type" values
         var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
@@ -60,14 +60,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             natlCurrency.append(' |');
         } else natlCurrency.hide();
         // Adding country calling code
-        var phones = $(CC_SELECTOR, form);
-        if (CC !== '' || LC !== '') {
+        var phones = $('.input-cc', form);
+        if ( telephoneCodes.length ) {
             phones.each( function() {
                 i = $(this).attr('data-for');
-                if (CC !== '')
+                telephoneCodes.forEach( ( CC ) => {
                     $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${CC} </a></span>` );
-                if (LC !== '')
-                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${LC} </a></span>` );
+                } );
             });
         } else phones.hide();
 
@@ -128,19 +127,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         var listingIndex = (mode === MODE_ADD) ? -1 : findListingIndex(sectionHeading, clicked);
         currentEdit.setInlineListing( mode === MODE_EDIT && isInline(clicked) );
 
-        NATL_CURRENCY = [];
-        var dataSel = $( '.countryData' ).attr('data-currency');
-        if ((dataSel !== undefined) && (dataSel !== '')) {
-            NATL_CURRENCY = dataSel.split( ',' ).map( function( item ) {
-                return item.trim();
-            });
-        }
-        CC = '';
-        dataSel = $( '.countryData' ).attr('data-country-calling-code');
-        if ((dataSel !== undefined) && (dataSel !== '')) CC = dataSel;
-        LC = '';
-        dataSel = $( '.countryData' ).attr('data-local-dialing-code');
-        if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
+        const {
+            telephoneCodes,
+            NATL_CURRENCY
+        } = localData.loadFromCountryData( $( '.countryData' ) );
 
         api.ajax({
             prop: 'revisions',
@@ -160,7 +150,13 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                 alert( 'Error occurred loading content for this section.' );
                 return;
             }
-            openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
+            openListingEditorDialog(
+                mode, sectionIndex, listingIndex, listingType,
+                {
+                    telephoneCodes,
+                    NATL_CURRENCY
+                }
+            );
         }, function( _jqXHR, textStatus, errorThrown ) {
             alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
         });
@@ -172,7 +168,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
      * listing is being added to (and that contains the listing wiki syntax
      * when editing).
      */
-    var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType) {
+    var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType, {
+        telephoneCodes,
+        NATL_CURRENCY
+    } ) {
          setSectionText(
             stripComments(
                 getSectionText()
@@ -195,7 +194,10 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             }
             // if a sync editor dialog is already open, get rid of it
             listingEditorSync.destroy();
-            var form = $(createForm(mode, listingParameters, listingTemplateAsMap));
+            var form = $(createForm(mode, listingParameters, listingTemplateAsMap, {
+                telephoneCodes,
+                NATL_CURRENCY
+            }));
             // modal form - must submit or cancel
             const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
             const buttons = [

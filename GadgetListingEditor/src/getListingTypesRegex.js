@@ -8,6 +8,9 @@ const { getConfig } = require( './Config.js' );
  */
 const getListingTypesRegex = function() {
     const { LISTING_TEMPLATES, listingTypeRegExp } = getConfig();
+    if ( !listingTypeRegExp ) {
+        throw new Error( 'please define listingTypeRegExp in [[MediaWiki:Gadget-ListingEditor.json]]' );
+    }
     var regex = [];
     for (var key in LISTING_TEMPLATES) {
         regex.push(key);

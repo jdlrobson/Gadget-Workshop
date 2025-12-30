@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`wikiTextToListing converts wikiText to listings 1`] = `
+{
+  "address": "Halifax Place, near Fletcher Gate, NG1 1QN",
+  "alt": "",
+  "content": "Small, independent amateur theatre with an excellent reputation for its range of productions. Main auditorium seats 118, Studio seats 50. Licensed bar.",
+  "directions": "",
+  "email": "",
+  "fax": "",
+  "hours": "",
+  "lat": "52.9516",
+  "long": "-1.1449",
+  "name": "Lace Market Theatre",
+  "phone": "+44 115 950-7201",
+  "price": "",
+  "tollfree": "",
+  "type": "see",
+  "url": "http://www.lacemarkettheatre.co.uk/",
+  "wikidata": "Q6468185",
+  "wikipedia": "Lace Market Theatre",
+}
+`;

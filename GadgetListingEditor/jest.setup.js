@@ -23,6 +23,7 @@ const { loadConfig } = require( './src/Config.js' );
 init( require( './src/i18n/en' ) );
 
 loadConfig( {
+    listingTypeRegExp: "({{\\s*(%s)\\b)(\\s*[\\|}])",
     WIKIDATA_CLAIMS: {
         "coords": {
             "p": "P625",

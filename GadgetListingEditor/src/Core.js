@@ -5,7 +5,6 @@ const renderSisterSiteApp = require( './sisterSiteApp/render.js' );
 const currentEdit = require( './currentEdit.js' );
 const { getSectionText, setSectionText } = currentEdit;
 const listingToStr = require( './listingToStr.js' );
-const { getCallbacks } = require( './Callbacks.js' );
 
 var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
     const {
@@ -13,8 +12,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
         LISTING_TYPE_PARAMETER,
         SECTION_TO_TEMPLATE_TYPE,
         DEFAULT_LISTING_TEMPLATE,
-        EDITOR_SUMMARY_SELECTOR,
-        EDITOR_MINOR_EDIT_SELECTOR,
         EDITOR_FORM_SELECTOR,
         EDITOR_CLOSED_SELECTOR
     } = Config;
@@ -216,7 +213,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                     click: function() {
                         if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
                             // no need to validate the form upon deletion request
-                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
+                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog);
                             dialog.close(this);
                             // if a sync editor dialog is open, get rid of it
                             listingEditorSync.destroy();
@@ -229,7 +226,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
                                 translate
                             )
                         ) {
-                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
+                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog);
                             dialog.close(this);
                             // if a sync editor dialog is open, get rid of it
                             listingEditorSync.destroy();
@@ -322,41 +319,7 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
 
     var validateForm = require( './validateForm.js' );
 
-    /**
-     * Convert the listing editor form entry fields into wiki text. This
-     * method converts the form entry fields into a listing template string,
-     * replaces the original template string in the section text with the
-     * updated entry, and then submits the section text to be saved on the
-     * server.
-     */
-    var formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
-        var listing = listingTemplateAsMap;
-        var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
-        var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
-        var listingType = $(`#${listingTypeInput}`).val();
-        var listingParameters = getListingInfo(listingType);
-        for (var parameter in listingParameters) {
-            listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
-        }
-        const submitCallbacks = getCallbacks( 'SUBMIT_FORM_CALLBACKS' );
-        for (var i=0; i < submitCallbacks.length; i++) {
-            submitCallbacks[i](listing, mode);
-        }
-        var text = listingToStr(listing);
-        var summary = editSummarySection();
-        if (mode == MODE_ADD) {
-            summary = updateSectionTextWithAddedListing(summary, text, listing);
-        } else {
-            summary = updateSectionTextWithEditedListing(summary, text, listingTemplateWikiSyntax);
-        }
-        summary += $("#input-name").val();
-        if ($(EDITOR_SUMMARY_SELECTOR).val() !== '') {
-            summary += ` - ${$(EDITOR_SUMMARY_SELECTOR).val()}`;
-        }
-        var minor = $(EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
-        saveForm(summary, minor, sectionNumber, '', '', dialog);
-        return;
-    };
+    var formToText = require( './formToText.js' );
 
     var showPreview = function(listingTemplateAsMap) {
         var listing = listingTemplateAsMap;
@@ -380,20 +343,6 @@ var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
             $('#listing-preview-text').html(data.parse.text['*']);
         } );
     };
-
-    /**
-     * Begin building the edit summary by trying to find the section name.
-     */
-    var editSummarySection = require( './editSummarySection.js' );
-    var updateSectionTextWithAddedListing = require( './updateSectionTextWithAddedListing' );
-    var updateSectionTextWithEditedListing = require( './updateSectionTextWithEditedListing' );
-
-    /**
-     * Execute the logic to post listing editor changes to the server so that
-     * they are saved. After saving the page is refreshed to show the updated
-     * article.
-     */
-    var saveForm = require( './saveForm.js' );
 
     // expose public members
     return {

@@ -8,6 +8,12 @@ global.mw.util.showPortlet = function () {};
 global.mw.Api.prototype.saveOption = function () {};
 global.mw.loader.require = ( name ) => {
     switch( name ) {
+        case 'vue':
+            return {
+                defineComponent: ( name ) => {
+                    return name
+                }
+            }
         default:
             return {};
     }

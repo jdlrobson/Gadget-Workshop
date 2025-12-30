@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.19.0
+ * Listing Editor v3.20.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.19.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.20.0'
 
 'use strict';
 
@@ -92,7 +92,7 @@ var viewWikipediaPage$3 = "view Wikipedia page";
 var wikidataSharedMatch$3 = "No differences found between local and Wikidata values";
 var wikidataShared$3 = "The following data was found in the shared Wikidata record. Update shared fields using these values?";
 var wikidataSharedNotFound$3 = "No shared data found in the Wikidata repository";
-var wikidataSyncBlurb$3 = "Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally.<p>You are encouraged to go to the Wikidata item and add references for any data you change.";
+var wikidataSyncBlurb$3 = "Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally. You are encouraged to go to the Wikidata item and add references for any data you change.";
 var editSummary$3 = "Edit Summary";
 var name$3 = "Name";
 var alt$2 = "Alt";
@@ -514,7 +514,7 @@ var viewWikipediaPage$1 = "lihat halaman Wikipedia";
 var wikidataSharedMatch$1 = "Tidak ditemukan perbedaan antara nilai data lokal dengan Wikidata";
 var wikidataShared$1 = "Data berikut ditemukan dalam rekaman bersama Wikidata. Perbarui kolom bersama menggunakan nilai-nilai itu?";
 var wikidataSharedNotFound$1 = "Tidak ada data bersama yang ditemukan di repositori Wikidata";
-var wikidataSyncBlurb$1 = "Memilih salah satu nilai data akan mengubah kedua situs web agar sesuai (memilih nilai kosong akan menghapus data dari keduanya). Tidak memilih salah satu pun juga takkan mengubah apa pun. Mohon pilih salah satu nilai alih-alih melewatkannya - ada beberapa kasus di mana kita sebaiknya sengaja memilih nilai yang berbeda.<p>Anda disarankan untuk membuka butir Wikidata dan menambahkan referensi untuk setiap data yang Anda ubah.";
+var wikidataSyncBlurb$1 = "Memilih salah satu nilai data akan mengubah kedua situs web agar sesuai (memilih nilai kosong akan menghapus data dari keduanya). Tidak memilih salah satu pun juga takkan mengubah apa pun. Mohon pilih salah satu nilai alih-alih melewatkannya - ada beberapa kasus di mana kita sebaiknya sengaja memilih nilai yang berbeda. Anda disarankan untuk membuka butir Wikidata dan menambahkan referensi untuk setiap data yang Anda ubah.";
 var editSummary$1 = "Ringkasan Suntingan";
 var name$1 = "Nama";
 var website$1 = "Situs web";
@@ -718,7 +718,7 @@ var viewWikipediaPage = "Vedi la voce su Wikipedia";
 var wikidataSharedMatch = "Nessuna differenza trovata tra i valori locali e quelli su Wikidata";
 var wikidataShared = "I seguenti dati sono stati trovati su Wikidata. Aggiorno i relativi campi con questi valori?";
 var wikidataSharedNotFound = "Nessun dato è stato recuperato da Wikidata";
-var wikidataSyncBlurb = "Il valore selezionato cambierà in entrambi i siti Web in modo che corrispondano (selezionando un valore vuoto verrà eliminato da entrambi). Non selezionare nessuno dei due, non comporterà alcuna modifica. Si prega rischiare di sbagliare scegliendo uno dei valori piuttosto che non fare niente - ci sono alcuni casi in cui è preferibile avere intenzionalmente un valore diverso tra i due siti. <p> Sei incoraggiato ad andare nell'elemento Wikidata per aggiungere i riferimenti di un qualsiasi dato che cambi.";
+var wikidataSyncBlurb = "Il valore selezionato cambierà in entrambi i siti Web in modo che corrispondano (selezionando un valore vuoto verrà eliminato da entrambi). Non selezionare nessuno dei due, non comporterà alcuna modifica. Si prega rischiare di sbagliare scegliendo uno dei valori piuttosto che non fare niente - ci sono alcuni casi in cui è preferibile avere intenzionalmente un valore diverso tra i due siti. Sei incoraggiato ad andare nell'elemento Wikidata per aggiungere i riferimenti di un qualsiasi dato che cambi.";
 var natlCurrencyTitle = "Simboli della valuta nazionale";
 var intlCurrenciesTitle = "Simboli di valute internazionali";
 var require$$4 = {
@@ -834,25 +834,6 @@ var translations = {
 };
 
 /**
- * @param {Object<string,string>} translations
- * @return {string}
- */
-
-var makeTranslateFunction$2 = ( translations ) => {
-    return ( key, params = [] ) => {
-        let msg =  translations[ key ];
-        if ( msg === undefined ) {
-            throw new Error( `Could not find undefined message ${key}` );
-        } else {
-            params.forEach( ( value, i ) => {
-                msg = msg.replace( `$${i + 1}`, value );
-            } );
-            return msg;
-        }
-    };
-};
-
-/**
  * Convert splitted elements of coordinates in DMS notation into DD notation.
  * If the input is already in DD notation (i.e. only degrees is a number), input value is returned unchanged.
  * Notes:
@@ -940,10 +921,29 @@ var globalConfig = {
     COMMONS_URL
 };
 
-const makeTranslateFunction$1 = makeTranslateFunction$2;
+/**
+ * @param {Object<string,string>} translations
+ * @return {string}
+ */
+
+var makeTranslateFunction$1 = ( translations ) => {
+    return ( key, params = [] ) => {
+        let msg =  translations[ key ];
+        if ( msg === undefined ) {
+            throw new Error( `Could not find undefined message ${key}` );
+        } else {
+            params.forEach( ( value, i ) => {
+                msg = msg.replace( `$${i + 1}`, value );
+            } );
+            return msg;
+        }
+    };
+};
+
+const makeTranslateFunction = makeTranslateFunction$1;
 let internalTranslateFn;
 
-const translate = ( key, ...parameters ) => {
+const translate$1 = ( key, ...parameters ) => {
     if ( !internalTranslateFn ) {
         throw 'Translations not setup';
     } else {
@@ -952,11 +952,11 @@ const translate = ( key, ...parameters ) => {
 };
 
 const init = ( TRANSLATIONS ) => {
-    internalTranslateFn = makeTranslateFunction$1( TRANSLATIONS );
+    internalTranslateFn = makeTranslateFunction( TRANSLATIONS );
 };
 
 var translate_1 = {
-    translate,
+    translate: translate$1,
     init
 };
 
@@ -1216,6 +1216,33 @@ function requireHtml$1 () {
 	return html$1;
 }
 
+/**
+ * Determine whether a listing entry is within a paragraph rather than
+ * an entry in a list; inline listings will be formatted slightly
+ * differently than entries in lists (no newlines in the template syntax,
+ * skip empty fields).
+ */
+
+var isInline_1;
+var hasRequiredIsInline;
+
+function requireIsInline () {
+	if (hasRequiredIsInline) return isInline_1;
+	hasRequiredIsInline = 1;
+	const isInline = function(entry) {
+	    // if the edit link clicked is within a paragraph AND, since
+	    // newlines in a listing description will cause the Mediawiki parser
+	    // to close an HTML list (thus triggering the "is edit link within a
+	    // paragraph" test condition), also verify that the listing is
+	    // within the expected listing template span tag and thus hasn't
+	    // been incorrectly split due to newlines.
+	    return (entry.closest('p').length !== 0 && entry.closest('span.vcard').length !== 0);
+	};
+
+	isInline_1 = isInline;
+	return isInline_1;
+}
+
 var dialogs;
 var hasRequiredDialogs;
 
@@ -1231,7 +1258,7 @@ function requireDialogs () {
 	    load().then( () => $(selector).dialog( 'destroy' ).remove() );
 	}
 
-	function open( $element, options ) {
+	function open( $element, options = {} ) {
 	    load().then( () =>
 	        $element.dialog(
 	            Object.assign( options, {
@@ -1258,6 +1285,179 @@ function requireDialogs () {
 	    close
 	};
 	return dialogs;
+}
+
+var isCustomListingType_1;
+var hasRequiredIsCustomListingType;
+
+function requireIsCustomListingType () {
+	if (hasRequiredIsCustomListingType) return isCustomListingType_1;
+	hasRequiredIsCustomListingType = 1;
+	const { getConfig } = Config;
+
+	/**
+	 * Determine if the specified listing type is a custom type - for example "go"
+	 * instead of "see", "do", "listing", etc.
+	 */
+	const isCustomListingType = function(listingType) {
+	    const { LISTING_TEMPLATES } = getConfig();
+	    return !(listingType in LISTING_TEMPLATES);
+	};
+
+	isCustomListingType_1 = isCustomListingType;
+	return isCustomListingType_1;
+}
+
+var autocompletes;
+var hasRequiredAutocompletes;
+
+function requireAutocompletes () {
+	if (hasRequiredAutocompletes) return autocompletes;
+	hasRequiredAutocompletes = 1;
+	const { LANG } = globalConfig;
+
+	const parseWikiDataResult = function(jsonObj) {
+	    var results = [];
+	    for (var i=0; i < $(jsonObj.search).length; i++) {
+	        var result = $(jsonObj.search)[i];
+	        var label = result.label;
+	        if (result.match && result.match.text) {
+	            label = result.match.text;
+	        }
+	        var data = {
+	            value: label,
+	            label,
+	            description: result.description,
+	            id: result.id
+	        };
+	        results.push(data);
+	    }
+	    return results;
+	};
+
+	const setupWikidataAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
+	    $('#input-wikidata-label', form).autocomplete({
+	        // eslint-disable-next-line object-shorthand
+	        source: function( request, response ) {
+	            var ajaxUrl = SisterSite.API_WIKIDATA;
+	            var ajaxData = {
+	                action: 'wbsearchentities',
+	                search: request.term,
+	                language: LANG
+	            };
+	            var ajaxSuccess = function (jsonObj) {
+	                response(parseWikiDataResult(jsonObj));
+	            };
+	            SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
+	        },
+	        // eslint-disable-next-line object-shorthand
+	        select: function(event, ui) {
+	            $("#input-wikidata-value").val(ui.item.id);
+	            updateLinkFunction("", ui.item.id);
+	        }
+	    }).data("ui-autocomplete")._renderItem = function(ul, item) {
+	        var label = `${mw.html.escape(item.label)} <small>${mw.html.escape(item.id)}</small>`;
+	        if (item.description) {
+	            label += `<br /><small>${mw.html.escape(item.description)}</small>`;
+	        }
+	        return $("<li>").data('ui-autocomplete-item', item).append($("<a>").html(label)).appendTo(ul);
+	    };
+	};
+
+	const setupWikipediaAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
+	    var wikipediaSiteData = {
+	        apiUrl: SisterSite.API_WIKIPEDIA,
+	        selector: $('#input-wikipedia', form),
+	        form,
+	        ajaxData: {
+	            namespace: 0
+	        },
+	        updateLinkFunction
+	    };
+	    SisterSite.initializeSisterSiteAutocomplete(wikipediaSiteData);
+	};
+
+
+	const setupCommonsAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
+	    var commonsSiteData = {
+	        apiUrl: SisterSite.API_COMMONS,
+	        selector: $('#input-image', form),
+	        form,
+	        ajaxData: {
+	            namespace: 6
+	        },
+	        updateLinkFunction
+	    };
+	    SisterSite.initializeSisterSiteAutocomplete(commonsSiteData);
+	};
+
+	autocompletes = ( SisterSite, form, wikidataLink, wikipediaLink, commonsLink ) => {
+	    setupWikidataAutocomplete( SisterSite, form, wikidataLink );
+	    setupWikipediaAutocomplete( SisterSite, form, wikipediaLink );
+	    setupCommonsAutocomplete( SisterSite, form, commonsLink );
+	};
+	return autocompletes;
+}
+
+var html;
+var hasRequiredHtml;
+
+function requireHtml () {
+	if (hasRequiredHtml) return html;
+	hasRequiredHtml = 1;
+	html = ( translate ) => `<div id="div_wikidata" class="editor-row">
+    <div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>
+    <div>
+        <input type="text" class="editor-partialwidth" id="input-wikidata-label">
+        <input type="hidden" id="input-wikidata-value">
+        <a href="javascript:" id="wp-wd"
+            title="${translate( 'wpWd' )}"
+            style="display:none"><small>&#160;WP</small></a>
+        <span id="wikidata-value-display-container" style="display:none">
+            <small>
+            &#160;<span id="wikidata-value-link"></span>
+            &#160;|&#160;<a href="javascript:"
+                id="wikidata-remove"
+                title="${translate( 'wikidataRemoveTitle' )}">${translate( 'wikidataRemoveLabel' )}</a>
+            </small>
+        </span>
+    </div>
+</div>
+<div id="div_wikidata_update" style="display: none">
+    <div class="editor-label-col">&#160;</div>
+    <div>
+        <span class="wikidata-update"></span>
+        <a href="javascript:" id="wikidata-shared">${translate( 'syncWikidata' )}</a>
+        <small>&nbsp;<a href="javascript:"
+            title="${translate( 'syncWikidataTitle' )}"
+            class="listing-tooltip"
+            id="wikidata-shared-quick">${translate( 'syncWikidataLabel' )}</a>
+        </small>
+    </div>
+</div>
+<div id="div_wikipedia" class="editor-row">
+    <div class="editor-label-col">
+        <label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label>
+    </div>
+    <div>
+        <input type="text" class="editor-partialwidth" id="input-wikipedia">
+        <span id="wikipedia-value-display-container" style="display:none">
+            <small>&#160;<span id="wikipedia-value-link"></span></small>
+        </span>
+    </div>
+</div>
+<div id="div_image" class="editor-row">
+    <div class="editor-label-col">
+        <label for="input-image">${translate( 'image' )}<span class="wikidata-update"></span></label>
+    </div>
+    <div>
+        <input type="text" class="editor-partialwidth" id="input-image">
+        <span id="image-value-display-container" style="display:none">
+            <small>&#160;<span id="image-value-link"></span></small>
+        </span>
+    </div>
+</div>`;
+	return html;
 }
 
 var templates;
@@ -1491,10 +1691,12 @@ function requireListingEditorSync () {
 	const createRadio = requireCreateRadio();
 	const trimDecimal = requireTrimDecimal();
 	const dialog = requireDialogs();
+	const { translate } = translate_1;
+	const { getConfig } = Config;
 
-	const init = ( SisterSite, Config, translate, jsonObj, wikidataRecord ) => {
+	const init = ( SisterSite, jsonObj, wikidataRecord ) => {
 	    const { wikidataClaim, wikidataWikipedia } = SisterSite;
-	    const { WIKIDATA_CLAIMS } = Config;
+	    const { WIKIDATA_CLAIMS } = getConfig();
 
 	    let msg = `<form id="listing-editor-sync">${
 	    translate( 'wikidataSyncBlurb' )
@@ -1522,22 +1724,22 @@ function requireListingEditorSync () {
 	            if( res[key].value ) {
 	                res[key].value = iata.replace( '%s', res[key].value );
 	            }
-	            msg += createRadio(WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj, Config);
+	            msg += createRadio(WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 	        } else if (key === 'email') {
 	            if( res[key].value ) {
 	                res[key].value = res[key].value.replace('mailto:', '');
 	            }
-	            msg += createRadio(WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj, Config);
+	            msg += createRadio(WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 	        } else if (key === 'coords') {
 	            if ( res[key].value ) {
 	                res[key].value.latitude = trimDecimal(res[key].value.latitude, 6);
 	                res[key].value.longitude = trimDecimal(res[key].value.longitude, 6);
 	                msg += createRadio(WIKIDATA_CLAIMS[key],
-	                    [res[key].value.latitude, res[key].value.longitude], res[key].guidObj, Config);
+	                    [res[key].value.latitude, res[key].value.longitude], res[key].guidObj);
 	            } else {
-	                msg += createRadio(WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj, Config);
+	                msg += createRadio(WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 	            }
-	        } else msg += createRadio(WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj, Config);
+	        } else msg += createRadio(WIKIDATA_CLAIMS[key], [res[key].value], res[key].guidObj);
 	    }
 	    var wikipedia = wikidataWikipedia(jsonObj, wikidataRecord);
 	    msg += createRadio( {
@@ -1547,8 +1749,7 @@ function requireListingEditorSync () {
 	            'remotely_sync': true
 	        },
 	        [wikipedia],
-	        $('#input-wikidata-value').val(),
-	        Config
+	        $('#input-wikidata-value').val()
 	    );
 
 	    msg += `</div><p><small><a href="javascript:" class="clear">${translate( 'cancelAll' )}</a></small>
@@ -1571,158 +1772,6 @@ function requireListingEditorSync () {
 	    $element
 	};
 	return listingEditorSync;
-}
-
-var autocompletes;
-var hasRequiredAutocompletes;
-
-function requireAutocompletes () {
-	if (hasRequiredAutocompletes) return autocompletes;
-	hasRequiredAutocompletes = 1;
-	const { LANG } = globalConfig;
-
-	const parseWikiDataResult = function(jsonObj) {
-	    var results = [];
-	    for (var i=0; i < $(jsonObj.search).length; i++) {
-	        var result = $(jsonObj.search)[i];
-	        var label = result.label;
-	        if (result.match && result.match.text) {
-	            label = result.match.text;
-	        }
-	        var data = {
-	            value: label,
-	            label,
-	            description: result.description,
-	            id: result.id
-	        };
-	        results.push(data);
-	    }
-	    return results;
-	};
-
-	const setupWikidataAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
-	    $('#input-wikidata-label', form).autocomplete({
-	        // eslint-disable-next-line object-shorthand
-	        source: function( request, response ) {
-	            var ajaxUrl = SisterSite.API_WIKIDATA;
-	            var ajaxData = {
-	                action: 'wbsearchentities',
-	                search: request.term,
-	                language: LANG
-	            };
-	            var ajaxSuccess = function (jsonObj) {
-	                response(parseWikiDataResult(jsonObj));
-	            };
-	            SisterSite.ajaxSisterSiteSearch(ajaxUrl, ajaxData, ajaxSuccess);
-	        },
-	        // eslint-disable-next-line object-shorthand
-	        select: function(event, ui) {
-	            $("#input-wikidata-value").val(ui.item.id);
-	            updateLinkFunction("", ui.item.id);
-	        }
-	    }).data("ui-autocomplete")._renderItem = function(ul, item) {
-	        var label = `${mw.html.escape(item.label)} <small>${mw.html.escape(item.id)}</small>`;
-	        if (item.description) {
-	            label += `<br /><small>${mw.html.escape(item.description)}</small>`;
-	        }
-	        return $("<li>").data('ui-autocomplete-item', item).append($("<a>").html(label)).appendTo(ul);
-	    };
-	};
-
-	const setupWikipediaAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
-	    var wikipediaSiteData = {
-	        apiUrl: SisterSite.API_WIKIPEDIA,
-	        selector: $('#input-wikipedia', form),
-	        form,
-	        ajaxData: {
-	            namespace: 0
-	        },
-	        updateLinkFunction
-	    };
-	    SisterSite.initializeSisterSiteAutocomplete(wikipediaSiteData);
-	};
-
-
-	const setupCommonsAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
-	    var commonsSiteData = {
-	        apiUrl: SisterSite.API_COMMONS,
-	        selector: $('#input-image', form),
-	        form,
-	        ajaxData: {
-	            namespace: 6
-	        },
-	        updateLinkFunction
-	    };
-	    SisterSite.initializeSisterSiteAutocomplete(commonsSiteData);
-	};
-
-	autocompletes = ( SisterSite, form, wikidataLink, wikipediaLink, commonsLink ) => {
-	    setupWikidataAutocomplete( SisterSite, form, wikidataLink );
-	    setupWikipediaAutocomplete( SisterSite, form, wikipediaLink );
-	    setupCommonsAutocomplete( SisterSite, form, commonsLink );
-	};
-	return autocompletes;
-}
-
-var html;
-var hasRequiredHtml;
-
-function requireHtml () {
-	if (hasRequiredHtml) return html;
-	hasRequiredHtml = 1;
-	html = ( translate ) => `<div id="div_wikidata" class="editor-row">
-    <div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>
-    <div>
-        <input type="text" class="editor-partialwidth" id="input-wikidata-label">
-        <input type="hidden" id="input-wikidata-value">
-        <a href="javascript:" id="wp-wd"
-            title="${translate( 'wpWd' )}"
-            style="display:none"><small>&#160;WP</small></a>
-        <span id="wikidata-value-display-container" style="display:none">
-            <small>
-            &#160;<span id="wikidata-value-link"></span>
-            &#160;|&#160;<a href="javascript:"
-                id="wikidata-remove"
-                title="${translate( 'wikidataRemoveTitle' )}">${translate( 'wikidataRemoveLabel' )}</a>
-            </small>
-        </span>
-    </div>
-</div>
-<div id="div_wikidata_update" style="display: none">
-    <div class="editor-label-col">&#160;</div>
-    <div>
-        <span class="wikidata-update"></span>
-        <a href="javascript:" id="wikidata-shared">${translate( 'syncWikidata' )}</a>
-        <small>&nbsp;<a href="javascript:"
-            title="${translate( 'syncWikidataTitle' )}"
-            class="listing-tooltip"
-            id="wikidata-shared-quick">${translate( 'syncWikidataLabel' )}</a>
-        </small>
-    </div>
-</div>
-<div id="div_wikipedia" class="editor-row">
-    <div class="editor-label-col">
-        <label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label>
-    </div>
-    <div>
-        <input type="text" class="editor-partialwidth" id="input-wikipedia">
-        <span id="wikipedia-value-display-container" style="display:none">
-            <small>&#160;<span id="wikipedia-value-link"></span></small>
-        </span>
-    </div>
-</div>
-<div id="div_image" class="editor-row">
-    <div class="editor-label-col">
-        <label for="input-image">${translate( 'image' )}<span class="wikidata-update"></span></label>
-    </div>
-    <div>
-        <input type="text" class="editor-partialwidth" id="input-image">
-        <span id="image-value-display-container" style="display:none">
-            <small>&#160;<span id="image-value-link"></span></small>
-        </span>
-    </div>
-</div>`;
-	return html;
 }
 
 var ui;
@@ -1763,16 +1812,6 @@ function requireUi () {
 	    }
 	};
 
-	const updateFieldIfNotNull = function(selector, value, placeholderBool) {
-	    if ( value !== null ) {
-	        if ( placeholderBool !== true ) {
-	            $(selector).val(value);
-	        } else {
-	            $(selector).val('').attr('placeholder', value).attr('disabled', true);
-	        }
-	    }
-	};
-
 	const setWikidataInputFields = ( wikidataID ) => {
 	    $("#input-wikidata-value").val(wikidataID);
 	    $("#input-wikidata-label").val(wikidataID);
@@ -1794,12 +1833,326 @@ function requireUi () {
 	    setWikidataInputFields,
 	    showWikidataFields,
 	    hideWikidataFields,
-	    updateFieldIfNotNull,
 	    sisterSiteLinkDisplay,
 	    wikidataRemove,
 	    updateWikidataInputLabel
 	};
 	return ui;
+}
+
+var updateWikidataSharedFields;
+var hasRequiredUpdateWikidataSharedFields;
+
+function requireUpdateWikidataSharedFields () {
+	if (hasRequiredUpdateWikidataSharedFields) return updateWikidataSharedFields;
+	hasRequiredUpdateWikidataSharedFields = 1;
+	const { LANG } = globalConfig;
+
+	updateWikidataSharedFields = function(
+	    wikidataRecord, SisterSite
+	) {
+	    const { API_WIKIDATA, ajaxSisterSiteSearch } = SisterSite;
+
+	    return ajaxSisterSiteSearch(
+	        API_WIKIDATA,
+	        {
+	            action: 'wbgetentities',
+	            ids: wikidataRecord,
+	            languages: LANG
+	        }
+	    );
+	};
+	return updateWikidataSharedFields;
+}
+
+var updateFieldIfNotNull_1;
+var hasRequiredUpdateFieldIfNotNull;
+
+function requireUpdateFieldIfNotNull () {
+	if (hasRequiredUpdateFieldIfNotNull) return updateFieldIfNotNull_1;
+	hasRequiredUpdateFieldIfNotNull = 1;
+	const updateFieldIfNotNull = function(selector, value, placeholderBool) {
+	    if ( value !== null ) {
+	        if ( placeholderBool !== true ) {
+	            $(selector).val(value);
+	        }
+	    }
+	};
+
+	updateFieldIfNotNull_1 = updateFieldIfNotNull;
+	return updateFieldIfNotNull_1;
+}
+
+var launchSyncDialog;
+var hasRequiredLaunchSyncDialog;
+
+function requireLaunchSyncDialog () {
+	if (hasRequiredLaunchSyncDialog) return launchSyncDialog;
+	hasRequiredLaunchSyncDialog = 1;
+	const { LANG } = globalConfig;
+	const trimDecimal = requireTrimDecimal();
+	const dialog = requireDialogs();
+	const parseDMS = parseDMS_1;
+	const updateFieldIfNotNull = requireUpdateFieldIfNotNull();
+	const listingEditorSync = requireListingEditorSync();
+	const { translate } = translate_1;
+	const { getConfig } = Config;
+	const {
+	    showWikidataFields,
+	    hideWikidataFields
+	} = requireUi();
+
+	const makeSubmitFunction = function(SisterSite, commonsLink, wikipediaLink, $syncDialogElement) {
+	    return () => {
+	        const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
+	        const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
+	            removeFromWikidata, ajaxSisterSiteSearch } = SisterSite;
+
+	        listingEditorSync.$element().find('input[id]:radio:checked').each(function () {
+	            var label = $(`label[for="${$(this).attr('id')}"]`);
+	            var syncedValue = label.text().split('\n');
+	            var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
+	            var editorField = [];
+	            for( var i = 0; i < field.fields.length; i++ ) { editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`; }
+	            var guidObj = $(this).parents('.choose-row').find('#has-guid > input:hidden:not(:radio)').val();
+
+	            if ( field.p === WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
+	                var DDValue = [];
+	                for ( i = 0; i < editorField.length; i++) {
+	                    DDValue[i] = syncedValue[i] ?
+	                        trimDecimal(parseDMS(syncedValue[i]), 6) : '';
+	                    updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync);
+	                }
+	                // TODO: make the find on map link work for placeholder coords
+	                if( (DDValue[0]==='') && (DDValue[1]==='') ) {
+	                    syncedValue = ''; // dummy empty value to removeFromWikidata
+	                } else if( !isNaN(DDValue[0]) && !isNaN(DDValue[1]) ){
+	                    var precision = Math.min(DDValue[0].toString().replace(/\d/g, "0").replace(/$/, "1"), DDValue[1].toString().replace(/\d/g, "0").replace(/$/, "1"));
+	                    syncedValue = `{ "latitude": ${DDValue[0]}, "longitude": ${DDValue[1]}, "precision": ${precision} }`;
+	                }
+	            } else {
+	                syncedValue = syncedValue[0]; // remove dummy newline
+	                updateFieldIfNotNull(editorField[0], syncedValue, field.remotely_sync);
+	                //After the sync with WD force the link to the WP & Common resource to be hidden as naturally happen in quickUpdateWikidataSharedFields
+	                //a nice alternative is to update the links in both functions
+	                if( $(this).attr('name') == 'wikipedia' ) {
+	                    wikipediaLink(syncedValue, $("#listing-editor"));
+	                }
+	                if( field.p === WIKIDATA_CLAIMS.image.p ) {
+	                    commonsLink(syncedValue, $("#listing-editor"));
+	                }
+	                if( syncedValue !== '') {
+	                    if( field.p === WIKIDATA_CLAIMS.email.p ) {
+	                        syncedValue = `mailto:${syncedValue}`;
+	                    }
+	                    syncedValue = `"${syncedValue}"`;
+	                }
+	            }
+
+	            if( (field.doNotUpload !== true) && ($(this).attr('id').search(/-wd$/) === -1) ) { // -1: regex not found
+	                ajaxSisterSiteSearch(
+	                    API_WIKIDATA,
+	                    {
+	                        action: 'wbgetentities',
+	                        ids: field.p,
+	                        props: 'datatype',
+	                    }
+	                ).then( ( jsonObj ) => {
+	                     //if ( TODO: add logic for detecting Wikipedia and not doing this test. Otherwise get an error trying to find undefined. Keep in mind that we would in the future call sitelink changing here maybe. Not urgent, error harmless ) { }
+	                    /*else*/ if ( jsonObj.entities[field.p].datatype === 'monolingualtext' ) {
+	                        syncedValue = `{"text": ${syncedValue}, "language": "${LANG}"}`;
+	                    }
+	                    if ( guidObj === "null" ) { // no value on Wikidata, string "null" gets saved in hidden field. There should be no cases in which there is no Wikidata item but this string does not equal "null"
+	                        if (syncedValue !== '') {
+	                            sendToWikidata(field.p , syncedValue, 'value');
+	                        }
+	                    } else {
+	                        if ( syncedValue !== "" ) {
+	                            // this is changing, for when guid is not null and neither is the value
+	                            // Wikidata silently ignores a request to change a value to its existing value
+	                            changeOnWikidata(guidObj, field.p, syncedValue, 'value');
+	                        } else if( (field.p !== WIKIDATA_CLAIMS.coords.p) || (DDValue[0] === '' && DDValue[1] === '') ) {
+	                            removeFromWikidata(guidObj);
+	                        }
+	                    }
+	                } );
+	            }
+	        });
+
+	        dialog.close( $syncDialogElement );
+	    }
+	};
+
+	launchSyncDialog = function (jsonObj, wikidataRecord, SisterSite, commonsLink, wikipediaLink) {
+	    const $syncDialogElement = listingEditorSync.init(
+	        SisterSite, jsonObj, wikidataRecord
+	    );
+	    const submitFunction = makeSubmitFunction( SisterSite, commonsLink, wikipediaLink, $syncDialogElement );
+	    dialog.open($syncDialogElement, {
+	        title: translate( 'syncTitle' ),
+	        dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
+
+	        buttons: [
+	            {
+	                text: translate( 'submit' ),
+	                click: submitFunction,
+	            },
+	            {
+	                text: translate( 'cancel' ),
+	                // eslint-disable-next-line object-shorthand
+	                click: function() {
+	                    dialog.close(this);
+	                }
+	            },
+	        ],
+	        // eslint-disable-next-line object-shorthand
+	        open: function() {
+	            hideWikidataFields();
+	        },
+	        // eslint-disable-next-line object-shorthand
+	        close: function() {
+	            showWikidataFields();
+	            //listingEditorSync.destroy();
+	            document.getElementById("listing-editor-sync").outerHTML = ""; // delete the dialog. Direct DOM manipulation so the model gets updated. This is to avoid issues with subsequent dialogs no longer matching labels with inputs because IDs are already in use.
+	        }
+	    });
+	    if($syncDialogElement.find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
+	        submitFunction();
+	        listingEditorSync.destroy();
+	        alert( translate( 'wikidataSharedMatch' ) );
+	    }
+
+	    $syncDialogElement.find('.clear').on( 'click',  function() {
+	        $syncDialogElement.find('input:radio:not([id]):enabled').prop('checked', true);
+	    });
+	    $syncDialogElement.find('.syncSelect').on( 'click',  function() {
+	        const field = $(this).attr('name'); // wv or wd
+	        $syncDialogElement.find('input[type=radio]').prop('checked', false);
+	        $syncDialogElement.find(`input[id$=${field}]`).prop('checked', true);
+	    });
+	    $syncDialogElement.find('#autoSelect').on( 'click',  function() { // auto select non-empty values
+	        $syncDialogElement.find('.choose-row').each(function () {
+	            var WD_value = $(this).find('label:first').text().trim().length;
+	            var WV_value = $(this).find('label:last').text().trim().length;
+	            $(this).find('input[type="radio"]:eq(1)').prop('checked', true); // init with no preferred value
+	            if (WD_value) {
+	                if (!WV_value) {
+	                    $(this).find('input[type="radio"]:first').prop('checked', true); //if WD label has text while WV don't, select WD
+	                }
+	            } else if (WV_value) {
+	                $(this).find('input[type="radio"]:last').prop('checked', true); //if WD label has no text while WV do, select WV
+	            }
+	        });
+	    });
+	};
+	return launchSyncDialog;
+}
+
+var getWikidataFromWikipedia;
+var hasRequiredGetWikidataFromWikipedia;
+
+function requireGetWikidataFromWikipedia () {
+	if (hasRequiredGetWikidataFromWikipedia) return getWikidataFromWikipedia;
+	hasRequiredGetWikidataFromWikipedia = 1;
+	getWikidataFromWikipedia = function( titles, SisterSite ) {
+	    const { API_WIKIPEDIA, ajaxSisterSiteSearch, wikipediaWikidata } = SisterSite;
+	    return ajaxSisterSiteSearch(
+	        API_WIKIPEDIA,
+	        {
+	            action: 'query',
+	            prop: 'pageprops',
+	            ppprop: 'wikibase_item',
+	            indexpageids: 1,
+	            titles
+	        }
+	    ).then( ( jsonObj ) => wikipediaWikidata(jsonObj) );
+	};
+	return getWikidataFromWikipedia;
+}
+
+var quickUpdateWikidataSharedFields;
+var hasRequiredQuickUpdateWikidataSharedFields;
+
+function requireQuickUpdateWikidataSharedFields () {
+	if (hasRequiredQuickUpdateWikidataSharedFields) return quickUpdateWikidataSharedFields;
+	hasRequiredQuickUpdateWikidataSharedFields = 1;
+	const { LANG } = globalConfig;
+	const { translate } = translate_1;
+	const { iata } = requireTemplates();
+	const trimDecimal = requireTrimDecimal();
+	const { getConfig } = Config;
+	const updateFieldIfNotNull = requireUpdateFieldIfNotNull();
+
+	quickUpdateWikidataSharedFields = function(wikidataRecord, SisterSite) {
+	    const { API_WIKIDATA, wikidataClaim, wikidataWikipedia,
+	        ajaxSisterSiteSearch } = SisterSite;
+	    const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
+	    const ajaxData = {
+	        action: 'wbgetentities',
+	        ids: wikidataRecord,
+	        languages: LANG
+	    };
+	    const ajaxSuccess = function (jsonObj) {
+	        let msg = '';
+	        const res = [];
+	        for (let key in WIKIDATA_CLAIMS) {
+	            res[key] = wikidataClaim(jsonObj, wikidataRecord, WIKIDATA_CLAIMS[key].p);
+	            if (res[key]) {
+	                if (key === 'coords') { //WD coords already stored in DD notation; no need to apply any conversion
+	                    res[key].latitude = trimDecimal(res[key].latitude, 6);
+	                    res[key].longitude = trimDecimal(res[key].longitude, 6);
+	                    msg += `\n${WIKIDATA_CLAIMS[key].label}: ${res[key].latitude} ${res[key].longitude}`;
+	                } else if (key === 'iata') {
+	                    msg += `\n${WIKIDATA_CLAIMS[key].label}: ${res[key]}`;
+	                    res[key] = iata.replace( '%s', res[key] );
+	                } else if (key === 'email') {
+	                    res[key] = res[key].replace('mailto:', '');
+	                    msg += `\n${WIKIDATA_CLAIMS[key].label}: ${res[key]}`;
+	                } else {
+	                    msg += `\n${WIKIDATA_CLAIMS[key].label}: ${res[key]}`;
+	                }
+	            }
+	        }
+	        const wikipedia = wikidataWikipedia(jsonObj, wikidataRecord);
+	        if (wikipedia) {
+	            msg += `\n${translate( 'sharedWikipedia' )}: ${wikipedia}`;
+	        }
+
+	        if (msg) {
+	            const result = {
+	                wikipedia
+	            };
+	            if ( confirm( `${translate( 'wikidataShared' )}\n${msg}`) ) {
+	                for (let key in res) {
+	                    if (res[key]) {
+	                        var editorField = [];
+	                        for( var i = 0; i < WIKIDATA_CLAIMS[key].fields.length; i++ ) {
+	                            editorField[i] = `#${LISTING_TEMPLATES.listing[WIKIDATA_CLAIMS[key].fields[i]].id}`;
+	                        }
+
+	                        if ( (key !== 'iata') || ($('#input-alt').val() === '') ||
+	                            (/^IATA: ...$/.test($('#input-alt').val())) ) {
+	                            if (key === 'coords') {
+	                                updateFieldIfNotNull(editorField[0], res[key].latitude, WIKIDATA_CLAIMS[key].remotely_sync);
+	                                updateFieldIfNotNull(editorField[1], res[key].longitude, WIKIDATA_CLAIMS[key].remotely_sync);
+	                            }  else {
+	                                updateFieldIfNotNull(editorField[0], res[key], WIKIDATA_CLAIMS[key].remotely_sync);
+	                                if (key === 'image') {
+	                                    result.commons = res[ key ];
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	                updateFieldIfNotNull('#input-wikipedia', wikipedia, true);
+	                return result;
+	            }
+	        }
+	        return false;
+	    };
+	    return ajaxSisterSiteSearch(API_WIKIDATA, ajaxData, ajaxSuccess);
+	};
+	return quickUpdateWikidataSharedFields;
 }
 
 var SisterSite;
@@ -1811,8 +2164,10 @@ function requireSisterSite () {
 	const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL,
 	    LANG,
 	    WIKIDATA_SITELINK_WIKIPEDIA } = globalConfig;
-	SisterSite = function( Config ) {
-	    const { WIKIDATAID } = Config;
+	const { getConfig } = Config;
+
+	SisterSite = function() {
+	    const { WIKIDATAID } = getConfig();
 	    var API_WIKIDATA = `${WIKIDATA_URL}/w/api.php`;
 	    var API_WIKIPEDIA = `${WIKIPEDIA_URL}/w/api.php`;
 	    var API_COMMONS = `${COMMONS_URL}/w/api.php`;
@@ -2025,194 +2380,20 @@ function requireRender () {
 	if (hasRequiredRender) return render;
 	hasRequiredRender = 1;
 	const autocompletes = requireAutocompletes();
-	const trimDecimal = requireTrimDecimal();
-	const dialog = requireDialogs();
-	const parseDMS = parseDMS_1;
-	const { iata } = requireTemplates();
 	const htmlSisterSites = requireHtml();
 	const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, LANG } = globalConfig;
 	const listingEditorSync = requireListingEditorSync();
 	const {
 	    wikidataRemove,
 	    setWikidataInputFields,
-	    showWikidataFields,
-	    hideWikidataFields,
-	    updateFieldIfNotNull,
 	    updateWikidataInputLabel, sisterSiteLinkDisplay
 	} = requireUi();
 
-	const makeSubmitFunction = function(SisterSite, Config, commonsLink, wikipediaLink) {
-	    return () => {
-	        const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = Config;
-	        const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
-	            removeFromWikidata, ajaxSisterSiteSearch } = SisterSite;
+	const updateWikidataSharedFields = requireUpdateWikidataSharedFields();
 
-	        listingEditorSync.$element().find('input[id]:radio:checked').each(function () {
-	            var label = $(`label[for="${$(this).attr('id')}"]`);
-	            var syncedValue = label.text().split('\n');
-	            var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
-	            var editorField = [];
-	            for( var i = 0; i < field.fields.length; i++ ) { editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`; }
-	            var guidObj = $(this).parents('.choose-row').find('#has-guid > input:hidden:not(:radio)').val();
+	const launchSyncDialog = requireLaunchSyncDialog();
 
-	            if ( field.p === WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
-	                var DDValue = [];
-	                for ( i = 0; i < editorField.length; i++) {
-	                    DDValue[i] = syncedValue[i] ?
-	                        trimDecimal(parseDMS(syncedValue[i]), 6) : '';
-	                    updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync);
-	                }
-	                // TODO: make the find on map link work for placeholder coords
-	                if( (DDValue[0]==='') && (DDValue[1]==='') ) {
-	                    syncedValue = ''; // dummy empty value to removeFromWikidata
-	                } else if( !isNaN(DDValue[0]) && !isNaN(DDValue[1]) ){
-	                    var precision = Math.min(DDValue[0].toString().replace(/\d/g, "0").replace(/$/, "1"), DDValue[1].toString().replace(/\d/g, "0").replace(/$/, "1"));
-	                    syncedValue = `{ "latitude": ${DDValue[0]}, "longitude": ${DDValue[1]}, "precision": ${precision} }`;
-	                }
-	            } else {
-	                syncedValue = syncedValue[0]; // remove dummy newline
-	                updateFieldIfNotNull(editorField[0], syncedValue, field.remotely_sync);
-	                //After the sync with WD force the link to the WP & Common resource to be hidden as naturally happen in quickUpdateWikidataSharedFields
-	                //a nice alternative is to update the links in both functions
-	                if( $(this).attr('name') == 'wikipedia' ) {
-	                    wikipediaLink(syncedValue, $("#listing-editor"));
-	                }
-	                if( field.p === WIKIDATA_CLAIMS.image.p ) {
-	                    commonsLink(syncedValue, $("#listing-editor"));
-	                }
-	                if( syncedValue !== '') {
-	                    if( field.p === WIKIDATA_CLAIMS.email.p ) {
-	                        syncedValue = `mailto:${syncedValue}`;
-	                    }
-	                    syncedValue = `"${syncedValue}"`;
-	                }
-	            }
-
-	            if( (field.doNotUpload !== true) && ($(this).attr('id').search(/-wd$/) === -1) ) { // -1: regex not found
-	                ajaxSisterSiteSearch(
-	                    API_WIKIDATA,
-	                    {
-	                        action: 'wbgetentities',
-	                        ids: field.p,
-	                        props: 'datatype',
-	                    }
-	                ).then( ( jsonObj ) => {
-	                     //if ( TODO: add logic for detecting Wikipedia and not doing this test. Otherwise get an error trying to find undefined. Keep in mind that we would in the future call sitelink changing here maybe. Not urgent, error harmless ) { }
-	                    /*else*/ if ( jsonObj.entities[field.p].datatype === 'monolingualtext' ) {
-	                        syncedValue = `{"text": ${syncedValue}, "language": "${LANG}"}`;
-	                    }
-	                    if ( guidObj === "null" ) { // no value on Wikidata, string "null" gets saved in hidden field. There should be no cases in which there is no Wikidata item but this string does not equal "null"
-	                        if (syncedValue !== '') {
-	                            sendToWikidata(field.p , syncedValue, 'value');
-	                        }
-	                    } else {
-	                        if ( syncedValue !== "" ) {
-	                            // this is changing, for when guid is not null and neither is the value
-	                            // Wikidata silently ignores a request to change a value to its existing value
-	                            changeOnWikidata(guidObj, field.p, syncedValue, 'value');
-	                        } else if( (field.p !== WIKIDATA_CLAIMS.coords.p) || (DDValue[0] === '' && DDValue[1] === '') ) {
-	                            removeFromWikidata(guidObj);
-	                        }
-	                    }
-	                } );
-	            }
-	        });
-
-	        dialog.close(this);
-	    }
-	};
-
-	const updateWikidataSharedFields = function(
-	    wikidataRecord, SisterSite
-	) {
-	    const { API_WIKIDATA, ajaxSisterSiteSearch } = SisterSite;
-
-	    return ajaxSisterSiteSearch(
-	        API_WIKIDATA,
-	        {
-	            action: 'wbgetentities',
-	            ids: wikidataRecord,
-	            languages: LANG
-	        }
-	    );
-	};
-
-	const launchSyncDialog = function (jsonObj, wikidataRecord, SisterSite, Config, translate, commonsLink, wikipediaLink) {
-	    const $syncDialogElement = listingEditorSync.init(
-	        SisterSite, Config, translate, jsonObj, wikidataRecord
-	    );
-	    const submitFunction = makeSubmitFunction( SisterSite, Config, commonsLink, wikipediaLink );
-	    dialog.open($syncDialogElement, {
-	        title: translate( 'syncTitle' ),
-	        dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
-
-	        buttons: [
-	            {
-	                text: translate( 'submit' ),
-	                click: submitFunction,
-	            },
-	            {
-	                text: translate( 'cancel' ),
-	                // eslint-disable-next-line object-shorthand
-	                click: function() {
-	                    dialog.close(this);
-	                }
-	            },
-	        ],
-	        // eslint-disable-next-line object-shorthand
-	        open: function() {
-	            hideWikidataFields();
-	        },
-	        // eslint-disable-next-line object-shorthand
-	        close: function() {
-	            showWikidataFields();
-	            //listingEditorSync.destroy();
-	            document.getElementById("listing-editor-sync").outerHTML = ""; // delete the dialog. Direct DOM manipulation so the model gets updated. This is to avoid issues with subsequent dialogs no longer matching labels with inputs because IDs are already in use.
-	        }
-	    });
-	    if($syncDialogElement.find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
-	        submitFunction();
-	        listingEditorSync.destroy();
-	        alert( translate( 'wikidataSharedMatch' ) );
-	    }
-
-	    $syncDialogElement.find('.clear').on( 'click',  function() {
-	        $syncDialogElement.find('input:radio:not([id]):enabled').prop('checked', true);
-	    });
-	    $syncDialogElement.find('.syncSelect').on( 'click',  function() {
-	        const field = $(this).attr('name'); // wv or wd
-	        $syncDialogElement.find('input[type=radio]').prop('checked', false);
-	        $syncDialogElement.find(`input[id$=${field}]`).prop('checked', true);
-	    });
-	    $syncDialogElement.find('#autoSelect').on( 'click',  function() { // auto select non-empty values
-	        $syncDialogElement.find('.choose-row').each(function () {
-	            var WD_value = $(this).find('label:first').text().trim().length;
-	            var WV_value = $(this).find('label:last').text().trim().length;
-	            $(this).find('input[type="radio"]:eq(1)').prop('checked', true); // init with no preferred value
-	            if (WD_value) {
-	                if (!WV_value) {
-	                    $(this).find('input[type="radio"]:first').prop('checked', true); //if WD label has text while WV don't, select WD
-	                }
-	            } else if (WV_value) {
-	                $(this).find('input[type="radio"]:last').prop('checked', true); //if WD label has no text while WV do, select WV
-	            }
-	        });
-	    });
-	};
-
-	const getWikidataFromWikipedia = function(titles, SisterSite) {
-	    const { API_WIKIPEDIA, ajaxSisterSiteSearch, wikipediaWikidata } = SisterSite;
-	    return ajaxSisterSiteSearch(
-	        API_WIKIPEDIA,
-	        {
-	            action: 'query',
-	            prop: 'pageprops',
-	            ppprop: 'wikibase_item',
-	            indexpageids: 1,
-	            titles
-	        }
-	    ).then( ( jsonObj ) => wikipediaWikidata(jsonObj) );
-	};
+	const getWikidataFromWikipedia = requireGetWikidataFromWikipedia();
 
 	const makeWikidataLink = ( translate ) => {
 	    return function(form, value) {
@@ -2266,75 +2447,7 @@ function requireRender () {
 	    return commonsLink;
 	};
 
-	const quickUpdateWikidataSharedFields = function(wikidataRecord, SisterSite, Config, translate) {
-	    const { API_WIKIDATA, wikidataClaim, wikidataWikipedia,
-	        ajaxSisterSiteSearch } = SisterSite;
-	    const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = Config;
-	    const ajaxData = {
-	        action: 'wbgetentities',
-	        ids: wikidataRecord,
-	        languages: LANG
-	    };
-	    const ajaxSuccess = function (jsonObj) {
-	        let msg = '';
-	        const res = [];
-	        for (let key in WIKIDATA_CLAIMS) {
-	            res[key] = wikidataClaim(jsonObj, wikidataRecord, WIKIDATA_CLAIMS[key].p);
-	            if (res[key]) {
-	                if (key === 'coords') { //WD coords already stored in DD notation; no need to apply any conversion
-	                    res[key].latitude = trimDecimal(res[key].latitude, 6);
-	                    res[key].longitude = trimDecimal(res[key].longitude, 6);
-	                    msg += `\n${WIKIDATA_CLAIMS[key].label}: ${res[key].latitude} ${res[key].longitude}`;
-	                } else if (key === 'iata') {
-	                    msg += `\n${WIKIDATA_CLAIMS[key].label}: ${res[key]}`;
-	                    res[key] = iata.replace( '%s', res[key] );
-	                } else if (key === 'email') {
-	                    res[key] = res[key].replace('mailto:', '');
-	                    msg += `\n${WIKIDATA_CLAIMS[key].label}: ${res[key]}`;
-	                } else {
-	                    msg += `\n${WIKIDATA_CLAIMS[key].label}: ${res[key]}`;
-	                }
-	            }
-	        }
-	        const wikipedia = wikidataWikipedia(jsonObj, wikidataRecord);
-	        if (wikipedia) {
-	            msg += `\n${translate( 'sharedWikipedia' )}: ${wikipedia}`;
-	        }
-
-	        if (msg) {
-	            const result = {
-	                wikipedia
-	            };
-	            if ( confirm( `${translate( 'wikidataShared' )}\n${msg}`) ) {
-	                for (let key in res) {
-	                    if (res[key]) {
-	                        var editorField = [];
-	                        for( var i = 0; i < WIKIDATA_CLAIMS[key].fields.length; i++ ) {
-	                            editorField[i] = `#${LISTING_TEMPLATES.listing[WIKIDATA_CLAIMS[key].fields[i]].id}`;
-	                        }
-
-	                        if ( (key !== 'iata') || ($('#input-alt').val() === '') ||
-	                            (/^IATA: ...$/.test($('#input-alt').val())) ) {
-	                            if (key === 'coords') {
-	                                updateFieldIfNotNull(editorField[0], res[key].latitude, WIKIDATA_CLAIMS[key].remotely_sync);
-	                                updateFieldIfNotNull(editorField[1], res[key].longitude, WIKIDATA_CLAIMS[key].remotely_sync);
-	                            }  else {
-	                                updateFieldIfNotNull(editorField[0], res[key], WIKIDATA_CLAIMS[key].remotely_sync);
-	                                if (key === 'image') {
-	                                    result.commons = res[ key ];
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	                updateFieldIfNotNull('#input-wikipedia', wikipedia, true);
-	                return result;
-	            }
-	        }
-	        return false;
-	    };
-	    return ajaxSisterSiteSearch(API_WIKIDATA, ajaxData, ajaxSuccess);
-	};
+	const quickUpdateWikidataSharedFields = requireQuickUpdateWikidataSharedFields();
 
 	const wikidataLookup = function(ids, SisterSite) {
 	    const {
@@ -2405,7 +2518,7 @@ function requireRender () {
 	            ).then(( jsonObj ) => {
 	                wikidataLink("", $("#input-wikidata-value").val()); // called to append the Wikidata link to the dialog title
 	                launchSyncDialog(
-	                    jsonObj, wikidataRecord, SisterSite, Config, translate, commonsLink, wikipediaLink
+	                    jsonObj, wikidataRecord, SisterSite, commonsLink, wikipediaLink
 	                );
 	            });
 	        });
@@ -2442,6 +2555,105 @@ function requireRender () {
 	return render;
 }
 
+var createForm_1;
+var hasRequiredCreateForm;
+
+function requireCreateForm () {
+	if (hasRequiredCreateForm) return createForm_1;
+	hasRequiredCreateForm = 1;
+	const isCustomListingType = requireIsCustomListingType();
+	const renderSisterSiteApp = requireRender();
+	const { translate } = translate_1;
+	const { getCallbacks } = Callbacks_1;
+	const { getConfig } = Config;
+	const NATL_CURRENCY_SELECTOR = '#span_natl_currency';
+
+	const createForm = function(mode, listingParameters, listingTemplateAsMap, {
+	    telephoneCodes,
+	    NATL_CURRENCY
+	}) {
+	    const Config = getConfig();
+	    const {
+	        EDITOR_FORM_HTML,
+	        LISTING_TYPE_PARAMETER,
+	        SUPPORTED_SECTIONS,
+	        LISTING_TEMPLATES_OMIT
+	    } = Config;
+	    var form = $(EDITOR_FORM_HTML);
+	    // make sure the select dropdown includes any custom "type" values
+	    var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
+	    const $dropdown = $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form);
+	    SUPPORTED_SECTIONS
+	        .filter( ( a ) => !LISTING_TEMPLATES_OMIT.includes( a ) )
+	        .forEach( ( value ) => {
+	            $( '<option>' ).val( value ).text( value ).appendTo( $dropdown );
+	        } );
+	    if (isCustomListingType(listingType)) {
+	        $dropdown.append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
+	    }
+	    // populate the empty form with existing values
+	    for (var parameter in listingParameters) {
+	        var parameterInfo = listingParameters[parameter];
+	        if (listingTemplateAsMap[parameter]) {
+	            $(`#${parameterInfo.id}`, form).val(listingTemplateAsMap[parameter]);
+	        } else if (parameterInfo.hideDivIfEmpty) {
+	            $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
+	        }
+	    }
+	    // Adding national currency symbols
+	    var natlCurrency = $(NATL_CURRENCY_SELECTOR, form);
+	    if (NATL_CURRENCY.length > 0) {
+	        for (i = 0; i < NATL_CURRENCY.length; i++) {
+	            natlCurrency.append(`<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${NATL_CURRENCY[i]}</a></span>`);
+	        }
+	        natlCurrency.append(' |');
+	    } else natlCurrency.hide();
+	    // Adding country calling code
+	    var phones = $('.input-cc', form);
+	    if ( telephoneCodes.length ) {
+	        phones.each( function() {
+	            i = $(this).attr('data-for');
+	            telephoneCodes.forEach( ( CC ) => {
+	                $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${CC} </a></span>` );
+	            } );
+	        });
+	    } else phones.hide();
+
+	    const callbacks = getCallbacks( 'CREATE_FORM_CALLBACKS' );
+	    for (var i=0; i < callbacks.length; i++) {
+	        callbacks[i]( form, mode );
+	    }
+	    // update SisterSite app values
+	    renderSisterSiteApp( Config, translate, listingTemplateAsMap )( form );
+	    return form;
+	};
+	createForm_1 = createForm;
+	return createForm_1;
+}
+
+var getListingInfo_1;
+var hasRequiredGetListingInfo;
+
+function requireGetListingInfo () {
+	if (hasRequiredGetListingInfo) return getListingInfo_1;
+	hasRequiredGetListingInfo = 1;
+	const isCustomListingType = requireIsCustomListingType();
+	const { getConfig } = Config;
+
+	/**
+	 * Given a listing type, return the appropriate entry from the
+	 * LISTING_TEMPLATES array. This method returns the entry for the default
+	 * listing template type if not enty exists for the specified type.
+	 */
+	const getListingInfo = function(type) {
+	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
+	    return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
+	};
+
+	getListingInfo_1 = getListingInfo;
+	return getListingInfo_1;
+}
+
 var currentEdit;
 var hasRequiredCurrentEdit;
 
@@ -2470,50 +2682,6 @@ function requireCurrentEdit () {
 	    setInlineListing
 	};
 	return currentEdit;
-}
-
-var isCustomListingType_1;
-var hasRequiredIsCustomListingType;
-
-function requireIsCustomListingType () {
-	if (hasRequiredIsCustomListingType) return isCustomListingType_1;
-	hasRequiredIsCustomListingType = 1;
-	const { getConfig } = Config;
-
-	/**
-	 * Determine if the specified listing type is a custom type - for example "go"
-	 * instead of "see", "do", "listing", etc.
-	 */
-	const isCustomListingType = function(listingType) {
-	    const { LISTING_TEMPLATES } = getConfig();
-	    return !(listingType in LISTING_TEMPLATES);
-	};
-
-	isCustomListingType_1 = isCustomListingType;
-	return isCustomListingType_1;
-}
-
-var getListingInfo_1;
-var hasRequiredGetListingInfo;
-
-function requireGetListingInfo () {
-	if (hasRequiredGetListingInfo) return getListingInfo_1;
-	hasRequiredGetListingInfo = 1;
-	const isCustomListingType = requireIsCustomListingType();
-	const { getConfig } = Config;
-
-	/**
-	 * Given a listing type, return the appropriate entry from the
-	 * LISTING_TEMPLATES array. This method returns the entry for the default
-	 * listing template type if not enty exists for the specified type.
-	 */
-	const getListingInfo = function(type) {
-	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
-	    return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
-	};
-
-	getListingInfo_1 = getListingInfo;
-	return getListingInfo_1;
 }
 
 var listingToStr_1;
@@ -2599,129 +2767,6 @@ function requireListingToStr () {
 
 	listingToStr_1 = listingToStr;
 	return listingToStr_1;
-}
-
-/**
- * Determine whether a listing entry is within a paragraph rather than
- * an entry in a list; inline listings will be formatted slightly
- * differently than entries in lists (no newlines in the template syntax,
- * skip empty fields).
- */
-
-var isInline_1;
-var hasRequiredIsInline;
-
-function requireIsInline () {
-	if (hasRequiredIsInline) return isInline_1;
-	hasRequiredIsInline = 1;
-	const isInline = function(entry) {
-	    // if the edit link clicked is within a paragraph AND, since
-	    // newlines in a listing description will cause the Mediawiki parser
-	    // to close an HTML list (thus triggering the "is edit link within a
-	    // paragraph" test condition), also verify that the listing is
-	    // within the expected listing template span tag and thus hasn't
-	    // been incorrectly split due to newlines.
-	    return (entry.closest('p').length !== 0 && entry.closest('span.vcard').length !== 0);
-	};
-
-	isInline_1 = isInline;
-	return isInline_1;
-}
-
-/**
- * Given a DOM element, find the nearest editable section (h2 or h3) that
- * it is contained within.
- */
-
-var findSectionHeading_1;
-var hasRequiredFindSectionHeading;
-
-function requireFindSectionHeading () {
-	if (hasRequiredFindSectionHeading) return findSectionHeading_1;
-	hasRequiredFindSectionHeading = 1;
-	const findSectionHeading = function(element) {
-	    // mw-h3section and mw-h2section can be removed when useparsoid=1 is everywhere.
-	    return element.closest('div.mw-h3section, div.mw-h2section, section');
-	};
-
-	findSectionHeading_1 = findSectionHeading;
-	return findSectionHeading_1;
-}
-
-/**
- * Given an editable heading, examine it to determine what section index
- * the heading represents. First heading is 1, second is 2, etc.
- */
-
-var findSectionIndex_1;
-var hasRequiredFindSectionIndex;
-
-function requireFindSectionIndex () {
-	if (hasRequiredFindSectionIndex) return findSectionIndex_1;
-	hasRequiredFindSectionIndex = 1;
-	const findSectionIndex = function(heading) {
-	    if (heading === undefined) {
-	        return 0;
-	    }
-	    var link = heading.find('.mw-editsection a').attr('href');
-	    return (link !== undefined) ? link.split('=').pop() : 0;
-	};
-
-	findSectionIndex_1 = findSectionIndex;
-	return findSectionIndex_1;
-}
-
-var findListingIndex_1;
-var hasRequiredFindListingIndex;
-
-function requireFindListingIndex () {
-	if (hasRequiredFindListingIndex) return findListingIndex_1;
-	hasRequiredFindListingIndex = 1;
-	// selector that identifies the edit link as created by the
-	// addEditButtons() function
-	const EDIT_LINK_SELECTOR = '.vcard-edit-button';
-
-	/**
-	 * Given an edit link that was clicked for a listing, determine what index
-	 * that listing is within a section. First listing is 0, second is 1, etc.
-	 */
-	const findListingIndex = function(sectionHeading, clicked) {
-	    var count = 0;
-	    $(EDIT_LINK_SELECTOR, sectionHeading).each(function() {
-	        if (clicked.is($(this))) {
-	            return false;
-	        }
-	        count++;
-	    });
-	    return count;
-	};
-
-	findListingIndex_1 = findListingIndex;
-	return findListingIndex_1;
-}
-
-var findListingTypeForSection;
-var hasRequiredFindListingTypeForSection;
-
-function requireFindListingTypeForSection () {
-	if (hasRequiredFindListingTypeForSection) return findListingTypeForSection;
-	hasRequiredFindListingTypeForSection = 1;
-	findListingTypeForSection = function(entry, sectionToTemplateType, defaultType) {
-	    let closestSection = entry.closest('div.mw-h2section, section');
-	    while ( closestSection.is( 'section' ) && closestSection.parents( 'section' ).length ) {
-	        // check it's the top level section.
-	        closestSection = closestSection.parent( 'section' );
-	    }
-	    const closestHeading = closestSection.find( '.mw-heading2 h2, h2 .mw-headline');
-	    const sectionType = closestHeading.attr('id');
-	    for (var sectionId in sectionToTemplateType) {
-	        if (sectionType == sectionId) {
-	            return sectionToTemplateType[sectionId];
-	        }
-	    }
-	    return defaultType;
-	};
-	return findListingTypeForSection;
 }
 
 var getListingTypesRegex_1;
@@ -2811,259 +2856,6 @@ function requireGetListingWikitextBraces () {
 	return getListingWikitextBraces_1;
 }
 
-var replaceSpecial_1;
-var hasRequiredReplaceSpecial;
-
-function requireReplaceSpecial () {
-	if (hasRequiredReplaceSpecial) return replaceSpecial_1;
-	hasRequiredReplaceSpecial = 1;
-	const replaceSpecial = function(str) {
-	    return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
-	};
-
-	replaceSpecial_1 = replaceSpecial;
-	return replaceSpecial_1;
-}
-
-var findPatternMatch_1;
-var hasRequiredFindPatternMatch;
-
-function requireFindPatternMatch () {
-	if (hasRequiredFindPatternMatch) return findPatternMatch_1;
-	hasRequiredFindPatternMatch = 1;
-	const replaceSpecial = requireReplaceSpecial();
-
-	/**
-	 * Utility method for finding a matching end pattern for a specified start
-	 * pattern, including nesting. The specified value must start with the
-	 * start value, otherwise an empty string will be returned.
-	 */
-	const findPatternMatch = function(value, startPattern, endPattern) {
-	    var matchString = '';
-	    var startRegex = new RegExp(`^${replaceSpecial(startPattern)}`, 'i');
-	    if (startRegex.test(value)) {
-	        var endRegex = new RegExp(`^${replaceSpecial(endPattern)}`, 'i');
-	        var matchCount = 1;
-	        for (var i = startPattern.length; i < value.length; i++) {
-	            var remainingValue = value.substr(i);
-	            if (startRegex.test(remainingValue)) {
-	                matchCount++;
-	            } else if (endRegex.test(remainingValue)) {
-	                matchCount--;
-	            }
-	            if (matchCount === 0) {
-	                matchString = value.substr(0, i);
-	                break;
-	            }
-	        }
-	    }
-	    return matchString;
-	};
-
-	findPatternMatch_1 = findPatternMatch;
-	return findPatternMatch_1;
-}
-
-var listingTemplateToParamsArray_1;
-var hasRequiredListingTemplateToParamsArray;
-
-function requireListingTemplateToParamsArray () {
-	if (hasRequiredListingTemplateToParamsArray) return listingTemplateToParamsArray_1;
-	hasRequiredListingTemplateToParamsArray = 1;
-	const findPatternMatch = requireFindPatternMatch();
-
-	/**
-	 * Split the raw template wikitext into an array of params. The pipe
-	 * symbol delimits template params, but this method will also inspect the
-	 * content to deal with nested templates or wikilinks that might contain
-	 * pipe characters that should not be used as delimiters.
-	 */
-	const listingTemplateToParamsArray = function(listingTemplateWikiSyntax) {
-	    var results = [];
-	    var paramValue = '';
-	    var pos = 0;
-	    while (pos < listingTemplateWikiSyntax.length) {
-	        var remainingString = listingTemplateWikiSyntax.substr(pos);
-	        // check for a nested template or wikilink
-	        var patternMatch = findPatternMatch(remainingString, "{{", "}}");
-	        if (patternMatch.length === 0) {
-	            patternMatch = findPatternMatch(remainingString, "[[", "]]");
-	        }
-	        if (patternMatch.length > 0) {
-	            paramValue += patternMatch;
-	            pos += patternMatch.length;
-	        } else if (listingTemplateWikiSyntax.charAt(pos) === '|') {
-	            // delimiter - push the previous param and move on to the next
-	            results.push(paramValue);
-	            paramValue = '';
-	            pos++;
-	        } else {
-	            // append the character to the param value being built
-	            paramValue += listingTemplateWikiSyntax.charAt(pos);
-	            pos++;
-	        }
-	    }
-	    if (paramValue.length > 0) {
-	        // append the last param value
-	        results.push(paramValue);
-	    }
-	    return results;
-	};
-
-	listingTemplateToParamsArray_1 = listingTemplateToParamsArray;
-	return listingTemplateToParamsArray_1;
-}
-
-var replacements_1;
-var hasRequiredReplacements;
-
-function requireReplacements () {
-	if (hasRequiredReplacements) return replacements_1;
-	hasRequiredReplacements = 1;
-	let replacements = {};
-
-	const clear = () => {
-	    replacements = {};
-	};
-
-	const addReplacement = ( rep, comment ) => {
-	    replacements[rep] = comment;
-	};
-
-	replacements_1 = {
-	    replacements,
-	    addReplacement,
-	    clear
-	};
-	return replacements_1;
-}
-
-var restoreComments_1;
-var hasRequiredRestoreComments;
-
-function requireRestoreComments () {
-	if (hasRequiredRestoreComments) return restoreComments_1;
-	hasRequiredRestoreComments = 1;
-	const { replacements, clear } = requireReplacements();
-
-	/**
-	 * Search the text provided, and if it contains any text that was
-	 * previously stripped out for replacement purposes, restore it.
-	 */
-	const restoreComments = function(text, resetReplacements) {
-	    for (var key in replacements) {
-	        var val = replacements[key];
-	        text = text.replace(key, val);
-	    }
-	    if (resetReplacements) {
-	        clear();
-	    }
-	    return text;
-	};
-
-	restoreComments_1 = restoreComments;
-	return restoreComments_1;
-}
-
-var wikiTextToListing_1;
-var hasRequiredWikiTextToListing;
-
-function requireWikiTextToListing () {
-	if (hasRequiredWikiTextToListing) return wikiTextToListing_1;
-	hasRequiredWikiTextToListing = 1;
-	const getListingTypesRegex = requireGetListingTypesRegex();
-	const listingTemplateToParamsArray = requireListingTemplateToParamsArray();
-	const restoreComments = requireRestoreComments();
-	const { getConfig } = Config;
-
-	/**
-	 * Convert raw wiki listing syntax into a mapping of key-value pairs
-	 * corresponding to the listing template parameters.
-	 */
-	const wikiTextToListing = function(listingTemplateWikiSyntax) {
-	    const { LISTING_TYPE_PARAMETER,
-	        LISTING_CONTENT_PARAMETER, LISTING_TEMPLATES } = getConfig();
-	    var typeRegex = getListingTypesRegex();
-	    // convert "{{see" to {{listing|type=see"
-	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);
-	    // remove the trailing braces
-	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.slice(0,-2);
-	    var listingTemplateAsMap = {};
-	    var lastKey;
-	    var listParams = listingTemplateToParamsArray(listingTemplateWikiSyntax);
-	    for (var j=1; j < listParams.length; j++) {
-	        var param = listParams[j];
-	        var index = param.indexOf('=');
-	        if (index > 0) {
-	            // param is of the form key=value
-	            var key = param.substr(0, index).trim();
-	            var value = param.substr(index+1).trim();
-	            listingTemplateAsMap[key] = value;
-	            lastKey = key;
-	        } else if (lastKey && listingTemplateAsMap[lastKey].length) {
-	            // there was a pipe character within a param value, such as
-	            // "key=value1|value2", so just append to the previous param
-	            listingTemplateAsMap[lastKey] += `|${param}`;
-	        }
-	    }
-	    for (var loopKey1 in listingTemplateAsMap) {
-	        // if the template value contains an HTML comment that was
-	        // previously converted to a placehold then it needs to be
-	        // converted back to a comment so that the placeholder is not
-	        // displayed in the edit form
-	        listingTemplateAsMap[loopKey1] = restoreComments(listingTemplateAsMap[loopKey1], false);
-	    }
-	    if (listingTemplateAsMap[LISTING_CONTENT_PARAMETER]) {
-	        // convert paragraph tags to newlines so that the content is more
-	        // readable in the editor window
-	        listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<p>\s*/g, '\n\n');
-	        listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<br\s*\/?>\s*/g, '\n');
-	    }
-	    // sanitize the listing type param to match the configured values, so
-	    // if the listing contained "Do" it will still match the configured "do"
-	    for (var loopKey2 in LISTING_TEMPLATES) {
-	        if (listingTemplateAsMap[LISTING_TYPE_PARAMETER].toLowerCase() === loopKey2.toLowerCase()) {
-	            listingTemplateAsMap[LISTING_TYPE_PARAMETER] = loopKey2;
-	            break;
-	        }
-	    }
-	    return listingTemplateAsMap;
-	};
-
-	wikiTextToListing_1 = wikiTextToListing;
-	return wikiTextToListing_1;
-}
-
-var stripComments_1;
-var hasRequiredStripComments;
-
-function requireStripComments () {
-	if (hasRequiredStripComments) return stripComments_1;
-	hasRequiredStripComments = 1;
-	const { addReplacement } = requireReplacements();
-
-	/**
-	 * Commented-out listings can result in the wrong listing being edited, so
-	 * strip out any comments and replace them with placeholders that can be
-	 * restored prior to saving changes.
-	 */
-	const stripComments = function(text) {
-	    var comments = text.match(/<!--[\s\S]*?-->/mig);
-	    if (comments !== null ) {
-	        for (var i = 0; i < comments.length; i++) {
-	            var comment = comments[i];
-	            var rep = `<<<COMMENT${i}>>>`;
-	            text = text.replace(comment, rep);
-	            addReplacement( rep, comment );
-	        }
-	    }
-	    return text;
-	};
-
-	stripComments_1 = stripComments;
-	return stripComments_1;
-}
-
 var validateForm_1;
 var hasRequiredValidateForm;
 
@@ -3071,6 +2863,7 @@ function requireValidateForm () {
 	if (hasRequiredValidateForm) return validateForm_1;
 	hasRequiredValidateForm = 1;
 	const trimDecimal = requireTrimDecimal();
+	const { translate } = translate_1;
 
 	/**
 	 * Logic invoked on form submit to analyze the values entered into the
@@ -3086,8 +2879,7 @@ function requireValidateForm () {
 	const validateForm = function(
 	    VALIDATE_FORM_CALLBACKS,
 	    REPLACE_NEW_LINE_CHARS,
-	    APPEND_FULL_STOP_TO_DESCRIPTION,
-	    translate = () => {}
+	    APPEND_FULL_STOP_TO_DESCRIPTION
 	) {
 	    const coordsError = () => {
 	        alert( translate( 'coordinates-error' ) );
@@ -3163,43 +2955,140 @@ function requireValidateForm () {
 	return validateForm_1;
 }
 
-var getSectionName_1;
-var hasRequiredGetSectionName;
+var replacements_1;
+var hasRequiredReplacements;
 
-function requireGetSectionName () {
-	if (hasRequiredGetSectionName) return getSectionName_1;
-	hasRequiredGetSectionName = 1;
-	const { getSectionText } = requireCurrentEdit();
+function requireReplacements () {
+	if (hasRequiredReplacements) return replacements_1;
+	hasRequiredReplacements = 1;
+	let replacements = {};
 
-	const getSectionName = function() {
-	    const sectionText = getSectionText();
-	    var HEADING_REGEX = /^=+\s*([^=]+)\s*=+\s*\n/;
-	    var result = HEADING_REGEX.exec(sectionText);
-	    return (result !== null) ? result[1].trim() : "";
+	const clear = () => {
+	    replacements = {};
 	};
 
-	getSectionName_1 = getSectionName;
-	return getSectionName_1;
+	const addReplacement = ( rep, comment ) => {
+	    replacements[rep] = comment;
+	};
+
+	replacements_1 = {
+	    replacements,
+	    addReplacement,
+	    clear
+	};
+	return replacements_1;
 }
 
-var editSummarySection_1;
-var hasRequiredEditSummarySection;
+var stripComments_1;
+var hasRequiredStripComments;
 
-function requireEditSummarySection () {
-	if (hasRequiredEditSummarySection) return editSummarySection_1;
-	hasRequiredEditSummarySection = 1;
-	const getSectionName = requireGetSectionName();
+function requireStripComments () {
+	if (hasRequiredStripComments) return stripComments_1;
+	hasRequiredStripComments = 1;
+	const { addReplacement } = requireReplacements();
 
 	/**
-	 * Begin building the edit summary by trying to find the section name.
+	 * Commented-out listings can result in the wrong listing being edited, so
+	 * strip out any comments and replace them with placeholders that can be
+	 * restored prior to saving changes.
 	 */
-	const editSummarySection = function() {
-	    var sectionName = getSectionName();
-	    return (sectionName.length) ? `/* ${sectionName} */ ` : "";
+	const stripComments = function(text) {
+	    var comments = text.match(/<!--[\s\S]*?-->/mig);
+	    if (comments !== null ) {
+	        for (var i = 0; i < comments.length; i++) {
+	            var comment = comments[i];
+	            var rep = `<<<COMMENT${i}>>>`;
+	            text = text.replace(comment, rep);
+	            addReplacement( rep, comment );
+	        }
+	    }
+	    return text;
 	};
 
-	editSummarySection_1 = editSummarySection;
-	return editSummarySection_1;
+	stripComments_1 = stripComments;
+	return stripComments_1;
+}
+
+var restoreComments_1;
+var hasRequiredRestoreComments;
+
+function requireRestoreComments () {
+	if (hasRequiredRestoreComments) return restoreComments_1;
+	hasRequiredRestoreComments = 1;
+	const { replacements, clear } = requireReplacements();
+
+	/**
+	 * Search the text provided, and if it contains any text that was
+	 * previously stripped out for replacement purposes, restore it.
+	 */
+	const restoreComments = function(text, resetReplacements) {
+	    for (var key in replacements) {
+	        var val = replacements[key];
+	        text = text.replace(key, val);
+	    }
+	    if (resetReplacements) {
+	        clear();
+	    }
+	    return text;
+	};
+
+	restoreComments_1 = restoreComments;
+	return restoreComments_1;
+}
+
+var replaceSpecial_1;
+var hasRequiredReplaceSpecial;
+
+function requireReplaceSpecial () {
+	if (hasRequiredReplaceSpecial) return replaceSpecial_1;
+	hasRequiredReplaceSpecial = 1;
+	const replaceSpecial = function(str) {
+	    return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
+	};
+
+	replaceSpecial_1 = replaceSpecial;
+	return replaceSpecial_1;
+}
+
+var updateSectionTextWithEditedListing_1;
+var hasRequiredUpdateSectionTextWithEditedListing;
+
+function requireUpdateSectionTextWithEditedListing () {
+	if (hasRequiredUpdateSectionTextWithEditedListing) return updateSectionTextWithEditedListing_1;
+	hasRequiredUpdateSectionTextWithEditedListing = 1;
+	const { translate } = translate_1;
+	const restoreComments = requireRestoreComments();
+	const replaceSpecial = requireReplaceSpecial();
+	const { getSectionText, setSectionText } = requireCurrentEdit();
+	const { EDITOR_CLOSED_SELECTOR } = requireSelectors();
+
+	/**
+	 * After the listing has been converted to a string, add additional
+	 * processing required for edits (as opposed to adds), returning an
+	 * appropriate edit summary string.
+	 */
+	const updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
+	    let sectionText = getSectionText();
+	    // escaping '$&' since in replace regex it means "substitute the whole content"
+	    listingWikiText = listingWikiText.replace( /\$&/g, '&#36;&');
+	    if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
+	        listingWikiText = '';
+	        editSummary += translate( 'removed' );
+	        // TODO: RegEx change to delete the complete row when listing is preceeded by templates showing just icons
+	        var listRegex = new RegExp(`(\\n+[\\:\\*\\#]*)?\\s*${replaceSpecial(listingTemplateWikiSyntax)}`);
+	        sectionText = sectionText.replace(listRegex, listingWikiText);
+	    } else {
+	        editSummary += translate( 'updated' );
+	        sectionText = sectionText.replace(listingTemplateWikiSyntax, listingWikiText);
+	    }
+	    sectionText = restoreComments(sectionText, true);
+	    sectionText = sectionText.replace( /&#36;/g, '$' ); // '&#36;'->'$' restore on global sectionText var
+	    setSectionText( sectionText );
+	    return editSummary;
+	};
+
+	updateSectionTextWithEditedListing_1 = updateSectionTextWithEditedListing;
+	return updateSectionTextWithEditedListing_1;
 }
 
 var updateSectionTextWithAddedListing_1;
@@ -3327,45 +3216,23 @@ function requireUpdateSectionTextWithAddedListing () {
 	return updateSectionTextWithAddedListing_1;
 }
 
-var updateSectionTextWithEditedListing_1;
-var hasRequiredUpdateSectionTextWithEditedListing;
+var getSectionName_1;
+var hasRequiredGetSectionName;
 
-function requireUpdateSectionTextWithEditedListing () {
-	if (hasRequiredUpdateSectionTextWithEditedListing) return updateSectionTextWithEditedListing_1;
-	hasRequiredUpdateSectionTextWithEditedListing = 1;
-	const { translate } = translate_1;
-	const restoreComments = requireRestoreComments();
-	const replaceSpecial = requireReplaceSpecial();
-	const { getSectionText, setSectionText } = requireCurrentEdit();
-	const { EDITOR_CLOSED_SELECTOR } = requireSelectors();
+function requireGetSectionName () {
+	if (hasRequiredGetSectionName) return getSectionName_1;
+	hasRequiredGetSectionName = 1;
+	const { getSectionText } = requireCurrentEdit();
 
-	/**
-	 * After the listing has been converted to a string, add additional
-	 * processing required for edits (as opposed to adds), returning an
-	 * appropriate edit summary string.
-	 */
-	const updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
-	    let sectionText = getSectionText();
-	    // escaping '$&' since in replace regex it means "substitute the whole content"
-	    listingWikiText = listingWikiText.replace( /\$&/g, '&#36;&');
-	    if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
-	        listingWikiText = '';
-	        editSummary += translate( 'removed' );
-	        // TODO: RegEx change to delete the complete row when listing is preceeded by templates showing just icons
-	        var listRegex = new RegExp(`(\\n+[\\:\\*\\#]*)?\\s*${replaceSpecial(listingTemplateWikiSyntax)}`);
-	        sectionText = sectionText.replace(listRegex, listingWikiText);
-	    } else {
-	        editSummary += translate( 'updated' );
-	        sectionText = sectionText.replace(listingTemplateWikiSyntax, listingWikiText);
-	    }
-	    sectionText = restoreComments(sectionText, true);
-	    sectionText = sectionText.replace( /&#36;/g, '$' ); // '&#36;'->'$' restore on global sectionText var
-	    setSectionText( sectionText );
-	    return editSummary;
+	const getSectionName = function() {
+	    const sectionText = getSectionText();
+	    var HEADING_REGEX = /^=+\s*([^=]+)\s*=+\s*\n/;
+	    var result = HEADING_REGEX.exec(sectionText);
+	    return (result !== null) ? result[1].trim() : "";
 	};
 
-	updateSectionTextWithEditedListing_1 = updateSectionTextWithEditedListing;
-	return updateSectionTextWithEditedListing_1;
+	getSectionName_1 = getSectionName;
+	return getSectionName_1;
 }
 
 var savePayload_1;
@@ -3420,553 +3287,823 @@ function requireSavePayload () {
 	return savePayload_1;
 }
 
-var Core_1;
-var hasRequiredCore;
+var saveForm_1;
+var hasRequiredSaveForm;
 
-function requireCore () {
-	if (hasRequiredCore) return Core_1;
-	hasRequiredCore = 1;
-	const dialog = requireDialogs();
-	const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
-	const listingEditorSync = requireListingEditorSync();
-	const renderSisterSiteApp = requireRender();
-	const currentEdit = requireCurrentEdit();
-	const { getSectionText, setSectionText } = currentEdit;
-	const listingToStr = requireListingToStr();
+function requireSaveForm () {
+	if (hasRequiredSaveForm) return saveForm_1;
+	hasRequiredSaveForm = 1;
+	const getSectionName = requireGetSectionName();
+	const { translate } = translate_1;
+	const savePayload = requireSavePayload();
+	const { getSectionText } = requireCurrentEdit();
+	const { getConfig } = Config;
 
-	var Core = function( Callbacks, Config, PROJECT_CONFIG, translate ) {
-	    const {
-	        EDITOR_FORM_HTML,
-	        LISTING_TYPE_PARAMETER,
-	        SECTION_TO_TEMPLATE_TYPE,
-	        DEFAULT_LISTING_TEMPLATE,
-	        EDITOR_SUMMARY_SELECTOR,
-	        EDITOR_MINOR_EDIT_SELECTOR,
-	        EDITOR_FORM_SELECTOR,
-	        EDITOR_CLOSED_SELECTOR
-	    } = Config;
-
-	    var api = new mw.Api();
-	    const { MODE_ADD, MODE_EDIT } = mode;
-	    var SAVE_FORM_SELECTOR = '#progress-dialog';
-	    var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
-	    var NATL_CURRENCY_SELECTOR = '#span_natl_currency';
-	    var NATL_CURRENCY = [];
-	    var CC_SELECTOR = '.input-cc'; // Country calling code
-	    var CC = '';
-	    var LC = '';
-
-	    /**
-	     * Generate the form UI for the listing editor. If editing an existing
-	     * listing, pre-populate the form input fields with the existing values.
-	     */
-	    var createForm = function(mode, listingParameters, listingTemplateAsMap) {
-	        var form = $(EDITOR_FORM_HTML);
-	        // make sure the select dropdown includes any custom "type" values
-	        var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
-	        const $dropdown = $(`#${listingParameters[LISTING_TYPE_PARAMETER].id}`, form);
-	        const LISTING_TEMPLATES_OMIT = PROJECT_CONFIG.LISTING_TEMPLATES_OMIT;
-	        const SUPPORTED_SECTIONS = PROJECT_CONFIG.SUPPORTED_SECTIONS
-	            .filter( ( a ) => !LISTING_TEMPLATES_OMIT.includes( a ) );
-	        SUPPORTED_SECTIONS.forEach( ( value ) => {
-	            $( '<option>' ).val( value ).text( value ).appendTo( $dropdown );
-	        } );
-	        if (isCustomListingType(listingType)) {
-	            $dropdown.append( $( '<option></option>').attr( {value: listingType }).text( listingType ) );
-	        }
-	        // populate the empty form with existing values
-	        for (var parameter in listingParameters) {
-	            var parameterInfo = listingParameters[parameter];
-	            if (listingTemplateAsMap[parameter]) {
-	                $(`#${parameterInfo.id}`, form).val(listingTemplateAsMap[parameter]);
-	            } else if (parameterInfo.hideDivIfEmpty) {
-	                $(`#${parameterInfo.hideDivIfEmpty}`, form).hide();
+	var SAVE_FORM_SELECTOR = '#progress-dialog';
+	var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
+	/**
+	 * If the result of an attempt to save the listing editor content is a
+	 * Captcha challenge then display a form to allow the user to respond to
+	 * the challenge and resubmit.
+	 */
+	var captchaDialog = function(summary, minor, sectionNumber, captchaImgSrc, captchaId, dialog) {
+	    // if a captcha dialog is already open, get rid of it
+	    if ($(CAPTCHA_FORM_SELECTOR).length > 0) {
+	        dialog.destroy(CAPTCHA_FORM_SELECTOR);
+	    }
+	    var captcha = $('<div id="captcha-dialog">').text(translate( 'externalLinks' ));
+	    $('<img class="fancycaptcha-image">')
+	            .attr('src', captchaImgSrc)
+	            .appendTo(captcha);
+	    $('<label for="input-captcha">').text(translate( 'enterCaptcha' )).appendTo(captcha);
+	    $('<input id="input-captcha" type="text">').appendTo(captcha);
+	    dialog.open(captcha, {
+	        modal: true,
+	        title: translate( 'enterCaptcha' ),
+	        buttons: [
+	            {
+	                text: translate( 'submit' ),
+	                // eslint-disable-next-line object-shorthand
+	                click: function() {
+	                    saveForm(summary, minor, sectionNumber, captchaId, $('#input-captcha').val(), dialog);
+	                    dialog.destroy(this);
+	                }
+	            },
+	            {
+	                text: translate( 'cancel' ),
+	                // eslint-disable-next-line object-shorthand
+	                click: function() {
+	                    dialog.destroy(this);
+	                }
 	            }
-	        }
-	        // Adding national currency symbols
-	        var natlCurrency = $(NATL_CURRENCY_SELECTOR, form);
-	        if (NATL_CURRENCY.length > 0) {
-	            for (i = 0; i < NATL_CURRENCY.length; i++) {
-	                natlCurrency.append(`<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${NATL_CURRENCY[i]}</a></span>`);
-	            }
-	            natlCurrency.append(' |');
-	        } else natlCurrency.hide();
-	        // Adding country calling code
-	        var phones = $(CC_SELECTOR, form);
-	        if (CC !== '' || LC !== '') {
-	            phones.each( function() {
-	                i = $(this).attr('data-for');
-	                if (CC !== '')
-	                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${CC} </a></span>` );
-	                if (LC !== '')
-	                    $(this).append( `<span class="listing-charinsert" data-for="${i}"><a href="javascript:">${LC} </a></span>` );
-	            });
-	        } else phones.hide();
+	        ]
+	    });
+	};
 
-	        for (var i=0; i < Callbacks.CREATE_FORM_CALLBACKS.length; i++) {
-	            Callbacks.CREATE_FORM_CALLBACKS[i](form, mode);
-	        }
-	        // update SisterSite app values
-	        renderSisterSiteApp( Config, translate, listingTemplateAsMap )( form );
-	        return form;
+	/**
+	 * Render a dialog that notifies the user that the listing editor changes
+	 * are being saved.
+	 */
+	var savingForm = function( dialog ) {
+	    // if a progress dialog is already open, get rid of it
+	    if ($(SAVE_FORM_SELECTOR).length > 0) {
+	        dialog.destroy(SAVE_FORM_SELECTOR);
+	    }
+	    var progress = $(`<div id="progress-dialog">${translate( 'saving' )}</div>`);
+	    dialog.open(progress, {
+	        modal: true,
+	        height: 100,
+	        width: 300,
+	        title: ''
+	    });
+	    $(".ui-dialog-titlebar").hide();
+	};
+
+	/**
+	 * If an error occurs while saving the form, remove the "saving" dialog,
+	 * restore the original listing editor form (with all user content), and
+	 * display an alert with a failure message.
+	 */
+	var saveFailedInternal = function(msg, dialog) {
+	    const { EDITOR_FORM_SELECTOR } = getConfig();
+	    dialog.destroy(SAVE_FORM_SELECTOR);
+	    dialog.open($(EDITOR_FORM_SELECTOR));
+	    alert(msg);
+	};
+
+	/**
+	 * Execute the logic to post listing editor changes to the server so that
+	 * they are saved. After saving the page is refreshed to show the updated
+	 * article.
+	 */
+	const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
+	    var saveFailed = ( msg ) => saveFailedInternal( msg, dialog );
+	    var editPayload = {
+	        action: "edit",
+	        title: mw.config.get( "wgPageName" ),
+	        section: sectionNumber,
+	        text: getSectionText(),
+	        summary,
+	        captchaid: cid,
+	        captchaword: answer
 	    };
-
-	    var isInline = requireIsInline();
-
-	    var findSectionHeading = requireFindSectionHeading();
-
-	    var findSectionIndex = requireFindSectionIndex();
-
-	    /**
-	     * Given an edit link that was clicked for a listing, determine what index
-	     * that listing is within a section. First listing is 0, second is 1, etc.
-	     */
-	    var findListingIndex = requireFindListingIndex();
-
-	    /**
-	     * Return the listing template type appropriate for the section that
-	     * contains the provided DOM element (example: "see" for "See" sections,
-	     * etc). If no matching type is found then the default listing template
-	     * type is returned.
-	     */
-	    const _findListingTypeForSection = requireFindListingTypeForSection();
-	    const findListingTypeForSection = function(entry ) {
-	        return _findListingTypeForSection( entry, SECTION_TO_TEMPLATE_TYPE, DEFAULT_LISTING_TEMPLATE );
-	    };
-
-	    /**
-	     * Given a listing index, return the full wikitext for that listing
-	     * ("{{listing|key=value|...}}"). An index of 0 returns the first listing
-	     * template invocation, 1 returns the second, etc.
-	     */
-	    var getListingWikitextBraces = requireGetListingWikitextBraces();
-
-	    var wikiTextToListing = requireWikiTextToListing();
-
-	    /**
-	     * This method is invoked when an "add" or "edit" listing button is
-	     * clicked and will execute an Ajax request to retrieve all of the raw wiki
-	     * syntax contained within the specified section. This wiki text will
-	     * later be modified via the listing editor and re-submitted as a section
-	     * edit.
-	     */
-	    var initListingEditorDialog = function(mode, clicked) {
-	        var listingType;
-	        if (mode === MODE_ADD) {
-	            listingType = findListingTypeForSection(clicked);
-	        }
-	        var sectionHeading = findSectionHeading(clicked);
-	        var sectionIndex = findSectionIndex(sectionHeading);
-	        var listingIndex = (mode === MODE_ADD) ? -1 : findListingIndex(sectionHeading, clicked);
-	        currentEdit.setInlineListing( mode === MODE_EDIT && isInline(clicked) );
-
-	        NATL_CURRENCY = [];
-	        var dataSel = $( '.countryData' ).attr('data-currency');
-	        if ((dataSel !== undefined) && (dataSel !== '')) {
-	            NATL_CURRENCY = dataSel.split( ',' ).map( function( item ) {
-	                return item.trim();
-	            });
-	        }
-	        CC = '';
-	        dataSel = $( '.countryData' ).attr('data-country-calling-code');
-	        if ((dataSel !== undefined) && (dataSel !== '')) CC = dataSel;
-	        LC = '';
-	        dataSel = $( '.countryData' ).attr('data-local-dialing-code');
-	        if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
-
-	        api.ajax({
-	            prop: 'revisions',
-	            format: 'json',
-	            formatversion: 2,
-	            titles: IS_LOCALHOST ? mw.config.get( 'wgTitle' ) : mw.config.get('wgPageName'),
-	            action: 'query',
-	            rvprop: 'content',
-	            origin: '*',
-	            rvsection: sectionIndex
-	        }).then(function( data ) {
-	            try {
-	                setSectionText(
-	                    data.query.pages[ 0 ].revisions[ 0 ].content
-	                );
-	            } catch ( e ) {
-	                alert( 'Error occurred loading content for this section.' );
+	    if (minor) {
+	        $.extend( editPayload, { minor: 'true' } );
+	    }
+	    savePayload( editPayload).then(function(data) {
+	        if (data && data.edit && data.edit.result == 'Success') {
+	            if ( data.edit.nochange !== undefined ) {
+	                alert( 'Save skipped as there was no change to the content!' );
+	                dialog.destroy(SAVE_FORM_SELECTOR);
 	                return;
 	            }
-	            openListingEditorDialog(mode, sectionIndex, listingIndex, listingType);
-	        }, function( _jqXHR, textStatus, errorThrown ) {
-	            alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
-	        });
-	    };
-
-	    /**
-	     * This method is called asynchronously after the initListingEditorDialog()
-	     * method has retrieved the existing wiki section content that the
-	     * listing is being added to (and that contains the listing wiki syntax
-	     * when editing).
-	     */
-	    var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType) {
-	         setSectionText(
-	            stripComments(
-	                getSectionText()
-	            )
-	        );
-	        mw.loader.using( ['jquery.ui'], function () {
-	            var listingTemplateAsMap, listingTemplateWikiSyntax;
-	            if (mode == MODE_ADD) {
-	                listingTemplateAsMap = {};
-	                listingTemplateAsMap[LISTING_TYPE_PARAMETER] = listingType;
+	            // since the listing editor can be used on diff pages, redirect
+	            // to the canonical URL if it is different from the current URL
+	            var canonicalUrl = $("link[rel='canonical']").attr("href");
+	            var currentUrlWithoutHash = window.location.href.replace(window.location.hash, "");
+	            if (canonicalUrl && currentUrlWithoutHash != canonicalUrl) {
+	                var sectionName = mw.util.escapeIdForLink(getSectionName());
+	                if (sectionName.length) {
+	                    canonicalUrl += `#${sectionName}`;
+	                }
+	                window.location.href = canonicalUrl;
 	            } else {
-	                listingTemplateWikiSyntax = getListingWikitextBraces(listingIndex);
-	                listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
-	                listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
+	                window.location.reload();
 	            }
-	            var listingParameters = getListingInfo(listingType);
-	            // if a listing editor dialog is already open, get rid of it
-	            if ($(EDITOR_FORM_SELECTOR).length > 0) {
-	                dialog.destroy( EDITOR_FORM_SELECTOR );
-	            }
-	            // if a sync editor dialog is already open, get rid of it
-	            listingEditorSync.destroy();
-	            var form = $(createForm(mode, listingParameters, listingTemplateAsMap));
-	            // modal form - must submit or cancel
-	            const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
-	            const buttons = [
-	                {
-	                    text: '?',
-	                    id: 'listing-help',
-	                    // eslint-disable-next-line object-shorthand
-	                    click: function() {
-	                        window.open( translate( 'helpPage' ) );
-	                    }
-	                },
-	                {
-	                    text: translate( 'submit' ),
-	                    // eslint-disable-next-line object-shorthand
-	                    click: function() {
-	                        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
-	                            // no need to validate the form upon deletion request
-	                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
-	                            dialog.close(this);
-	                            // if a sync editor dialog is open, get rid of it
-	                            listingEditorSync.destroy();
-	                        }
-	                        else if (
-	                            validateForm(
-	                                Callbacks.VALIDATE_FORM_CALLBACKS,
-	                                PROJECT_CONFIG.REPLACE_NEW_LINE_CHARS,
-	                                PROJECT_CONFIG.APPEND_FULL_STOP_TO_DESCRIPTION,
-	                                translate
-	                            )
-	                        ) {
-	                            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
-	                            dialog.close(this);
-	                            // if a sync editor dialog is open, get rid of it
-	                            listingEditorSync.destroy();
-	                        }
-	                    }
-	                },
-	                {
-	                    text: translate( 'cancel' ),
-	                    // eslint-disable-next-line object-shorthand
-	                    click: function() {
-	                        dialog.destroy(this);
-	                        // if a sync editor dialog is open, get rid of it
-	                        listingEditorSync.destroy();
-	                    }
-	                }
-	            ];
-	            let previewTimeout;
-	            $( form, 'textarea,input' ).on( 'change', () => {
-	                clearInterval( previewTimeout );
-	                mw.util.throttle( () => {
-	                    previewTimeout = setTimeout( () => {
-	                        showPreview(listingTemplateAsMap);
-	                    }, 200 );
-	                }, 300 )();
-	            } );
-	            dialog.open(form, {
-	                modal: true,
-	                title: (mode == MODE_ADD) ?
-	                    translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
-	                dialogClass: 'listing-editor-dialog',
-	                // eslint-disable-next-line object-shorthand
-	                create: function() {
-	                    // Make button pane
-	                    const $dialog = form.parent();
-	                    const $btnPane = $( '<div>' )
-	                        .addClass( 'ui-dialog-buttonpane ui-widget-content ui-helper-clearfix' )
-	                        .appendTo( $dialog );
-	                    const $buttonSet = $( '<div>' ).addClass( 'ui-dialog-buttonset' ).appendTo( $btnPane );
-	                    buttons.forEach( ( props ) => {
-	                        const btn = document.createElement( 'button' );
-	                        btn.classList.add( 'cdx-button', 'cdx-button--action-default' );
-	                        if ( props.id ) {
-	                            btn.id = props.id;
-	                        }
-	                        if ( props.title ) {
-	                            btn.setAttribute( 'title', props.title );
-	                        }
-	                        if ( props.style ) {
-	                            btn.setAttribute( 'style', props.style );
-	                        }
-	                        btn.textContent = props.text;
-	                        btn.addEventListener( 'click', () => {
-	                            props.click.apply( form );
-	                        } );
-	                        $buttonSet.append( btn );
-	                    } );
-	                    $btnPane.append(`<div class="listing-license">${translate( 'licenseText' )}</div>`);
-	                    if ( window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ) {
-	                        $(
-	                            `<span class="listing-license">${translate('listing-editor-version', [ window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ])}</span>`
-	                        ).appendTo( $btnPane );
-	                    }
-	                    const bugUrl = 'https://github.com/jdlrobson/Gadget-Workshop/issues';
-	                    $( `<span class="listing-license">&nbsp;<a href="${bugUrl}">${translate( 'report-bug' )}</a></span>` )
-	                        .appendTo( $btnPane );
-	                    $('body').on('dialogclose', EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
-	                        // if a sync editor dialog is open, get rid of it
-	                        listingEditorSync.destroy();
-	                    });
-	                }
-	            });
-	        });
-	    };
-
-	    /**
-	     * Commented-out listings can result in the wrong listing being edited, so
-	     * strip out any comments and replace them with placeholders that can be
-	     * restored prior to saving changes.
-	     */
-	    var stripComments = requireStripComments();
-
-	    /**
-	     * Given a listing type, return the appropriate entry from the
-	     * LISTING_TEMPLATES array. This method returns the entry for the default
-	     * listing template type if not enty exists for the specified type.
-	     */
-	    var getListingInfo = requireGetListingInfo();
-
-	    var isCustomListingType = requireIsCustomListingType();
-
-	    var validateForm = requireValidateForm();
-
-	    /**
-	     * Convert the listing editor form entry fields into wiki text. This
-	     * method converts the form entry fields into a listing template string,
-	     * replaces the original template string in the section text with the
-	     * updated entry, and then submits the section text to be saved on the
-	     * server.
-	     */
-	    var formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
-	        var listing = listingTemplateAsMap;
-	        var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
-	        var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
-	        var listingType = $(`#${listingTypeInput}`).val();
-	        var listingParameters = getListingInfo(listingType);
-	        for (var parameter in listingParameters) {
-	            listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
-	        }
-	        for (var i=0; i < Callbacks.SUBMIT_FORM_CALLBACKS.length; i++) {
-	            Callbacks.SUBMIT_FORM_CALLBACKS[i](listing, mode);
-	        }
-	        var text = listingToStr(listing);
-	        var summary = editSummarySection();
-	        if (mode == MODE_ADD) {
-	            summary = updateSectionTextWithAddedListing(summary, text, listing);
-	        } else {
-	            summary = updateSectionTextWithEditedListing(summary, text, listingTemplateWikiSyntax);
-	        }
-	        summary += $("#input-name").val();
-	        if ($(EDITOR_SUMMARY_SELECTOR).val() !== '') {
-	            summary += ` - ${$(EDITOR_SUMMARY_SELECTOR).val()}`;
-	        }
-	        var minor = $(EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
-	        saveForm(summary, minor, sectionNumber, '', '');
-	        return;
-	    };
-
-	    var showPreview = function(listingTemplateAsMap) {
-	        var listing = listingTemplateAsMap;
-	        var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
-	        var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
-	        var listingType = $(`#${listingTypeInput}`).val();
-	        var listingParameters = getListingInfo(listingType);
-	        for (var parameter in listingParameters) {
-	            listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
-	        }
-	        var text = listingToStr(listing);
-	        $.ajax ({
-	            url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
-	                action: 'parse',
-	                prop: 'text',
-	                contentmodel: 'wikitext',
-	                format: 'json',
-	                text,
-	            })}`
-	        } ).then( ( data ) => {
-	            $('#listing-preview-text').html(data.parse.text['*']);
-	        } );
-	    };
-
-	    /**
-	     * Begin building the edit summary by trying to find the section name.
-	     */
-	    var editSummarySection = requireEditSummarySection();
-	    var getSectionName = requireGetSectionName();
-	    var updateSectionTextWithAddedListing = requireUpdateSectionTextWithAddedListing();
-	    var updateSectionTextWithEditedListing = requireUpdateSectionTextWithEditedListing();
-
-	    /**
-	     * Render a dialog that notifies the user that the listing editor changes
-	     * are being saved.
-	     */
-	    var savingForm = function() {
-	        // if a progress dialog is already open, get rid of it
-	        if ($(SAVE_FORM_SELECTOR).length > 0) {
+	        } else if (data && data.error) {
+	            saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
+	        } else if (data && data.edit.spamblacklist) {
+	            saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
+	        } else if (data && data.edit.captcha) {
 	            dialog.destroy(SAVE_FORM_SELECTOR);
+	            captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id, dialog);
+	        } else {
+	            saveFailed(translate( 'submitUnknownError' ));
 	        }
-	        var progress = $(`<div id="progress-dialog">${translate( 'saving' )}</div>`);
-	        dialog.open(progress, {
-	            modal: true,
-	            height: 100,
-	            width: 300,
-	            title: ''
-	        });
-	        $(".ui-dialog-titlebar").hide();
-	    };
-
-	    const savePayload = requireSavePayload();
-
-	    /**
-	     * Execute the logic to post listing editor changes to the server so that
-	     * they are saved. After saving the page is refreshed to show the updated
-	     * article.
-	     */
-	    var saveForm = function(summary, minor, sectionNumber, cid, answer) {
-	        var editPayload = {
-	            action: "edit",
-	            title: mw.config.get( "wgPageName" ),
-	            section: sectionNumber,
-	            text: getSectionText(),
-	            summary,
-	            captchaid: cid,
-	            captchaword: answer
-	        };
-	        if (minor) {
-	            $.extend( editPayload, { minor: 'true' } );
+	    }, function(code, result) {
+	        if (code === "http") {
+	            saveFailed(`${translate( 'submitHttpError' )}: ${result.textStatus}` );
+	        } else if (code === "ok-but-empty") {
+	            saveFailed(translate( 'submitEmptyError' ));
+	        } else {
+	            saveFailed(`${translate( 'submitUnknownError' )}: ${code}` );
 	        }
-	        savePayload( editPayload).then(function(data) {
-	            if (data && data.edit && data.edit.result == 'Success') {
-	                if ( data.edit.nochange !== undefined ) {
-	                    alert( 'Save skipped as there was no change to the content!' );
-	                    dialog.destroy(SAVE_FORM_SELECTOR);
-	                    return;
-	                }
-	                // since the listing editor can be used on diff pages, redirect
-	                // to the canonical URL if it is different from the current URL
-	                var canonicalUrl = $("link[rel='canonical']").attr("href");
-	                var currentUrlWithoutHash = window.location.href.replace(window.location.hash, "");
-	                if (canonicalUrl && currentUrlWithoutHash != canonicalUrl) {
-	                    var sectionName = mw.util.escapeIdForLink(getSectionName());
-	                    if (sectionName.length) {
-	                        canonicalUrl += `#${sectionName}`;
-	                    }
-	                    window.location.href = canonicalUrl;
-	                } else {
-	                    window.location.reload();
-	                }
-	            } else if (data && data.error) {
-	                saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
-	            } else if (data && data.edit.spamblacklist) {
-	                saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
-	            } else if (data && data.edit.captcha) {
-	                dialog.destroy(SAVE_FORM_SELECTOR);
-	                captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id);
-	            } else {
-	                saveFailed(translate( 'submitUnknownError' ));
+	    });
+	    savingForm( dialog );
+	};
+
+	saveForm_1 = saveForm;
+	return saveForm_1;
+}
+
+var editSummarySection_1;
+var hasRequiredEditSummarySection;
+
+function requireEditSummarySection () {
+	if (hasRequiredEditSummarySection) return editSummarySection_1;
+	hasRequiredEditSummarySection = 1;
+	const getSectionName = requireGetSectionName();
+
+	/**
+	 * Begin building the edit summary by trying to find the section name.
+	 */
+	const editSummarySection = function() {
+	    var sectionName = getSectionName();
+	    return (sectionName.length) ? `/* ${sectionName} */ ` : "";
+	};
+
+	editSummarySection_1 = editSummarySection;
+	return editSummarySection_1;
+}
+
+var formToText_1;
+var hasRequiredFormToText;
+
+function requireFormToText () {
+	if (hasRequiredFormToText) return formToText_1;
+	hasRequiredFormToText = 1;
+	const { MODE_ADD } = mode;
+	const {
+	    EDITOR_MINOR_EDIT_SELECTOR,
+	    EDITOR_SUMMARY_SELECTOR
+	} = requireSelectors();
+	const getListingInfo = requireGetListingInfo();
+	const listingToStr = requireListingToStr();
+	const updateSectionTextWithEditedListing = requireUpdateSectionTextWithEditedListing();
+	const updateSectionTextWithAddedListing = requireUpdateSectionTextWithAddedListing();
+	const saveForm = requireSaveForm();
+	const editSummarySection = requireEditSummarySection();
+	const { getCallbacks } = Callbacks_1;
+	const { getConfig } = Config;
+
+	/**
+	 * Convert the listing editor form entry fields into wiki text. This
+	 * method converts the form entry fields into a listing template string,
+	 * replaces the original template string in the section text with the
+	 * updated entry, and then submits the section text to be saved on the
+	 * server.
+	 */
+	var formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog) {
+	    const { LISTING_TYPE_PARAMETER, DEFAULT_LISTING_TEMPLATE } = getConfig();
+	    var listing = listingTemplateAsMap;
+	    var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
+	    var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
+	    var listingType = $(`#${listingTypeInput}`).val();
+	    var listingParameters = getListingInfo(listingType);
+	    for (var parameter in listingParameters) {
+	        listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
+	    }
+	    const submitCallbacks = getCallbacks( 'SUBMIT_FORM_CALLBACKS' );
+	    for (var i=0; i < submitCallbacks.length; i++) {
+	        submitCallbacks[i](listing, mode);
+	    }
+	    var text = listingToStr(listing);
+	    var summary = editSummarySection();
+	    if (mode == MODE_ADD) {
+	        summary = updateSectionTextWithAddedListing(summary, text, listing);
+	    } else {
+	        summary = updateSectionTextWithEditedListing(summary, text, listingTemplateWikiSyntax);
+	    }
+	    summary += $("#input-name").val();
+	    if ($(EDITOR_SUMMARY_SELECTOR).val() !== '') {
+	        summary += ` - ${$(EDITOR_SUMMARY_SELECTOR).val()}`;
+	    }
+	    var minor = $(EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
+	    saveForm(summary, minor, sectionNumber, '', '', dialog);
+	    return;
+	};
+
+	formToText_1 = formToText;
+	return formToText_1;
+}
+
+var findPatternMatch_1;
+var hasRequiredFindPatternMatch;
+
+function requireFindPatternMatch () {
+	if (hasRequiredFindPatternMatch) return findPatternMatch_1;
+	hasRequiredFindPatternMatch = 1;
+	const replaceSpecial = requireReplaceSpecial();
+
+	/**
+	 * Utility method for finding a matching end pattern for a specified start
+	 * pattern, including nesting. The specified value must start with the
+	 * start value, otherwise an empty string will be returned.
+	 */
+	const findPatternMatch = function(value, startPattern, endPattern) {
+	    var matchString = '';
+	    var startRegex = new RegExp(`^${replaceSpecial(startPattern)}`, 'i');
+	    if (startRegex.test(value)) {
+	        var endRegex = new RegExp(`^${replaceSpecial(endPattern)}`, 'i');
+	        var matchCount = 1;
+	        for (var i = startPattern.length; i < value.length; i++) {
+	            var remainingValue = value.substr(i);
+	            if (startRegex.test(remainingValue)) {
+	                matchCount++;
+	            } else if (endRegex.test(remainingValue)) {
+	                matchCount--;
 	            }
-	        }, function(code, result) {
-	            if (code === "http") {
-	                saveFailed(`${translate( 'submitHttpError' )}: ${result.textStatus}` );
-	            } else if (code === "ok-but-empty") {
-	                saveFailed(translate( 'submitEmptyError' ));
-	            } else {
-	                saveFailed(`${translate( 'submitUnknownError' )}: ${code}` );
+	            if (matchCount === 0) {
+	                matchString = value.substr(0, i);
+	                break;
 	            }
-	        });
-	        savingForm();
-	    };
-
-	    /**
-	     * If an error occurs while saving the form, remove the "saving" dialog,
-	     * restore the original listing editor form (with all user content), and
-	     * display an alert with a failure message.
-	     */
-	    var saveFailed = function(msg) {
-	        dialog.destroy(SAVE_FORM_SELECTOR);
-	        dialog.open($(EDITOR_FORM_SELECTOR));
-	        alert(msg);
-	    };
-
-	    /**
-	     * If the result of an attempt to save the listing editor content is a
-	     * Captcha challenge then display a form to allow the user to respond to
-	     * the challenge and resubmit.
-	     */
-	    var captchaDialog = function(summary, minor, sectionNumber, captchaImgSrc, captchaId) {
-	        // if a captcha dialog is already open, get rid of it
-	        if ($(CAPTCHA_FORM_SELECTOR).length > 0) {
-	            dialog.destroy(CAPTCHA_FORM_SELECTOR);
 	        }
-	        var captcha = $('<div id="captcha-dialog">').text(translate( 'externalLinks' ));
-	        $('<img class="fancycaptcha-image">')
-	                .attr('src', captchaImgSrc)
-	                .appendTo(captcha);
-	        $('<label for="input-captcha">').text(translate( 'enterCaptcha' )).appendTo(captcha);
-	        $('<input id="input-captcha" type="text">').appendTo(captcha);
-	        dialog.open(captcha, {
-	            modal: true,
-	            title: translate( 'enterCaptcha' ),
-	            buttons: [
-	                {
-	                    text: translate( 'submit' ),
-	                    // eslint-disable-next-line object-shorthand
-	                    click: function() {
-	                        saveForm(summary, minor, sectionNumber, captchaId, $('#input-captcha').val());
-	                        dialog.destroy(this);
-	                    }
-	                },
-	                {
-	                    text: translate( 'cancel' ),
-	                    // eslint-disable-next-line object-shorthand
-	                    click: function() {
-	                        dialog.destroy(this);
-	                    }
-	                }
-	            ]
-	        });
-	    };
+	    }
+	    return matchString;
+	};
 
-	    // expose public members
+	findPatternMatch_1 = findPatternMatch;
+	return findPatternMatch_1;
+}
+
+var listingTemplateToParamsArray_1;
+var hasRequiredListingTemplateToParamsArray;
+
+function requireListingTemplateToParamsArray () {
+	if (hasRequiredListingTemplateToParamsArray) return listingTemplateToParamsArray_1;
+	hasRequiredListingTemplateToParamsArray = 1;
+	const findPatternMatch = requireFindPatternMatch();
+
+	/**
+	 * Split the raw template wikitext into an array of params. The pipe
+	 * symbol delimits template params, but this method will also inspect the
+	 * content to deal with nested templates or wikilinks that might contain
+	 * pipe characters that should not be used as delimiters.
+	 */
+	const listingTemplateToParamsArray = function(listingTemplateWikiSyntax) {
+	    var results = [];
+	    var paramValue = '';
+	    var pos = 0;
+	    while (pos < listingTemplateWikiSyntax.length) {
+	        var remainingString = listingTemplateWikiSyntax.substr(pos);
+	        // check for a nested template or wikilink
+	        var patternMatch = findPatternMatch(remainingString, "{{", "}}");
+	        if (patternMatch.length === 0) {
+	            patternMatch = findPatternMatch(remainingString, "[[", "]]");
+	        }
+	        if (patternMatch.length > 0) {
+	            paramValue += patternMatch;
+	            pos += patternMatch.length;
+	        } else if (listingTemplateWikiSyntax.charAt(pos) === '|') {
+	            // delimiter - push the previous param and move on to the next
+	            results.push(paramValue);
+	            paramValue = '';
+	            pos++;
+	        } else {
+	            // append the character to the param value being built
+	            paramValue += listingTemplateWikiSyntax.charAt(pos);
+	            pos++;
+	        }
+	    }
+	    if (paramValue.length > 0) {
+	        // append the last param value
+	        results.push(paramValue);
+	    }
+	    return results;
+	};
+
+	listingTemplateToParamsArray_1 = listingTemplateToParamsArray;
+	return listingTemplateToParamsArray_1;
+}
+
+var wikiTextToListing_1;
+var hasRequiredWikiTextToListing;
+
+function requireWikiTextToListing () {
+	if (hasRequiredWikiTextToListing) return wikiTextToListing_1;
+	hasRequiredWikiTextToListing = 1;
+	const getListingTypesRegex = requireGetListingTypesRegex();
+	const listingTemplateToParamsArray = requireListingTemplateToParamsArray();
+	const restoreComments = requireRestoreComments();
+	const { getConfig } = Config;
+
+	/**
+	 * Convert raw wiki listing syntax into a mapping of key-value pairs
+	 * corresponding to the listing template parameters.
+	 */
+	const wikiTextToListing = function(listingTemplateWikiSyntax) {
+	    const { LISTING_TYPE_PARAMETER,
+	        LISTING_CONTENT_PARAMETER, LISTING_TEMPLATES } = getConfig();
+	    var typeRegex = getListingTypesRegex();
+	    // convert "{{see" to {{listing|type=see"
+	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);
+	    // remove the trailing braces
+	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.slice(0,-2);
+	    var listingTemplateAsMap = {};
+	    var lastKey;
+	    var listParams = listingTemplateToParamsArray(listingTemplateWikiSyntax);
+	    for (var j=1; j < listParams.length; j++) {
+	        var param = listParams[j];
+	        var index = param.indexOf('=');
+	        if (index > 0) {
+	            // param is of the form key=value
+	            var key = param.substr(0, index).trim();
+	            var value = param.substr(index+1).trim();
+	            listingTemplateAsMap[key] = value;
+	            lastKey = key;
+	        } else if (lastKey && listingTemplateAsMap[lastKey].length) {
+	            // there was a pipe character within a param value, such as
+	            // "key=value1|value2", so just append to the previous param
+	            listingTemplateAsMap[lastKey] += `|${param}`;
+	        }
+	    }
+	    for (var loopKey1 in listingTemplateAsMap) {
+	        // if the template value contains an HTML comment that was
+	        // previously converted to a placehold then it needs to be
+	        // converted back to a comment so that the placeholder is not
+	        // displayed in the edit form
+	        listingTemplateAsMap[loopKey1] = restoreComments(listingTemplateAsMap[loopKey1], false);
+	    }
+	    if (listingTemplateAsMap[LISTING_CONTENT_PARAMETER]) {
+	        // convert paragraph tags to newlines so that the content is more
+	        // readable in the editor window
+	        listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<p>\s*/g, '\n\n');
+	        listingTemplateAsMap[LISTING_CONTENT_PARAMETER] = listingTemplateAsMap[LISTING_CONTENT_PARAMETER].replace(/\s*<br\s*\/?>\s*/g, '\n');
+	    }
+	    // sanitize the listing type param to match the configured values, so
+	    // if the listing contained "Do" it will still match the configured "do"
+	    for (var loopKey2 in LISTING_TEMPLATES) {
+	        if (listingTemplateAsMap[LISTING_TYPE_PARAMETER].toLowerCase() === loopKey2.toLowerCase()) {
+	            listingTemplateAsMap[LISTING_TYPE_PARAMETER] = loopKey2;
+	            break;
+	        }
+	    }
+	    return listingTemplateAsMap;
+	};
+
+	wikiTextToListing_1 = wikiTextToListing;
+	return wikiTextToListing_1;
+}
+
+var openListingEditorDialog_1;
+var hasRequiredOpenListingEditorDialog;
+
+function requireOpenListingEditorDialog () {
+	if (hasRequiredOpenListingEditorDialog) return openListingEditorDialog_1;
+	hasRequiredOpenListingEditorDialog = 1;
+	const dialog = requireDialogs();
+	const createForm = requireCreateForm();
+	const getListingInfo = requireGetListingInfo();
+	const listingToStr = requireListingToStr();
+	const getListingWikitextBraces = requireGetListingWikitextBraces();
+	const { EDITOR_FORM_SELECTOR, EDITOR_CLOSED_SELECTOR } = requireSelectors();
+	const { MODE_ADD } = mode;
+	const validateForm = requireValidateForm();
+	const stripComments = requireStripComments();
+	const formToText = requireFormToText();
+	const wikiTextToListing = requireWikiTextToListing();
+	const { translate } = translate_1;
+	const { getSectionText, setSectionText } = requireCurrentEdit();
+	const { getCallbacks } = Callbacks_1;
+	const { getConfig } = Config;
+
+	const listingEditorSync = requireListingEditorSync();
+
+	var showPreview = function(listingTemplateAsMap) {
+	    const {
+	        LISTING_TYPE_PARAMETER,
+	        DEFAULT_LISTING_TEMPLATE
+	    } = getConfig();
+	    var listing = listingTemplateAsMap;
+	    var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
+	    var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
+	    var listingType = $(`#${listingTypeInput}`).val();
+	    var listingParameters = getListingInfo(listingType);
+	    for (var parameter in listingParameters) {
+	        listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
+	    }
+	    var text = listingToStr(listing);
+	    $.ajax ({
+	        url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
+	            action: 'parse',
+	            prop: 'text',
+	            contentmodel: 'wikitext',
+	            format: 'json',
+	            text,
+	        })}`
+	    } ).then( ( data ) => {
+	        $('#listing-preview-text').html(data.parse.text['*']);
+	    } );
+	};
+
+	var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType, {
+	    telephoneCodes,
+	    NATL_CURRENCY
+	} ) {
+	    const {
+	        LISTING_TYPE_PARAMETER,
+	        REPLACE_NEW_LINE_CHARS,
+	        APPEND_FULL_STOP_TO_DESCRIPTION,
+	    } = getConfig();
+
+	    setSectionText(
+	        stripComments(
+	            getSectionText()
+	        )
+	);
+	    var listingTemplateAsMap, listingTemplateWikiSyntax;
+	    if (mode == MODE_ADD) {
+	        listingTemplateAsMap = {};
+	        listingTemplateAsMap[LISTING_TYPE_PARAMETER] = listingType;
+	    } else {
+	        listingTemplateWikiSyntax = getListingWikitextBraces(listingIndex);
+	        listingTemplateAsMap = wikiTextToListing(listingTemplateWikiSyntax);
+	        listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
+	    }
+	    var listingParameters = getListingInfo(listingType);
+	    // if a listing editor dialog is already open, get rid of it
+	    if ($(EDITOR_FORM_SELECTOR).length > 0) {
+	        dialog.destroy( EDITOR_FORM_SELECTOR );
+	    }
+	    // if a sync editor dialog is already open, get rid of it
+	    listingEditorSync.destroy();
+	    var form = $(createForm(mode, listingParameters, listingTemplateAsMap, {
+	        telephoneCodes,
+	        NATL_CURRENCY
+	    }));
+	    // modal form - must submit or cancel
+	    const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
+	    const buttons = [
+	        {
+	            text: '?',
+	            id: 'listing-help',
+	            // eslint-disable-next-line object-shorthand
+	            click: function() {
+	                window.open( translate( 'helpPage' ) );
+	            }
+	        },
+	        {
+	            text: translate( 'submit' ),
+	            // eslint-disable-next-line object-shorthand
+	            click: function() {
+	                if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
+	                    // no need to validate the form upon deletion request
+	                    formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog);
+	                    dialog.close(this);
+	                    // if a sync editor dialog is open, get rid of it
+	                    listingEditorSync.destroy();
+	                }
+	                else if (
+	                    validateForm(
+	                        getCallbacks( 'VALIDATE_FORM_CALLBACKS' ),
+	                        REPLACE_NEW_LINE_CHARS,
+	                        APPEND_FULL_STOP_TO_DESCRIPTION,
+	                        translate
+	                    )
+	                ) {
+	                    formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog);
+	                    dialog.close(this);
+	                    // if a sync editor dialog is open, get rid of it
+	                    listingEditorSync.destroy();
+	                }
+	            }
+	        },
+	        {
+	            text: translate( 'cancel' ),
+	            // eslint-disable-next-line object-shorthand
+	            click: function() {
+	                dialog.destroy(this);
+	                // if a sync editor dialog is open, get rid of it
+	                listingEditorSync.destroy();
+	            }
+	        }
+	    ];
+	    let previewTimeout;
+	    $( form, 'textarea,input' ).on( 'change', () => {
+	        clearInterval( previewTimeout );
+	        mw.util.throttle( () => {
+	            previewTimeout = setTimeout( () => {
+	                showPreview(listingTemplateAsMap);
+	            }, 200 );
+	        }, 300 )();
+	    } );
+	    dialog.open(form, {
+	        modal: true,
+	        title: (mode == MODE_ADD) ?
+	            translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
+	        dialogClass: 'listing-editor-dialog',
+	        // eslint-disable-next-line object-shorthand
+	        create: function() {
+	            // Make button pane
+	            const $dialog = form.parent();
+	            const $btnPane = $( '<div>' )
+	                .addClass( 'ui-dialog-buttonpane ui-widget-content ui-helper-clearfix' )
+	                .appendTo( $dialog );
+	            const $buttonSet = $( '<div>' ).addClass( 'ui-dialog-buttonset' ).appendTo( $btnPane );
+	            buttons.forEach( ( props ) => {
+	                const btn = document.createElement( 'button' );
+	                btn.classList.add( 'cdx-button', 'cdx-button--action-default' );
+	                if ( props.id ) {
+	                    btn.id = props.id;
+	                }
+	                if ( props.title ) {
+	                    btn.setAttribute( 'title', props.title );
+	                }
+	                if ( props.style ) {
+	                    btn.setAttribute( 'style', props.style );
+	                }
+	                btn.textContent = props.text;
+	                btn.addEventListener( 'click', () => {
+	                    props.click.apply( form );
+	                } );
+	                $buttonSet.append( btn );
+	            } );
+	            $btnPane.append(`<div class="listing-license">${translate( 'licenseText' )}</div>`);
+	            if ( window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ) {
+	                $(
+	                    `<span class="listing-license">${translate('listing-editor-version', [ window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ ])}</span>`
+	                ).appendTo( $btnPane );
+	            }
+	            const bugUrl = 'https://github.com/jdlrobson/Gadget-Workshop/issues';
+	            $( `<span class="listing-license">&nbsp;<a href="${bugUrl}">${translate( 'report-bug' )}</a></span>` )
+	                .appendTo( $btnPane );
+	            $('body').on('dialogclose', EDITOR_FORM_SELECTOR, function() { //if closed with X buttons
+	                // if a sync editor dialog is open, get rid of it
+	                listingEditorSync.destroy();
+	            });
+	        }
+	    });
+	};
+
+	openListingEditorDialog_1 = openListingEditorDialog;
+	return openListingEditorDialog_1;
+}
+
+var findListingIndex_1;
+var hasRequiredFindListingIndex;
+
+function requireFindListingIndex () {
+	if (hasRequiredFindListingIndex) return findListingIndex_1;
+	hasRequiredFindListingIndex = 1;
+	// selector that identifies the edit link as created by the
+	// addEditButtons() function
+	const EDIT_LINK_SELECTOR = '.vcard-edit-button';
+
+	/**
+	 * Given an edit link that was clicked for a listing, determine what index
+	 * that listing is within a section. First listing is 0, second is 1, etc.
+	 */
+	const findListingIndex = function(sectionHeading, clicked) {
+	    var count = 0;
+	    $(EDIT_LINK_SELECTOR, sectionHeading).each(function() {
+	        if (clicked.is($(this))) {
+	            return false;
+	        }
+	        count++;
+	    });
+	    return count;
+	};
+
+	findListingIndex_1 = findListingIndex;
+	return findListingIndex_1;
+}
+
+/**
+ * Given an editable heading, examine it to determine what section index
+ * the heading represents. First heading is 1, second is 2, etc.
+ */
+
+var findSectionIndex_1;
+var hasRequiredFindSectionIndex;
+
+function requireFindSectionIndex () {
+	if (hasRequiredFindSectionIndex) return findSectionIndex_1;
+	hasRequiredFindSectionIndex = 1;
+	const findSectionIndex = function(heading) {
+	    if (heading === undefined) {
+	        return 0;
+	    }
+	    var link = heading.find('.mw-editsection a').attr('href');
+	    return (link !== undefined) ? link.split('=').pop() : 0;
+	};
+
+	findSectionIndex_1 = findSectionIndex;
+	return findSectionIndex_1;
+}
+
+/**
+ * Given a DOM element, find the nearest editable section (h2 or h3) that
+ * it is contained within.
+ */
+
+var findSectionHeading_1;
+var hasRequiredFindSectionHeading;
+
+function requireFindSectionHeading () {
+	if (hasRequiredFindSectionHeading) return findSectionHeading_1;
+	hasRequiredFindSectionHeading = 1;
+	const findSectionHeading = function(element) {
+	    // mw-h3section and mw-h2section can be removed when useparsoid=1 is everywhere.
+	    return element.closest('div.mw-h3section, div.mw-h2section, section');
+	};
+
+	findSectionHeading_1 = findSectionHeading;
+	return findSectionHeading_1;
+}
+
+var localData;
+var hasRequiredLocalData;
+
+function requireLocalData () {
+	if (hasRequiredLocalData) return localData;
+	hasRequiredLocalData = 1;
+	let CC = '';
+	let LC = '';
+
+	const loadFromCountryData = ( $el ) => {
+	    CC = '';
+	    dataSel = $el.attr('data-country-calling-code');
+	    if ((dataSel !== undefined) && (dataSel !== '')) CC = dataSel;
+	    LC = '';
+	    dataSel = $el.attr('data-local-dialing-code');
+	    if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
+
+	    let NATL_CURRENCY = [];
+	    var dataSel =  $el.attr('data-currency');
+	    if ((dataSel !== undefined) && (dataSel !== '')) {
+	        NATL_CURRENCY = dataSel.split( ',' ).map( function( item ) {
+	            return item.trim();
+	        });
+	    }
+	    const telephoneCodes = [];
+	    if ( CC ) {
+	        telephoneCodes.push( CC );
+	    }
+	    if ( LC ) {
+	        telephoneCodes.push( LC );
+	    }
 	    return {
-	        initListingEditorDialog,
-	        MODE_ADD,
-	        MODE_EDIT
+	        telephoneCodes,
+	        NATL_CURRENCY
 	    };
 	};
 
-	Core_1 = Core;
-	return Core_1;
+	localData = {
+	    loadFromCountryData
+	};
+	return localData;
+}
+
+var findListingTypeForSection;
+var hasRequiredFindListingTypeForSection;
+
+function requireFindListingTypeForSection () {
+	if (hasRequiredFindListingTypeForSection) return findListingTypeForSection;
+	hasRequiredFindListingTypeForSection = 1;
+	findListingTypeForSection = function(entry, sectionToTemplateType, defaultType) {
+	    let closestSection = entry.closest('div.mw-h2section, section');
+	    while ( closestSection.is( 'section' ) && closestSection.parents( 'section' ).length ) {
+	        // check it's the top level section.
+	        closestSection = closestSection.parent( 'section' );
+	    }
+	    const closestHeading = closestSection.find( '.mw-heading2 h2, h2 .mw-headline');
+	    const sectionType = closestHeading.attr('id');
+	    for (var sectionId in sectionToTemplateType) {
+	        if (sectionType == sectionId) {
+	            return sectionToTemplateType[sectionId];
+	        }
+	    }
+	    return defaultType;
+	};
+	return findListingTypeForSection;
+}
+
+var initListingEditorDialog_1;
+var hasRequiredInitListingEditorDialog;
+
+function requireInitListingEditorDialog () {
+	if (hasRequiredInitListingEditorDialog) return initListingEditorDialog_1;
+	hasRequiredInitListingEditorDialog = 1;
+	const IS_LOCALHOST = window.location.host.indexOf( 'localhost' ) > -1;
+	const { MODE_ADD, MODE_EDIT } = mode;
+	const isInline = requireIsInline();
+	const openListingEditorDialog = requireOpenListingEditorDialog();
+	const currentEdit = requireCurrentEdit();
+	const api = new mw.Api();
+	const { translate } = translate_1;
+	const findListingIndex = requireFindListingIndex();
+	const findSectionIndex = requireFindSectionIndex();
+	const findSectionHeading = requireFindSectionHeading();
+	const localData = requireLocalData();
+	const { setSectionText } = requireCurrentEdit();
+	const { getConfig } = Config;
+
+	/**
+	 * Return the listing template type appropriate for the section that
+	 * contains the provided DOM element (example: "see" for "See" sections,
+	 * etc). If no matching type is found then the default listing template
+	 * type is returned.
+	 */
+	const _findListingTypeForSection = requireFindListingTypeForSection();
+	const findListingTypeForSection = function(entry ) {
+	    const { SECTION_TO_TEMPLATE_TYPE,
+	        DEFAULT_LISTING_TEMPLATE } = getConfig();
+	    return _findListingTypeForSection( entry, SECTION_TO_TEMPLATE_TYPE, DEFAULT_LISTING_TEMPLATE );
+	};
+
+	/**
+	 * This method is invoked when an "add" or "edit" listing button is
+	 * clicked and will execute an Ajax request to retrieve all of the raw wiki
+	 * syntax contained within the specified section. This wiki text will
+	 * later be modified via the listing editor and re-submitted as a section
+	 * edit.
+	 */
+	var initListingEditorDialog = function(mode, clicked) {
+	    var listingType;
+	    if (mode === MODE_ADD) {
+	        listingType = findListingTypeForSection(clicked);
+	    }
+	    var sectionHeading = findSectionHeading(clicked);
+	    var sectionIndex = findSectionIndex(sectionHeading);
+	    var listingIndex = (mode === MODE_ADD) ? -1 : findListingIndex(sectionHeading, clicked);
+	    currentEdit.setInlineListing( mode === MODE_EDIT && isInline(clicked) );
+
+	    const {
+	        telephoneCodes,
+	        NATL_CURRENCY
+	    } = localData.loadFromCountryData( $( '.countryData' ) );
+
+	    api.ajax({
+	        prop: 'revisions',
+	        format: 'json',
+	        formatversion: 2,
+	        titles: IS_LOCALHOST ? mw.config.get( 'wgTitle' ) : mw.config.get('wgPageName'),
+	        action: 'query',
+	        rvprop: 'content',
+	        origin: '*',
+	        rvsection: sectionIndex
+	    }).then(function( data ) {
+	        try {
+	            setSectionText(
+	                data.query.pages[ 0 ].revisions[ 0 ].content
+	            );
+	        } catch ( e ) {
+	            alert( 'Error occurred loading content for this section.' );
+	            return;
+	        }
+	        openListingEditorDialog(
+	            mode, sectionIndex, listingIndex, listingType,
+	            {
+	                telephoneCodes,
+	                NATL_CURRENCY
+	            }
+	        );
+	    }, function( _jqXHR, textStatus, errorThrown ) {
+	        alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
+	    });
+	};
+
+	initListingEditorDialog_1 = initListingEditorDialog;
+	return initListingEditorDialog_1;
 }
 
 const TRANSLATIONS_ALL = translations;
-const makeTranslateFunction = makeTranslateFunction$2;
 const parseDMS = parseDMS_1;
 const { LANG } = globalConfig;
 const translateModule = translate_1;
+const translate = translateModule.translate;
 const { loadCallbacks } = Callbacks_1;
-const { MODE_ADD } = mode;
+const { MODE_ADD, MODE_EDIT } = mode;
 const { loadConfig } = Config;
 
 var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
@@ -4008,7 +4145,6 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		} );
 	} );
 
-	const translate = makeTranslateFunction( TRANSLATIONS );
 	translateModule.init( TRANSLATIONS );
 
 	const Config = function() {
@@ -4263,7 +4399,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		};
 
 		var hideEditOnlyFields = function(form, mode) {
-			if (mode !== Core.MODE_EDIT) {
+			if (mode !== MODE_EDIT) {
 				$('#div_status', form).hide();
 			}
 		};
@@ -4465,15 +4601,9 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 	loadCallbacks( Callbacks );
 	loadConfig( Config, PROJECT_CONFIG );
 
-	/* ***********************************************************************
-	 * Core contains code that should be shared across different
-	 * Wikivoyage languages. This code uses the custom configurations in the
-	 * Config and Callback modules to initialize
-	 * the listing editor and process add and update requests for listings.
-	 * ***********************************************************************/
-	var Core = requireCore()( Callbacks, Config, PROJECT_CONFIG, translate );
-
-	return Core;
+	return {
+		initListingEditorDialog: requireInitListingEditorDialog()
+	}
 } );
 
 //</nowiki>

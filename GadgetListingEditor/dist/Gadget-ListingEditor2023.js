@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.19.0
+ * Listing Editor v3.20.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.19.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.20.0'
 
 'use strict';
 
@@ -376,7 +376,7 @@ $(function() {
 	}
 
 	let config;
-	function loadConfig() {
+	function loadConfigFromSite() {
 		if ( config ) {
 			return Promise.resolve( config );
 		} else {
@@ -392,7 +392,7 @@ $(function() {
 		if ( sectionToTemplateTypeFn ) {
 			return Promise.resolve( sectionToTemplateTypeFn );
 		} else {
-			return loadConfig().then( ( _config ) => {
+			return loadConfigFromSite().then( ( _config ) => {
 				sectionToTemplateTypeFn = sectionToTemplateType( _config, DB_NAME );
 				return sectionToTemplateTypeFn;
 			} );
@@ -403,7 +403,7 @@ $(function() {
 		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
 			localModuleForDebugging ? Promise.resolve( mw.loader.require ) : importForeignModule(),
-			loadConfig(),
+			loadConfigFromSite(),
 			loadSectionToTemplateType()
 		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
 			const module = localModuleForDebugging || req( GADGET_NAME );

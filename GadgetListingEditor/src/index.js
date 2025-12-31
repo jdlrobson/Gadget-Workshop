@@ -472,7 +472,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		VALIDATE_FORM_CALLBACKS.push(validateImage);
 
 		var _validateFieldAgainstRegex = function(validationFailureMessages, validationRegex, fieldPattern, failureMsg) {
-			var fieldValue = $(fieldPattern).val().trim();
+			var fieldValue = ( $(fieldPattern).val() || '' ).trim();
 			if (fieldValue !== '' && !validationRegex.test(fieldValue)) {
 				validationFailureMessages.push(failureMsg);
 			}

@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.20.1
+ * Listing Editor v3.21.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.20.1'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.21.0'
 
 'use strict';
 
@@ -59,6 +59,9 @@ var editTitleBeta$2 = "Edit Existing Listing (Beta)";
 var syncTitle$3 = "Wikidata Sync";
 var saving$4 = "Saving...";
 var submit$4 = "Submit";
+var budget$1 = "Budget";
+var midrange$1 = "Mid-range";
+var splurge$1 = "Splurge";
 var cancel$4 = "Cancel";
 var cancelAll$3 = "Clear all";
 var preview$3 = "Preview";
@@ -165,6 +168,9 @@ var require$$0 = {
 	syncTitle: syncTitle$3,
 	saving: saving$4,
 	submit: submit$4,
+	budget: budget$1,
+	midrange: midrange$1,
+	splurge: splurge$1,
 	cancel: cancel$4,
 	cancelAll: cancelAll$3,
 	preview: preview$3,
@@ -1019,203 +1025,6 @@ function requireSelectors () {
 	return selectors;
 }
 
-var html$1;
-var hasRequiredHtml$1;
-
-function requireHtml$1 () {
-	if (hasRequiredHtml$1) return html$1;
-	hasRequiredHtml$1 = 1;
-	const INTL_CURRENCIES = [ '€', '$', '£', '¥', '₩' ];
-	const CURRENCY_CHOICES = INTL_CURRENCIES.map( function ( c ) {
-	    return `<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${c}</a></span>`;
-	} ).join( '' );
-
-	html$1 = ( translate, SPECIAL_CHARS, showLastEditedField ) => {
-	    let SPECIAL_CHARS_STRING = SPECIAL_CHARS.map( function ( char ) {
-	        return `<span class="listing-charinsert" data-for="input-content"> <a href="javascript:">${char}</a></span>`;
-	    } ).join( '\n' );
-	    if (SPECIAL_CHARS.length) {
-	        SPECIAL_CHARS_STRING = `<br />(${SPECIAL_CHARS_STRING}&nbsp;)`;
-	    }
-	    return `<form id="listing-editor">
-    <div class="listing-col">
-        <div class="editor-fullwidth">
-        <div id="div_name" class="editor-row">
-            <div class="editor-label-col"><label for="input-name">${translate( 'name' )}</label></div>
-            <div><input type="text" class="editor-fullwidth" id="input-name"></div>
-        </div>
-        <div id="div_alt" class="editor-row">
-            <div class="editor-label-col"><label for="input-alt">${translate( 'alt' )}</label></div>
-            <div><input type="text" class="editor-fullwidth" id="input-alt"></div>
-        </div>
-        <div id="div_address" class="editor-row">
-            <div class="editor-label-col"><label for="input-address">${translate( 'address' )}</label></div>
-            <div><input type="text" class="editor-fullwidth" id="input-address"></div>
-        </div>
-        <div id="div_directions" class="editor-row">
-            <div class="editor-label-col"><label for="input-directions">${translate( 'directions' )}</label></div>
-            <div><input type="text" class="editor-fullwidth" id="input-directions"></div>
-        </div>
-        <div id="div_phone" class="editor-row">
-            <div class="editor-label-col"><label for="input-phone">${translate( 'phone' )}</label></div>
-            <div class="editor-fullwidth">
-                <input type="text" class="editor-fullwidth" id="input-phone">
-                <div class="input-cc" data-for="input-phone"></div>
-            </div>
-        </div>
-        <div id="div_tollfree" class="editor-row">
-            <div class="editor-label-col">
-                <label for="input-tollfree">${translate( 'tollfree' )}</label>
-            </div>
-            <div class="editor-fullwidth">
-                <input type="text" class="editor-fullwidth" id="input-tollfree">
-                <div class="input-cc" data-for="input-tollfree"></div>
-            </div>
-        </div>
-        <div id="div_fax" class="editor-row">
-            <div class="editor-label-col"><label for="input-fax">${translate( 'fax' )}</label></div>
-            <div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax">
-                <div class="input-cc" data-for="input-fax"></div>
-            </div>
-        </div>
-        <div id="div_hours" class="editor-row">
-            <div class="editor-label-col"><label for="input-hours">${translate( 'hours' )}</label></div>
-            <div><input type="text" class="editor-fullwidth" id="input-hours"></div>
-        </div>
-        <div id="div_checkin" class="editor-row">
-            <div class="editor-label-col"><label for="input-checkin">${translate( 'checkin' )}</label></div>
-            <div><input type="text" class="editor-fullwidth" id="input-checkin"></div>
-        </div>
-        <div id="div_checkout" class="editor-row">
-            <div class="editor-label-col">
-                <label for="input-checkout">${translate( 'checkout' )}</label>
-            </div>
-            <div><input type="text" class="editor-fullwidth" id="input-checkout"></div>
-        </div>
-        <div id="div_price" class="editor-row">
-            <div class="editor-label-col"><label for="input-price">${translate( 'price' )}</label></div>
-            <!-- update the Callbacks.initStringFormFields
-                method if the currency symbols are removed or modified -->
-            <div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">
-                <div class="input-price">
-                    <span id="span_natl_currency" title="${translate( 'natlCurrencyTitle' )}"></span>
-                    <span id="span_intl_currencies" title="${translate( 'intlCurrenciesTitle' )}">${
-	                        CURRENCY_CHOICES
-	                    }</span>
-                </div>
-            </div>
-        </div>
-        <div id="div_lastedit" style="display: none;">
-            <div class="editor-label-col">
-                <label for="input-lastedit">${translate( 'lastUpdated' )}</label>
-            </div>
-            <div><input type="text" size="10" id="input-lastedit"></div>
-        </div>
-        </div>
-    </div>
-    <div class="listing-col">
-        <div class="editor-fullwidth">
-        <div id="div_type" class="editor-row">
-            <div class="editor-label-col">
-                <label for="input-type">${translate( 'type' )}</label>
-            </div>
-            <div>
-                <select id="input-type">
-                    <!-- appended dynamically -->
-                </select>
-            </div>
-            <div class="editor-fullwidth">
-                <span id="span-closed">
-                    <input type="checkbox" id="input-closed">
-                    <label for="input-closed"
-                        class="listing-tooltip"
-                        title="${translate( 'listingTooltip' )}">${translate( 'listingLabel' )}</label>
-                </span>
-            </div>
-        </div>
-        <div id="div_url" class="editor-row">
-            <div class="editor-label-col">
-                <label for="input-url">${translate( 'website' )}<span class="wikidata-update"></span></label>
-            </div>
-            <div><input type="text" class="editor-fullwidth" id="input-url"></div>
-        </div>
-        <div id="div_email" class="editor-row">
-            <div class="editor-label-col"><label for="input-email">${translate( 'email' )}<span class="wikidata-update"></span></label></div>
-            <div><input type="text" class="editor-fullwidth" id="input-email"></div>
-        </div>
-        <div id="div_lat" class="editor-row">
-            <div class="editor-label-col">
-                <label for="input-lat">${translate( 'latitude' )}<span class="wikidata-update"></span></label>
-            </div>
-            <div>
-                <input type="text" class="editor-partialwidth" id="input-lat">
-                <!-- update the Callbacks.initFindOnMapLink
-                method if this field is removed or modified -->
-                <div class="input-other">
-                    <a id="geomap-link"
-                        target="_blank"
-                        href="https://wikivoyage.toolforge.org/w/geomap.php">${translate( 'findOnMap' )}
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div id="div_long" class="editor-row">
-            <div class="editor-label-col">
-                <label for="input-long">${translate( 'longitude' )}<span class="wikidata-update"></span></label>
-            </div>
-            <div>
-                <input type="text" class="editor-partialwidth" id="input-long">
-            </div>
-        </div>
-        <sistersites></sistersites>
-        </div>
-    </div>
-    <div id="div_content" class="editor-row">
-        <div class="editor-label-col"><label for="input-content">${translate( 'content' )
-	        }${SPECIAL_CHARS_STRING}</label></div>
-        <div><textarea rows="8" class="editor-fullwidth" id="input-content"></textarea></div>
-    </div>
-    <!-- update the Callbacks.hideEditOnlyFields method if
-    the status row is removed or modified -->
-    <div id="div_status" class="editor-fullwidth">
-        <div class="editor-label-col"><label>Status</label></div>
-        <div>${
-	            // update the Callbacks.updateLastEditDate
-	            // method if the last edit input is removed or modified
-	            showLastEditedField ? `<span id="span-last-edit">` +
-	                `<input type="checkbox" id="input-last-edit" />` +
-	                `<label for="input-last-edit" class="listing-tooltip" title="${translate( 'listingUpdatedTooltip' )}">${translate( 'listingUpdatedLabel' )}</label>` +
-	            `</span>` : ''
-	        }</div>
-    </div>
-    <! -- update the Callbacks.hideEditOnlyFields method if
-        the summary table is removed or modified -->
-    <div id="div_summary" class="editor-fullwidth">
-        <div class="listing-divider"></div>
-        <div class="editor-row">
-            <div class="editor-label-col"><label for="input-summary">${translate( 'editSummary' )}</label></div>
-            <div>
-                <input type="text" class="editor-partialwidth" id="input-summary">
-                <span id="span-minor">
-                    <input type="checkbox" id="input-minor">
-                        <label for="input-minor" class="listing-tooltip"
-                            title="${translate( 'minorTitle' )}">${translate( 'minorLabel' )}</label>
-                </span>
-            </div>
-        </div>
-    </div>
-    <div id="listing-preview">
-        <div class="listing-divider"></div>
-        <div class="editor-row">
-            <div title="Preview">${translate( 'preview' )}</div>
-            <div id="listing-preview-text"></div>
-        </div>
-    </div>
-    </form>`;
-	};
-	return html$1;
-}
-
 /**
  * Determine whether a listing entry is within a paragraph rather than
  * an entry in a list; inline listings will be formatted slightly
@@ -1399,13 +1208,13 @@ function requireAutocompletes () {
 	return autocompletes;
 }
 
-var html;
-var hasRequiredHtml;
+var html$1;
+var hasRequiredHtml$1;
 
-function requireHtml () {
-	if (hasRequiredHtml) return html;
-	hasRequiredHtml = 1;
-	html = ( translate ) => `<div id="div_wikidata" class="editor-row">
+function requireHtml$1 () {
+	if (hasRequiredHtml$1) return html$1;
+	hasRequiredHtml$1 = 1;
+	html$1 = ( translate ) => `<div id="div_wikidata" class="editor-row">
     <div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>
     <div>
         <input type="text" class="editor-partialwidth" id="input-wikidata-label">
@@ -1457,7 +1266,7 @@ function requireHtml () {
         </span>
     </div>
 </div>`;
-	return html;
+	return html$1;
 }
 
 var templates;
@@ -1482,31 +1291,46 @@ function requireMakeSyncLinks () {
 	const { LANG } = globalConfig;
 	const { getConfig } = Config;
 
-	const makeSyncLinks = function(value, mode, valBool) {
-	    const { WIKIDATA_CLAIMS } = getConfig();
-	    var htmlPart = '<a target="_blank" rel="noopener noreferrer"';
-	    var i;
-	    switch(mode) {
-	        case WIKIDATA_CLAIMS.coords.p:
-	            htmlPart += 'href="https://geohack.toolforge.org/geohack.php?params=';
-	            for (i = 0; i < value.length; i++) { htmlPart += `${parseDMS(valBool ? $(value[i]).val() : value[i])};`; }
-	            htmlPart += '_type:landmark">'; // sets the default zoom
-	            break;
-	        case WIKIDATA_CLAIMS.url.p:
-	            htmlPart += 'href="';
-	            for (i = 0; i < value.length; i++) { htmlPart += (valBool ? $(value[i]).val() : value[i]); }
-	            htmlPart += '">';
-	            break;
-	        case WIKIDATA_CLAIMS.image.p:
-	            htmlPart += `href="https://${LANG}.wikivoyage.org/wiki/File:`;
-	            for (i = 0; i < value.length; i++) { htmlPart += (valBool ? $(value[i]).val() : value[i]); }
-	            htmlPart += '">';
-	            break;
-	    }
-	    return htmlPart;
+	const prepareSyncValues = ( value, valBool ) => {
+	    return value.map( ( selectorOrValue ) => valBool ?
+	        $(selectorOrValue).val() : selectorOrValue );
 	};
 
-	makeSyncLinks_1 = makeSyncLinks;
+	const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
+	    const value = prepareSyncValues( unprocessedValue, valBool );
+	    const { WIKIDATA_CLAIMS } = getConfig();
+	    let prefix = '';
+	    let suffix = '';
+	    switch(mode) {
+	        case WIKIDATA_CLAIMS.coords.p:
+	            prefix += 'https://geohack.toolforge.org/geohack.php?params=';
+	            prefix += value.map(v=>parseDMS(v)).join(';');
+	            suffix = ';_type:landmark'; // sets the default zoom
+	            break;
+	        case WIKIDATA_CLAIMS.image.p:
+	            prefix += `https://${LANG}.wikivoyage.org/wiki/File:`;
+	            prefix += value.map(v=>v).join('');
+	            break;
+	        default:
+	            prefix += value.map(v=>v).join('');
+	            break;
+	    }
+	    return `${prefix}${suffix}`;
+	};
+
+	const makeSyncLinks = function(unprocessedValue, mode, valBool) {
+	    const href = prepareSyncUrl( unprocessedValue, mode, valBool );
+	    return `<a target="_blank" rel="noopener noreferrer"href="${href}">`
+	};
+
+	const makeLinkOrSpan = ( label, href ) => href ?
+	    `<a target="_blank" rel="noopener noreferrer"href="${href}">${label}</a>` : label;
+
+	makeSyncLinks_1 = {
+	    makeLinkOrSpan,
+	    prepareSyncUrl,
+	    makeSyncLinks
+	};
 	return makeSyncLinks_1;
 }
 
@@ -1536,19 +1360,18 @@ function requireTrimDecimal () {
 	return trimDecimal_1;
 }
 
-var createRadio_1;
-var hasRequiredCreateRadio;
+var prepareRadio_1;
+var hasRequiredPrepareRadio;
 
-function requireCreateRadio () {
-	if (hasRequiredCreateRadio) return createRadio_1;
-	hasRequiredCreateRadio = 1;
-	const makeSyncLinks = requireMakeSyncLinks();
+function requirePrepareRadio () {
+	if (hasRequiredPrepareRadio) return prepareRadio_1;
+	hasRequiredPrepareRadio = 1;
+	const { prepareSyncUrl } = requireMakeSyncLinks();
 	const parseDMS = parseDMS_1;
 	const trimDecimal = requireTrimDecimal();
 	const { getConfig } = Config;
 
-	// @todo: move to template
-	const createRadio = function(field, claimValue, guid) {
+	const prepareRadio = function(field, claimValue) {
 	    const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
 
 	    var j = 0;
@@ -1558,7 +1381,6 @@ function requireCreateRadio () {
 	        }
 	    }
 	    field.label = field.label.split(/(\s+)/)[0]; // take first word
-	    var html = '';
 	    var editorField = [];
 	    var remoteFlag = false;
 	    for ( var i = 0; i < field.fields.length; i++ ) {
@@ -1582,20 +1404,56 @@ function requireCreateRadio () {
 	            break;
 	        }
 	    }
-	    if ( (j === claimValue.length) && (field.remotely_sync !== true) ) {
-	        return '';
-	    }
-	    // if everything on WV equals everything on WD, skip this field
-
-	    if ( (field.doNotUpload === true) && (claimValue[0] === '') ) {
-	        return '';
-	    }
-	    // if do not upload is set and there is nothing on WD, skip
 
 	    // if remotely synced, and there aren't any value(s) here or they are identical, skip with a message
 	    // also create an invisible radio button so that updateFieldIfNotNull is called
 	    if ( (field.remotely_sync === true) && ( j === claimValue.length || ( ( $(editorField[0]).val() === '' ) && ( ($(editorField[1]).val() === '' ) || ($(editorField[1]).val() === undefined) ) ) ) ) {
 	        remoteFlag = true;
+	    }
+
+	    const hasSyncLink = [
+	        WIKIDATA_CLAIMS.coords.p,
+	        WIKIDATA_CLAIMS.url.p,
+	        WIKIDATA_CLAIMS.image.p
+	    ].indexOf(field.p) >= 0;
+	    return {
+	        wikidataUrl: hasSyncLink ? prepareSyncUrl(claimValue, field.p, false) : undefined,
+	        localUrl: hasSyncLink ? prepareSyncUrl(editorField, field.p, true): undefined,
+	        editorField,
+	        skip: ( j === claimValue.length && field.remotely_sync !== true ) ||
+	            ( field.doNotUpload === true && claimValue[0] === '' ),
+	        claimValue,
+	        remoteFlag,
+	        wikidataText: claimValue.map( a => a ).join( '\n' ),
+	        localText: editorField.map( ( selector ) => $(selector).val() ).join( '\n' )
+	    };
+	};
+
+	prepareRadio_1 = prepareRadio;
+	return prepareRadio_1;
+}
+
+var createRadio_1;
+var hasRequiredCreateRadio;
+
+function requireCreateRadio () {
+	if (hasRequiredCreateRadio) return createRadio_1;
+	hasRequiredCreateRadio = 1;
+	const { makeLinkOrSpan } = requireMakeSyncLinks();
+	const prepareRadio = requirePrepareRadio();
+
+	const createRadio = function(field, value, guid) {
+	    let html = '';
+	    const {
+	        wikidataUrl,
+	        localUrl,
+	        localText,
+	        wikidataText,
+	        skip,
+	        remoteFlag
+	    } = prepareRadio(field, value);
+	    if ( skip ) {
+	        return '';
 	    }
 	    if ( remoteFlag === true ) {
 	        html += '<div class="choose-row" style="display:none">';
@@ -1605,28 +1463,7 @@ function requireCreateRadio () {
 	    html += `<div>` +
 	        `&nbsp;<label for="${field.label}-wd">`;
 
-	    if (
-	        [
-	            WIKIDATA_CLAIMS.coords.p,
-	            WIKIDATA_CLAIMS.url.p,
-	            WIKIDATA_CLAIMS.image.p
-	        ].indexOf(field.p) >= 0
-	    ) {
-	        html += makeSyncLinks(claimValue, field.p, false);
-	    }
-	    for (j = 0; j < claimValue.length; j++) {
-	        html += `${claimValue[j]}\n`;
-	    }
-	    if (
-	        [
-	            WIKIDATA_CLAIMS.coords.p,
-	            WIKIDATA_CLAIMS.url.p,
-	            WIKIDATA_CLAIMS.image.p
-	        ].indexOf(field.p) >= 0
-	    ) {
-	        html += '</a>';
-	    }
-
+	    html += makeLinkOrSpan( wikidataText, wikidataUrl );
 	    html += `</label>
 </div>
 <div id="has-guid">
@@ -1652,31 +1489,11 @@ function requireCreateRadio () {
 </div>
 <div>&nbsp;<label for="${field.label}-wv">`;
 
-	    if (
-	        [
-	            WIKIDATA_CLAIMS.coords.p,
-	            WIKIDATA_CLAIMS.url.p,
-	            WIKIDATA_CLAIMS.image.p
-	        ].indexOf(field.p) >= 0
-	    ) {
-	        html += makeSyncLinks(editorField, field.p, true);
-	    }
-	    for (i = 0; i < editorField.length; i++ ) {
-	        html += `${$(editorField[i]).val()}\n`;
-	    }
-	    if (
-	        [
-	            WIKIDATA_CLAIMS.coords.p,
-	            WIKIDATA_CLAIMS.url.p,
-	            WIKIDATA_CLAIMS.image.p
-	        ].indexOf(field.p) >= 0
-	    ) {
-	        html += '</a>';
-	    }
-
+	    html += makeLinkOrSpan( localText, localUrl );
 	    html += '</label></div></div>\n';
 	    return html;
 	};
+
 	createRadio_1 = createRadio;
 	return createRadio_1;
 }
@@ -1908,12 +1725,14 @@ function requireLaunchSyncDialog () {
 	        const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
 	            removeFromWikidata, ajaxSisterSiteSearch } = SisterSite;
 
-	        listingEditorSync.$element().find('input[id]:radio:checked').each(function () {
+	        $('#listing-editor-sync input[id]:radio:checked').each(function () {
 	            var label = $(`label[for="${$(this).attr('id')}"]`);
 	            var syncedValue = label.text().split('\n');
 	            var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
 	            var editorField = [];
-	            for( var i = 0; i < field.fields.length; i++ ) { editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`; }
+	            for( var i = 0; i < field.fields.length; i++ ) {
+	                editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`;
+	            }
 	            var guidObj = $(this).parents('.choose-row').find('#has-guid > input:hidden:not(:radio)').val();
 
 	            if ( field.p === WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
@@ -2380,7 +2199,7 @@ function requireRender () {
 	if (hasRequiredRender) return render;
 	hasRequiredRender = 1;
 	const autocompletes = requireAutocompletes();
-	const htmlSisterSites = requireHtml();
+	const htmlSisterSites = requireHtml$1();
 	const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL, LANG } = globalConfig;
 	const listingEditorSync = requireListingEditorSync();
 	const {
@@ -2555,6 +2374,203 @@ function requireRender () {
 	return render;
 }
 
+var html;
+var hasRequiredHtml;
+
+function requireHtml () {
+	if (hasRequiredHtml) return html;
+	hasRequiredHtml = 1;
+	const INTL_CURRENCIES = [ '€', '$', '£', '¥', '₩' ];
+	const CURRENCY_CHOICES = INTL_CURRENCIES.map( function ( c ) {
+	    return `<span class="listing-charinsert" data-for="input-price"> <a href="javascript:">${c}</a></span>`;
+	} ).join( '' );
+
+	html = ( translate, SPECIAL_CHARS, showLastEditedField ) => {
+	    let SPECIAL_CHARS_STRING = SPECIAL_CHARS.map( function ( char ) {
+	        return `<span class="listing-charinsert" data-for="input-content"> <a href="javascript:">${char}</a></span>`;
+	    } ).join( '\n' );
+	    if (SPECIAL_CHARS.length) {
+	        SPECIAL_CHARS_STRING = `<br />(${SPECIAL_CHARS_STRING}&nbsp;)`;
+	    }
+	    return `<form id="listing-editor">
+    <div class="listing-col">
+        <div class="editor-fullwidth">
+        <div id="div_name" class="editor-row">
+            <div class="editor-label-col"><label for="input-name">${translate( 'name' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-name"></div>
+        </div>
+        <div id="div_alt" class="editor-row">
+            <div class="editor-label-col"><label for="input-alt">${translate( 'alt' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-alt"></div>
+        </div>
+        <div id="div_address" class="editor-row">
+            <div class="editor-label-col"><label for="input-address">${translate( 'address' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-address"></div>
+        </div>
+        <div id="div_directions" class="editor-row">
+            <div class="editor-label-col"><label for="input-directions">${translate( 'directions' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-directions"></div>
+        </div>
+        <div id="div_phone" class="editor-row">
+            <div class="editor-label-col"><label for="input-phone">${translate( 'phone' )}</label></div>
+            <div class="editor-fullwidth">
+                <input type="text" class="editor-fullwidth" id="input-phone">
+                <div class="input-cc" data-for="input-phone"></div>
+            </div>
+        </div>
+        <div id="div_tollfree" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-tollfree">${translate( 'tollfree' )}</label>
+            </div>
+            <div class="editor-fullwidth">
+                <input type="text" class="editor-fullwidth" id="input-tollfree">
+                <div class="input-cc" data-for="input-tollfree"></div>
+            </div>
+        </div>
+        <div id="div_fax" class="editor-row">
+            <div class="editor-label-col"><label for="input-fax">${translate( 'fax' )}</label></div>
+            <div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-fax">
+                <div class="input-cc" data-for="input-fax"></div>
+            </div>
+        </div>
+        <div id="div_hours" class="editor-row">
+            <div class="editor-label-col"><label for="input-hours">${translate( 'hours' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-hours"></div>
+        </div>
+        <div id="div_checkin" class="editor-row">
+            <div class="editor-label-col"><label for="input-checkin">${translate( 'checkin' )}</label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-checkin"></div>
+        </div>
+        <div id="div_checkout" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-checkout">${translate( 'checkout' )}</label>
+            </div>
+            <div><input type="text" class="editor-fullwidth" id="input-checkout"></div>
+        </div>
+        <div id="div_price" class="editor-row">
+            <div class="editor-label-col"><label for="input-price">${translate( 'price' )}</label></div>
+            <!-- update the Callbacks.initStringFormFields
+                method if the currency symbols are removed or modified -->
+            <div class="editor-fullwidth"><input type="text" class="editor-fullwidth" id="input-price">
+                <div class="input-price">
+                    <span id="span_natl_currency" title="${translate( 'natlCurrencyTitle' )}"></span>
+                    <span id="span_intl_currencies" title="${translate( 'intlCurrenciesTitle' )}">${
+	                        CURRENCY_CHOICES
+	                    }</span>
+                </div>
+            </div>
+        </div>
+        <div id="div_lastedit" style="display: none;">
+            <div class="editor-label-col">
+                <label for="input-lastedit">${translate( 'lastUpdated' )}</label>
+            </div>
+            <div><input type="text" size="10" id="input-lastedit"></div>
+        </div>
+        </div>
+    </div>
+    <div class="listing-col">
+        <div class="editor-fullwidth">
+        <div id="div_type" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-type">${translate( 'type' )}</label>
+            </div>
+            <div>
+                <select id="input-type">
+                    <!-- appended dynamically -->
+                </select>
+            </div>
+            <div class="editor-fullwidth">
+                <span id="span-closed">
+                    <input type="checkbox" id="input-closed">
+                    <label for="input-closed"
+                        class="listing-tooltip"
+                        title="${translate( 'listingTooltip' )}">${translate( 'listingLabel' )}</label>
+                </span>
+            </div>
+        </div>
+        <div id="div_url" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-url">${translate( 'website' )}<span class="wikidata-update"></span></label>
+            </div>
+            <div><input type="text" class="editor-fullwidth" id="input-url"></div>
+        </div>
+        <div id="div_email" class="editor-row">
+            <div class="editor-label-col"><label for="input-email">${translate( 'email' )}<span class="wikidata-update"></span></label></div>
+            <div><input type="text" class="editor-fullwidth" id="input-email"></div>
+        </div>
+        <div id="div_lat" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-lat">${translate( 'latitude' )}<span class="wikidata-update"></span></label>
+            </div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-lat">
+                <!-- update the Callbacks.initFindOnMapLink
+                method if this field is removed or modified -->
+                <div class="input-other">
+                    <a id="geomap-link"
+                        target="_blank"
+                        href="https://wikivoyage.toolforge.org/w/geomap.php">${translate( 'findOnMap' )}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div id="div_long" class="editor-row">
+            <div class="editor-label-col">
+                <label for="input-long">${translate( 'longitude' )}<span class="wikidata-update"></span></label>
+            </div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-long">
+            </div>
+        </div>
+        <sistersites></sistersites>
+        </div>
+    </div>
+    <div id="div_content" class="editor-row">
+        <div class="editor-label-col"><label for="input-content">${translate( 'content' )
+	        }${SPECIAL_CHARS_STRING}</label></div>
+        <div><textarea rows="8" class="editor-fullwidth" id="input-content"></textarea></div>
+    </div>
+    <!-- update the Callbacks.hideEditOnlyFields method if
+    the status row is removed or modified -->
+    <div id="div_status" class="editor-fullwidth">
+        <div class="editor-label-col"><label>Status</label></div>
+        <div>${
+	            // update the Callbacks.updateLastEditDate
+	            // method if the last edit input is removed or modified
+	            showLastEditedField ? `<span id="span-last-edit">` +
+	                `<input type="checkbox" id="input-last-edit" />` +
+	                `<label for="input-last-edit" class="listing-tooltip" title="${translate( 'listingUpdatedTooltip' )}">${translate( 'listingUpdatedLabel' )}</label>` +
+	            `</span>` : ''
+	        }</div>
+    </div>
+    <! -- update the Callbacks.hideEditOnlyFields method if
+        the summary table is removed or modified -->
+    <div id="div_summary" class="editor-fullwidth">
+        <div class="listing-divider"></div>
+        <div class="editor-row">
+            <div class="editor-label-col"><label for="input-summary">${translate( 'editSummary' )}</label></div>
+            <div>
+                <input type="text" class="editor-partialwidth" id="input-summary">
+                <span id="span-minor">
+                    <input type="checkbox" id="input-minor">
+                        <label for="input-minor" class="listing-tooltip"
+                            title="${translate( 'minorTitle' )}">${translate( 'minorLabel' )}</label>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div id="listing-preview">
+        <div class="listing-divider"></div>
+        <div class="editor-row">
+            <div title="Preview">${translate( 'preview' )}</div>
+            <div id="listing-preview-text"></div>
+        </div>
+    </div>
+    </form>`;
+	};
+	return html;
+}
+
 var createForm_1;
 var hasRequiredCreateForm;
 
@@ -2574,11 +2590,17 @@ function requireCreateForm () {
 	}) {
 	    const Config = getConfig();
 	    const {
-	        EDITOR_FORM_HTML,
 	        LISTING_TYPE_PARAMETER,
 	        SUPPORTED_SECTIONS,
+	        SPECIAL_CHARS,
+	        SHOW_LAST_EDITED_FIELD,
 	        LISTING_TEMPLATES_OMIT
 	    } = Config;
+	    const EDITOR_FORM_HTML = requireHtml()(
+	        translate,
+	        SPECIAL_CHARS,
+	        SHOW_LAST_EDITED_FIELD
+	    );
 	    var form = $(EDITOR_FORM_HTML);
 	    // make sure the select dropdown includes any custom "type" values
 	    var listingType = listingTemplateAsMap[LISTING_TYPE_PARAMETER];
@@ -2785,6 +2807,9 @@ function requireGetListingTypesRegex () {
 	 */
 	const getListingTypesRegex = function() {
 	    const { LISTING_TEMPLATES, listingTypeRegExp } = getConfig();
+	    if ( !listingTypeRegExp ) {
+	        throw new Error( 'please define listingTypeRegExp in [[MediaWiki:Gadget-ListingEditor.json]]' );
+	    }
 	    var regex = [];
 	    for (var key in LISTING_TEMPLATES) {
 	        regex.push(key);
@@ -3212,6 +3237,11 @@ function requireUpdateSectionTextWithAddedListing () {
 	    }
 	};
 
+	updateSectionTextWithAddedListing.test = {
+	    updateSectionTextWithAddedListingIt
+	};
+
+
 	updateSectionTextWithAddedListing_1 = updateSectionTextWithAddedListing;
 	return updateSectionTextWithAddedListing_1;
 }
@@ -3297,8 +3327,8 @@ function requireSaveForm () {
 	const { translate } = translate_1;
 	const savePayload = requireSavePayload();
 	const { getSectionText } = requireCurrentEdit();
+	const { EDITOR_FORM_SELECTOR } = requireSelectors();
 	const { getConfig } = Config;
-
 	var SAVE_FORM_SELECTOR = '#progress-dialog';
 	var CAPTCHA_FORM_SELECTOR = '#captcha-dialog';
 	/**
@@ -3365,7 +3395,6 @@ function requireSaveForm () {
 	 * display an alert with a failure message.
 	 */
 	var saveFailedInternal = function(msg, dialog) {
-	    const { EDITOR_FORM_SELECTOR } = getConfig();
 	    dialog.destroy(SAVE_FORM_SELECTOR);
 	    dialog.open($(EDITOR_FORM_SELECTOR));
 	    alert(msg);
@@ -3378,9 +3407,11 @@ function requireSaveForm () {
 	 */
 	const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
 	    var saveFailed = ( msg ) => saveFailedInternal( msg, dialog );
+	    const { EDITOR_TAG } = getConfig();
 	    var editPayload = {
 	        action: "edit",
 	        title: mw.config.get( "wgPageName" ),
+	        tags: EDITOR_TAG,
 	        section: sectionNumber,
 	        text: getSectionText(),
 	        summary,
@@ -3395,7 +3426,7 @@ function requireSaveForm () {
 	            if ( data.edit.nochange !== undefined ) {
 	                alert( 'Save skipped as there was no change to the content!' );
 	                dialog.destroy(SAVE_FORM_SELECTOR);
-	                return;
+	                return Promise.resolve();
 	            }
 	            // since the listing editor can be used on diff pages, redirect
 	            // to the canonical URL if it is different from the current URL
@@ -3412,13 +3443,25 @@ function requireSaveForm () {
 	            }
 	        } else if (data && data.error) {
 	            saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
+	            return Promise.reject( {} );
 	        } else if (data && data.edit.spamblacklist) {
 	            saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
+	            return Promise.reject( {} );
 	        } else if (data && data.edit.captcha) {
 	            dialog.destroy(SAVE_FORM_SELECTOR);
 	            captchaDialog(summary, minor, sectionNumber, data.edit.captcha.url, data.edit.captcha.id, dialog);
+	            return Promise.reject( {
+	                edit: data.edit,
+	                    args: [
+	                    summary,
+	                    minor,
+	                    sectionNumber,
+	                    data.edit.captcha.id
+	                ]
+	            } );
 	        } else {
 	            saveFailed(translate( 'submitUnknownError' ));
+	            return Promise.reject( {} );
 	        }
 	    }, function(code, result) {
 	        if (code === "http") {
@@ -3428,6 +3471,7 @@ function requireSaveForm () {
 	        } else {
 	            saveFailed(`${translate( 'submitUnknownError' )}: ${code}` );
 	        }
+	        return Promise.reject( {} );
 	    });
 	    savingForm( dialog );
 	};
@@ -3483,7 +3527,7 @@ function requireFormToText () {
 	 * updated entry, and then submits the section text to be saved on the
 	 * server.
 	 */
-	var formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog) {
+	const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog) {
 	    const { LISTING_TYPE_PARAMETER, DEFAULT_LISTING_TEMPLATE } = getConfig();
 	    var listing = listingTemplateAsMap;
 	    var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
@@ -3509,8 +3553,7 @@ function requireFormToText () {
 	        summary += ` - ${$(EDITOR_SUMMARY_SELECTOR).val()}`;
 	    }
 	    var minor = $(EDITOR_MINOR_EDIT_SELECTOR).is(':checked') ? true : false;
-	    saveForm(summary, minor, sectionNumber, '', '', dialog);
-	    return;
+	    return saveForm(summary, minor, sectionNumber, '', '', dialog);
 	};
 
 	formToText_1 = formToText;
@@ -3699,7 +3742,7 @@ function requireOpenListingEditorDialog () {
 
 	const listingEditorSync = requireListingEditorSync();
 
-	var showPreview = function(listingTemplateAsMap) {
+	const showPreview = function(listingTemplateAsMap) {
 	    const {
 	        LISTING_TYPE_PARAMETER,
 	        DEFAULT_LISTING_TEMPLATE
@@ -4232,24 +4275,11 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		} );
 
 		const {
-			EDITOR_FORM_SELECTOR,
 			EDITOR_CLOSED_SELECTOR,
 			EDITOR_SUMMARY_SELECTOR,
 			EDITOR_MINOR_EDIT_SELECTOR
 		} = requireSelectors();
 
-		// the below HTML is the UI that will be loaded into the listing editor
-		// dialog box when a listing is added or edited. EACH WIKIVOYAGE
-		// LANGUAGE SITE CAN CUSTOMIZE THIS HTML - fields can be removed,
-		// added, displayed differently, etc. Note that it is important that
-		// any changes to the HTML structure are also made to the
-		// LISTING_TEMPLATES parameter arrays since that array provides the
-		// mapping between the editor HTML and the listing template fields.
-		const EDITOR_FORM_HTML = requireHtml$1()(
-			translate,
-			PROJECT_CONFIG.SPECIAL_CHARS,
-			PROJECT_CONFIG.SHOW_LAST_EDITED_FIELD
-		);
 		// expose public members
 		return {
 			LANG,
@@ -4263,11 +4293,9 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 			ALLOW_UNRECOGNIZED_PARAMETERS,
 			SECTION_TO_TEMPLATE_TYPE,
 			LISTING_TEMPLATES,
-			EDITOR_FORM_SELECTOR,
 			EDITOR_CLOSED_SELECTOR,
 			EDITOR_SUMMARY_SELECTOR,
-			EDITOR_MINOR_EDIT_SELECTOR,
-			EDITOR_FORM_HTML
+			EDITOR_MINOR_EDIT_SELECTOR
 		};
 	}();
 

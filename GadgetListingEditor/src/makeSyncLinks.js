@@ -34,11 +34,7 @@ const makeSyncLinks = function(unprocessedValue, mode, valBool) {
     return `<a target="_blank" rel="noopener noreferrer"href="${href}">`
 };
 
-const makeLinkOrSpan = ( label, href ) => href ?
-    `<a target="_blank" rel="noopener noreferrer"href="${href}">${label}</a>` : label;
-
 module.exports = {
-    makeLinkOrSpan,
     prepareSyncUrl,
     makeSyncLinks
 };

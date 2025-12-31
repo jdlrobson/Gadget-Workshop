@@ -149,7 +149,7 @@ $(function() {
 			return Promise.resolve( sectionToTemplateTypeFn );
 		} else {
 			return loadConfigFromSite().then( ( _config ) => {
-				sectionToTemplateTypeFn = sectionToTemplateType( _config, DB_NAME );
+				sectionToTemplateTypeFn = sectionToTemplateType( _config );
 				return sectionToTemplateTypeFn;
 			} );
 		}

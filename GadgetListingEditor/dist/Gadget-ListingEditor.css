@@ -3,10 +3,16 @@
 /* BEGIN: listing editor form */
 .listing-col {
 	display: block;
-	float:left;
-	margin: 1% 0 0 3%;
-	width: 48.5%;
 }
+
+@media only screen and (min-width: 800px) {
+	.listing-col {
+		float:left;
+		margin: 1% 0 0 3%;
+		width: 48.5%;
+	}
+}
+
 .listing-col:first-child {
 	margin-left: 0;
 }
@@ -23,18 +29,38 @@
 	flex-wrap: nowrap;
 	align-items: center;
 	width: 100%;
+	flex-direction: column;
 }
+
+@media only screen and (min-width: 800px) {
+	.editor-row {
+		flex-direction: row;
+	}
+}
+
 .editor-row > div {
 	width: 100%;
 	padding-bottom: 4px;
 }
-.editor-row > div:first-child {
-	width: 7em;
-	min-width: 7em;
+
+@media only screen and (min-width: 800px) {
+	.editor-row > div:first-child {
+		width: 7em;
+		min-width: 7em;
+	}
 }
+
 .editor-row > div:nth-of-type(2) {
 	display: flex;
+	flex-direction: row;
 }
+
+@media only screen and (min-width: 800px) {
+	.editor-row > div:nth-of-type(2) {
+		flex-direction: column;
+	}
+}
+
 .editor-row .input-cc, .editor-row .input-price, .editor-row .input-other {
 	text-align: right;
 	white-space: nowrap;
@@ -55,9 +81,13 @@
 .editor-partialwidth {
 	width: 55%;
 }
-.editor-label-col {
-	width: 83px;
+
+@media only screen and (min-width: 800px) {
+	.editor-label-col {
+		width: 83px;
+	}
 }
+
 .listing-tooltip {
 	border-bottom: 1px dotted;
 	cursor: help;
@@ -85,9 +115,13 @@ body .ui-dialog .ui-widget-header {
 	padding-top:22px;
 	text-align:center;
 }
-#listing-editor {
-	padding: 0 1.5em 1em;
-}
+
+@media all and ( min-width: 800px ) {
+	#listing-editor {
+		padding: 0 1.5em 1em;
+	}
+	}
+
 #listing-editor,
 .listing-editor-dialog.ui-widget-content,
 .listing-editor-dialog .ui-widget-content {
@@ -104,10 +138,16 @@ body .ui-dialog .ui-widget-header {
 	margin-left: 0.25em;
 }
 .listing-license {
-	width: 60%;
 	padding-top: 0.8em;
 	font-size: 0.8em;
 }
+
+@media all and ( min-width: 800px ) {
+	.listing-license {
+		width: 60%;
+	}
+}
+
 .listing-editor-dialog {
 	margin: 0 5%;
 	max-width: 1200px;
@@ -154,9 +194,8 @@ label .wikidata-update {
     border: none;
     border-bottom: 1px dotted;
     padding: 0;
-}
-#listing-editor-sync fieldset > span {
-	width: 48.5%;
+	display: flex;
+	justify-content: space-between;
 }
 @media only screen and (max-width: 640px) {
 	#listing-editor-sync fieldset > span {
@@ -243,4 +282,25 @@ label .wikidata-update {
 		top: 0;
 	}
 }
+
+@media all and ( min-width: 800px ) {
+	.cdx-dialog .ui-dialog-buttonset {
+		float: right;
+	}
+}
+
 /* END: sync editor form */
+
+/* START: Temporary during jquery.ui to Codex move */
+.listing-editor-dialog .cdx-dialog__header .cdx-dialog__header__title,
+.listing-editor-dialog .ui-dialog-content,
+.listing-editor-dialog  .cdx-text-input__input,
+.listing-editor-dialog  .cdx-text-area__textarea {
+    font-size: 0.875rem;
+}
+
+.listing-editor-dialog  .cdx-text-input__input {
+    min-height: 20px;
+    max-height: 20px;
+}
+/* END: Temporary during jquery.ui to Codex move */

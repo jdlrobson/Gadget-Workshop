@@ -1,6 +1,7 @@
 /* global require, global */
 'use strict';
 
+const config = require( './dist/Gadget-ListingEditor.json' );
 const mockMediaWiki = require( '@wikimedia/mw-node-qunit/src/mockMediaWiki.js' );
 global.mw = mockMediaWiki();
 global.mw.config = {
@@ -35,6 +36,7 @@ const { loadConfig } = require( './src/Config.js' );
 init( require( './src/i18n/en' ) );
 
 loadConfig( {
+    sectionType: config.sectionType,
     listingTypeRegExp: "({{\\s*(%s)\\b)(\\s*[\\|}])",
     WIKIDATA_CLAIMS: {
         "coords": {

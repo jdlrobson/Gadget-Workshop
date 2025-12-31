@@ -2,7 +2,7 @@ const contentTransform = require( './contentTransform' );
 const sectionToTemplateType = require( './sectionToTemplateType' );
 const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
 
-$(function() {
+const fn = function() {
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' );
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';
@@ -190,51 +190,49 @@ $(function() {
 		$(EDIT_LINK_CONTAINER_SELECTOR).append( editButton );
 	};
 
-	let setup = false;
 	/**
 	 * Called on DOM ready, this method initializes the listing editor and
 	 * adds the "add/edit listing" links to sections and existing listings.
 	 */
 	var initListingEditor = function() {
-		if (!listingEditorAllowedForCurrentPage()) {
+		const $bodyContent = $('#bodyContent');
+		const isAlreadyEnabled = () => $bodyContent.attr( 'data-listing-editor-enabled' );
+		if (!listingEditorAllowedForCurrentPage() || isAlreadyEnabled()) {
 			return;
 		}
 		wrapContent();
-		const init = () => {
-			if ( setup ) {
+		$bodyContent.attr( 'data-listing-editor-enabled', '1' )
+		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
+			return false;
+		}
+		loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
+			contentTransform.addListingButtons(
+				_sectionToTemplateType,
+				TRANSLATIONS.add
+			);
+		} );
+		document.addEventListener( 'click', ( ev ) => {
+			if ( !ev.target.matches( '.listingeditor-add' ) ) {
 				return;
 			}
-			setup = true;
-			if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
-				return false;
-			}
-			loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
-				contentTransform.addListingButtons(
-					_sectionToTemplateType,
-					TRANSLATIONS.add
-				);
+			// dont collapse section on mobile.
+			ev.stopPropagation();
+			const $this = $(ev.target);
+			loadMain().then( function ( core ) {
+				core.initListingEditorDialog(MODE_ADD, $this);
 			} );
-			document.addEventListener( 'click', ( ev ) => {
-				if ( !ev.target.matches( '.listingeditor-add' ) ) {
-					return;
-				}
-				// dont collapse section on mobile.
-				ev.stopPropagation();
-				const $this = $(ev.target);
-				loadMain().then( function ( core ) {
-					core.initListingEditorDialog(MODE_ADD, $this);
-				} );
-			}, true );
-		};
-		mw.hook( 'wikipage.content' ).add(
-			init
-		);
-		setTimeout(() => {
-			if ( !setup ) {
-				init();
-			}
-		}, 1000);
+		}, true );
 		addEditButtons();
+		mw.hook( 'wikipage.content' ).add(
+			initListingEditor
+		);
 	};
 	initListingEditor();
-});
+}
+
+if ( typeof process === 'undefined' ) {
+	$(fn);
+} else {
+	module.exports = fn;
+}
+

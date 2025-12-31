@@ -2,8 +2,7 @@
 
 exports[`createRadio can create radios for lat / lon with values 1`] = `
 "<div class="sync_label">coordinates</div><div class="choose-row"><div>&nbsp;<label for="coordinates-wd"><a target="_blank" rel="noopener noreferrer"href="https://geohack.toolforge.org/geohack.php?params=52.94;12.2209;_type:landmark">52.94
-12.2209
-</a></label>
+12.2209</a></label>
 </div>
 <div id="has-guid">
 <input type="radio" id="coordinates-wd" name="coordinates">
@@ -18,8 +17,7 @@ exports[`createRadio can create radios for lat / lon with values 1`] = `
 `;
 
 exports[`createRadio creates radios 1`] = `
-"<div class="sync_label">wikipedia</div><div class="choose-row"><div>&nbsp;<label for="wikipedia-wd">Nottingham Forest F.C.
-</label>
+"<div class="sync_label">wikipedia</div><div class="choose-row"><div>&nbsp;<label for="wikipedia-wd">Nottingham Forest F.C.</label>
 </div>
 <div id="has-guid">
 <input type="radio" id="wikipedia-wd" name="wikipedia">

@@ -1,4 +1,4 @@
-const makeSyncLinks = require('../../src/makeSyncLinks');
+const { makeSyncLinks } = require('../../src/makeSyncLinks');
 
 describe( 'makeSyncLinks', () => {
     beforeEach(() => {

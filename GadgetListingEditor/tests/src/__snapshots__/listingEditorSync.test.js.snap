@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`listingEditorSync renders 1`] = `
-"<form id="listing-editor-sync" wikipedia="Nottingham Castle" wikidata="Q42">
+"<form id="listing-editor-sync">
   <p>Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally. You are encouraged to go to the Wikidata item and add references for any data you change.</p>
   <fieldset><span><span class="wikidata-update"></span><a href="javascript:" class="syncSelect" name="wd" title="Select all">Wikidata</a></span><a href="javascript:" id="autoSelect" class="listing-tooltip" title="Select all values where the alternative is empty.">Auto</a><span><a href="javascript:" class="syncSelect" name="wv" title="Select all">Wikivoyage</a><span class="wikivoyage-update"></span></span></fieldset>
   <div class="editor-fullwidth">

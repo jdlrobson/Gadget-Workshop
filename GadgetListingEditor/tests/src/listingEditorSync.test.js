@@ -1,5 +1,6 @@
-const listingEditorSync = require('../../src/listingEditorSync');
+const ListingEditorSync = require('../../src/components/ListingEditorSync.js');
 const { mount } = require( '@vue/test-utils' );
+const getSyncValues = require( '../../src/getSyncValues.js' );
 const translatePlugin = require( '../../src/translatePlugin' );
 
 describe( 'listingEditorSync', () => {
@@ -10,14 +11,12 @@ describe( 'listingEditorSync', () => {
         $('<input id="input-wikidata-value">').val('Q42').appendTo(document.body);
     });
     it('renders', () => {
-        const ListingEditorSync = listingEditorSync(
-            require( './wikidataClaims.json'),
-            'Q17642916'
-        );
         const wrapper = mount(ListingEditorSync, {
             props: {
-                wikipedia: 'Nottingham Castle',
-                wikidata: 'Q42'
+                syncValues: getSyncValues(
+                    require( './wikidataClaims.json'),
+                    'Q17642916'
+                )
             },
             global: {
                 plugins: [ translatePlugin ]

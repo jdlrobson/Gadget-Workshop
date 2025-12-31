@@ -212,7 +212,7 @@ const fn = function() {
 			);
 		} );
 		document.addEventListener( 'click', ( ev ) => {
-			if ( !ev.target.matches( '.listingeditor-add' ) ) {
+			if ( !ev.target.closest( '.listingeditor-add' ) ) {
 				return;
 			}
 			// dont collapse section on mobile.

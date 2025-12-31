@@ -4,7 +4,8 @@ const trimDecimal = require( '../trimDecimal.js' );
 const dialog = require( '../dialogs.js' );
 const parseDMS = require( '../parseDMS.js' );
 const updateFieldIfNotNull = require( './updateFieldIfNotNull.js' );
-const listingEditorSync = require( '../listingEditorSync.js' );
+const ListingEditorSyncDialog = require( '../components/ListingEditorSyncDialog.js' );
+const getSyncValues = require( '../../src/getSyncValues.js' );
 const { translate } = require( '../translate.js' );
 const { getConfig } = require( '../Config.js' );
     const SisterSite = require( '../SisterSite.js' );
@@ -93,15 +94,13 @@ const makeSubmitFunction = function(updateModel ) {
 };
 
 module.exports = function (jsonObj, wikidataRecord, updateModel) {
-    const ListingEditorSync = listingEditorSync(
+    const syncValues = getSyncValues(
         jsonObj, wikidataRecord
-    );
-    const ListingEditorSyncDialog = require( '../ListingEditorSyncDialog.js' )(
-        ListingEditorSync
     );
     const submitFunction = makeSubmitFunction( updateModel );
     dialog.render( ListingEditorSyncDialog, {
         title: translate( 'syncTitle' ),
+        syncValues,
         dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
         onSubmit: submitFunction
     }, translate );

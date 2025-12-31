@@ -1,5 +1,5 @@
 const listingEditorSync = require('../../src/listingEditorSync');
-const { shallowMount } = require( '@vue/test-utils' );
+const { mount } = require( '@vue/test-utils' );
 const translatePlugin = require( '../../src/translatePlugin' );
 
 describe( 'listingEditorSync', () => {
@@ -14,7 +14,7 @@ describe( 'listingEditorSync', () => {
             require( './wikidataClaims.json'),
             'Q17642916'
         );
-        const wrapper = shallowMount(ListingEditorSync, {
+        const wrapper = mount(ListingEditorSync, {
             props: {
                 wikipedia: 'Nottingham Castle',
                 wikidata: 'Q42'

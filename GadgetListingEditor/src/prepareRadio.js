@@ -3,7 +3,7 @@ const parseDMS = require( './parseDMS.js' );
 const trimDecimal = require( './trimDecimal.js' );
 const { getConfig } = require( './Config.js' );
 
-const prepareRadio = function(field, claimValue) {
+const prepareRadio = function(field, claimValue, guid) {
     const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
 
     var j = 0;
@@ -49,12 +49,14 @@ const prepareRadio = function(field, claimValue) {
         WIKIDATA_CLAIMS.image.p
     ].indexOf(field.p) >= 0;
     return {
+        field,
         wikidataUrl: hasSyncLink ? prepareSyncUrl(claimValue, field.p, false) : undefined,
         localUrl: hasSyncLink ? prepareSyncUrl(editorField, field.p, true): undefined,
         editorField,
         skip: ( j === claimValue.length && field.remotely_sync !== true ) ||
             ( field.doNotUpload === true && claimValue[0] === '' ),
         claimValue,
+        guid,
         remoteFlag,
         wikidataText: claimValue.map( a => a ).join( '\n' ),
         localText: editorField.map( ( selector ) => $(selector).val() ).join( '\n' )

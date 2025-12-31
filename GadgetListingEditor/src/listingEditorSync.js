@@ -1,8 +1,9 @@
 const { iata } = require( './templates.js' );
-const createRadio = require( './createRadio.js' );
+const prepareRadio = require( './prepareRadio.js' );
 const trimDecimal = require( './trimDecimal.js' );
 const { getConfig } = require( './Config.js' );
 const { translate } = require( './translate.js' );
+const ListingSyncRow = require( './components/ListingSyncRow.js' );
 
 // @todo move to Vue component
 const ListingEditorSync = ( jsonObj, wikidataRecord ) => {
@@ -11,7 +12,6 @@ const ListingEditorSync = ( jsonObj, wikidataRecord ) => {
     const { WIKIDATA_CLAIMS } = getConfig();
 
     const res = {};
-    let msg = '';
     for (let key in WIKIDATA_CLAIMS) {
         res[key] = {};
         res[key].value = wikidataClaim(jsonObj, wikidataRecord, WIKIDATA_CLAIMS[key].p);
@@ -32,39 +32,57 @@ const ListingEditorSync = ( jsonObj, wikidataRecord ) => {
             }
         }
     }
+    const syncValues = [];
     for (let key in res) {
         const value = res[key].value;
         const guidObj = res[key].guidObj;
         if (key === 'coords' && value) {
-            msg += createRadio(WIKIDATA_CLAIMS[key],
-                [ value.latitude, value.longitude], guidObj );
+            const radio = prepareRadio(
+                WIKIDATA_CLAIMS[key],
+                [ value.latitude, value.longitude],
+                guidObj
+            );
+            if ( !radio.skip ) {
+                syncValues.push(
+                    radio
+                );
+            }
         } else {
-            msg += createRadio(WIKIDATA_CLAIMS[key], [ value ], guidObj);
+            const radio = prepareRadio(
+                WIKIDATA_CLAIMS[key],
+                [ value ],
+                guidObj
+            );
+            if ( !radio.skip ) {
+                syncValues.push(
+                    radio
+                );
+            }
         }
     }
     var wikipedia = wikidataWikipedia(jsonObj, wikidataRecord);
-    const wmsg = createRadio( {
-            label: translate( "sharedWikipedia" ),
-            fields: ['wikipedia'],
-            doNotUpload: true,
-            'remotely_sync': true
-        },
-        [wikipedia],
-        $('#input-wikidata-value').val()
+    syncValues.push(
+        prepareRadio(
+            {
+                label: translate( "sharedWikipedia" ),
+                fields: ['wikipedia'],
+                doNotUpload: true,
+                'remotely_sync': true
+            },
+            [wikipedia],
+            $('#input-wikidata-value').val()
+        )
     );
-    msg += wmsg;
 
     return {
         name: 'ListingEditorSync',
+        components: {
+            ListingSyncRow
+        },
         props: {
             syncValues: {
-                type: Array
-            },
-            wikidata: {
-                type: String
-            },
-            wikipedia: {
-                type: String
+                type: Array,
+                default: syncValues
             }
         },
         template: `<form id="listing-editor-sync">
@@ -87,7 +105,16 @@ const ListingEditorSync = ( jsonObj, wikidataRecord ) => {
     </span>
 </fieldset>
 <div class="editor-fullwidth">
-${msg}
+    <listing-sync-row v-for="row in syncValues"
+        :field="row.field"
+        :guid="row.guid"
+        :wikidataUrl="row.wikidataUrl"
+        :localUrl="row.localUrl"
+        :localText="row.localText"
+        :wikidataText="row.wikidataText"
+        :skip="row.skip"
+        :remoteFlag="row.remoteFlag"
+    ></listing-sync-row>
 </div>
 <small>
     <a href="javascript:" class="clear">{{ $translate( 'cancelAll' ) }}</a>

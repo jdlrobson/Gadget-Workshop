@@ -1,20 +1,16 @@
-const ListingSyncRow = require( './components/ListingSyncRow.js' );
-const getSyncValues = require( './getSyncValues.js' );
+const ListingSyncRow = require( './ListingSyncRow.js' );
 
-// @todo move to Vue component
-const ListingEditorSync = ( jsonObj, wikidataRecord ) => {
-    return {
-        name: 'ListingEditorSync',
-        components: {
-            ListingSyncRow
-        },
-        props: {
-            syncValues: {
-                type: Array,
-                default: getSyncValues( jsonObj, wikidataRecord )
-            }
-        },
-        template: `<form id="listing-editor-sync">
+module.exports = {
+    name: 'ListingEditorSync',
+    components: {
+        ListingSyncRow
+    },
+    props: {
+        syncValues: {
+            type: Array
+        }
+    },
+    template: `<form id="listing-editor-sync">
 <p>{{
     $translate( 'wikidataSyncBlurb' )
 }}</p>
@@ -49,11 +45,5 @@ const ListingEditorSync = ( jsonObj, wikidataRecord ) => {
     <a href="javascript:" class="clear">{{ $translate( 'cancelAll' ) }}</a>
 </small>
 </form>
-`,
-        setup() {
-
-        }
-    };
+`
 };
-
-module.exports = ListingEditorSync;

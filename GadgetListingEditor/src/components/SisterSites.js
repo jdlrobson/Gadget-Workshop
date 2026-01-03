@@ -39,9 +39,9 @@ module.exports = {
         v-model:selected="wikidata"
         v-model:input-value="wikidataInput"
         :menu-items="wikidataMenuItems"
-        :placeholder="$translate( 'placeholder-wikidata-label' )"
         @update:input-value="onWikidataInput"
         @update:selected="onWikidataSelected"
+        :placeholder="$translate('placeholder-wikidata-label' )"
         id="input-wikidata-label"
     >
         <template #no-results>

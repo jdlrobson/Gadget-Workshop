@@ -127,27 +127,32 @@ module.exports = {
             <div id="div_name" class="editor-row">
                 <div class="editor-label-col"><label for="input-name">{{ $translate( 'name' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-name"
+                    :placeholder="$translate('placeholder-name' )"
                     :modelValue="listingName"></cdx-text-input></div>
             </div>
             <div id="div_alt" class="editor-row">
                 <div class="editor-label-col"><label for="input-alt">{{ $translate( 'alt' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-alt"
+                    :placeholder="$translate('placeholder-alt' )"
                     :modelValue="aka"></cdx-text-input></div>
             </div>
             <div id="div_address" class="editor-row">
                 <div class="editor-label-col"><label for="input-address">{{ $translate( 'address' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-address"
+                    :placeholder="$translate('placeholder-address' )"
                     :modelValue="address"></cdx-text-input></div>
             </div>
             <div id="div_directions" class="editor-row">
                 <div class="editor-label-col"><label for="input-directions">{{ $translate( 'directions' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-directions"
+                    :placeholder="$translate('placeholder-directions' )"
                     :modelValue="directions"></cdx-text-input></div>
             </div>
             <div id="div_phone" class="editor-row">
                 <div class="editor-label-col"><label for="input-phone">{{ $translate( 'phone' ) }}</label></div>
                 <div class="editor-fullwidth">
                     <cdx-text-input class="editor-fullwidth" id="input-phone"
+                        :placeholder="$translate('placeholder-phone' )"
                         :modelValue="phone"></cdx-text-input>
                     <telephone-char-insert updates="input-phone"
                         :codes="telephoneCodes"></telephone-char-insert>
@@ -159,6 +164,7 @@ module.exports = {
                 </div>
                 <div class="editor-fullwidth">
                     <cdx-text-input class="editor-fullwidth" id="input-tollfree"
+                        :placeholder="$translate('placeholder-tollfree' )"
                         :modelValue="tollfree"></cdx-text-input>
                     <telephone-char-insert updates="input-tollfree"
                     
@@ -169,6 +175,7 @@ module.exports = {
                 <div class="editor-label-col"><label for="input-fax">{{ $translate( 'fax' ) }}</label></div>
                 <div class="editor-fullwidth">
                     <cdx-text-input class="editor-fullwidth" id="input-fax"
+                        :placeholder="$translate('placeholder-fax' )"
                         :modelValue="fax"></cdx-text-input>
                     <telephone-char-insert updates="input-fax"
                         :codes="telephoneCodes"></telephone-char-insert>
@@ -177,11 +184,13 @@ module.exports = {
             <div id="div_hours" class="editor-row">
                 <div class="editor-label-col"><label for="input-hours">{{ $translate( 'hours' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-hours"
+                    :placeholder="$translate('placeholder-hours' )"
                     :modelValue="hours"></cdx-text-input></div>
             </div>
             <div id="div_checkin" class="editor-row">
                 <div class="editor-label-col"><label for="input-checkin">{{ $translate( 'checkin' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-checkin"
+                    :placeholder="$translate('placeholder-checkin' )"
                     :modelValue="checkin"></cdx-text-input></div>
             </div>
             <div id="div_checkout" class="editor-row">
@@ -189,6 +198,7 @@ module.exports = {
                     <label for="input-checkout">{{ $translate( 'checkout' ) }}</label>
                 </div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-checkout"
+                    :placeholder="$translate('placeholder-checkout' )"
                     :modelValue="checkout"></cdx-text-input></div>
             </div>
             <div id="div_price" class="editor-row">
@@ -197,6 +207,7 @@ module.exports = {
                     method if the currency symbols are removed or modified -->
                 <div class="editor-fullwidth">
                     <cdx-text-input class="editor-fullwidth" id="input-price"
+                        :placeholder="$translate('placeholder-price' )"
                          :modelValue="price"></cdx-text-input>
                     <div class="input-price">
                         <span id="span_natl_currency"
@@ -221,6 +232,7 @@ module.exports = {
                     <label for="input-lastedit">{{ $translate( 'lastUpdated' ) }}</label>
                 </div>
                 <div><cdx-text-input size="10" id="input-lastedit"
+                    :placeholder="$translate('placeholder-lastedit' )"
                     :modelValue="lastedit"></cdx-text-input></div>
             </div>
             </div>
@@ -251,11 +263,13 @@ module.exports = {
                     <label for="input-url">{{ $translate( 'website' ) }}<span class="wikidata-update"></span></label>
                 </div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-url"
+                    :placeholder="$translate('placeholder-url' )"
                     :modelValue="url"></cdx-text-input></div>
             </div>
             <div id="div_email" class="editor-row">
                 <div class="editor-label-col"><label for="input-email">{{ $translate( 'email' ) }}<span class="wikidata-update"></span></label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-email"
+                    :placeholder="$translate('placeholder-email' )"
                     :modelValue="email"></cdx-text-input></div>
             </div>
             <div id="div_lat" class="editor-row">
@@ -264,6 +278,7 @@ module.exports = {
                 </div>
                 <div>
                     <cdx-text-input class="editor-partialwidth" id="input-lat"
+                        :placeholder="$translate('placeholder-lat' )"
                         v-model="currentLat"
                         :modelValue="lat"
                     ></cdx-text-input>
@@ -283,6 +298,7 @@ module.exports = {
                 </div>
                 <div>
                     <cdx-text-input class="editor-partialwidth" id="input-long"
+                        :placeholder="$translate('placeholder-long' )"
                         v-model="currentLong"
                         :modelValue="long"
                     ></cdx-text-input>
@@ -296,6 +312,7 @@ module.exports = {
             <special-characters-string :characters="characters">
     </special-characters-string></label></div>
             <div><cdx-text-area rows="8" class="editor-fullwidth"
+                :placeholder="$translate('placeholder-content' )"
                 id="input-content" :modelValue="content"></cdx-text-area></div>
         </div>
         <!-- update the Callbacks.hideEditOnlyFields method if
@@ -319,7 +336,8 @@ module.exports = {
             <div class="editor-row">
                 <div class="editor-label-col"><label for="input-summary">{{ $translate( 'editSummary' ) }}</label></div>
                 <div>
-                    <cdx-text-input class="editor-partialwidth" id="input-summary"></cdx-text-input>
+                    <cdx-text-input class="editor-partialwidth" id="input-summary"
+                        :placeholder="$translate('placeholder-summary' )"></cdx-text-input>
                     <span id="span-minor">
                         <input type="checkbox" id="input-minor">
                             <label for="input-minor" class="listing-tooltip"

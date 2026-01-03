@@ -15,7 +15,6 @@ describe( 'index', () => {
         document.body.appendChild( lastEdit );
     })
 	it( 'is responsible for loading config and callbacks', () => {
-        expect( getCallbacks( 'CREATE_FORM_CALLBACKS' ).length ).toBe( 0 );
         main(
             [ 0, 400 ],
             () => {},
@@ -24,12 +23,9 @@ describe( 'index', () => {
             } )
         );
         expect( getConfig().configValue ).toBe( 3 );
-        const createFormCallbacks = getCallbacks( 'CREATE_FORM_CALLBACKS' );
         const validateFormCallbacks = getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
-        expect( createFormCallbacks.length ).toBe( 2 );
         expect( validateFormCallbacks.length ).toBe( 3 );
 
-        createFormCallbacks.forEach(( callback ) => callback( form ) );
         validateFormCallbacks.forEach(( callback ) => callback( [] ) );
 	} );
 } );

@@ -1,0 +1,27 @@
+var isRTL = function (s){ // based on https://stackoverflow.com/questions/12006095/javascript-how-to-check-if-character-is-rtl
+	var ltrChars = 'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02B8\u0300-\u0590\u0800-\u1FFF\u2C00-\uFB1C\uFDFE-\uFE6F\uFEFD-\uFFFF',
+	rtlChars = '\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC',
+	// eslint-disable-next-line no-misleading-character-class
+	rtlDirCheck = new RegExp(`^[^${ltrChars}]*[${rtlChars}]`);
+	return rtlDirCheck.test(s);
+};
+var autoDir = function(selector) {
+	if (selector.val() && !isRTL(selector.val())) {
+		selector.prop('dir', 'ltr');
+	}
+	selector.keyup(function() {
+		if ( isRTL(selector.val()) ) {
+			selector.prop('dir', 'rtl');
+		}
+		else {
+			selector.prop('dir', 'ltr');
+		}
+	});
+};
+
+
+var autoDirParameters = function(form) {
+	autoDir($('#input-alt', form));
+};
+
+module.exports = autoDirParameters;

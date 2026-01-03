@@ -13,7 +13,6 @@ const { translate } = require( './translate.js' );
 const { getSectionText, setSectionText } = require( './currentEdit' );
 const { getCallbacks } = require( './Callbacks.js' );
 const { getConfig } = require( './Config' );
-const showPreview = require( './showPreview.js' );
 
 /**
  * This method is called asynchronously after the initListingEditorDialog()
@@ -130,20 +129,6 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         telephoneCodes,
         characters: SPECIAL_CHARS,
         showLastEditedField: mode === MODE_EDIT && SHOW_LAST_EDITED_FIELD,
-        onMount: ( form ) => {
-            let previewTimeout;
-            $( form, 'textarea,input' ).on( 'change', () => {
-                clearInterval( previewTimeout );
-                mw.util.throttle( () => {
-                    previewTimeout = setTimeout( () => {
-                        showPreview(listingTemplateAsMap)
-                    }, 200 );
-                }, 300 )();
-            } );
-            if (mode !== MODE_ADD) {
-                showPreview(listingTemplateAsMap);
-            }
-        },
         onHelp: () => {
             window.open( translate( 'helpPage' ) );
         },

@@ -1,7 +1,6 @@
 const dialog = require( './dialogs.js' );
 const createForm = require( './createForm.js' );
 const getListingInfo = require( './getListingInfo.js' );
-const listingToStr = require( './listingToStr.js' );
 const getListingWikitextBraces = require( './getListingWikitextBraces' );
 const { EDITOR_FORM_SELECTOR, EDITOR_CLOSED_SELECTOR } = require( './selectors.js' );
 const { MODE_ADD } = require( './mode.js' );
@@ -13,35 +12,9 @@ const { translate } = require( './translate.js' );
 const { getSectionText, setSectionText } = require( './currentEdit' );
 const { getCallbacks } = require( './Callbacks.js' );
 const { getConfig } = require( './Config' );
+const showPreview = require( './showPreview.js' );
 
 const listingEditorSync = require( './listingEditorSync.js' );
-
-const showPreview = function(listingTemplateAsMap) {
-    const {
-        LISTING_TYPE_PARAMETER,
-        DEFAULT_LISTING_TEMPLATE
-    } = getConfig();
-    var listing = listingTemplateAsMap;
-    var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
-    var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
-    var listingType = $(`#${listingTypeInput}`).val();
-    var listingParameters = getListingInfo(listingType);
-    for (var parameter in listingParameters) {
-        listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
-    }
-    var text = listingToStr(listing);
-    $.ajax ({
-        url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
-            action: 'parse',
-            prop: 'text',
-            contentmodel: 'wikitext',
-            format: 'json',
-            text,
-        })}`
-    } ).then( ( data ) => {
-        $('#listing-preview-text').html(data.parse.text['*']);
-    } );
-};
 
 var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType, {
     telephoneCodes,

@@ -6,6 +6,8 @@ const translate = translateModule.translate;
 const { loadCallbacks } = require( './Callbacks.js' );
 const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
 const { loadConfig } = require( './Config.js' );
+const initColor = require( './initColor' );
+const currentLastEditDate = require( './currentLastEditDate' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -291,45 +293,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			}
 		};
 		CREATE_FORM_CALLBACKS.push(hideEditOnlyFields);
-
-		var typeToColor = function(listingType, form) {
-			$('#input-type', form).css( 'box-shadow', 'unset' );
-			$.ajax ({
-				listingType,
-				form,
-				url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
-					action: 'parse',
-					prop: 'text',
-					contentmodel: 'wikitext',
-					format: 'json',
-					disablelimitreport: true,
-					'text': `{{#invoke:TypeToColor|convert|${listingType}}}`,
-				})}`,
-				// eslint-disable-next-line object-shorthand
-				beforeSend: function() {
-					if (localStorage.getItem(`listing-${listingType}`)) {
-						changeColor(localStorage.getItem(`listing-${listingType}`), form);
-						return false;
-					}
-					else { return true; }
-				},
-				// eslint-disable-next-line object-shorthand
-				success: function (data) {
-					var color = $(data.parse.text['*']).text().trim();
-					localStorage.setItem(`listing-${listingType}`, color);
-					changeColor(color, form);
-				},
-			});
-		};
-		var changeColor = function(color, form) {
-			$('#input-type', form).css( 'box-shadow', `-20px 0 0 0 #${color} inset` );
-		};
-		var initColor = function(form) {
-			typeToColor( $('#input-type', form).val(), form );
-			$('#input-type', form).on('change', function () {
-				typeToColor(this.value, form);
-			});
-		};
 		CREATE_FORM_CALLBACKS.push(initColor);
 
 		var isRTL = function (s){ // based on https://stackoverflow.com/questions/12006095/javascript-how-to-check-if-character-is-rtl
@@ -389,21 +352,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		// --------------------------------------------------------------------
 		// LISTING EDITOR FORM SUBMISSION CALLBACKS
 		// --------------------------------------------------------------------
-
-		/**
-		 * Return the current date in the format "2015-01-15".
-		 */
-		var currentLastEditDate = function() {
-			var d = new Date();
-			var year = d.getFullYear();
-			// Date.getMonth() returns 0-11
-			var month = d.getMonth() + 1;
-			if (month < 10) month = `0${month}`;
-			var day = d.getDate();
-			if (day < 10) day = `0${day}`;
-			return `${year}-${month}-${day}`;
-		};
-
 		/**
 		 * Only update last edit date if this is a new listing or if the
 		 * "information up-to-date" box checked.

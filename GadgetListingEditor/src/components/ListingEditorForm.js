@@ -3,13 +3,14 @@ const sistersites = require( './SisterSites.js' );
 const { onMounted, ref, computed } = require( 'vue' );
 const { MODE_ADD } = require( '../mode.js' );
 const getListingInfo = require( '../getListingInfo.js' );
-const { getCallbacks } = require( '../Callbacks.js' );
 const TelephoneCharInsert = require( './TelephoneCharInsert.js' );
 const SpecialCharactersString = require( './specialCharactersString.js' );
 const parseDMS = require( '../parseDMS.js' );
 const showPreview = require( '../showPreview.js' );
 const currentLastEditDate = require( '../currentLastEditDate' );
 const isRTLString = require( '../isRTLString' );
+const initColor = require( '../initColor' );
+const initStringFormFields = require( '../initStringFormFields.js' );
 
 /**
  * Generate the form UI for the listing editor. If editing an existing
@@ -405,12 +406,10 @@ module.exports = {
         ] );
         const form = ref(null);
         onMounted( () => {
-            const callbacks = getCallbacks( 'CREATE_FORM_CALLBACKS' );
             if ( form.value ) {
                 hideEmptyFormValues( form.value, listingParameters );
-                for (var i=0; i < callbacks.length; i++) {
-                    callbacks[i]( form.value, mode );
-                }
+                initColor( form.value, mode );
+                initStringFormFields( form.value, mode );
             }
         } );
 

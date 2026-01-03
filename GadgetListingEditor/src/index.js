@@ -3,11 +3,9 @@ const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
 const translate = translateModule.translate;
 const { loadCallbacks } = require( './Callbacks.js' );
-const { MODE_ADD } = require( './mode.js' );
 const { loadConfig } = require( './Config.js' );
 const initColor = require( './initColor' );
 const initStringFormFields = require( './initStringFormFields.js' );
-const currentLastEditDate = require( './currentLastEditDate' );
 const autoDirParameters = require( './autoDirParameters' );
 const validateListingHasData = require( './validators/hasData.js' );
 const validateEmail = require( './validators/email.js' );
@@ -20,7 +18,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 	var PROJECT_CONFIG_KEYS = [
 		'SHOW_LAST_EDITED_FIELD', 'SUPPORTED_SECTIONS',
 		'listingTypeRegExp', 'REPLACE_NEW_LINE_CHARS', 'LISTING_TEMPLATES_OMIT',
-		'VALIDATE_CALLBACKS_EMAIL', 'SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT',
+		'VALIDATE_CALLBACKS_EMAIL',
 		'ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP',
 		'LISTING_TYPE_PARAMETER', 'LISTING_CONTENT_PARAMETER',
 		'DEFAULT_LISTING_TEMPLATE', 'SLEEP_TEMPLATE_PARAMETERS',
@@ -168,21 +166,13 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 	/* ***********************************************************************
 	 * Callbacks implements custom functionality that may be
 	 * specific to how a Wikivoyage language version has implemented the
-	 * listing template. For example, English Wikivoyage uses a "last edit"
-	 * date that needs to be populated when the listing editor form is
-	 * submitted, and that is done via custom functionality implemented as a
-	 * SUBMIT_FORM_CALLBACK function in this module.
+	 * listing template.
 	 * ***********************************************************************/
 	var Callbacks = function() {
 		// array of functions to invoke when creating the listing editor form.
 		// these functions will be invoked with the form DOM object as the
 		// first element and the mode as the second element.
 		var CREATE_FORM_CALLBACKS = [];
-		// array of functions to invoke when submitting the listing editor
-		// form but prior to validating the form. these functions will be
-		// invoked with the mapping of listing attribute to value as the first
-		// element and the mode as the second element.
-		var SUBMIT_FORM_CALLBACKS = [];
 		// array of validation functions to invoke when the listing editor is
 		// submitted. these functions will be invoked with an array of
 		// validation messages as an argument; a failed validation should add a
@@ -198,24 +188,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		CREATE_FORM_CALLBACKS.push(autoDirParameters);
 
 		// --------------------------------------------------------------------
-		// LISTING EDITOR FORM SUBMISSION CALLBACKS
-		// --------------------------------------------------------------------
-		/**
-		 * Only update last edit date if this is a new listing or if the
-		 * "information up-to-date" box checked.
-		 */
-		var updateLastEditDate = function(listing, mode) {
-			var LISTING_LAST_EDIT_PARAMETER = 'lastedit';
-			var EDITOR_LAST_EDIT_SELECTOR = '#input-last-edit';
-			if (mode == MODE_ADD || $(EDITOR_LAST_EDIT_SELECTOR).is(':checked')) {
-				listing[LISTING_LAST_EDIT_PARAMETER] = currentLastEditDate();
-			}
-		};
-		if ( PROJECT_CONFIG.SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT ) {
-			SUBMIT_FORM_CALLBACKS.push(updateLastEditDate);
-		}
-
-		// --------------------------------------------------------------------
 		// LISTING EDITOR FORM VALIDATION CALLBACKS
 		// --------------------------------------------------------------------
 
@@ -229,7 +201,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		// expose public members
 		return {
 			CREATE_FORM_CALLBACKS,
-			SUBMIT_FORM_CALLBACKS,
 			VALIDATE_FORM_CALLBACKS
 		};
 	}();

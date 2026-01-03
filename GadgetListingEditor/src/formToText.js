@@ -9,7 +9,6 @@ const updateSectionTextWithEditedListing = require( './updateSectionTextWithEdit
 const updateSectionTextWithAddedListing = require( './updateSectionTextWithAddedListing.js' );
 const saveForm = require( './saveForm.js' );
 const editSummarySection = require( './editSummarySection.js' );
-const { getCallbacks } = require( './Callbacks.js' );
 const { getConfig } = require( './Config.js' );
 
 /**
@@ -28,10 +27,6 @@ const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMa
     var listingParameters = getListingInfo(listingType);
     for (var parameter in listingParameters) {
         listing[parameter] = $(`#${listingParameters[parameter].id}`).val() || '';
-    }
-    const submitCallbacks = getCallbacks( 'SUBMIT_FORM_CALLBACKS' );
-    for (var i=0; i < submitCallbacks.length; i++) {
-        submitCallbacks[i](listing, mode);
     }
     var text = listingToStr(listing);
     var summary = editSummarySection();

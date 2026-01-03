@@ -9,6 +9,7 @@ const SpecialCharactersString = require( './specialCharactersString.js' );
 const parseDMS = require( '../parseDMS.js' );
 const showPreview = require( '../showPreview.js' );
 const currentLastEditDate = require( '../currentLastEditDate' );
+const isRTLString = require( '../isRTLString' );
 
 /**
  * Generate the form UI for the listing editor. If editing an existing
@@ -135,7 +136,9 @@ module.exports = {
             <div id="div_alt" class="editor-row">
                 <div class="editor-label-col"><label for="input-alt">{{ $translate( 'alt' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-alt"
+                    :dir="computedAltDir"
                     :placeholder="$translate('placeholder-alt' )"
+                    v-model="currentAltName"
                     :modelValue="aka"></cdx-text-input></div>
             </div>
             <div id="div_address" class="editor-row">
@@ -374,10 +377,14 @@ module.exports = {
         sistersites
     },
     setup( props ) {
-        const { showLastEditedField, mode, listingType, lat, long, lastedit } = props;
+        const { showLastEditedField, mode, listingType, lat, long, lastedit,
+            aka
+        } = props;
         const nowTimestamp = currentLastEditDate();
         const shouldUpdateTimestamp = ref( mode === MODE_ADD );
         const lastEditTimestamp = computed( () => shouldUpdateTimestamp.value ? nowTimestamp : lastedit );
+        const currentAltName = ref( aka );
+        const computedAltDir = computed( () => isRTLString( currentAltName.value ) ? 'rtl' : 'ltr' );
         const currentLong = ref( long );
         const currentLat = ref( lat );
         const listingParameters = getListingInfo(listingType);
@@ -424,7 +431,9 @@ module.exports = {
         };
 
         return {
+            computedAltDir,
             shouldUpdateTimestamp,
+            currentAltName,
             currentTab,
             currentLat,
             currentLong,

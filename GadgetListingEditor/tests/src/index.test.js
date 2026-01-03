@@ -25,17 +25,11 @@ describe( 'index', () => {
         );
         expect( getConfig().configValue ).toBe( 3 );
         const createFormCallbacks = getCallbacks( 'CREATE_FORM_CALLBACKS' );
-        const submitFormCallbacks = getCallbacks( 'SUBMIT_FORM_CALLBACKS' );
         const validateFormCallbacks = getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
         expect( createFormCallbacks.length ).toBe( 3 );
-        expect( submitFormCallbacks.length ).toBe( 1 );
         expect( validateFormCallbacks.length ).toBe( 3 );
 
         createFormCallbacks.forEach(( callback ) => callback( form ) );
         validateFormCallbacks.forEach(( callback ) => callback( [] ) );
-
-        const data = {};
-        submitFormCallbacks.forEach(( callback ) => callback( data, 'add' ) );
-        expect( data.lastedit ).not.toBe( undefined );
 	} );
 } );

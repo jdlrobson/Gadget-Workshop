@@ -1,12 +1,14 @@
 const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 const sistersites = require( './SisterSites.js' );
 const { onMounted, ref, computed } = require( 'vue' );
+const { MODE_ADD } = require( '../mode.js' );
 const getListingInfo = require( '../getListingInfo.js' );
 const { getCallbacks } = require( '../Callbacks.js' );
 const TelephoneCharInsert = require( './TelephoneCharInsert.js' );
 const SpecialCharactersString = require( './specialCharactersString.js' );
 const parseDMS = require( '../parseDMS.js' );
 const showPreview = require( '../showPreview.js' );
+const currentLastEditDate = require( '../currentLastEditDate' );
 
 /**
  * Generate the form UI for the listing editor. If editing an existing
@@ -232,6 +234,7 @@ module.exports = {
                     <label for="input-lastedit">{{ $translate( 'lastUpdated' ) }}</label>
                 </div>
                 <div><cdx-text-input size="10" id="input-lastedit"
+                    v-model="lastEditTimestamp"
                     :placeholder="$translate('placeholder-lastedit' )"
                     :modelValue="lastedit"></cdx-text-input></div>
             </div>
@@ -321,7 +324,9 @@ module.exports = {
             <div class="editor-label-col"><label>Status</label></div>
             <div>
                 <span id="span-last-edit">
-                    <input type="checkbox" id="input-last-edit" :value="lastedit" />
+                    <input type="checkbox" id="input-last-edit"
+                        v-model="shouldUpdateTimestamp"
+                        :value="lastedit" />
                     <label for="input-last-edit" class="listing-tooltip"
                         :title="$translate( 'listingUpdatedTooltip' )">
                         {{ $translate( 'listingUpdatedLabel' ) }}
@@ -369,7 +374,10 @@ module.exports = {
         sistersites
     },
     setup( props ) {
-        const { showLastEditedField, mode, listingType, lat, long } = props;
+        const { showLastEditedField, mode, listingType, lat, long, lastedit } = props;
+        const nowTimestamp = currentLastEditDate();
+        const shouldUpdateTimestamp = ref( mode === MODE_ADD );
+        const lastEditTimestamp = computed( () => shouldUpdateTimestamp.value ? nowTimestamp : lastedit );
         const currentLong = ref( long );
         const currentLat = ref( lat );
         const listingParameters = getListingInfo(listingType);
@@ -416,6 +424,7 @@ module.exports = {
         };
 
         return {
+            shouldUpdateTimestamp,
             currentTab,
             currentLat,
             currentLong,
@@ -423,6 +432,7 @@ module.exports = {
             tabsData,
             onUpdateTab,
             form,
+            lastEditTimestamp,
             showLastEditedField
         };
     }

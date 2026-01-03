@@ -44,11 +44,11 @@ v-model:open="isOpen"
             <cdx-button @click="submitAction" :disabled="saveInProgress || disabledMessage"> {{ $translate( 'submit' ) }}</cdx-button>
             <cdx-button @click="closeAction" :disabled="saveInProgress">{{ $translate( 'cancel' ) }}</cdx-button>
         </div>
-        <div v-if="disabledMessage">
-            <cdx-message>{{ disabledMessage }}</cdx-message>
-        </div>
-        <div v-else-if="!saveInProgress">
-            <div v-if="!modal" class="listing-license"
+        <div if="!saveInProgress">
+            <div v-if="disabledMessage">
+                <cdx-message>{{ disabledMessage }}</cdx-message>
+            </div>
+            <div v-else-if="!modal" class="listing-license"
                 v-translate-html:licenseText></div>
             <span class="listing-license">{{ $translate('listing-editor-version', [ version ]) }}</span>
             <span class="listing-license">&nbsp;<a href="https://github.com/jdlrobson/Gadget-Workshop/issues">

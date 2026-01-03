@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`listingEditorForm renders 1`] = `"<cdx-tabs-stub framed="true"></cdx-tabs-stub>"`;
+exports[`listingEditorForm renders 1`] = `"<cdx-tabs-stub active="edit" framed="true"></cdx-tabs-stub>"`;

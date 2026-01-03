@@ -10,6 +10,10 @@ const initColor = require( './initColor' );
 const initStringFormFields = require( './initStringFormFields.js' );
 const currentLastEditDate = require( './currentLastEditDate' );
 const autoDirParameters = require( './autoDirParameters' );
+const validateListingHasData = require( './validators/hasData.js' );
+const validateEmail = require( './validators/email.js' );
+const validateWikipedia = require( './validators/wikipedia.js' );
+const validateImage = require( './validators/image.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -329,60 +333,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		// LISTING EDITOR FORM VALIDATION CALLBACKS
 		// --------------------------------------------------------------------
 
-		/**
-		 * Verify all listings have at least a name, address or alt value.
-		 */
-		var validateListingHasData = function(validationFailureMessages) {
-			if ($('#input-name').val() === '' && $('#input-address').val() === '' && $('#input-alt').val() === '') {
-				validationFailureMessages.push( translate( 'validationEmptyListing' ) );
-			}
-		};
 		VALIDATE_FORM_CALLBACKS.push(validateListingHasData);
-
-		/**
-		 * Implement SIMPLE validation on email addresses. Invalid emails can
-		 * still get through, but this method implements a minimal amount of
-		 * validation in order to catch the worst offenders.
-		 * Disabled for now, TODO: multiple email support.
-		 */
-		var validateEmail = function(validationFailureMessages) {
-			var VALID_EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-			_validateFieldAgainstRegex(
-				validationFailureMessages,
-				VALID_EMAIL_REGEX, '#input-email',
-				translate( 'validationEmail' )
-			);
-		};
 		if ( PROJECT_CONFIG.VALIDATE_CALLBACKS_EMAIL ) {
 			VALIDATE_FORM_CALLBACKS.push(validateEmail);
 		}
-
-		/**
-		 * Implement SIMPLE validation on Wikipedia field to verify that the
-		 * user is entering the article title and not a URL.
-		 */
-		var validateWikipedia = function(validationFailureMessages) {
-			var VALID_WIKIPEDIA_REGEX = new RegExp('^(?!https?://)', 'i');
-			_validateFieldAgainstRegex(validationFailureMessages, VALID_WIKIPEDIA_REGEX, '#input-wikipedia', translate( 'validationWikipedia' ) );
-		};
 		VALIDATE_FORM_CALLBACKS.push(validateWikipedia);
-
-		/**
-		 * Implement SIMPLE validation on the Commons field to verify that the
-		 * user has not included a "File" or "Image" namespace.
-		 */
-		var validateImage = function(validationFailureMessages) {
-			var VALID_IMAGE_REGEX = new RegExp(`^(?!(file|image|${translate( 'image' )}):)`, 'i');
-			_validateFieldAgainstRegex(validationFailureMessages, VALID_IMAGE_REGEX, '#input-image', translate( 'validationImage' ) );
-		};
 		VALIDATE_FORM_CALLBACKS.push(validateImage);
-
-		var _validateFieldAgainstRegex = function(validationFailureMessages, validationRegex, fieldPattern, failureMsg) {
-			var fieldValue = ( $(fieldPattern).val() || '' ).trim();
-			if (fieldValue !== '' && !validationRegex.test(fieldValue)) {
-				validationFailureMessages.push(failureMsg);
-			}
-		};
 
 		// expose public members
 		return {

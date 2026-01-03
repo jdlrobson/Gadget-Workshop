@@ -1,12 +1,10 @@
 const TRANSLATIONS_ALL = require( './translations.js' );
 const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
-const translate = translateModule.translate;
 const { loadCallbacks } = require( './Callbacks.js' );
 const { loadConfig } = require( './Config.js' );
 const initColor = require( './initColor' );
 const initStringFormFields = require( './initStringFormFields.js' );
-const autoDirParameters = require( './autoDirParameters' );
 const validateListingHasData = require( './validators/hasData.js' );
 const validateEmail = require( './validators/email.js' );
 const validateWikipedia = require( './validators/wikipedia.js' );
@@ -185,7 +183,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		// --------------------------------------------------------------------
 		CREATE_FORM_CALLBACKS.push(initStringFormFields);
 		CREATE_FORM_CALLBACKS.push(initColor);
-		CREATE_FORM_CALLBACKS.push(autoDirParameters);
 
 		// --------------------------------------------------------------------
 		// LISTING EDITOR FORM VALIDATION CALLBACKS

@@ -132,6 +132,8 @@ module.exports = {
                 <div class="editor-label-col"><label for="input-name">{{ $translate( 'name' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-name"
                     :placeholder="$translate('placeholder-name' )"
+                    @input="onListingUpdate"
+                    v-model="currentListingName"
                     :modelValue="listingName"></cdx-text-input></div>
             </div>
             <div id="div_alt" class="editor-row">
@@ -139,6 +141,7 @@ module.exports = {
                 <div><cdx-text-input class="editor-fullwidth" id="input-alt"
                     :dir="computedAltDir"
                     :placeholder="$translate('placeholder-alt' )"
+                    @input="onListingUpdate"
                     v-model="currentAltName"
                     :modelValue="aka"></cdx-text-input></div>
             </div>
@@ -146,6 +149,8 @@ module.exports = {
                 <div class="editor-label-col"><label for="input-address">{{ $translate( 'address' ) }}</label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-address"
                     :placeholder="$translate('placeholder-address' )"
+                    @input="onListingUpdate"
+                    v-model="currentAddress"
                     :modelValue="address"></cdx-text-input></div>
             </div>
             <div id="div_directions" class="editor-row">
@@ -377,14 +382,17 @@ module.exports = {
         SpecialCharactersString,
         sistersites
     },
-    setup( props ) {
+    emits: [ 'updated:listing' ],
+    setup( props, { emit } ) {
         const { showLastEditedField, mode, listingType, lat, long, lastedit,
-            aka
+            aka, address, listingName
         } = props;
         const nowTimestamp = currentLastEditDate();
         const shouldUpdateTimestamp = ref( mode === MODE_ADD );
         const lastEditTimestamp = computed( () => shouldUpdateTimestamp.value ? nowTimestamp : lastedit );
         const currentAltName = ref( aka );
+        const currentAddress = ref( address );
+        const currentListingName = ref( listingName );
         const computedAltDir = computed( () => isRTLString( currentAltName.value ) ? 'rtl' : 'ltr' );
         const currentLong = ref( long );
         const currentLat = ref( lat );
@@ -429,10 +437,20 @@ module.exports = {
             }
         };
 
+        const onListingUpdate = () => {
+            emit( 'updated:listing', {
+                alt: currentAltName.value,
+                name: currentListingName.value,
+                address: currentAddress.value
+            } );
+        };
         return {
+            onListingUpdate,
             computedAltDir,
             shouldUpdateTimestamp,
+            currentListingName,
             currentAltName,
+            currentAddress,
             currentTab,
             currentLat,
             currentLong,

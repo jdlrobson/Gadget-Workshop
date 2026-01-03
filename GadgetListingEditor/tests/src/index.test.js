@@ -24,7 +24,7 @@ describe( 'index', () => {
         );
         expect( getConfig().configValue ).toBe( 3 );
         const validateFormCallbacks = getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
-        expect( validateFormCallbacks.length ).toBe( 3 );
+        expect( validateFormCallbacks.length ).toBe( 2 );
 
         validateFormCallbacks.forEach(( callback ) => callback( [] ) );
 	} );

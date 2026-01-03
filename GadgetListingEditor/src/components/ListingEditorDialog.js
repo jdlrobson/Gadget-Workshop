@@ -1,4 +1,4 @@
-const { CdxDialog, CdxTextInput, CdxButton, CdxProgressBar } = require( '@wikimedia/codex' );
+const { CdxDialog, CdxTextInput, CdxMessage, CdxButton, CdxProgressBar } = require( '@wikimedia/codex' );
 const { defineComponent, ref, onMounted } = require( 'vue' );
 
 module.exports = defineComponent( {
@@ -6,6 +6,7 @@ module.exports = defineComponent( {
     components: {
         CdxProgressBar,
         CdxDialog,
+        CdxMessage,
         CdxTextInput,
         CdxButton
     },
@@ -40,10 +41,13 @@ v-model:open="isOpen"
     <div class="ui-dialog-buttonpane" v-if="submitAction">
         <div class="ui-dialog-buttonset">
             <cdx-button v-if="helpClickAction" id="listing-help" @click="helpClickAction">?</cdx-button>
-            <cdx-button @click="submitAction" :disabled="saveInProgress"> {{ $translate( 'submit' ) }}</cdx-button>
+            <cdx-button @click="submitAction" :disabled="saveInProgress || disabledMessage"> {{ $translate( 'submit' ) }}</cdx-button>
             <cdx-button @click="closeAction" :disabled="saveInProgress">{{ $translate( 'cancel' ) }}</cdx-button>
         </div>
-        <div v-if="!saveInProgress">
+        <div v-if="disabledMessage">
+            <cdx-message>{{ disabledMessage }}</cdx-message>
+        </div>
+        <div v-else-if="!saveInProgress">
             <div v-if="!modal" class="listing-license"
                 v-translate-html:licenseText></div>
             <span class="listing-license">{{ $translate('listing-editor-version', [ version ]) }}</span>
@@ -54,6 +58,9 @@ v-model:open="isOpen"
 </template>
 </cdx-dialog>`,
     props: {
+        disabledMessage: {
+            type: String
+        },
         version: {
             type: String,
             default: window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__
@@ -91,6 +98,7 @@ v-model:open="isOpen"
     },
     setup( {
         title,
+        disabledSubmitButton,
         onCaptchaSubmit,
         onSubmit, onClose, dialogElement, dialogClass, onHelp, onMount
     } ) {
@@ -128,6 +136,7 @@ v-model:open="isOpen"
             onCaptchaSubmit: () => {
                 onCaptchaSubmit( setCaptcha, closeAction );
             },
+            disabledSubmitButton,
             captchaRequested,
             saveInProgress,
             title,

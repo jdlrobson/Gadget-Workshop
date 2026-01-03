@@ -1,10 +1,13 @@
 const ListingEditorDialog = require( './ListingEditorDialog' );
 const ListingEditorForm = require( './ListingEditorForm' );
+const { ref, computed } = require( 'vue' );
 
 module.exports = {
     name: 'ListingEditorFormDialog',
-    template: `<ListingEditorDialog>
+    template: `<ListingEditorDialog
+        :disabledMessage="disabledMessage ? $translate( disabledMessage ) : undefined">
     <ListingEditorForm
+        @updated:listing="onListingUpdate"
         :lat="lat"
         :long="long"
         :url="url"
@@ -119,5 +122,24 @@ module.exports = {
     components: {
         ListingEditorDialog,
         ListingEditorForm
+    },
+    setup( { listingName, address, aka } ) {
+        // All listings must have a name, address or alt name.
+        const hasData = ref( listingName || address || aka );
+        const disabledMessage = computed( () => {
+            if ( !hasData.value ) {
+                return 'validationEmptyListing';
+            } else {
+                return '';
+            }
+        } );
+
+        const onListingUpdate = ( data ) => {
+            hasData.value = data.name || data.address || data.alt;
+        };
+        return {
+            onListingUpdate,
+            disabledMessage
+        };
     }
 };

@@ -1,10 +1,11 @@
 const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 const sistersites = require( './SisterSites.js' );
-const { onMounted, ref } = require( 'vue' );
+const { onMounted, ref, computed } = require( 'vue' );
 const getListingInfo = require( '../getListingInfo.js' );
 const { getCallbacks } = require( '../Callbacks.js' );
 const TelephoneCharInsert = require( './TelephoneCharInsert.js' );
 const SpecialCharactersString = require( './specialCharactersString.js' );
+const parseDMS = require( '../parseDMS.js' );
 
 /**
  * Generate the form UI for the listing editor. If editing an existing
@@ -270,7 +271,7 @@ module.exports = {
                     <div class="input-other">
                         <a id="geomap-link"
                             target="_blank"
-                            href="https://wikivoyage.toolforge.org/w/geomap.php">
+                            :href="mapLink">
                                 {{ $translate( 'findOnMap' ) }}</a>
                     </div>
                 </div>
@@ -353,6 +354,12 @@ module.exports = {
         const currentLong = ref( long );
         const currentLat = ref( lat );
         const listingParameters = getListingInfo(listingType);
+        const mapLink = computed( () => {
+            const la = currentLat.value;
+            const ln = currentLong.value;
+            const base = 'https://wikivoyage.toolforge.org/w/geomap.php';
+            return la && ln ? `${base}?lat=${parseDMS(la)}&lon=${parseDMS(ln)}&zoom=15` : base;
+        } );
         const tabsData = ref( [
             {
                 name: 'edit',
@@ -376,6 +383,7 @@ module.exports = {
         return {
             currentLat,
             currentLong,
+            mapLink,
             tabsData,
             form,
             showLastEditedField

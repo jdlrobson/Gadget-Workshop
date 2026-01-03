@@ -6,6 +6,7 @@ const { getCallbacks } = require( '../Callbacks.js' );
 const TelephoneCharInsert = require( './TelephoneCharInsert.js' );
 const SpecialCharactersString = require( './specialCharactersString.js' );
 const parseDMS = require( '../parseDMS.js' );
+const showPreview = require( '../showPreview.js' );
 
 /**
  * Generate the form UI for the listing editor. If editing an existing
@@ -112,7 +113,7 @@ module.exports = {
             type: String
         }
     },
-    template: `<cdx-tabs :framed="true">
+    template: `<cdx-tabs :framed="true" :active="currentTab" @update:active="onUpdateTab">
 <cdx-tab
     v-for="( tab, index ) in tabsData"
     :key="index"
@@ -380,11 +381,29 @@ module.exports = {
             }
         } );
 
+        let previewTimeout;
+        const currentTab = ref( 'edit' );
+        const onUpdateTab = ( activeTab ) => {
+            if ( activeTab === 'preview' ) {
+                clearInterval( previewTimeout );
+                mw.util.throttle( () => {
+                    previewTimeout = setTimeout( () => {
+                        showPreview( {} )
+                    currentTab.value = activeTab;
+                    }, 200 );
+                }, 300 )();
+            } else {
+                currentTab.value = activeTab;
+            }
+        };
+
         return {
+            currentTab,
             currentLat,
             currentLong,
             mapLink,
             tabsData,
+            onUpdateTab,
             form,
             showLastEditedField
         };

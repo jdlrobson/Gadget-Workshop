@@ -197,35 +197,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		CREATE_FORM_CALLBACKS.push(initColor);
 		CREATE_FORM_CALLBACKS.push(autoDirParameters);
 
-		var setDefaultPlaceholders = function(form) {
-			[
-				'name',
-				'alt',
-				'url',
-				'address',
-				'directions',
-				'phone',
-				'tollfree',
-				'fax',
-				'email',
-				'lastedit',
-				'lat',
-				'long',
-				'hours',
-				'checkin',
-				'checkout',
-				'price',
-				'wikidata-label',
-				'wikipedia',
-				'image',
-				'content',
-				'summary'
-			].forEach( function ( key ) {
-				$(`#input-${key}`, form).attr( 'placeholder', translate(`placeholder-${key}` ) );
-			} );
-		};
-		CREATE_FORM_CALLBACKS.push(setDefaultPlaceholders);
-
 		// --------------------------------------------------------------------
 		// LISTING EDITOR FORM SUBMISSION CALLBACKS
 		// --------------------------------------------------------------------

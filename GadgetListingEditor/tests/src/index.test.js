@@ -27,7 +27,7 @@ describe( 'index', () => {
         const createFormCallbacks = getCallbacks( 'CREATE_FORM_CALLBACKS' );
         const submitFormCallbacks = getCallbacks( 'SUBMIT_FORM_CALLBACKS' );
         const validateFormCallbacks = getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
-        expect( createFormCallbacks.length ).toBe( 5 );
+        expect( createFormCallbacks.length ).toBe( 4 );
         expect( submitFormCallbacks.length ).toBe( 1 );
         expect( validateFormCallbacks.length ).toBe( 3 );
 

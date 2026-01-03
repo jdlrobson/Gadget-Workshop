@@ -1,5 +1,4 @@
 const TRANSLATIONS_ALL = require( './translations.js' );
-const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
 const translate = translateModule.translate;
@@ -195,84 +194,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		// LISTING EDITOR UI INITIALIZATION CALLBACKS
 		// --------------------------------------------------------------------
 		CREATE_FORM_CALLBACKS.push(initStringFormFields);
-
-		/**
-		 * Add listeners on various fields to update the "find on map" link.
-		 */
-		var initFindOnMapLink = function(form) {
-			var latlngStr = `?lang=${LANG}`;
-			//*****
-			// page & location cause the geomap-link crash
-			// to investigate if it's a geomap-link bug/limitation or if those parameters shall not be used
-			//*****
-			// try to find and collect the best available coords
-			if ( $('#input-lat', form).val() && $('#input-long', form).val() ) {
-				// listing specific coords
-				latlngStr += `&lat=${parseDMS($('#input-lat', form).val())}&lon=${parseDMS($('#input-long', form).val())}&zoom=15`;
-			} else if ( $('.mw-indicators .geo').lenght ) {
-				// coords added by Template:Geo
-				latlngStr += `&lat=${parseDMS($('.mw-indicators .geo .latitude').text())}&lon=${parseDMS($('.mw-indicators .geo .longitude').text())}&zoom=15`;
-			}
-			// #geomap-link is a link in the EDITOR_FORM_HTML
-			$('#geomap-link', form).attr('href', $('#geomap-link', form).attr('href') + latlngStr);
-			$('#input-lat', form).change( function () {updateHrefCoord(form);} );
-			$('#input-long', form).change( function () {updateHrefCoord(form);} );
-		};
-		CREATE_FORM_CALLBACKS.push(initFindOnMapLink);
-
-		/**
-		 * Update coords on href "find on map" link.
-		 */
-		var updateHrefCoord = function(form) {
-			var link = $('#geomap-link').attr('href');
-			if (!link) link = $('#geomap-link', form).attr('href');
-			link = generateCoordUrl4Href(link, form);
-			if ($('#geomap-link').attr('href'))
-				$('#geomap-link').attr('href', link);
-			else
-				$('#geomap-link', form).attr('href', link);
-		};
-
-		/**
-		 * Generate coords URL in get format to be attached on href attribute in "find on map" link.
-		 */
-		var generateCoordUrl4Href = function(link, form) {
-			var coord = {lat: NaN, lon: NaN};
-			var newLink = link;
-			coord = getBestCoord(form); //coord has been already parsedDMS
-			if ( link ) {
-				var indexLat = link.indexOf('&lat');
-				var indexZoom = link.indexOf('&zoom');
-				if (indexLat >= 0)
-					newLink = link.substr(0,indexLat); //remove coord inside the link
-				if ( !isNaN(coord.lat) && !isNaN(coord.lon) ) { //add new coord if available
-					newLink = `${newLink}&lat=${coord.lat}&lon=${coord.lon}`;
-					if (indexZoom < 0)
-						newLink = `${newLink}&zoom=15`;
-					else
-						newLink = newLink + link.substr(indexZoom);
-				}
-			}
-			return newLink;
-		};
-
-		/**
-		 * Get best available coords between the listing one and the article one.
-		 */
-		var getBestCoord = function(form) {
-			var coord = {lat: NaN, lon: NaN};
-			if ( $('#input-lat', form).val() && $('#input-long', form).val() ) {
-				coord.lat = $('#input-lat', form).val();
-				coord.lon = $('#input-long', form).val();
-			} else if ( $('.mw-indicators .geo').lenght ) {
-				coord.lat = $('.mw-indicators .geo .latitude').text();
-				coord.lon = $('.mw-indicators .geo .longitude').text();
-			}
-			coord.lat = parseDMS(coord.lat);
-			coord.lon = parseDMS(coord.lon);
-			return coord;
-		};
-
 		CREATE_FORM_CALLBACKS.push(initColor);
 		CREATE_FORM_CALLBACKS.push(autoDirParameters);
 

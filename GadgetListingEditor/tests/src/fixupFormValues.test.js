@@ -31,6 +31,15 @@ describe( 'fixupFormValues', () => {
 		expect( $('#input-long').val() ).toBe( '-122.614588' );
 	} );
 
+	it( 'retains zeroes', () => {
+		makeForm();
+		$('#input-lat').val( '+32.0000000' );
+		$('#input-long').val( '-122.0000000' );
+		fixupFormValues( [] );
+		expect( $('#input-lat').val() ).toBe( '32.000000' );
+		expect( $('#input-long').val() ).toBe( '-122.000000' );
+	} );
+
 
 	it( 'does not modify empty content', () => {
 		loadConfig( {
@@ -119,8 +128,8 @@ describe( 'fixupFormValues', () => {
 		$('#input-long').val( '-122.61458' );
 		const validated = fixupFormValues( Callbacks );
 		expect( validated ).toBe( true );
-		expect( $('#input-lat').val() ).toBe( '32.30642' );
-		expect( $('#input-long').val() ).toBe( '-122.61458' );
+		expect( $('#input-lat').val() ).toBe( '32.306420' );
+		expect( $('#input-long').val() ).toBe( '-122.614580' );
 	} );
 
 	it( 'validate (both latitude and longitude must be provided)', () => {

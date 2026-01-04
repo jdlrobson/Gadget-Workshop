@@ -7,6 +7,6 @@ describe( 'trimDecimal', () => {
 	} );
 	it( 'doesnt trim if needed', () => {
 		const num = trimDecimal( 400, 2 );
-		expect( num ).toBe( '400' );
+		expect( num ).toBe( '400.00' );
 	} );
 } );

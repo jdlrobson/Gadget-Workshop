@@ -318,7 +318,8 @@ module.exports = {
                     ></cdx-text-input>
                 </div>
             </div>
-            <sistersites :wikidata="wikidata" :wikipedia="wikipedia" :image="image"></sistersites>
+            <sistersites :wikidata="currentWikidata" :wikipedia="currentWikipedia" :image="currentImage"
+                @updated:listing="onSisterSiteUpdate"></sistersites>
             </div>
         </div>
         <div id="div_content" class="editor-row">
@@ -388,6 +389,7 @@ module.exports = {
     setup( props, { emit } ) {
         const { showLastEditedField, mode, listingType, lat, long, lastedit,
             email,
+            wikidata, wikipedia, image,
             aka, address, listingName
         } = props;
         const nowTimestamp = currentLastEditDate();
@@ -441,15 +443,32 @@ module.exports = {
             }
         };
 
+        const currentWikidata = ref( wikidata );
+        const currentWikipedia = ref( wikipedia );
+        const currentImage = ref( image );
         const onListingUpdate = () => {
             emit( 'updated:listing', {
                 alt: currentAltName.value,
                 name: currentListingName.value,
                 address: currentAddress.value,
-                email: currentEmail.value
+                email: currentEmail.value,
+                wikipedia: currentWikipedia.value,
+                wikidata: currentWikidata.value,
+                image: currentImage.value
             } );
         };
+        const onSisterSiteUpdate = ( sisterSiteData ) => {
+            currentWikipedia.value = sisterSiteData.wikipedia;
+            currentWikidata.value = sisterSiteData.wikidata;
+            currentImage.value = sisterSiteData.image;
+            onListingUpdate();
+        };
+
         return {
+            currentImage,
+            currentWikidata,
+            currentWikipedia,
+            onSisterSiteUpdate,
             onListingUpdate,
             computedAltDir,
             shouldUpdateTimestamp,

@@ -1,21 +1,11 @@
 const trimDecimal = require( './trimDecimal.js' );
-const { translate } = require( './translate.js' );
 const { getConfig } = require( './Config.js' );
-const validateCoords = require( './validators/coords.js' );
 
 /**
  * Logic invoked on form submit to analyze the values entered into the
- * editor form and to block submission if any fatal errors are found.
- *
- * Alerts if validation error found.
- *
- * @return {bool} whether validation succeeded.
+ * editor form and fix correctable issues.
  */
 const fixupFormValues = function() {
-    const coordsError = () => {
-        alert( translate( 'coordinates-error' ) );
-        return false;
-    };
     const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION } = getConfig();
     // newlines in listing content won't render properly in lists, so replace them with <br> tags
     if ( REPLACE_NEW_LINE_CHARS ) {
@@ -48,9 +38,6 @@ const fixupFormValues = function() {
     // in case of decimal format, decimal digits will be limited to 6
     const latInput = ( $('#input-lat').val() || '' ).trim();
     const longInput = ( $('#input-long').val() || '' ).trim();
-    if ( !validateCoords( latInput, longInput ) ) {
-        return coordsError();
-    }
 
     if ( latInput && longInput ) {
         fixupLatLon( latInput, longInput );

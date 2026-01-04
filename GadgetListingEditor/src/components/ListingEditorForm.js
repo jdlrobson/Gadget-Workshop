@@ -294,6 +294,7 @@ module.exports = {
                     <cdx-text-input class="editor-partialwidth" id="input-lat"
                         :placeholder="$translate('placeholder-lat' )"
                         v-model="currentLat"
+                        @input="onListingUpdate"
                         :modelValue="lat"
                     ></cdx-text-input>
                     <!-- update the Callbacks.initFindOnMapLink
@@ -314,6 +315,7 @@ module.exports = {
                     <cdx-text-input class="editor-partialwidth" id="input-long"
                         :placeholder="$translate('placeholder-long' )"
                         v-model="currentLong"
+                        @input="onListingUpdate"
                         :modelValue="long"
                     ></cdx-text-input>
                 </div>
@@ -448,6 +450,8 @@ module.exports = {
         const currentImage = ref( image );
         const onListingUpdate = () => {
             emit( 'updated:listing', {
+                lat: currentLat.value,
+                long: currentLong.value,
                 alt: currentAltName.value,
                 name: currentListingName.value,
                 address: currentAddress.value,

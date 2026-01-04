@@ -61,6 +61,7 @@
     "validationEmail": "Please ensure the email address is valid",
     "validationWikipedia": "Please insert the Wikipedia page title only; not the full URL address",
     "validationImage": "Please insert the Commons image title only without any prefix",
+    "validationCoords": "Please enter latitude and longitude coordinates both in the decimal form e.g. 29.9773, 31.1325",
     "added": "Added listing for ",
     "updated": "Updated listing for ",
     "removed": "Deleted listing for ",

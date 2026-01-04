@@ -15,11 +15,6 @@ const validateForm = function(
     VALIDATE_FORM_CALLBACKS
 ) {
     const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION } = getConfig();
-    const coordsError = () => {
-        alert( translate( 'coordinates-error' ) );
-        return false;
-    };
-
     var validationFailureMessages = [];
     for (var i=0; i < VALIDATE_FORM_CALLBACKS.length; i++) {
         VALIDATE_FORM_CALLBACKS[i](validationFailureMessages);
@@ -59,30 +54,56 @@ const validateForm = function(
     // in case of decimal format, decimal digits will be limited to 6
     const latInput = ( $('#input-lat').val() || '' ).trim();
     const longInput = ( $('#input-long').val() || '' ).trim();
+    if ( !validateCoords( latInput, longInput ) ) {
+        return false;
+    }
+
+    if ( latInput && longInput ) {
+        fixupLatLon( latInput, longInput );
+    }
+    fixupUrl();
+    return true;
+}
+
+const fixupLatLon = ( latInput, longInput ) => {
+    const lat = Number( latInput );
+    const long = Number( longInput );
+    const savedLat = trimDecimal( lat, 6 );
+    const savedLong = trimDecimal( long, 6 );
+    $('#input-lat').val( savedLat );
+    $('#input-long').val( savedLong );
+};
+
+/**
+ * @param {string} latInput
+ * @param {string} longInput
+ * @return {boolean}
+ */
+const validateCoords = ( latInput, longInput ) => {
+    const coordsError = () => {
+        alert( translate( 'coordinates-error' ) );
+        return false;
+    };
     if ( latInput && longInput ) {
         const lat = Number( latInput );
         const long = Number( longInput );
         if ( isNaN( lat ) || isNaN( long ) ) {
             return coordsError();
-        } else {
-            const savedLat = trimDecimal( lat, 6 );
-            const savedLong = trimDecimal( long, 6 );
-            $('#input-lat').val( savedLat );
-            $('#input-long').val( savedLong );
         }
     } else if ( latInput && !longInput ) {
         return coordsError();
     } else if ( !latInput && longInput ) {
         return coordsError();
     }
+    return true;
+};
 
+const fixupUrl = () => {
     var webRegex = new RegExp('^https?://', 'i');
     var url = $('#input-url').val();
     if (!webRegex.test(url) && url !== '') {
         $('#input-url').val(`http://${url}`);
     }
-    return true;
-
 };
 
 module.exports = validateForm;

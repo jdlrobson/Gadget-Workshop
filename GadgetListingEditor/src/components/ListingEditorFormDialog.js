@@ -1,6 +1,7 @@
 const ListingEditorDialog = require( './ListingEditorDialog' );
 const ListingEditorForm = require( './ListingEditorForm' );
 const { ref, computed } = require( 'vue' );
+const validateEmail = require( '../validators/email.js' );
 
 module.exports = {
     name: 'ListingEditorFormDialog',
@@ -123,12 +124,16 @@ module.exports = {
         ListingEditorDialog,
         ListingEditorForm
     },
-    setup( { listingName, address, aka } ) {
+    setup( { listingName, address, aka, email } ) {
         // All listings must have a name, address or alt name.
         const hasData = ref( listingName || address || aka );
+
+        const emailValid = ref( email ? validateEmail( email ) : true );
         const disabledMessage = computed( () => {
             if ( !hasData.value ) {
                 return 'validationEmptyListing';
+            } else if ( !emailValid.value ) {
+                return 'validationEmail';
             } else {
                 return '';
             }
@@ -136,6 +141,7 @@ module.exports = {
 
         const onListingUpdate = ( data ) => {
             hasData.value = data.name || data.address || data.alt;
+            emailValid.value = validateEmail( data.email );
         };
         return {
             onListingUpdate,

@@ -1,6 +1,7 @@
 const trimDecimal = require( './trimDecimal.js' );
 const { translate } = require( './translate.js' );
 const { getConfig } = require( './Config.js' );
+const validateCoords = require( './validators/coords.js' );
 
 /**
  * Logic invoked on form submit to analyze the values entered into the
@@ -14,6 +15,10 @@ const { getConfig } = require( './Config.js' );
 const validateForm = function(
     VALIDATE_FORM_CALLBACKS
 ) {
+    const coordsError = () => {
+        alert( translate( 'coordinates-error' ) );
+        return false;
+    };
     const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION } = getConfig();
     var validationFailureMessages = [];
     for (var i=0; i < VALIDATE_FORM_CALLBACKS.length; i++) {
@@ -55,7 +60,7 @@ const validateForm = function(
     const latInput = ( $('#input-lat').val() || '' ).trim();
     const longInput = ( $('#input-long').val() || '' ).trim();
     if ( !validateCoords( latInput, longInput ) ) {
-        return false;
+        return coordsError();
     }
 
     if ( latInput && longInput ) {
@@ -72,30 +77,6 @@ const fixupLatLon = ( latInput, longInput ) => {
     const savedLong = trimDecimal( long, 6 );
     $('#input-lat').val( savedLat );
     $('#input-long').val( savedLong );
-};
-
-/**
- * @param {string} latInput
- * @param {string} longInput
- * @return {boolean}
- */
-const validateCoords = ( latInput, longInput ) => {
-    const coordsError = () => {
-        alert( translate( 'coordinates-error' ) );
-        return false;
-    };
-    if ( latInput && longInput ) {
-        const lat = Number( latInput );
-        const long = Number( longInput );
-        if ( isNaN( lat ) || isNaN( long ) ) {
-            return coordsError();
-        }
-    } else if ( latInput && !longInput ) {
-        return coordsError();
-    } else if ( !latInput && longInput ) {
-        return coordsError();
-    }
-    return true;
 };
 
 const fixupUrl = () => {

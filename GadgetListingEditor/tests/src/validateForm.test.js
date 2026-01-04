@@ -1,4 +1,5 @@
 const validateForm = require( '../../src/validateForm.js' );
+const { loadConfig } = require( '../../src/Config.js' );
 
 const Callbacks = [];
 
@@ -30,25 +31,33 @@ describe( 'Core', () => {
 	} );
 
 	it( 'validate (REPLACE_NEW_LINE_CHARS)', () => {
+		loadConfig( {
+			REPLACE_NEW_LINE_CHARS: true,
+			APPEND_FULL_STOP_TO_DESCRIPTION: true
+		} );
 		makeForm();
 
 		$('#input-lat').val( '0.1' );
 		$('#input-long').val( '0.2' );
 		$('#input-url').val( 'https://wikivoyage.org' );
 		$('#input-content').val( 'Foo\nReplace' );
-		const validated = validateForm( Callbacks, true, true );
+		const validated = validateForm( Callbacks );
 		expect( validated ).toBe( true );
 		expect( $('#input-content').val() ).toBe( 'Foo<br />Replace.' );
 	} );
 
 	it( 'validate (APPEND_FULL_STOP_TO_DESCRIPTION)', () => {
+		loadConfig( {
+			REPLACE_NEW_LINE_CHARS: false,
+			APPEND_FULL_STOP_TO_DESCRIPTION: false
+		} );
 		makeForm();
 
 		$('#input-lat').val( '0.1' );
 		$('#input-long').val( '0.2' );
 		$('#input-url').val( 'https://wikivoyage.org' );
 		$('#input-content').val( 'Text without full stop' );
-		const validated = validateForm( Callbacks, false, false);
+		const validated = validateForm( Callbacks );
 		expect( validated ).toBe( true );
 		expect( $('#input-content').val() ).toBe( 'Text without full stop' );
 

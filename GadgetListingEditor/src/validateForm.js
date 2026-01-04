@@ -1,5 +1,6 @@
 const trimDecimal = require( './trimDecimal.js' );
 const { translate } = require( './translate.js' );
+const { getConfig } = require( './Config.js' );
 
 /**
  * Logic invoked on form submit to analyze the values entered into the
@@ -8,15 +9,12 @@ const { translate } = require( './translate.js' );
  * Alerts if validation error found.
  *
  * @param {bool} VALIDATE_FORM_CALLBACKS
- * @param {bool} REPLACE_NEW_LINE_CHARS
- * @param {bool} APPEND_FULL_STOP_TO_DESCRIPTION
  * @return {bool} whether validation succeeded.
  */
 const validateForm = function(
-    VALIDATE_FORM_CALLBACKS,
-    REPLACE_NEW_LINE_CHARS,
-    APPEND_FULL_STOP_TO_DESCRIPTION
+    VALIDATE_FORM_CALLBACKS
 ) {
+    const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION } = getConfig();
     const coordsError = () => {
         alert( translate( 'coordinates-error' ) );
         return false;

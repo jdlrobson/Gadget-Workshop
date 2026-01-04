@@ -1,5 +1,4 @@
 const trimDecimal = require( './trimDecimal.js' );
-const { translate } = require( './translate.js' );
 const { getConfig } = require( './Config.js' );
 const validateCoords = require( './validators/coords.js' );
 

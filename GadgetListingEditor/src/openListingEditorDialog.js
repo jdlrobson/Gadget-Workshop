@@ -82,15 +82,10 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
                     closeDialog,
                     handleCaptchaError()
                 );
-        }
-        else if (
-            fixupFormValues()
-        ) {
+        } else {
+            fixupFormValues();
             formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
                 .then( closeDialog, teardown );
-        } else {
-            // form validation failed.
-            reset();
         }
     };
 

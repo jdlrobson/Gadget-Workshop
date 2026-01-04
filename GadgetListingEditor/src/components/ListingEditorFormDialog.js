@@ -4,6 +4,7 @@ const { ref, computed } = require( 'vue' );
 const validateEmail = require( '../validators/email.js' );
 const validateWikipedia = require( '../validators/wikipedia.js' );
 const validateImage = require( '../validators/image.js' );
+const validateCoords = require( '../validators/coords.js' );
 
 module.exports = {
     name: 'ListingEditorFormDialog',
@@ -126,16 +127,19 @@ module.exports = {
         ListingEditorDialog,
         ListingEditorForm
     },
-    setup( { listingName, address, aka, email, wikipedia, image } ) {
+    setup( { listingName, address, aka, email, wikipedia, image, lat, long } ) {
         // All listings must have a name, address or alt name.
         const hasData = ref( listingName || address || aka );
 
         const emailValid = ref( email ? validateEmail( email ) : true );
         const wikipediaValid = ref( validateWikipedia( wikipedia ) );
         const imageValid = ref( validateImage( image ) );
+        const coordsValid = ref( validateCoords( lat, long ) );
         const disabledMessage = computed( () => {
             if ( !hasData.value ) {
                 return 'validationEmptyListing';
+            } else if ( !coordsValid.value ) {
+                return 'validationCoords';
             } else if ( !wikipediaValid.value ) {
                 return 'validationWikipedia';
             } else if ( !imageValid.value ) {
@@ -152,6 +156,7 @@ module.exports = {
             emailValid.value = validateEmail( data.email );
             wikipediaValid.value = validateWikipedia( data.wikipedia );
             imageValid.value = validateImage( data.image );
+            coordsValid.value = validateCoords( data.lat, data.long );
         };
         return {
             onListingUpdate,

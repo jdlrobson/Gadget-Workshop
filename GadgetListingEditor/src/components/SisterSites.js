@@ -39,6 +39,7 @@ module.exports = {
         v-model:selected="wikidata"
         v-model:input-value="wikidataInput"
         :menu-items="wikidataMenuItems"
+        @blur="onBlur"
         @update:input-value="onWikidataInput"
         @update:selected="onWikidataSelected"
         :placeholder="$translate('placeholder-wikidata-label' )"
@@ -87,6 +88,7 @@ module.exports = {
 </div>
 <div>
     <cdx-lookup
+        @blur="onBlur"
         v-model:selected="wikipedia"
         v-model:input-value="wikipediaInput"
         :menu-items="wikipediaMenuItems"
@@ -111,6 +113,7 @@ module.exports = {
 </div>
 <div>
     <cdx-lookup
+        @blur="onBlur"
         v-model:selected="commons"
         v-model:input-value="commonsInput"
         :menu-items="commonsMenuItems"
@@ -128,7 +131,8 @@ module.exports = {
     </span>
 </div>
 </div>`,
-    setup( { wikipedia, wikidata, image, api } ) {
+    emits: [ 'updated:listing' ],
+    setup( { wikipedia, wikidata, image, api }, { emit } ) {
         const SisterSite = api || require( '../SisterSite.js' )();
         const { SEARCH_PARAMS,
             API_WIKIDATA, API_COMMONS, API_WIKIPEDIA,
@@ -212,9 +216,22 @@ module.exports = {
                 })
             };
 
+        const onBlur = () => {
+            emitUpdatedEvent();
+        };
+
+        const emitUpdatedEvent = () => {
+            emit( 'updated:listing', {
+                image: commonsInput.value,
+                wikipedia: wikipediaInput.value,
+                wikidata: wikidataInput.value
+            } );
+        }
+
         function onWikidataSelected( selected ) {
             if ( selected ) {
                 wikidataInput.value = selected;
+                emitUpdatedEvent();
             }
         }
         function onWikidataInput( search ) {
@@ -239,6 +256,7 @@ module.exports = {
         function onCommonsSelected( selected ) {
             if ( selected ) {
                 commonsInput.value = selected;
+                emitUpdatedEvent();
             }
         }
 
@@ -257,6 +275,7 @@ module.exports = {
         function onWikipediaSelected( selected ) {
             if ( selected ) {
                 wikipediaInput.value = selected;
+                emitUpdatedEvent();
             }
         }
 
@@ -273,6 +292,7 @@ module.exports = {
         }
 
         return {
+            onBlur,
             onCommonsSelected,
             onWikipediaSelected,
             onWikidataSelected,

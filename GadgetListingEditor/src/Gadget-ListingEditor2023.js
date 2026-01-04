@@ -3,7 +3,13 @@ const sectionToTemplateType = require( './sectionToTemplateType' );
 const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
 
 const fn = function() {
-	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' );
+	const wgUserGroups = mw.config.get('wgUserGroups', [] ).concat(
+		mw.config.get( 'wgGlobalGroups', [] )
+	);
+	const forceBeta = mw.user.isNamed() && wgUserGroups.includes('interface-admin') ||
+		wgUserGroups.includes('checkuser') || wgUserGroups.includes( 'global-interface-editor' ) ||
+		wgUserGroups.includes( 'sysadmin' );
+	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' ) || forceBeta;
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';
 	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';

@@ -9,7 +9,7 @@ const CallbacksFail = [
 	}
 ];
 
-describe( 'Core', () => {
+describe( 'fixupFormValues', () => {
 	const makeForm = () => {
 		$('<div id="input-content">' ).appendTo(document.body);
 		$('<div id="input-lat">' ).appendTo(document.body);
@@ -20,6 +20,28 @@ describe( 'Core', () => {
 	beforeEach(() => {
 		$('#input-lat,#input-long,#input-content,#input-url').remove();
 	});
+
+	it( 'shortens decimals to 6 places', () => {
+		makeForm();
+
+		$('#input-lat').val( '+32.306423333333' );
+		$('#input-long').val( '-122.6145877777' );
+		fixupFormValues( [] );
+		expect( $('#input-lat').val() ).toBe( '32.306423' );
+		expect( $('#input-long').val() ).toBe( '-122.614588' );
+	} );
+
+
+	it( 'does not modify empty content', () => {
+		loadConfig( {
+			REPLACE_NEW_LINE_CHARS: true
+		} );
+		makeForm();
+		$('#input-content').val( '' );
+		fixupFormValues( [] );
+		expect( $('#input-content').val() ).toBe( '' );
+	} );
+
 	it( 'validate (pass)', () => {
 		const validated = fixupFormValues( Callbacks );
 		expect( validated ).toBe( true );
@@ -90,13 +112,15 @@ describe( 'Core', () => {
 		expect( validated ).toBe( false );
 	} );
 
-	it( 'validate (accepts decimals)', () => {
+	it( 'validate (accepts and modifies decimals)', () => {
 		makeForm();
 
 		$('#input-lat').val( '+32.30642' );
 		$('#input-long').val( '-122.61458' );
 		const validated = fixupFormValues( Callbacks );
 		expect( validated ).toBe( true );
+		expect( $('#input-lat').val() ).toBe( '32.30642' );
+		expect( $('#input-long').val() ).toBe( '-122.61458' );
 	} );
 
 	it( 'validate (both latitude and longitude must be provided)', () => {

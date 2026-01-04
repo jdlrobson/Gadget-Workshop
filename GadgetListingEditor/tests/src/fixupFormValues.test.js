@@ -1,14 +1,6 @@
 const fixupFormValues = require( '../../src/fixupFormValues.js' );
 const { loadConfig } = require( '../../src/Config.js' );
 
-const Callbacks = [];
-
-const CallbacksFail = [
-	( list ) => {
-		list.push( 'A failure occurred' );
-	}
-];
-
 describe( 'fixupFormValues', () => {
 	const makeForm = () => {
 		$('<div id="input-content">' ).appendTo(document.body);
@@ -19,6 +11,7 @@ describe( 'fixupFormValues', () => {
 
 	beforeEach(() => {
 		$('#input-lat,#input-long,#input-content,#input-url').remove();
+		window.alert = jest.fn();
 	});
 
 	it( 'shortens decimals to 6 places', () => {
@@ -52,13 +45,8 @@ describe( 'fixupFormValues', () => {
 	} );
 
 	it( 'validate (pass)', () => {
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( true );
-	} );
-	it( 'validate (fail)', () => {
-		window.alert = jest.fn();
-		const validated = fixupFormValues( CallbacksFail );
-		expect( validated ).toBe( false );
 	} );
 
 	it( 'validate (REPLACE_NEW_LINE_CHARS)', () => {
@@ -72,7 +60,7 @@ describe( 'fixupFormValues', () => {
 		$('#input-long').val( '0.2' );
 		$('#input-url').val( 'https://wikivoyage.org' );
 		$('#input-content').val( 'Foo\nReplace' );
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( true );
 		expect( $('#input-content').val() ).toBe( 'Foo<br />Replace.' );
 	} );
@@ -88,7 +76,7 @@ describe( 'fixupFormValues', () => {
 		$('#input-long').val( '0.2' );
 		$('#input-url').val( 'https://wikivoyage.org' );
 		$('#input-content').val( 'Text without full stop' );
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( true );
 		expect( $('#input-content').val() ).toBe( 'Text without full stop' );
 
@@ -98,7 +86,7 @@ describe( 'fixupFormValues', () => {
 		makeForm();
 
 		$('#input-lat').val( '   ' );
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( true );
 		expect( $('#input-lat').val() ).toBe( '   ' );
 	} );
@@ -108,7 +96,7 @@ describe( 'fixupFormValues', () => {
 
 		$('#input-lat').val( 'foo' );
 		$('#input-long').val( 'bar' );
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( false );
 	} );
 
@@ -117,7 +105,7 @@ describe( 'fixupFormValues', () => {
 
 		$('#input-lat').val( '32° 18\' 23.1 N' );
 		$('#input-long').val( '122° 36\' 52.5" W' );
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( false );
 	} );
 
@@ -126,7 +114,7 @@ describe( 'fixupFormValues', () => {
 
 		$('#input-lat').val( '+32.30642' );
 		$('#input-long').val( '-122.61458' );
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( true );
 		expect( $('#input-lat').val() ).toBe( '32.306420' );
 		expect( $('#input-long').val() ).toBe( '-122.614580' );
@@ -136,7 +124,7 @@ describe( 'fixupFormValues', () => {
 		makeForm();
 
 		$('#input-lat').val( '+32.30642' );
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( false );
 	} );
 
@@ -144,7 +132,7 @@ describe( 'fixupFormValues', () => {
 		makeForm();
 
 		$('#input-long').val( '-122.61458' );
-		const validated = fixupFormValues( Callbacks );
+		const validated = fixupFormValues();
 		expect( validated ).toBe( false );
 	} );
 } );

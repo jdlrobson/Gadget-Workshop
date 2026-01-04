@@ -1,7 +1,6 @@
 const main = require( '../../src/index' );
 const { getConfig } = require( '../../src/Config' );
 const config = require( '../../dist/Gadget-ListingEditor.json' );
-const { getCallbacks } = require( '../../src/Callbacks.js' );
 
 describe( 'index', () => {
     let form;
@@ -14,7 +13,7 @@ describe( 'index', () => {
         lastEdit.checked = true;
         document.body.appendChild( lastEdit );
     })
-	it( 'is responsible for loading config and callbacks', () => {
+	it( 'is responsible for loading config', () => {
         main(
             [ 0, 400 ],
             () => {},
@@ -23,9 +22,5 @@ describe( 'index', () => {
             } )
         );
         expect( getConfig().configValue ).toBe( 3 );
-        const validateFormCallbacks = getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
-        expect( validateFormCallbacks.length ).toBe( 2 );
-
-        validateFormCallbacks.forEach(( callback ) => callback( [] ) );
 	} );
 } );

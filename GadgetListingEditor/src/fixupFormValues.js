@@ -9,25 +9,14 @@ const validateCoords = require( './validators/coords.js' );
  *
  * Alerts if validation error found.
  *
- * @param {bool} VALIDATE_FORM_CALLBACKS
  * @return {bool} whether validation succeeded.
  */
-const fixupFormValues = function(
-    VALIDATE_FORM_CALLBACKS
-) {
+const fixupFormValues = function() {
     const coordsError = () => {
         alert( translate( 'coordinates-error' ) );
         return false;
     };
     const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION } = getConfig();
-    var validationFailureMessages = [];
-    for (var i=0; i < VALIDATE_FORM_CALLBACKS.length; i++) {
-        VALIDATE_FORM_CALLBACKS[i](validationFailureMessages);
-    }
-    if (validationFailureMessages.length > 0) {
-        alert(validationFailureMessages.join('\n'));
-        return false;
-    }
     // newlines in listing content won't render properly in lists, so replace them with <br> tags
     if ( REPLACE_NEW_LINE_CHARS ) {
         $('#input-content').val(

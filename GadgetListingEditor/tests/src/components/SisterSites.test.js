@@ -9,8 +9,7 @@ describe( 'SisterSites', () => {
             props: {
                 api: {
                     wikipediaWikidata: () => Promise.resolve({}),
-                    ajaxSisterSiteSearch: (props) => {
-                        console.log('riunning site search', props);
+                    ajaxSisterSiteSearch: () => {
                         return Promise.resolve( require( '../wikidataClaims.json' ) );
                     }
                 },

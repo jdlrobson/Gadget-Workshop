@@ -11,7 +11,6 @@ const formToText = require( './formToText.js' );
 const wikiTextToListing = require( './wikiTextToListing.js' );
 const { translate } = require( './translate.js' );
 const { getSectionText, setSectionText } = require( './currentEdit' );
-const { getCallbacks } = require( './Callbacks.js' );
 const { getConfig } = require( './Config' );
 
 /**
@@ -85,9 +84,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
                 );
         }
         else if (
-            fixupFormValues(
-                getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
-            )
+            fixupFormValues()
         ) {
             formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
                 .then( closeDialog, teardown );

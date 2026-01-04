@@ -1,10 +1,7 @@
 const TRANSLATIONS_ALL = require( './translations.js' );
 const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
-const { loadCallbacks } = require( './Callbacks.js' );
 const { loadConfig } = require( './Config.js' );
-const validateWikipedia = require( './validators/wikipedia.js' );
-const validateImage = require( './validators/image.js' );
 
 module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
@@ -156,32 +153,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 			EDITOR_MINOR_EDIT_SELECTOR
 		};
 	}();
-
-	/* ***********************************************************************
-	 * Callbacks implements custom functionality that may be
-	 * specific to how a Wikivoyage language version has implemented the
-	 * listing template.
-	 * ***********************************************************************/
-	var Callbacks = function() {
-		// array of validation functions to invoke when the listing editor is
-		// submitted. these functions will be invoked with an array of
-		// validation messages as an argument; a failed validation should add a
-		// message to this array, and the user will be shown the messages and
-		// the form will not be submitted if the array is not empty.
-		var VALIDATE_FORM_CALLBACKS = [];
-
-		// --------------------------------------------------------------------
-		// LISTING EDITOR FORM VALIDATION CALLBACKS
-		// --------------------------------------------------------------------
-		VALIDATE_FORM_CALLBACKS.push(validateWikipedia);
-		VALIDATE_FORM_CALLBACKS.push(validateImage);
-
-		// expose public members
-		return {
-			VALIDATE_FORM_CALLBACKS
-		};
-	}();
-	loadCallbacks( Callbacks );
 	loadConfig( Config, PROJECT_CONFIG );
 
 	return {

@@ -282,6 +282,8 @@ module.exports = {
                 <div class="editor-label-col"><label for="input-email">{{ $translate( 'email' ) }}<span class="wikidata-update"></span></label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-email"
                     :placeholder="$translate('placeholder-email' )"
+                    @input="onListingUpdate"
+                    v-model="currentEmail"
                     :modelValue="email"></cdx-text-input></div>
             </div>
             <div id="div_lat" class="editor-row">
@@ -385,6 +387,7 @@ module.exports = {
     emits: [ 'updated:listing' ],
     setup( props, { emit } ) {
         const { showLastEditedField, mode, listingType, lat, long, lastedit,
+            email,
             aka, address, listingName
         } = props;
         const nowTimestamp = currentLastEditDate();
@@ -396,6 +399,7 @@ module.exports = {
         const computedAltDir = computed( () => isRTLString( currentAltName.value ) ? 'rtl' : 'ltr' );
         const currentLong = ref( long );
         const currentLat = ref( lat );
+        const currentEmail = ref( email );
         const listingParameters = getListingInfo(listingType);
         const mapLink = computed( () => {
             const la = currentLat.value;
@@ -441,7 +445,8 @@ module.exports = {
             emit( 'updated:listing', {
                 alt: currentAltName.value,
                 name: currentListingName.value,
-                address: currentAddress.value
+                address: currentAddress.value,
+                email: currentEmail.value
             } );
         };
         return {
@@ -454,6 +459,7 @@ module.exports = {
             currentTab,
             currentLat,
             currentLong,
+            currentEmail,
             mapLink,
             tabsData,
             onUpdateTab,

@@ -3,7 +3,6 @@ const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
 const { loadCallbacks } = require( './Callbacks.js' );
 const { loadConfig } = require( './Config.js' );
-const validateEmail = require( './validators/email.js' );
 const validateWikipedia = require( './validators/wikipedia.js' );
 const validateImage = require( './validators/image.js' );
 
@@ -174,10 +173,6 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		// --------------------------------------------------------------------
 		// LISTING EDITOR FORM VALIDATION CALLBACKS
 		// --------------------------------------------------------------------
-
-		if ( PROJECT_CONFIG.VALIDATE_CALLBACKS_EMAIL ) {
-			VALIDATE_FORM_CALLBACKS.push(validateEmail);
-		}
 		VALIDATE_FORM_CALLBACKS.push(validateWikipedia);
 		VALIDATE_FORM_CALLBACKS.push(validateImage);
 

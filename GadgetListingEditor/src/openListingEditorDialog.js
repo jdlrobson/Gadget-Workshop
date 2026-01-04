@@ -4,7 +4,7 @@ const getListingInfo = require( './getListingInfo.js' );
 const getListingWikitextBraces = require( './getListingWikitextBraces' );
 const { EDITOR_FORM_SELECTOR, EDITOR_CLOSED_SELECTOR } = require( './selectors.js' );
 const { MODE_ADD } = require( './mode.js' );
-const validateForm = require( './validateForm.js' );
+const fixupFormValues = require( './fixupFormValues.js' );
 const stripComments = require( './stripComments.js' );
 const formToText = require( './formToText.js' );
 const wikiTextToListing = require( './wikiTextToListing.js' );
@@ -21,9 +21,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
     NATL_CURRENCY
 } ) {
     const {
-        LISTING_TYPE_PARAMETER,
-        REPLACE_NEW_LINE_CHARS,
-        APPEND_FULL_STOP_TO_DESCRIPTION,
+        LISTING_TYPE_PARAMETER
     } = getConfig();
 
     setSectionText(
@@ -74,11 +72,8 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
                     listingEditorSync.destroy();
                 }
                 else if (
-                    validateForm(
-                        getCallbacks( 'VALIDATE_FORM_CALLBACKS' ),
-                        REPLACE_NEW_LINE_CHARS,
-                        APPEND_FULL_STOP_TO_DESCRIPTION,
-                        translate
+                    fixupFormValues(
+                        getCallbacks( 'VALIDATE_FORM_CALLBACKS' )
                     )
                 ) {
                     formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber, dialog);

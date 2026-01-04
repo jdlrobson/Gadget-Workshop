@@ -12,7 +12,7 @@ const validateCoords = require( './validators/coords.js' );
  * @param {bool} VALIDATE_FORM_CALLBACKS
  * @return {bool} whether validation succeeded.
  */
-const validateForm = function(
+const fixupFormValues = function(
     VALIDATE_FORM_CALLBACKS
 ) {
     const coordsError = () => {
@@ -87,4 +87,4 @@ const fixupUrl = () => {
     }
 };
 
-module.exports = validateForm;
+module.exports = fixupFormValues;

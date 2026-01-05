@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.21.0
+ * Listing Editor v3.23.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.21.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.23.0'
 
 'use strict';
 
@@ -166,7 +166,15 @@ const sectionToTemplateType = sectionToTemplateType$1;
 const { MODE_ADD, MODE_EDIT } = mode;
 
 const fn = function() {
-	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' );
+	const wgUserGroups = mw.config.get('wgUserGroups', [] ).concat(
+		mw.config.get( 'wgGlobalGroups', [] )
+	);
+	const forceBeta = mw.user.isNamed() && wgUserGroups.includes('interface-admin') ||
+		wgUserGroups.includes('autopatrolled') ||
+		wgUserGroups.includes('patroller') ||
+		wgUserGroups.includes('checkuser') || wgUserGroups.includes( 'global-interface-editor' ) ||
+		wgUserGroups.includes( 'sysadmin' );
+	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' ) || forceBeta;
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';
 	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';
@@ -375,7 +383,7 @@ const fn = function() {
 			);
 		} );
 		document.addEventListener( 'click', ( ev ) => {
-			if ( !ev.target.matches( '.listingeditor-add' ) ) {
+			if ( !ev.target.closest( '.listingeditor-add' ) ) {
 				return;
 			}
 			// dont collapse section on mobile.

@@ -96,7 +96,7 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
     if (minor) {
         $.extend( editPayload, { minor: 'true' } );
     }
-    savePayload( editPayload).then(function(data) {
+    const payload = savePayload( editPayload).then(function(data) {
         if (data && data.edit && data.edit.result == 'Success') {
             if ( data.edit.nochange !== undefined ) {
                 alert( 'Save skipped as there was no change to the content!' );
@@ -149,6 +149,7 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer, dialog) {
         return Promise.reject( {} );
     });
     savingForm( dialog );
+    return payload;
 };
 
 module.exports = saveForm;

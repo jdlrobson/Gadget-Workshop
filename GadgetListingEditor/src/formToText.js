@@ -27,7 +27,7 @@ const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMa
     var listingType = $(`#${listingTypeInput}`).val();
     var listingParameters = getListingInfo(listingType);
     for (var parameter in listingParameters) {
-        listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
+        listing[parameter] = $(`#${listingParameters[parameter].id}`).val() || '';
     }
     const submitCallbacks = getCallbacks( 'SUBMIT_FORM_CALLBACKS' );
     for (var i=0; i < submitCallbacks.length; i++) {

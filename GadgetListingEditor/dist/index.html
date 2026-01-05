@@ -1837,9 +1837,6 @@ scrpt.src = './Gadget-ListingEditor2023.js';
 scrpt.type = 'module';
 const originalAjax = $.ajax;
 setTimeout( () => {
-	mw.loader.load( 'jquery.ui');
-	mw.loader.load( 'mediawiki.api');
-	mw.loader.load( 'mediawiki.util');
 
 	const optsWithOrigin = ( _opts ) => {
 		let newUrl = _opts.url;
@@ -1865,7 +1862,14 @@ setTimeout( () => {
 		return originalAjax( optsWithOrigin( opts ) );
 		
 	};
-	document.body.appendChild( scrpt);
+	mw.loader.using( [
+		'jquery.ui',
+		'mediawiki.api',
+		'mediawiki.util',
+		'mediawiki.user'
+	] ).then( () => {
+		document.body.appendChild( scrpt);
+	} );
 }, 1000 );
 </script>
 </body>

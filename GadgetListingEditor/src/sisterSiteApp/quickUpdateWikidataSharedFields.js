@@ -72,5 +72,5 @@ module.exports = function(wikidataRecord, SisterSite) {
         }
         return false;
     };
-    return ajaxSisterSiteSearch(API_WIKIDATA, ajaxData, ajaxSuccess);
+    return ajaxSisterSiteSearch(API_WIKIDATA, ajaxData ).then(  ajaxSuccess );
 };

@@ -1,0 +1,28 @@
+{
+    "entities": {
+        "entity": {
+            "labels": {
+                "en": {
+                    "value": "entityLabel"
+                }
+            },
+            "sitelinks": {
+                "enwiki": {
+                    "title": "Test wikipedia"
+                }
+            },
+            "claims": {
+                "P1": [
+                    {
+                        "mainsnak": {
+                            "datavalue": {
+                                "type": "string",
+                                "value": "P1-datavalue-mainsnak"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

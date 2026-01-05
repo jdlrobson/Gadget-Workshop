@@ -13,14 +13,14 @@ module.exports = function() {
     var WIKIDATA_PROP_WMPRJ = 'P4656'; // Wikimedia project source of import
 
     // perform an ajax query of a sister site
-    const ajaxSisterSiteSearch = function(ajaxUrl, ajaxData, ajaxSuccess = ( json ) => json ) {
+    const ajaxSisterSiteSearch = function(url, ajaxData ) {
         return $.ajax({
-            url: ajaxUrl,
+            url,
             data: Object.assign( ajaxData, {
                 format: 'json',
                 origin: '*'
             } )
-        }).then( ajaxSuccess );
+        });
     };
     // parse the wikidata "claim" object from the wikidata response
     var wikidataClaim = function(jsonObj, value, property, guidBool) {
@@ -84,11 +84,8 @@ module.exports = function() {
             value,
             format: 'json',
         };
-        var ajaxSuccess = function(jsonObj) {
-            referenceWikidata(jsonObj);
-        };
         var api = new mw.ForeignApi( API_WIKIDATA );
-        api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} ); // async disabled because otherwise get edit conflicts with multiple changes submitted at once
+        return api.postWithToken( 'csrf', ajaxData, { async: false } ).then( referenceWikidata ); // async disabled because otherwise get edit conflicts with multiple changes submitted at once
     };
     var removeFromWikidata = function(guidObj) {
         var ajaxData = {
@@ -96,7 +93,7 @@ module.exports = function() {
             claim: guidObj,
         };
         var api = new mw.ForeignApi( API_WIKIDATA );
-        api.postWithToken( 'csrf', ajaxData, { async: false } );
+        return api.postWithToken( 'csrf', ajaxData, { async: false } );
     };
     var changeOnWikidata = function(guidObj, prop, value, snaktype) {
         var ajaxData = {
@@ -106,22 +103,32 @@ module.exports = function() {
             value
         };
         var ajaxSuccess = function(jsonObj) {
+            const promises = [];
             if( jsonObj.claim ) {
                 if( !(jsonObj.claim.references) ) { // if no references, add imported from
-                    referenceWikidata(jsonObj);
+                    promises.push(
+                        referenceWikidata(jsonObj)
+                    );
                 }
                 else if ( jsonObj.claim.references.length === 1 ) { // skip if >1 reference; too complex to automatically set
                     var acceptedProps = [WIKIDATA_PROP_WMURL, WIKIDATA_PROP_WMPRJ]; // properties relating to Wikimedia import only
                     var diff = $(jsonObj.claim.references[0]['snaks-order']).not(acceptedProps).get(); // x-compatible method for diff on arrays, from https://stackoverflow.com/q/1187518
                     if( diff.length === 0 ) { // if the set of present properties is a subset of the set of acceptable properties
-                        unreferenceWikidata(jsonObj.claim.id, jsonObj.claim.references[0].hash); // then remove the current reference
-                        referenceWikidata(jsonObj); // and add imported from
+                        promises.push(
+                            // then remove the current reference
+                            unreferenceWikidata(jsonObj.claim.id, jsonObj.claim.references[0].hash)
+                        );
+                        promises.push(
+                            // and add imported from
+                            referenceWikidata(jsonObj)
+                        );
                     }
                 }
             }
+            return Promise.resolve( promises )
         };
         var api = new mw.ForeignApi( API_WIKIDATA );
-        api.postWithToken( 'csrf', ajaxData, {success: ajaxSuccess, async: false} );
+        return api.postWithToken( 'csrf', ajaxData, {async: false} ).then( ajaxSuccess );
     };
     var referenceWikidata = function(jsonObj) {
         var revUrl = `https:${mw.config.get('wgServer')}${mw.config.get('wgArticlePath').replace('$1', '')}${mw.config.get('wgPageName')}?oldid=${mw.config.get('wgCurRevisionId')}`; // surprising that there is no API call for this
@@ -132,7 +139,7 @@ module.exports = function() {
                 `"${WIKIDATA_PROP_WMPRJ}": [{"snaktype":"value","property":"${WIKIDATA_PROP_WMPRJ}","datavalue":{"type":"string","value":"${revUrl}"}}]}`,
         };
         var api = new mw.ForeignApi( API_WIKIDATA );
-        api.postWithToken( 'csrf', ajaxData, { async: false } );
+        return api.postWithToken( 'csrf', ajaxData, { async: false } );
     };
     var unreferenceWikidata = function(statement, references) {
         var ajaxData = {
@@ -141,7 +148,7 @@ module.exports = function() {
             references
         };
         var api = new mw.ForeignApi( API_WIKIDATA );
-        api.postWithToken( 'csrf', ajaxData, { async: false } );
+        return api.postWithToken( 'csrf', ajaxData, { async: false } );
     };
 
     const SEARCH_PARAMS = {

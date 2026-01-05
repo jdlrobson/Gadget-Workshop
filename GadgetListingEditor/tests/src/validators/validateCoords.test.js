@@ -2,8 +2,11 @@ const validateCoords = require( '../../../src/validators/coords' );
 
 describe( 'validateCoords', () => {
 	it( 'validate (fails when latitude and longitude do not resolve to numbers)', () => {
-		const validated = validateCoords( 'foo', 'bar' );
-		expect( validated ).toBe( false );
+		expect( validateCoords( 'foo', 'bar' ) ).toBe( false );
+	} );
+	it( 'validate passes with empty strings and valid values', () => {
+		expect( validateCoords( '', '' ) ).toBe( true );
+		expect( validateCoords( '3.1', '2.2' ) ).toBe( true );
 	} );
 
 	it( 'validate (only accepts decimals)', () => {

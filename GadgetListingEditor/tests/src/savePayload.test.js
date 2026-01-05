@@ -41,7 +41,7 @@ describe( 'savePayload', () => {
 	it( 'for debugging we can force it to return errors', () => {
         window.__save_debug = -1;
         return savePayload( NOTTINGHAM ).then( (r) => {
-            expect( r.error ).toBe( 'error' );
+            expect( r.error.info ).toBe( 'Debug error' );
         } );
 	} );
 

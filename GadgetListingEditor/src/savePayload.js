@@ -8,7 +8,12 @@ const savePayload = ( editPayload ) => {
         } );
     switch ( window.__save_debug ) {
         case -1:
-            return delayedPromise( { error: 'error' } );
+            return delayedPromise( {
+                error: {
+                    code: 3,
+                    info: 'Debug error'
+                }
+            } );
         case -2:
             return delayedPromise( {
                 edit: {
@@ -17,6 +22,29 @@ const savePayload = ( editPayload ) => {
                         url: 'foo.gif'
                     }
                 }
+            } );
+        case -3:
+            return delayedPromise( {
+                edit: {
+                    spamblacklist: true
+                }
+            } );
+        case -4:
+            return $.Deferred().reject(
+                'http',
+                { textStatus: 'http error ' }
+            );
+        case -5:
+            return Promise.reject(
+                'ok-but-empty'
+            );
+        case -6:
+            return Promise.reject(
+                'unknown'
+            );
+        case -7:
+            return Promise.resolve( {
+                edit: {}
             } );
         case 0:
             return delayedPromise( {

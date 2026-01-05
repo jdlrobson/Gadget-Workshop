@@ -1,11 +1,10 @@
-const api = new mw.Api();
-
 const savePayload = ( editPayload ) => {
+    const api = new mw.Api();
     const delayedPromise = ( res ) =>
         new Promise( ( resolve ) => {
             setTimeout(() => {
                 resolve( res )
-            }, 5000 );
+            }, window.__save_debug_timeout || 5000 );
         } );
     switch ( window.__save_debug ) {
         case -1:

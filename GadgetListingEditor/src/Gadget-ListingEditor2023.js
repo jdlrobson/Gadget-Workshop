@@ -7,6 +7,8 @@ const fn = function() {
 		mw.config.get( 'wgGlobalGroups', [] )
 	);
 	const forceBeta = mw.user.isNamed() && wgUserGroups.includes('interface-admin') ||
+		wgUserGroups.includes('autopatrolled') ||
+		wgUserGroups.includes('patroller') ||
 		wgUserGroups.includes('checkuser') || wgUserGroups.includes( 'global-interface-editor' ) ||
 		wgUserGroups.includes( 'sysadmin' );
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' ) || forceBeta;

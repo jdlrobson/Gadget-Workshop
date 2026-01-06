@@ -76,7 +76,9 @@ const setupCommonsAutocomplete = ( SisterSite, form, updateLinkFunction ) => {
 };
 
 module.exports = ( SisterSite, form, wikidataLink, wikipediaLink, commonsLink ) => {
-    setupWikidataAutocomplete( SisterSite, form, wikidataLink );
-    setupWikipediaAutocomplete( SisterSite, form, wikipediaLink );
-    setupCommonsAutocomplete( SisterSite, form, commonsLink );
+    mw.loader.using( 'jquery.ui' ).then( () => {
+        setupWikidataAutocomplete( SisterSite, form, wikidataLink );
+        setupWikipediaAutocomplete( SisterSite, form, wikipediaLink );
+        setupCommonsAutocomplete( SisterSite, form, commonsLink );
+    } );
 };

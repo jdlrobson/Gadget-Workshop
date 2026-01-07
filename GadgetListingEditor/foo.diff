@@ -1,0 +1,84 @@
+diff --git a/GadgetListingEditor/tests/src/fixupFormValues.test.js b/GadgetListingEditor/tests/src/fixupFormValues.test.js
+index 01f3afc..6caf0c3 100644
+--- a/GadgetListingEditor/tests/src/fixupFormValues.test.js
++++ b/GadgetListingEditor/tests/src/fixupFormValues.test.js
+@@ -11,12 +11,14 @@ describe( 'Core', () => {
+ 
+ 	beforeEach(() => {
+ 		$('#input-lat,#input-long,#input-content,#input-url').remove();
+-		window.alert = jest.fn();
+ 	});
++<<<<<<<< HEAD:GadgetListingEditor/tests/src/fixupFormValues.js
+ 	it( 'validate (pass)', () => {
+ 		const validated = fixupFormValues();
+ 		expect( validated ).toBe( true );
+ 	} );
++========
++>>>>>>>> 697ef1f (Validate coords in ListingEditorFormDialog):GadgetListingEditor/tests/src/fixupFormValues.test.js
+ 
+ 	it( 'validate (REPLACE_NEW_LINE_CHARS)', () => {
+ 		loadConfig( {
+@@ -29,8 +31,12 @@ describe( 'Core', () => {
+ 		$('#input-long').val( '0.2' );
+ 		$('#input-url').val( 'https://wikivoyage.org' );
+ 		$('#input-content').val( 'Foo\nReplace' );
++<<<<<<<< HEAD:GadgetListingEditor/tests/src/fixupFormValues.js
+ 		const validated = fixupFormValues();
+ 		expect( validated ).toBe( true );
++========
++		fixupFormValues();
++>>>>>>>> 697ef1f (Validate coords in ListingEditorFormDialog):GadgetListingEditor/tests/src/fixupFormValues.test.js
+ 		expect( $('#input-content').val() ).toBe( 'Foo<br />Replace.' );
+ 	} );
+ 
+@@ -45,8 +51,12 @@ describe( 'Core', () => {
+ 		$('#input-long').val( '0.2' );
+ 		$('#input-url').val( 'https://wikivoyage.org' );
+ 		$('#input-content').val( 'Text without full stop' );
++<<<<<<<< HEAD:GadgetListingEditor/tests/src/fixupFormValues.js
+ 		const validated = fixupFormValues();
+ 		expect( validated ).toBe( true );
++========
++		fixupFormValues();
++>>>>>>>> 697ef1f (Validate coords in ListingEditorFormDialog):GadgetListingEditor/tests/src/fixupFormValues.test.js
+ 		expect( $('#input-content').val() ).toBe( 'Text without full stop' );
+ 
+ 	} );
+@@ -55,6 +65,7 @@ describe( 'Core', () => {
+ 		makeForm();
+ 
+ 		$('#input-lat').val( '   ' );
++<<<<<<<< HEAD:GadgetListingEditor/tests/src/fixupFormValues.js
+ 		const validated = fixupFormValues();
+ 		expect( validated ).toBe( true );
+ 		expect( $('#input-lat').val() ).toBe( '   ' );
+@@ -78,11 +89,18 @@ describe( 'Core', () => {
+ 		expect( validated ).toBe( false );
+ 	} );
+ 
++========
++		fixupFormValues();
++		expect( $('#input-lat').val() ).toBe( '   ' );
++	} );
++
++>>>>>>>> 697ef1f (Validate coords in ListingEditorFormDialog):GadgetListingEditor/tests/src/fixupFormValues.test.js
+ 	it( 'validate (accepts decimals)', () => {
+ 		makeForm();
+ 
+ 		$('#input-lat').val( '+32.30642' );
+ 		$('#input-long').val( '-122.61458' );
++<<<<<<<< HEAD:GadgetListingEditor/tests/src/fixupFormValues.js
+ 		const validated = fixupFormValues();
+ 		expect( validated ).toBe( true );
+ 	} );
+@@ -101,5 +119,10 @@ describe( 'Core', () => {
+ 		$('#input-long').val( '-122.61458' );
+ 		const validated = fixupFormValues();
+ 		expect( validated ).toBe( false );
++========
++		fixupFormValues();
++		expect( $('#input-lat').val() ).toBe( '32.30642' );
++		expect( $('#input-long').val() ).toBe( '-122.61458' );
++>>>>>>>> 697ef1f (Validate coords in ListingEditorFormDialog):GadgetListingEditor/tests/src/fixupFormValues.test.js
+ 	} );
+ } );

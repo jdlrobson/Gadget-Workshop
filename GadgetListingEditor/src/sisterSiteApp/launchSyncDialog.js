@@ -18,7 +18,9 @@ const makeSubmitFunction = function(updateModel ) {
 
         $('#listing-editor-sync input[id]:radio:checked').each(function () {
             var label = $(`label[for="${$(this).attr('id')}"]`);
-            var syncedValue = label.text().split(' ');
+            // @todo: Do not rely on label.text for something so important
+            // Switch this to data attribute.
+            var syncedValue = label.text().split('\n');
             var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
             var editorField = [];
             for( var i = 0; i < field.fields.length; i++ ) {

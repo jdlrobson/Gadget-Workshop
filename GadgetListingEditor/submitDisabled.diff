@@ -1,0 +1,268 @@
+diff --git a/GadgetListingEditor/src/components/ListingEditorDialog.js b/GadgetListingEditor/src/components/ListingEditorDialog.js
+index b0a3118..e8798de 100644
+--- a/GadgetListingEditor/src/components/ListingEditorDialog.js
++++ b/GadgetListingEditor/src/components/ListingEditorDialog.js
+@@ -40,7 +40,7 @@ v-model:open="isOpen"
+     <div class="ui-dialog-buttonpane" v-if="submitAction">
+         <div class="ui-dialog-buttonset">
+             <cdx-button v-if="helpClickAction" id="listing-help" @click="helpClickAction">?</cdx-button>
+-            <cdx-button @click="submitAction" :disabled="saveInProgress"> {{ $translate( 'submit' ) }}</cdx-button>
++            <cdx-button @click="submitAction" :disabled="saveInProgress || isDisabled"> {{ $translate( 'submit' ) }}</cdx-button>
+             <cdx-button @click="closeAction" :disabled="saveInProgress">{{ $translate( 'cancel' ) }}</cdx-button>
+         </div>
+         <div v-if="!saveInProgress">
+@@ -54,6 +54,10 @@ v-model:open="isOpen"
+ </template>
+ </cdx-dialog>`,
+     props: {
++        isDisabled: {
++            type: Boolean,
++            default: false
++        },
+         version: {
+             type: String,
+             default: window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__
+diff --git a/GadgetListingEditor/src/components/ListingEditorForm.js b/GadgetListingEditor/src/components/ListingEditorForm.js
+index 8c2e014..aa83e14 100644
+--- a/GadgetListingEditor/src/components/ListingEditorForm.js
++++ b/GadgetListingEditor/src/components/ListingEditorForm.js
+@@ -7,7 +7,7 @@ const TelephoneCharInsert = require( './TelephoneCharInsert.js' );
+ const SpecialCharactersString = require( './specialCharactersString.js' );
+ const parseDMS = require( '../parseDMS.js' );
+ const showPreview = require( '../showPreview.js' );
+-
++const createListingFromForm = require( '../createListingFromForm' );
+ /**
+  * Generate the form UI for the listing editor. If editing an existing
+  * listing, pre-populate the form input fields with the existing values.
+@@ -127,27 +127,32 @@ module.exports = {
+             <div id="div_name" class="editor-row">
+                 <div class="editor-label-col"><label for="input-name">{{ $translate( 'name' ) }}</label></div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-name"
++                    @input="onInputChange"
+                     :modelValue="listingName"></cdx-text-input></div>
+             </div>
+             <div id="div_alt" class="editor-row">
+                 <div class="editor-label-col"><label for="input-alt">{{ $translate( 'alt' ) }}</label></div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-alt"
++                    @input="onInputChange"
+                     :modelValue="aka"></cdx-text-input></div>
+             </div>
+             <div id="div_address" class="editor-row">
+                 <div class="editor-label-col"><label for="input-address">{{ $translate( 'address' ) }}</label></div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-address"
++                    @input="onInputChange"
+                     :modelValue="address"></cdx-text-input></div>
+             </div>
+             <div id="div_directions" class="editor-row">
+                 <div class="editor-label-col"><label for="input-directions">{{ $translate( 'directions' ) }}</label></div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-directions"
++                    @input="onInputChange"
+                     :modelValue="directions"></cdx-text-input></div>
+             </div>
+             <div id="div_phone" class="editor-row">
+                 <div class="editor-label-col"><label for="input-phone">{{ $translate( 'phone' ) }}</label></div>
+                 <div class="editor-fullwidth">
+                     <cdx-text-input class="editor-fullwidth" id="input-phone"
++                        @input="onInputChange"
+                         :modelValue="phone"></cdx-text-input>
+                     <telephone-char-insert updates="input-phone"
+                         :codes="telephoneCodes"></telephone-char-insert>
+@@ -159,6 +164,7 @@ module.exports = {
+                 </div>
+                 <div class="editor-fullwidth">
+                     <cdx-text-input class="editor-fullwidth" id="input-tollfree"
++                        @input="onInputChange"
+                         :modelValue="tollfree"></cdx-text-input>
+                     <telephone-char-insert updates="input-tollfree"
+                     
+@@ -169,6 +175,7 @@ module.exports = {
+                 <div class="editor-label-col"><label for="input-fax">{{ $translate( 'fax' ) }}</label></div>
+                 <div class="editor-fullwidth">
+                     <cdx-text-input class="editor-fullwidth" id="input-fax"
++                        @input="onInputChange"
+                         :modelValue="fax"></cdx-text-input>
+                     <telephone-char-insert updates="input-fax"
+                         :codes="telephoneCodes"></telephone-char-insert>
+@@ -177,11 +184,13 @@ module.exports = {
+             <div id="div_hours" class="editor-row">
+                 <div class="editor-label-col"><label for="input-hours">{{ $translate( 'hours' ) }}</label></div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-hours"
++                    @input="onInputChange"
+                     :modelValue="hours"></cdx-text-input></div>
+             </div>
+             <div id="div_checkin" class="editor-row">
+                 <div class="editor-label-col"><label for="input-checkin">{{ $translate( 'checkin' ) }}</label></div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-checkin"
++                    @input="onInputChange"
+                     :modelValue="checkin"></cdx-text-input></div>
+             </div>
+             <div id="div_checkout" class="editor-row">
+@@ -189,6 +198,7 @@ module.exports = {
+                     <label for="input-checkout">{{ $translate( 'checkout' ) }}</label>
+                 </div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-checkout"
++                    @input="onInputChange"
+                     :modelValue="checkout"></cdx-text-input></div>
+             </div>
+             <div id="div_price" class="editor-row">
+@@ -197,6 +207,7 @@ module.exports = {
+                     method if the currency symbols are removed or modified -->
+                 <div class="editor-fullwidth">
+                     <cdx-text-input class="editor-fullwidth" id="input-price"
++                        @input="onInputChange"
+                          :modelValue="price"></cdx-text-input>
+                     <div class="input-price">
+                         <span id="span_natl_currency"
+@@ -221,6 +232,7 @@ module.exports = {
+                     <label for="input-lastedit">{{ $translate( 'lastUpdated' ) }}</label>
+                 </div>
+                 <div><cdx-text-input size="10" id="input-lastedit"
++                    @input="onInputChange"
+                     :modelValue="lastedit"></cdx-text-input></div>
+             </div>
+             </div>
+@@ -251,11 +263,13 @@ module.exports = {
+                     <label for="input-url">{{ $translate( 'website' ) }}<span class="wikidata-update"></span></label>
+                 </div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-url"
++                    @input="onInputChange"
+                     :modelValue="url"></cdx-text-input></div>
+             </div>
+             <div id="div_email" class="editor-row">
+                 <div class="editor-label-col"><label for="input-email">{{ $translate( 'email' ) }}<span class="wikidata-update"></span></label></div>
+                 <div><cdx-text-input class="editor-fullwidth" id="input-email"
++                    @input="onInputChange"
+                     :modelValue="email"></cdx-text-input></div>
+             </div>
+             <div id="div_lat" class="editor-row">
+@@ -265,6 +279,7 @@ module.exports = {
+                 <div>
+                     <cdx-text-input class="editor-partialwidth" id="input-lat"
+                         v-model="currentLat"
++                        @input="onInputChange"
+                         :modelValue="lat"
+                     ></cdx-text-input>
+                     <!-- update the Callbacks.initFindOnMapLink
+@@ -284,6 +299,7 @@ module.exports = {
+                 <div>
+                     <cdx-text-input class="editor-partialwidth" id="input-long"
+                         v-model="currentLong"
++                        @input="onInputChange"
+                         :modelValue="long"
+                     ></cdx-text-input>
+                 </div>
+@@ -296,6 +312,7 @@ module.exports = {
+             <special-characters-string :characters="characters">
+     </special-characters-string></label></div>
+             <div><cdx-text-area rows="8" class="editor-fullwidth"
++                @input="onInputChange"
+                 id="input-content" :modelValue="content"></cdx-text-area></div>
+         </div>
+         <!-- update the Callbacks.hideEditOnlyFields method if
+@@ -350,7 +367,8 @@ module.exports = {
+         SpecialCharactersString,
+         sistersites
+     },
+-    setup( props ) {
++    emits: [ 'update:listing' ],
++    setup( props, { emit } ) {
+         const { showLastEditedField, mode, listingType, lat, long } = props;
+         const currentLong = ref( long );
+         const currentLat = ref( lat );
+@@ -393,7 +411,32 @@ module.exports = {
+             }
+         };
+ 
++        const { wikipedia, wikidata, image,
++            alt, address, email, directions, phone, tollfree, fax,
++            hours, checkin, checkout, price,
++            name, content, lastedit, url } = props;
++        const original = { wikipedia, wikidata, image, lat, long,
++            alt, address, email, directions, phone, tollfree, fax,
++            hours, checkin, checkout, price,
++            name, content, lastedit, url };
++        const hasChanges = () => {
++            console.log('has changes?');
++            const current = createListingFromForm( {} );
++            let changed = false;
++            Object.keys( current ).forEach( ( key ) => {
++                if ( current[ key ] !== original[ key ] ) {
++                    changed = true;
++                }
++            } );
++            return changed;
++        };
++        const onInputChange = () => {
++            console.log('do update', hasChanges() );
++            emit( 'update:listing',  hasChanges() );
++        };
++
+         return {
++            onInputChange,
+             currentTab,
+             currentLat,
+             currentLong,
+diff --git a/GadgetListingEditor/src/components/ListingEditorFormDialog.js b/GadgetListingEditor/src/components/ListingEditorFormDialog.js
+index 13f85b5..726c62e 100644
+--- a/GadgetListingEditor/src/components/ListingEditorFormDialog.js
++++ b/GadgetListingEditor/src/components/ListingEditorFormDialog.js
+@@ -1,10 +1,12 @@
+ const ListingEditorDialog = require( './ListingEditorDialog' );
+ const ListingEditorForm = require( './ListingEditorForm' );
++const { ref } = require( 'vue' );
+ 
+ module.exports = {
+     name: 'ListingEditorFormDialog',
+-    template: `<ListingEditorDialog>
++    template: `<ListingEditorDialog :is-disabled="isDisabled">
+     <ListingEditorForm
++        @update:listing="updateDisabledState"
+         :lat="lat"
+         :long="long"
+         :url="url"
+@@ -119,5 +121,16 @@ module.exports = {
+     components: {
+         ListingEditorDialog,
+         ListingEditorForm
++    },
++    setup() {
++        const isDisabled = ref( true );
++        const updateDisabledState = ( changed ) => {
++            console.log('update detected', changed);
++            isDisabled.value = !changed;
++        };
++        return {
++            updateDisabledState,
++            isDisabled
++        };
+     }
+ };
+diff --git a/GadgetListingEditor/src/showPreview.js b/GadgetListingEditor/src/showPreview.js
+index 3fca9ab..ec3c604 100644
+--- a/GadgetListingEditor/src/showPreview.js
++++ b/GadgetListingEditor/src/showPreview.js
+@@ -1,21 +1,8 @@
+-
+-const getListingInfo = require( './getListingInfo.js' );
+ const listingToStr = require( './listingToStr.js' );
+-const { getConfig } = require( './Config' );
++const createListingFromForm = require( './createListingFromForm.js' );
+ 
+ const showPreview = function(listingTemplateAsMap) {
+-    const {
+-        LISTING_TYPE_PARAMETER,
+-        DEFAULT_LISTING_TEMPLATE
+-    } = getConfig();
+-    var listing = listingTemplateAsMap;
+-    var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
+-    var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
+-    var listingType = $(`#${listingTypeInput}`).val();
+-    var listingParameters = getListingInfo(listingType);
+-    for (var parameter in listingParameters) {
+-        listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
+-    }
++    var listing = createListingFromForm( listingTemplateAsMap );
+     var text = listingToStr(listing);
+     $.ajax ({
+         url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({

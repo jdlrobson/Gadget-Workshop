@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.23.1
+ * Listing Editor v3.24.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.23.1'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.24.0'
 
 'use strict';
 
@@ -166,14 +166,7 @@ const sectionToTemplateType = sectionToTemplateType$1;
 const { MODE_ADD, MODE_EDIT } = mode;
 
 const fn = function() {
-	const wgUserGroups = mw.config.get('wgUserGroups', [] ).concat(
-		mw.config.get( 'wgGlobalGroups', [] )
-	);
-	const forceBeta = mw.user.isNamed() && wgUserGroups.includes('interface-admin') ||
-		wgUserGroups.includes('autopatrolled') ||
-		wgUserGroups.includes('patroller') ||
-		wgUserGroups.includes('checkuser') || wgUserGroups.includes( 'global-interface-editor' ) ||
-		wgUserGroups.includes( 'sysadmin' );
+	const forceBeta = mw.user.isNamed();
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' ) || forceBeta;
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';

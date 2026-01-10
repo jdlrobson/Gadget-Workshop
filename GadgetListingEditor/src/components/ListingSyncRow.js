@@ -6,6 +6,10 @@ module.exports = {
         ListingSyncRowLink
     },
     props: {
+        selected: {
+            type: String,
+            default: ''
+        },
         field: {
             type: Object,
             required: true
@@ -45,14 +49,15 @@ module.exports = {
     </div>
     <div id="has-guid">
         <input type="radio" :id="field.label+'-wd'" :name="field.label"
-            :checked="remoteFlag">
+            :checked="remoteFlag || selected === 'wd'">
         <input type="hidden" :value="guid">
     </div>
     <div v-if="!remoteFlag">
-        <input type="radio" :name="field.label" checked>
+        <input type="radio" :name="field.label" :checked="selected === ''">
     </div>
     <div id="has-json">
         <input v-if="remoteFlag !== true && field.doNotUpload !== true"
+            :checked="selected === 'wv'"
             type="radio" :id="field.label+'-wv'" :name="field.label">
         <input v-else type="radio" disabled>
         <input type="hidden" :value='JSON.stringify(field)'>

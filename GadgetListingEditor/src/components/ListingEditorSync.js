@@ -10,6 +10,19 @@ module.exports = {
             type: Array
         }
     },
+    data() {
+        return {
+            selected: ''
+        };
+    },
+    methods: {
+        clearAll() {
+            this.selected = '';
+        },
+        syncSelect( selected ) {
+            this.selected = selected;
+        }
+    },
     template: `<form id="listing-editor-sync">
 <p>{{
     $translate( 'wikidataSyncBlurb' )
@@ -18,6 +31,7 @@ module.exports = {
     <span>
         <span class="wikidata-update"></span>
         <a href="javascript:" class="syncSelect" name="wd"
+            @click="syncSelect( 'wd' )"
             :title="$translate( 'selectAll' )">Wikidata</a>
     </span>
     <a href="javascript:" id="autoSelect" class="listing-tooltip"
@@ -25,6 +39,7 @@ module.exports = {
     <span>
         <a href="javascript:" class="syncSelect"
             name="wv"
+            @click="syncSelect( 'wv' )"
             :title="$translate( 'selectAll' )">Wikivoyage</a>
         <span class="wikivoyage-update"></span>
     </span>
@@ -38,11 +53,13 @@ module.exports = {
         :localText="row.localText"
         :wikidataText="row.wikidataText"
         :skip="row.skip"
+        :selected="selected"
         :remoteFlag="row.remoteFlag"
     ></listing-sync-row>
 </div>
 <small>
-    <a href="javascript:" class="clear">{{ $translate( 'cancelAll' ) }}</a>
+    <a href="javascript:" class="clear"
+        @click="clearAll">{{ $translate( 'cancelAll' ) }}</a>
 </small>
 </form>
 `

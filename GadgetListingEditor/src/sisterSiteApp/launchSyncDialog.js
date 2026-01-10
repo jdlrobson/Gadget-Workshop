@@ -8,13 +8,16 @@ const ListingEditorSyncDialog = require( '../components/ListingEditorSyncDialog.
 const getSyncValues = require( '../../src/getSyncValues.js' );
 const { translate } = require( '../translate.js' );
 const { getConfig } = require( '../Config.js' );
-    const SisterSite = require( '../SisterSite.js' );
+const SisterSite = require( '../SisterSite.js' );
 
-const makeSubmitFunction = function(updateModel ) {
+const makeSubmitFunction = function( updateModel, ss, closeFn ) {
     return ( close ) => {
+        if ( !closeFn ) {
+            closeFn = () => close();
+        }
         const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
         const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
-            removeFromWikidata, ajaxSisterSiteSearch } = SisterSite();
+            removeFromWikidata, ajaxSisterSiteSearch } = ss;
 
         $('#listing-editor-sync input[id]:radio:checked').each(function () {
             var label = $(`label[for="${$(this).attr('id')}"]`);
@@ -87,19 +90,19 @@ const makeSubmitFunction = function(updateModel ) {
                             removeFromWikidata(guidObj);
                         }
                     }
-                } ).then( () => close() );
+                } ).then( closeFn );
             } else {
-                close();
+                closeFn();
             }
         });
     }
 };
 
-module.exports = function (jsonObj, wikidataRecord, updateModel) {
+module.exports = function (jsonObj, wikidataRecord, updateModel, ss, close ) {
     const syncValues = getSyncValues(
         jsonObj, wikidataRecord
     );
-    const submitFunction = makeSubmitFunction( updateModel );
+    const submitFunction = makeSubmitFunction( updateModel, ss || SisterSite(), close );
     dialog.render( ListingEditorSyncDialog, {
         title: translate( 'syncTitle' ),
         syncValues,
@@ -113,14 +116,6 @@ module.exports = function (jsonObj, wikidataRecord, updateModel) {
         alert( translate( 'wikidataSharedMatch' ) );
     }
 
-    $syncDialogElement.find('.clear').on( 'click',  function() {
-        $syncDialogElement.find('input:radio:not([id]):enabled').prop('checked', true);
-    });
-    $syncDialogElement.find('.syncSelect').on( 'click',  function() {
-        const field = $(this).attr('name'); // wv or wd
-        $syncDialogElement.find('input[type=radio]').prop('checked', false);
-        $syncDialogElement.find(`input[id$=${field}]`).prop('checked', true);
-    });
     $syncDialogElement.find('#autoSelect').on( 'click',  function() { // auto select non-empty values
         $syncDialogElement.find('.choose-row').each(function () {
             var WD_value = $(this).find('label:first').text().trim().length;

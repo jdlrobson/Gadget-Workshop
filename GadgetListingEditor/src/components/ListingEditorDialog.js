@@ -41,7 +41,8 @@ v-model:open="isOpen"
     <div class="ui-dialog-buttonpane" v-if="submitAction">
         <div class="ui-dialog-buttonset">
             <cdx-button v-if="helpClickAction" id="listing-help" @click="helpClickAction">?</cdx-button>
-            <cdx-button @click="submitAction" :disabled="saveInProgress || disabledMessage"> {{ $translate( 'submit' ) }}</cdx-button>
+            <cdx-button class="submitButton"
+                @click="submitAction" :disabled="saveInProgress || disabledMessage"> {{ $translate( 'submit' ) }}</cdx-button>
             <cdx-button @click="closeAction" :disabled="saveInProgress">{{ $translate( 'cancel' ) }}</cdx-button>
         </div>
         <div if="!saveInProgress">

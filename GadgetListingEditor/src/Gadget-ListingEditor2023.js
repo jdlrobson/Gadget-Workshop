@@ -74,6 +74,12 @@ const fn = function() {
 			add: 'aggiungi elemento',
 			edit: 'modifica'
 		},
+		he: {
+			edit: ' עריכה '
+		},
+		fr: {
+			edit: 'éditer'
+		},
 		vi: {
 			add: 'thêm địa điểm',
 			edit: 'sửa',

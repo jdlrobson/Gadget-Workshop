@@ -5,6 +5,7 @@ const { MODE_ADD, MODE_EDIT } = require( './mode.js' );
 const fn = function() {
 	const forceBeta = mw.user.isNamed();
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' ) || forceBeta;
+	const GADGET_DEPENDENCIES = USE_LISTING_BETA ? [ 'vue', '@wikimedia/codex' ] : [ 'jquery.ui' ];
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';
 	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';
@@ -118,13 +119,15 @@ const fn = function() {
 		} else if (  mw.loader.getState( GADGET_NAME ) !== 'ready' ) {
 			isLoaded = true;
 			if ( mw.loader.getState( GADGET_NAME ) === null ) {
-				return new Promise( function ( resolve ) {
-					mw.loader.addScriptTag( `https://en.wikivoyage.org/w/load.php?modules=${GADGET_NAME}`, function () {
-						setTimeout( function () {
-							resolve( mw.loader.require );
-						}, 300 );
-					} );
-				} );
+				return mw.loader.using( GADGET_DEPENDENCIES ).then( () => new Promise(
+					( resolve ) => {
+						mw.loader.addScriptTag( `https://en.wikivoyage.org/w/load.php?modules=${GADGET_NAME}`, function () {
+							setTimeout( function () {
+								resolve( mw.loader.require );
+							}, 300 );
+						} );
+					}
+				) );
 			} else {
 				// use the local gadget
 				return mw.loader.using( `${GADGET_NAME}` ).then( () => mw.loader.require );

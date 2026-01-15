@@ -1,5 +1,5 @@
 /**
- * Listing Editor v3.24.0
+ * Listing Editor v4.0.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '3.24.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.0.0'
 
 'use strict';
 
@@ -166,8 +166,16 @@ const sectionToTemplateType = sectionToTemplateType$1;
 const { MODE_ADD, MODE_EDIT } = mode;
 
 const fn = function() {
-	const forceBeta = mw.user.isNamed();
+	const wgUserGroups = mw.config.get('wgUserGroups', [] ).concat(
+		mw.config.get( 'wgGlobalGroups', [] )
+	);
+	const forceBeta = mw.user.isNamed() && wgUserGroups.includes('interface-admin') ||
+		wgUserGroups.includes('autopatrolled') ||
+		wgUserGroups.includes('patroller') ||
+		wgUserGroups.includes('checkuser') || wgUserGroups.includes( 'global-interface-editor' ) ||
+		wgUserGroups.includes( 'sysadmin' );
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' ) || forceBeta;
+	const GADGET_DEPENDENCIES = [ 'vue', '@wikimedia/codex' ];
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';
 	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';
@@ -236,6 +244,12 @@ const fn = function() {
 			add: 'aggiungi elemento',
 			edit: 'modifica'
 		},
+		he: {
+			edit: ' עריכה '
+		},
+		fr: {
+			edit: 'éditer'
+		},
 		vi: {
 			add: 'thêm địa điểm',
 			edit: 'sửa',
@@ -281,13 +295,15 @@ const fn = function() {
 		} else if (  mw.loader.getState( GADGET_NAME ) !== 'ready' ) {
 			isLoaded = true;
 			if ( mw.loader.getState( GADGET_NAME ) === null ) {
-				return new Promise( function ( resolve ) {
-					mw.loader.addScriptTag( `https://en.wikivoyage.org/w/load.php?modules=${GADGET_NAME}`, function () {
-						setTimeout( function () {
-							resolve( mw.loader.require );
-						}, 300 );
-					} );
-				} );
+				return mw.loader.using( GADGET_DEPENDENCIES ).then( () => new Promise(
+					( resolve ) => {
+						mw.loader.addScriptTag( `https://en.wikivoyage.org/w/load.php?modules=${GADGET_NAME}`, function () {
+							setTimeout( function () {
+								resolve( mw.loader.require );
+							}, 300 );
+						} );
+					}
+				) );
 			} else {
 				// use the local gadget
 				return mw.loader.using( `${GADGET_NAME}` ).then( () => mw.loader.require );

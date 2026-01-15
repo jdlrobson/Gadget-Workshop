@@ -12,7 +12,7 @@ const fn = function() {
 		wgUserGroups.includes('checkuser') || wgUserGroups.includes( 'global-interface-editor' ) ||
 		wgUserGroups.includes( 'sysadmin' );
 	const USE_LISTING_BETA = mw.storage.get( 'gadget-listing-beta' ) || forceBeta;
-	const GADGET_DEPENDENCIES = USE_LISTING_BETA ? [ 'vue', '@wikimedia/codex' ] : [ 'jquery.ui' ];
+	const GADGET_DEPENDENCIES = [ 'vue', '@wikimedia/codex' ];
 	const GADGET_NAME = USE_LISTING_BETA ? 'ext.gadget.ListingEditorMainBeta' :
 		'ext.gadget.ListingEditorMain';
 	const GADGET_CONFIG_NAME = 'ext.gadget.ListingEditorConfig';

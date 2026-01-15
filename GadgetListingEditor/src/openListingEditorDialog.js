@@ -12,6 +12,7 @@ const wikiTextToListing = require( './wikiTextToListing.js' );
 const { translate } = require( './translate.js' );
 const { getSectionText, setSectionText } = require( './currentEdit' );
 const { getConfig } = require( './Config' );
+const listingTemplateAsMapToEnglish = require( './listingTemplateAsMapToEnglish' );
 
 /**
  * This method is called asynchronously after the initListingEditorDialog()
@@ -90,10 +91,11 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
     };
 
     const customListingType = isCustomListingType(listingType) ? listingType : undefined;
+    const listingTemplateAsMapEn = listingTemplateAsMapToEnglish( listingTemplateAsMap );
     const { wikipedia, wikidata, image, lat, long,
         alt, address, email, directions, phone, tollfree, fax,
         hours, checkin, checkout, price,
-        name, content, lastedit, url } = listingTemplateAsMap;
+        name, content, lastedit, url } = listingTemplateAsMapEn;
 
     dialog.render( ListingEditorFormDialog, {
         wikipedia, wikidata, image,

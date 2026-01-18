@@ -101,7 +101,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         hours, checkin, checkout, price,
         name, content, lastedit, url } = listingTemplateAsMapEn;
 
-    dialog.render( ListingEditorFormDialog, {
+    const app = dialog.render( ListingEditorFormDialog, {
         wikipedia, wikidata, image,
         lat, url, long, content,
         lastedit,
@@ -134,6 +134,12 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
         dialogClass: 'listing-editor-dialog'
     } );
+    app.test = {
+        handleCaptchaError,
+        onCaptchaSubmit,
+        onSubmit
+    };
+    return app;
 };
 
 module.exports = openListingEditorDialog;

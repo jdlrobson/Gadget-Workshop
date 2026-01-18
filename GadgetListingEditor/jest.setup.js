@@ -36,6 +36,91 @@ const { init } = require( './src/translate' );
 const { loadConfig } = require( './src/Config.js' );
 init( require( './src/i18n/en' ) );
 
+const LISTING_TEMPLATE_PARAMETERS = {
+    "type": {
+        "id": "input-type",
+        "hideDivIfEmpty": "div_type",
+        "newline": true
+    },
+    "name": {
+        "id": "input-name"
+    },
+    "alt": {
+        "id": "input-alt"
+    },
+    "url": {
+        "id": "input-url"
+    },
+    "email": {
+        "id": "input-email",
+        "newline": true
+    },
+    "address": {
+        "id": "input-address"
+    },
+    "lat": {
+        "id": "input-lat"
+    },
+    "long": {
+        "id": "input-long"
+    },
+    "directions": {
+        "id": "input-directions",
+        "newline": true
+    },
+    "phone": {
+        "id": "input-phone"
+    },
+    "tollfree": {
+        "id": "input-tollfree"
+    },
+    "fax": {
+        "id": "input-fax",
+        "hideDivIfEmpty": "div_fax",
+        "newline": true,
+        "skipIfEmpty": true
+    },
+    "hours": {
+        "id": "input-hours"
+    },
+    "checkin": {
+        "id": "input-checkin",
+        "hideDivIfEmpty": "div_checkin",
+        "skipIfEmpty": true
+    },
+    "checkout": {
+        "id": "input-checkout",
+        "hideDivIfEmpty": "div_checkout",
+        "skipIfEmpty": true
+    },
+    "price": {
+        "id": "input-price",
+        "newline": true
+    },
+    "wikipedia": {
+        "id": "input-wikipedia",
+        "skipIfEmpty": true
+    },
+    "image": {
+        "id": "input-image",
+        "skipIfEmpty": true
+    },
+    "wikidata": {
+        "id": "input-wikidata-value",
+        "newline": true,
+        "skipIfEmpty": true
+    },
+    "lastedit": {
+        "id": "input-lastedit",
+        "newline": true,
+        "skipIfEmpty": true
+    },
+    "content": {
+        "id": "input-content",
+        "newline": true
+    }
+};
+
 loadConfig( {
     sectionType: config.sectionType,
     listingTypeRegExp: "({{\\s*(%s)\\b)(\\s*[\\|}])",
@@ -84,91 +169,20 @@ loadConfig( {
     ALLOW_UNRECOGNIZED_PARAMETERS: true,
     LISTING_CONTENT_PARAMETER: 'content',
     LISTING_TYPE_PARAMETER: 'type',
+    LISTING_TEMPLATES_OMIT: [],
+    SUPPORTED_SECTIONS: [
+        "listing",
+        "see",
+        "do",
+        "buy",
+        "eat",
+        "drink",
+        "go",
+        "sleep"
+    ],
+    LISTING_TEMPLATE_PARAMETERS,
     LISTING_TEMPLATES: {
-        "listing": {
-            "type": {
-                "id": "input-type",
-                "hideDivIfEmpty": "div_type",
-                "newline": true
-            },
-            "name": {
-                "id": "input-name"
-            },
-            "alt": {
-                "id": "input-alt"
-            },
-            "url": {
-                "id": "input-url"
-            },
-            "email": {
-                "id": "input-email",
-                "newline": true
-            },
-            "address": {
-                "id": "input-address"
-            },
-            "lat": {
-                "id": "input-lat"
-            },
-            "long": {
-                "id": "input-long"
-            },
-            "directions": {
-                "id": "input-directions",
-                "newline": true
-            },
-            "phone": {
-                "id": "input-phone"
-            },
-            "tollfree": {
-                "id": "input-tollfree"
-            },
-            "fax": {
-                "id": "input-fax",
-                "hideDivIfEmpty": "div_fax",
-                "newline": true,
-                "skipIfEmpty": true
-            },
-            "hours": {
-                "id": "input-hours"
-            },
-            "checkin": {
-                "id": "input-checkin",
-                "hideDivIfEmpty": "div_checkin",
-                "skipIfEmpty": true
-            },
-            "checkout": {
-                "id": "input-checkout",
-                "hideDivIfEmpty": "div_checkout",
-                "skipIfEmpty": true
-            },
-            "price": {
-                "id": "input-price",
-                "newline": true
-            },
-            "wikipedia": {
-                "id": "input-wikipedia",
-                "skipIfEmpty": true
-            },
-            "image": {
-                "id": "input-image",
-                "skipIfEmpty": true
-            },
-            "wikidata": {
-                "id": "input-wikidata-value",
-                "newline": true,
-                "skipIfEmpty": true
-            },
-            "lastedit": {
-                "id": "input-lastedit",
-                "newline": true,
-                "skipIfEmpty": true
-            },
-            "content": {
-                "id": "input-content",
-                "newline": true
-            }
-        },
+        "listing": LISTING_TEMPLATE_PARAMETERS,
         "see": {
             "type": {
                 "id": "input-type",

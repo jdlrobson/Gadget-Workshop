@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListingEditorSync renders 1`] = `
+"<form id="listing-editor-sync">
+  <p>Selecting a value will change both websites to match (selecting an empty value will delete from both). Selecting neither will change nothing. Please err toward selecting one of the values rather than skipping - there are few cases when we should prefer to have a different value intentionally. You are encouraged to go to the Wikidata item and add references for any data you change.</p>
+  <fieldset><span><span class="wikidata-update"></span><a href="javascript:" class="syncSelect" name="wd" title="Select all">Wikidata</a></span><a href="javascript:" id="autoSelect" class="listing-tooltip" title="Select all values where the alternative is empty.">Auto</a><span><a href="javascript:" class="syncSelect" name="wv" title="Select all">Wikivoyage</a><span class="wikivoyage-update"></span></span></fieldset>
+  <div class="editor-fullwidth">
+    <div>
+      <div class="sync_label">a</div>
+      <div class="choose-row">
+        <div>&nbsp;<label for="a-wd"><a target="_blank" rel="noopener noreferrer" href="http://wikidata.org/wiki/A">wikidata A</a></label></div>
+        <div id="has-guid"><input type="radio" id="a-wd" name="a"><input type="hidden" value="a-guid"></div>
+        <div><input type="radio" name="a" checked=""></div>
+        <div id="has-json"><input type="radio" id="a-wv" name="a"><input type="hidden" value="{&quot;label&quot;:&quot;a&quot;}"></div>
+        <div>&nbsp;<label for="a-wv"><a target="_blank" rel="noopener noreferrer" href="http://localhost/wiki/A">local A</a></label></div>
+      </div>
+    </div>
+  </div><small><a href="javascript:" class="clear">Clear all</a></small>
+</form>"
+`;

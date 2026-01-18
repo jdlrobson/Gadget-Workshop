@@ -231,9 +231,6 @@ module.exports = {
                             <span v-for="(currency, i) in currencies"
                                 class="listing-charinsert"
                                 data-for="input-price"><a href="javascript:">{{ currency }}</a>&nbsp;</span>
-                            <special-characters-string
-                                :characters="characters">
-                            </special-characters-string>
                         </span>
                     </div>
                 </div>

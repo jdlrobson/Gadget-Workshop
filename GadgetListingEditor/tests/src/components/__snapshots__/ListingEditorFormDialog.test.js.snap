@@ -139,7 +139,7 @@ exports[`ListingEditorFormDialog renders 1`] = `
                             <!--v-if-->
                             <!--v-if-->
                           </div>
-                          <div class="input-price"><span id="span_natl_currency" title=""><span> |</span></span><span id="span_intl_currencies" title=""><span class="listing-charinsert" data-for="input-price"><a href="javascript:">€</a>&nbsp;</span><span class="listing-charinsert" data-for="input-price"><a href="javascript:">$</a>&nbsp;</span><span class="listing-charinsert" data-for="input-price"><a href="javascript:">£</a>&nbsp;</span><span class="listing-charinsert" data-for="input-price"><a href="javascript:">¥</a>&nbsp;</span><span class="listing-charinsert" data-for="input-price"><a href="javascript:">₩</a>&nbsp;</span><span></span></span></div>
+                          <div class="input-price"><span id="span_natl_currency" title=""><span> |</span></span><span id="span_intl_currencies" title=""><span class="listing-charinsert" data-for="input-price"><a href="javascript:">€</a>&nbsp;</span><span class="listing-charinsert" data-for="input-price"><a href="javascript:">$</a>&nbsp;</span><span class="listing-charinsert" data-for="input-price"><a href="javascript:">£</a>&nbsp;</span><span class="listing-charinsert" data-for="input-price"><a href="javascript:">¥</a>&nbsp;</span><span class="listing-charinsert" data-for="input-price"><a href="javascript:">₩</a>&nbsp;</span></span></div>
                         </div>
                       </div>
                       <div id="div_lastedit" style="display: none;">

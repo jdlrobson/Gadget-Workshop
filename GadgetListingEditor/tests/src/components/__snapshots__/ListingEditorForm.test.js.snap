@@ -1,3 +1,307 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`listingEditorForm makes use of specialCharactersString 1`] = `
+"<div class="cdx-tabs cdx-tabs--framed">
+  <div class="cdx-tabs__header">
+    <div class="cdx-tabs__prev-scroller"><button class="cdx-button cdx-button--action-default cdx-button--weight-quiet cdx-button--size-medium cdx-button--icon-only cdx-tabs__scroll-button" type="button" tabindex="-1" aria-hidden="true"><span class="cdx-icon cdx-icon--medium"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><!--v-if--><g><path d="m4 10 9 9 1.4-1.5L7 10l7.4-7.5L13 1z"></path></g></svg></span></button></div>
+    <div class="cdx-tabs__list" role="tablist"><button id="v-0-label" aria-controls="v-0" aria-selected="true" class="cdx-tabs__list__item" role="tab"><span>edit</span></button><button id="v-1-label" aria-controls="v-1" aria-selected="false" tabindex="-1" class="cdx-tabs__list__item" role="tab"><span>preview</span></button></div>
+    <div class="cdx-tabs__next-scroller"><button class="cdx-button cdx-button--action-default cdx-button--weight-quiet cdx-button--size-medium cdx-button--icon-only cdx-tabs__scroll-button" type="button" tabindex="-1" aria-hidden="true"><span class="cdx-icon cdx-icon--medium"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><!--v-if--><g><path d="M7 1 5.6 2.5 13 10l-7.4 7.5L7 19l9-9z"></path></g></svg></span></button></div>
+  </div>
+  <div class="cdx-tabs__content">
+    <section id="v-0" aria-labelledby="v-0-label" class="cdx-tab" role="tabpanel" tabindex="-1">
+      <form id="listing-editor">
+        <div class="listing-col">
+          <div class="editor-fullwidth">
+            <div id="div_name" class="editor-row">
+              <div class="editor-label-col"><label for="input-name">Name</label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-name" class="cdx-text-input__input" placeholder="name of place" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_alt" class="editor-row">
+              <div class="editor-label-col"><label for="input-alt">Alt</label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-alt" class="cdx-text-input__input" dir="ltr" placeholder="also known as" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_address" class="editor-row">
+              <div class="editor-label-col"><label for="input-address">Address</label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-address" class="cdx-text-input__input" placeholder="address of place" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_directions" class="editor-row">
+              <div class="editor-label-col"><label for="input-directions">Directions</label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-directions" class="cdx-text-input__input" placeholder="how to get here" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_phone" class="editor-row">
+              <div class="editor-label-col"><label for="input-phone">Phone</label></div>
+              <div class="editor-fullwidth">
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-phone" class="cdx-text-input__input" placeholder="+55 555 555 5555" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+                <div class="input-cc" data-for="input-phone"></div>
+              </div>
+            </div>
+            <div id="div_tollfree" class="editor-row">
+              <div class="editor-label-col"><label for="input-tollfree">Tollfree</label></div>
+              <div class="editor-fullwidth">
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-tollfree" class="cdx-text-input__input" placeholder="+1 800 100 1000" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+                <div class="input-cc" data-for="input-tollfree"></div>
+              </div>
+            </div>
+            <div id="div_fax" class="editor-row" style="display: none;">
+              <div class="editor-label-col"><label for="input-fax">Fax</label></div>
+              <div class="editor-fullwidth">
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-fax" class="cdx-text-input__input" placeholder="+55 555 555 555" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+                <div class="input-cc" data-for="input-fax"></div>
+              </div>
+            </div>
+            <div id="div_hours" class="editor-row">
+              <div class="editor-label-col"><label for="input-hours">Hours</label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-hours" class="cdx-text-input__input" placeholder="9AM-5PM or 09:00-17:00" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_checkin" class="editor-row" style="display: none;">
+              <div class="editor-label-col"><label for="input-checkin">Check-in</label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-checkin" class="cdx-text-input__input" placeholder="check in time" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_checkout" class="editor-row" style="display: none;">
+              <div class="editor-label-col"><label for="input-checkout">Check-out</label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-checkout" class="cdx-text-input__input" placeholder="check out time" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_price" class="editor-row">
+              <div class="editor-label-col"><label for="input-price">Price</label></div>
+              <!-- update the Callbacks.initStringFormFields
+                    method if the currency symbols are removed or modified -->
+              <div class="editor-fullwidth">
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-price" class="cdx-text-input__input" placeholder="entry or service price" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+                <div class="input-price"><span id="span_natl_currency" title=""><span> |</span></span><span id="span_intl_currencies" title=""><span class="listing-charinsert" data-for="input-price"><a href="javascript:">$</a>&nbsp;</span></span></div>
+              </div>
+            </div>
+            <div id="div_lastedit" style="display: none;">
+              <div class="editor-label-col"><label for="input-lastedit">Last Updated</label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default"><input id="input-lastedit" class="cdx-text-input__input" size="1" placeholder="2020-01-15" type="text">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="listing-col">
+          <div class="editor-fullwidth">
+            <div id="div_type" class="editor-row" style="display: none;">
+              <div class="editor-label-col"><label for="input-type">Type</label></div>
+              <div><select id="input-type" style="box-shadow: -20px 0 0 0 var(--background-color-base, white) inset;"></select></div>
+              <div class="editor-fullwidth"><span id="span-closed"><input type="checkbox" id="input-closed"><label for="input-closed" class="listing-tooltip" title="Check the box if the business is no longer in operation or if the listing should be deleted for some other reason, and it will be removed from this article">delete this listing?</label></span></div>
+            </div>
+            <div id="div_url" class="editor-row">
+              <div class="editor-label-col"><label for="input-url">Website<span class="wikidata-update"></span></label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-url" class="cdx-text-input__input" placeholder="https://www.example.com" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_email" class="editor-row">
+              <div class="editor-label-col"><label for="input-email">Email<span class="wikidata-update"></span></label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-fullwidth"><input id="input-email" class="cdx-text-input__input" placeholder="info@example.com" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_lat" class="editor-row">
+              <div class="editor-label-col"><label for="input-lat">Latitude<span class="wikidata-update"></span></label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-partialwidth"><input id="input-lat" class="cdx-text-input__input" placeholder="11.11111" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+                <!-- update the Callbacks.initFindOnMapLink
+                    method if this field is removed or modified -->
+                <div class="input-other"><a id="geomap-link" target="_blank" href="https://wikivoyage.toolforge.org/w/geomap.php">find on map</a></div>
+              </div>
+            </div>
+            <div id="div_long" class="editor-row">
+              <div class="editor-label-col"><label for="input-long">Longitude<span class="wikidata-update"></span></label></div>
+              <div>
+                <div class="cdx-text-input cdx-text-input--status-default editor-partialwidth"><input id="input-long" class="cdx-text-input__input" placeholder="111.11111" type="text" size="1">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+            <div id="div_wikidata" class="editor-row">
+              <div class="editor-label-col"><label for="input-wikidata-label">Wikidata</label></div>
+              <div>
+                <div class="cdx-lookup">
+                  <div class="cdx-text-input cdx-text-input--status-default cdx-lookup__input"><input id="input-wikidata-label" class="cdx-text-input__input" placeholder="wikidata record" role="combobox" autocomplete="off" aria-autocomplete="list" aria-controls="v-2" aria-expanded="false" type="text" size="1">
+                    <!--v-if-->
+                    <!--v-if-->
+                    <!--v-if-->
+                  </div>
+                  <!--teleport start-->
+                  <div class="cdx-menu" style="display: none;">
+                    <ul class="cdx-menu__listbox" role="listbox" tabindex="-1" id="v-2">
+                      <!--v-if-->
+                      <li class="cdx-menu__no-results cdx-menu-item" role="option"> No results found. </li>
+                      <!--v-if-->
+                    </ul>
+                  </div>
+                  <!--teleport end-->
+                </div><input type="hidden" id="input-wikidata-value" value="">
+                <!--v-if-->
+                <!--v-if-->
+              </div>
+            </div>
+            <!--v-if-->
+            <div id="div_wikipedia" class="editor-row">
+              <div class="editor-label-col"><label for="input-wikipedia">Wikipedia<span class="wikidata-update"></span></label></div>
+              <div>
+                <div class="cdx-lookup">
+                  <div class="cdx-text-input cdx-text-input--status-default cdx-lookup__input"><input id="input-wikipedia" class="cdx-text-input__input" placeholder="wikipedia article" role="combobox" autocomplete="off" aria-autocomplete="list" aria-controls="v-4" aria-expanded="false" type="text" size="1">
+                    <!--v-if-->
+                    <!--v-if-->
+                    <!--v-if-->
+                  </div>
+                  <!--teleport start-->
+                  <div class="cdx-menu" style="display: none;">
+                    <ul class="cdx-menu__listbox" role="listbox" tabindex="-1" id="v-4">
+                      <!--v-if-->
+                      <li class="cdx-menu__no-results cdx-menu-item" role="option"></li>
+                      <!--v-if-->
+                    </ul>
+                  </div>
+                  <!--teleport end-->
+                </div>
+                <!--v-if-->
+              </div>
+            </div>
+            <div id="div_image" class="editor-row">
+              <div class="editor-label-col"><label for="input-image">Image<span class="wikidata-update"></span></label></div>
+              <div>
+                <div class="cdx-lookup">
+                  <div class="cdx-text-input cdx-text-input--status-default cdx-lookup__input"><input id="input-image" class="cdx-text-input__input" placeholder="image of place" role="combobox" autocomplete="off" aria-autocomplete="list" aria-controls="v-6" aria-expanded="false" type="text" size="1">
+                    <!--v-if-->
+                    <!--v-if-->
+                    <!--v-if-->
+                  </div>
+                  <!--teleport start-->
+                  <div class="cdx-menu" style="display: none;">
+                    <ul class="cdx-menu__listbox" role="listbox" tabindex="-1" id="v-6">
+                      <!--v-if-->
+                      <li class="cdx-menu__no-results cdx-menu-item" role="option"></li>
+                      <!--v-if-->
+                    </ul>
+                  </div>
+                  <!--teleport end-->
+                </div>
+                <!--v-if-->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="div_content" class="editor-row">
+          <div class="editor-label-col"><label for="input-content">Content <span><br>(<span class="listing-charinsert" data-for="input-content"><a>é</a>&nbsp;</span> &nbsp;)</span></label></div>
+          <div>
+            <div class="cdx-text-area cdx-text-area--status-default editor-fullwidth"><textarea id="input-content" rows="8" placeholder="description of place" class="cdx-text-area__textarea"></textarea>
+              <!--v-if-->
+              <!--v-if-->
+            </div>
+          </div>
+        </div>
+        <!-- update the Callbacks.hideEditOnlyFields method if
+        the status row is removed or modified -->
+        <!--v-if-->
+        <div id="div_summary" class="editor-fullwidth">
+          <div class="listing-divider"></div>
+          <div class="editor-row">
+            <div class="editor-label-col"><label for="input-summary">Edit Summary</label></div>
+            <div>
+              <div class="cdx-text-input cdx-text-input--status-default editor-partialwidth"><input id="input-summary" class="cdx-text-input__input" placeholder="reason listing was changed" type="text" size="1">
+                <!--v-if-->
+                <!--v-if-->
+                <!--v-if-->
+              </div><span id="span-minor"><input type="checkbox" id="input-minor"><label for="input-minor" class="listing-tooltip" title="Check the box if the change to the listing is minor, such as a typo correction">minor change?</label></span>
+            </div>
+          </div>
+        </div>
+        <!--v-if-->
+      </form>
+    </section>
+    <section id="v-1" aria-hidden="true" aria-labelledby="v-1-label" class="cdx-tab" role="tabpanel" tabindex="-1" style="display: none;">
+      <form id="listing-editor">
+        <!--v-if-->
+        <div id="listing-preview">
+          <div class="listing-divider"></div>
+          <div class="editor-row">
+            <div title="Preview">Preview</div>
+            <div id="listing-preview-text"></div>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>"
+`;
+
 exports[`listingEditorForm renders 1`] = `"<cdx-tabs-stub active="edit" framed="true"></cdx-tabs-stub>"`;

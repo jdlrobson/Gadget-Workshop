@@ -24,7 +24,9 @@ describe( 'savePayload', () => {
 
 	it( 'for debugging we can force it to return successfully', () => {
         window.__save_debug = 1;
-        return savePayload( NOTTINGHAM ).then( (r) => {
+        const payload = savePayload( NOTTINGHAM );
+        expect( payload.abort ).not.toBe( undefined );
+        return payload.then( (r) => {
             expect( r.edit.result ).toBe( 'Success' );
             expect( r.edit.nochange ).toBe( undefined );
         } );
@@ -49,6 +51,15 @@ describe( 'savePayload', () => {
         window.__save_debug = -2;
         return savePayload( NOTTINGHAM ).then( ( r ) => {
             expect( r.edit.captcha.id ).toBe( 1 );
+        } );
+	} );
+
+	it( 'for debugging we can force it to reject', () => {
+        window.__save_debug = -6;
+        const payload = savePayload( NOTTINGHAM );
+        expect( payload.abort ).not.toBe( undefined );
+        return payload.then( null, ( r ) => {
+            expect( r ).toBe( 'unknown' );
         } );
 	} );
 } );

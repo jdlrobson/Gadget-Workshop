@@ -39,11 +39,11 @@ v-model:open="isOpen"
 </div>
 <template #footer>
     <div class="ui-dialog-buttonpane" v-if="submitAction">
-        <div class="ui-dialog-buttonset">
+        <div v-if="!saveInProgress" class="ui-dialog-buttonset">
             <cdx-button v-if="helpClickAction" id="listing-help" @click="helpClickAction">?</cdx-button>
             <cdx-button class="submitButton"
-                @click="submitAction" :disabled="saveInProgress || disabledMessage"> {{ $translate( 'submit' ) }}</cdx-button>
-            <cdx-button @click="closeAction" :disabled="saveInProgress">{{ $translate( 'cancel' ) }}</cdx-button>
+                @click="submitAction" :disabled="disabledMessage"> {{ $translate( 'submit' ) }}</cdx-button>
+            <cdx-button @click="closeAction">{{ $translate( 'cancel' ) }}</cdx-button>
         </div>
         <div if="!saveInProgress">
             <div v-if="disabledMessage">
@@ -103,6 +103,7 @@ v-model:open="isOpen"
         onCaptchaSubmit,
         onSubmit, onClose, dialogElement, dialogClass, onHelp, onMount
     } ) {
+        const activeXhr = ref( null );
         const captchaRequested = ref( '' );
         const saveInProgress = ref( false );
         const defaultAction = {
@@ -118,11 +119,19 @@ v-model:open="isOpen"
         };
         const submitAction = () => {
             saveInProgress.value = true;
-            onSubmit( closeDialog, () => {
+            const xhr = onSubmit( closeDialog, () => {
                 saveInProgress.value = false;
             }, setCaptcha );
+            activeXhr.value = xhr;
         };
         const closeAction = () => {
+            if ( saveInProgress.value && activeXhr.value ) {
+                if ( activeXhr.value.abort ) {
+                    activeXhr.value.abort();
+                }
+                saveInProgress.value = false;
+                return;
+            }
             onClose();
             closeDialog();
         };

@@ -17,6 +17,8 @@ const { getConfig } = require( './Config.js' );
  * replaces the original template string in the section text with the
  * updated entry, and then submits the section text to be saved on the
  * server.
+ *
+ * @return {JQuery.Ajax}
  */
 const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
     const { LISTING_TYPE_PARAMETER, DEFAULT_LISTING_TEMPLATE } = getConfig();

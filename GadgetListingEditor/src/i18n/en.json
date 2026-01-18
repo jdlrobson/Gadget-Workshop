@@ -75,7 +75,7 @@
     "submitApiError": "Error: The server returned an error while attempting to save the listing, please try again",
     "submitBlacklistError": "Error: A value in the data submitted has been blacklisted, please remove the blacklisted pattern and try again",
     "submitUnknownError": "Error: An unknown error has been encountered while attempting to save the listing, please try again",
-    "submitHttpError": "Error: The server responded with an HTTP error while attempting to save the listing, please try again",
+    "submitHttpError": "The server responded with an HTTP error while attempting to save the listing, please try again",
     "submitEmptyError": "Error: The server returned an empty response while attempting to save the listing, please try again",
     "viewCommonsPage": "view Commons page",
     "viewWikidataPage": "view Wikidata record",

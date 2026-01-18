@@ -73,21 +73,25 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             }, handleCaptchaError( setCaptcha, closeAction ) );
         }
     };
+    /**
+     * @param {Function} closeDialog
+     * @param {Function} reset
+     * @param {Function} setCaptcha
+     * @return {JQuery.Ajax}
+     */
     const onSubmit = ( closeDialog, reset, setCaptcha ) => {
         const teardown = handleCaptchaError( setCaptcha, reset );
-
+        let rtn;
         if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
             // no need to validate the form upon deletion request
-            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
-                .then(
-                    closeDialog,
-                    handleCaptchaError()
-                );
+            rtn = formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
         } else {
             fixupFormValues();
-            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
-                .then( closeDialog, teardown );
+            rtn = formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
         }
+        const newRtn = rtn.then( closeDialog, teardown );
+        newRtn.abort = rtn.abort;
+        return newRtn;
     };
 
     const customListingType = isCustomListingType(listingType) ? listingType : undefined;

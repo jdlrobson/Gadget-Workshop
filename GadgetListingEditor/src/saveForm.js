@@ -13,6 +13,18 @@ const saveFailed = function(msg) {
     alert(msg);
 };
 
+const abortableReject = ( data ) => {
+    const reject = Promise.reject( data );
+    reject.abort = () => {};
+    return reject;
+};
+
+const abortableResolve = ( data ) => {
+    const resolve = Promise.resolve( data );
+    resolve.abort = () => {};
+    return resolve;
+};
+
 /**
  * Execute the logic to post listing editor changes to the server so that
  * they are saved. After saving the page is refreshed to show the updated
@@ -33,11 +45,12 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
     if (minor) {
         $.extend( editPayload, { minor: 'true' } );
     }
-    return savePayload( editPayload ).then(function(data) {
+    const payload = savePayload(editPayload);
+    const newPayload = payload.then(function(data) {
         if (data && data.edit && data.edit.result == 'Success') {
             if ( data.edit.nochange !== undefined ) {
                 alert( 'Save skipped as there was no change to the content!' );
-                return;
+                return abortableResolve();
             }
             // since the listing editor can be used on diff pages, redirect
             // to the canonical URL if it is different from the current URL
@@ -54,12 +67,12 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
             }
         } else if (data && data.error) {
             saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
-            return Promise.reject( {} );
+            return abortableReject( {} );
         } else if (data && data.edit.spamblacklist) {
             saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
-            return Promise.reject( {} );
+            return abortableReject( {} );
         } else if (data && data.edit.captcha) {
-            return Promise.reject( {
+            return abortableReject( {
                 edit: data.edit,
                     args: [
                     summary,
@@ -70,7 +83,7 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
             } );
         } else {
             saveFailed(translate( 'submitUnknownError' ));
-            return Promise.reject( {} );
+            return abortableReject( {} );
         }
     }, function(code, result) {
         if (code === "http") {
@@ -80,8 +93,10 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
         } else {
             saveFailed(`${translate( 'submitUnknownError' )}: ${code}` );
         }
-        return Promise.reject( {} );
+        return abortableReject( {} );
     });
+    newPayload.abort = payload.abort;
+    return newPayload;
 };
 
 module.exports = saveForm;

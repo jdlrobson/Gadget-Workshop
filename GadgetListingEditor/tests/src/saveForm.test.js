@@ -12,7 +12,9 @@ describe( 'saveForm', () => {
     } );
 	it( 'alerts if save skipped', () => {
         window.__save_debug = 0;
-        return saveForm( 'edit summary', true, 0, null, null, dialog ).then( () => {
+        const rtn = saveForm( 'edit summary', true, 0, null, null, dialog );
+        expect( rtn.abort ).not.toBe( undefined );
+        return rtn.then( () => {
             expect( window.alert ).toBeCalled();
         } );
 	} );

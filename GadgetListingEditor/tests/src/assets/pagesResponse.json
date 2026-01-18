@@ -1,0 +1,12 @@
+{
+    "query": {
+        "pageids": [ "2" ],
+        "pages": {
+            "2": {
+                "pageprops": {
+                    "wikibase_item": "Q1"
+                }
+            }
+        }
+    }
+}

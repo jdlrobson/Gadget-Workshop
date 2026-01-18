@@ -63,18 +63,7 @@ describe( 'SisterSite', () => {
     it( 'allows easy abstraction of wikidata ID from wikipedia response', () => {
         const { wikipediaWikidata } = SisterSite();
         const claim = wikipediaWikidata(
-            {
-                query: {
-                    pageids: [ '2' ],
-                    pages: {
-                        '2': {
-                            pageprops: {
-                                wikibase_item: 'Q1'
-                            }
-                        }
-                    }
-                }
-            }
+            require('./assets/pagesResponse.json')
         );
         expect( claim ).toBe( 'Q1' );
     } );

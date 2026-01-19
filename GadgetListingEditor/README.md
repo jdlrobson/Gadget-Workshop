@@ -19,7 +19,10 @@ Go to https://en.wikivoyage.org/wiki/Nottingham?safemode=1
 
 In JavaScript console:
 ```
+mw.loader.load('vue');
+mw.loader.load('@wikimedia/codex');
 module = {};
+require = mw.loader.require
 ```
 // Copy paste contnets of Gadget-ListingEditor2023Main.js
 ```

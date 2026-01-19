@@ -219,27 +219,27 @@ const fn = function() {
 		}
 		wrapContent();
 		$bodyContent.attr( 'data-listing-editor-enabled', '1' )
-		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
-			return false;
-		}
 		loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
 			contentTransform.addListingButtons(
 				_sectionToTemplateType,
 				TRANSLATIONS.add
 			);
 		} );
-		document.addEventListener( 'click', ( ev ) => {
-			if ( !ev.target.closest( '.listingeditor-add' ) ) {
-				return;
-			}
-			// dont collapse section on mobile.
-			ev.stopPropagation();
-			const $this = $(ev.target);
-			loadMain().then( function ( core ) {
-				core.initListingEditorDialog(MODE_ADD, $this);
-			} );
-		}, true );
-		addEditButtons();
+
+		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length === 0) {
+			document.addEventListener( 'click', ( ev ) => {
+				if ( !ev.target.closest( '.listingeditor-add' ) ) {
+					return;
+				}
+				// dont collapse section on mobile.
+				ev.stopPropagation();
+				const $this = $(ev.target);
+				loadMain().then( function ( core ) {
+					core.initListingEditorDialog(MODE_ADD, $this);
+				} );
+			}, true );
+			addEditButtons();
+		}
 		mw.hook( 'wikipage.content' ).add(
 			initListingEditor
 		);

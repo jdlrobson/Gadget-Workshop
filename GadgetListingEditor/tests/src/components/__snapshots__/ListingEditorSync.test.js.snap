@@ -9,9 +9,9 @@ exports[`ListingEditorSync renders 1`] = `
       <div class="sync_label">a</div>
       <div class="choose-row">
         <div>&nbsp;<label for="a-wd"><a target="_blank" rel="noopener noreferrer" href="http://wikidata.org/wiki/A">wikidata A</a></label></div>
-        <div id="has-guid"><input type="radio" id="a-wd" name="a"><input type="hidden" value="a-guid"></div>
+        <div class="has-guid"><input type="radio" id="a-wd" name="a"><input type="hidden" value="a-guid"></div>
         <div><input type="radio" name="a" checked=""></div>
-        <div id="has-json"><input type="radio" id="a-wv" name="a"><input type="hidden" value="{&quot;label&quot;:&quot;a&quot;}"></div>
+        <div class="has-json"><input type="radio" id="a-wv" name="a"><input type="hidden" value="{&quot;label&quot;:&quot;a&quot;}"></div>
         <div>&nbsp;<label for="a-wv"><a target="_blank" rel="noopener noreferrer" href="http://localhost/wiki/A">local A</a></label></div>
       </div>
     </div>

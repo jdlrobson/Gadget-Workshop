@@ -24,12 +24,12 @@ const makeSubmitFunction = function( updateModel, ss, closeFn ) {
             // @todo: Do not rely on label.text for something so important
             // Switch this to data attribute.
             var syncedValue = label.text().split('\n');
-            var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
+            var field = JSON.parse($(this).parents('.choose-row').find('.has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
             var editorField = [];
             for( var i = 0; i < field.fields.length; i++ ) {
                 editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`;
             }
-            var guidObj = $(this).parents('.choose-row').find('#has-guid > input:hidden:not(:radio)').val();
+            var guidObj = $(this).parents('.choose-row').find('.has-guid > input:hidden:not(:radio)').val();
 
             if ( field.p === WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
                 var DDValue = [];

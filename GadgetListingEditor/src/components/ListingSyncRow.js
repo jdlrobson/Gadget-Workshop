@@ -47,7 +47,7 @@ module.exports = {
     <div>&nbsp;<label :for="field.label + '-wd'"><listing-sync-row-link
         :href="wikidataUrl">{{ wikidataText }}</listing-sync-row-link></label>
     </div>
-    <div id="has-guid">
+    <div class="has-guid">
         <input type="radio" :id="field.label+'-wd'" :name="field.label"
             :checked="remoteFlag || selected === 'wd'">
         <input type="hidden" :value="guid">
@@ -55,7 +55,7 @@ module.exports = {
     <div v-if="!remoteFlag">
         <input type="radio" :name="field.label" :checked="selected === ''">
     </div>
-    <div id="has-json">
+    <div class="has-json">
         <input v-if="remoteFlag !== true && field.doNotUpload !== true"
             :checked="selected === 'wv'"
             type="radio" :id="field.label+'-wv'" :name="field.label">

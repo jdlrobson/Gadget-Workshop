@@ -17,6 +17,7 @@ function render( Dialog, options ) {
     );
     app.mount( vueAppContainer );
     document.documentElement.classList.add( 'listing-editor-dialog-open' );
+    vueAppContainer.focus();
     return {
         unmount: () => {
             app.unmount();

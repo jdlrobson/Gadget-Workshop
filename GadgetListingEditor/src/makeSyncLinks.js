@@ -16,7 +16,7 @@ const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
         case WIKIDATA_CLAIMS.coords.p:
             prefix += 'https://geohack.toolforge.org/geohack.php?params=';
             prefix += value.map(v=>parseDMS(v)).join(';');
-            suffix = ';_type:landmark'; // sets the default zoom
+            suffix = '_type:landmark'; // sets the default zoom
             break;
         case WIKIDATA_CLAIMS.image.p:
             prefix += `https://${LANG}.wikivoyage.org/wiki/File:`;

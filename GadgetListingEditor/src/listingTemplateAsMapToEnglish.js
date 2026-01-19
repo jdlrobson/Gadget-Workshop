@@ -24,9 +24,9 @@ module.exports = ( map ) => {
     const { LISTING_TEMPLATE_PARAMETERS } = getConfig();
     const enMap = {};
     Object.keys( LISTING_TEMPLATE_PARAMETERS ).forEach( ( key ) => {
-        const { id } = LISTING_TEMPLATE_PARAMETERS[ key ]
+        const { id } = LISTING_TEMPLATE_PARAMETERS[ key ];
         // strip input to get associated parameter name.
-        enMap[ id.replace( 'input-', '' ) ] = map[ key ];
+        enMap[ id.replace( 'input-', '' ).replace( '-value', '' ) ] = map[ key ];
     } );
     return enMap;
 };

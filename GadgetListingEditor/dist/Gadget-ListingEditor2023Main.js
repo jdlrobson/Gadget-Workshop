@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.1.0
+ * Listing Editor v4.2.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.1.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.2.0'
 
 'use strict';
 
@@ -91,7 +91,7 @@ var synchronized$3 = "synchronized.";
 var submitApiError$3 = "Error: The server returned an error while attempting to save the listing, please try again";
 var submitBlacklistError$3 = "Error: A value in the data submitted has been blacklisted, please remove the blacklisted pattern and try again";
 var submitUnknownError$3 = "Error: An unknown error has been encountered while attempting to save the listing, please try again";
-var submitHttpError$3 = "Error: The server responded with an HTTP error while attempting to save the listing, please try again";
+var submitHttpError$3 = "The server responded with an HTTP error while attempting to save the listing, please try again";
 var submitEmptyError$3 = "Error: The server returned an empty response while attempting to save the listing, please try again";
 var viewCommonsPage$3 = "view Commons page";
 var viewWikidataPage$3 = "view Wikidata record";
@@ -1068,6 +1068,7 @@ function requireDialogs () {
 	    );
 	    app.mount( vueAppContainer );
 	    document.documentElement.classList.add( 'listing-editor-dialog-open' );
+	    vueAppContainer.focus();
 	    return {
 	        unmount: () => {
 	            app.unmount();
@@ -1129,11 +1130,11 @@ v-model:open="isOpen"
 </div>
 <template #footer>
     <div class="ui-dialog-buttonpane" v-if="submitAction">
-        <div class="ui-dialog-buttonset">
+        <div v-if="!saveInProgress" class="ui-dialog-buttonset">
             <cdx-button v-if="helpClickAction" id="listing-help" @click="helpClickAction">?</cdx-button>
             <cdx-button class="submitButton"
-                @click="submitAction" :disabled="saveInProgress || disabledMessage"> {{ $translate( 'submit' ) }}</cdx-button>
-            <cdx-button @click="closeAction" :disabled="saveInProgress">{{ $translate( 'cancel' ) }}</cdx-button>
+                @click="submitAction" :disabled="disabledMessage"> {{ $translate( 'submit' ) }}</cdx-button>
+            <cdx-button @click="closeAction">{{ $translate( 'cancel' ) }}</cdx-button>
         </div>
         <div if="!saveInProgress">
             <div v-if="disabledMessage">
@@ -1193,6 +1194,7 @@ v-model:open="isOpen"
 	        onCaptchaSubmit,
 	        onSubmit, onClose, dialogElement, dialogClass, onHelp, onMount
 	    } ) {
+	        const activeXhr = ref( null );
 	        const captchaRequested = ref( '' );
 	        const saveInProgress = ref( false );
 	        const defaultAction = {
@@ -1208,11 +1210,19 @@ v-model:open="isOpen"
 	        };
 	        const submitAction = () => {
 	            saveInProgress.value = true;
-	            onSubmit( closeDialog, () => {
+	            const xhr = onSubmit( closeDialog, () => {
 	                saveInProgress.value = false;
 	            }, setCaptcha );
+	            activeXhr.value = xhr;
 	        };
 	        const closeAction = () => {
+	            if ( saveInProgress.value && activeXhr.value ) {
+	                if ( activeXhr.value.abort ) {
+	                    activeXhr.value.abort();
+	                }
+	                saveInProgress.value = false;
+	                return;
+	            }
 	            onClose();
 	            closeDialog();
 	        };
@@ -3245,9 +3255,6 @@ function requireListingEditorForm () {
                             <span v-for="(currency, i) in currencies"
                                 class="listing-charinsert"
                                 data-for="input-price"><a href="javascript:">{{ currency }}</a>&nbsp;</span>
-                            <special-characters-string
-                                :characters="characters">
-                            </special-characters-string>
                         </span>
                     </div>
                 </div>
@@ -3895,12 +3902,36 @@ function requireSavePayload () {
 	hasRequiredSavePayload = 1;
 	const savePayload = ( editPayload ) => {
 	    const api = new mw.Api();
-	    const delayedPromise = ( res ) =>
-	        new Promise( ( resolve ) => {
-	            setTimeout(() => {
-	                resolve( res );
-	            }, window.__save_debug_timeout || 5000 );
-	        } );
+	    let abortedByUser = false;
+	    const abort = ( rtn ) => {
+	        return () => {
+	            abortedByUser = true;
+	            rtn.reject( 'http', {
+	                textStatus: 'Aborted by user'
+	            } );
+	        };
+	    };
+	    const delayedReject = ( res, data ) => {
+	        const rtn = $.Deferred();
+	        setTimeout(() => {
+	            if ( !abortedByUser ) {
+	                rtn.reject( res, data );
+	            }
+	        }, window.__save_debug_timeout || 5000 );
+	        rtn.abort = abort( rtn );
+	        return rtn;
+	    };
+	    const delayedPromise = ( res ) => {
+	        const rtn = $.Deferred();
+	        setTimeout(() => {
+	            if ( !abortedByUser ) {
+	                rtn.resolve( res );
+	            }
+	            rtn.resolve( res );
+	        }, window.__save_debug_timeout || 5000 );
+	        rtn.abort = abort( rtn );
+	        return rtn;
+	    };
 	    switch ( window.__save_debug ) {
 	        case -1:
 	            return delayedPromise( {
@@ -3925,20 +3956,20 @@ function requireSavePayload () {
 	                }
 	            } );
 	        case -4:
-	            return $.Deferred().reject(
+	            return delayedReject(
 	                'http',
 	                { textStatus: 'http error ' }
 	            );
 	        case -5:
-	            return Promise.reject(
+	            return delayedReject(
 	                'ok-but-empty'
 	            );
 	        case -6:
-	            return Promise.reject(
+	            return delayedReject(
 	                'unknown'
 	            );
 	        case -7:
-	            return Promise.resolve( {
+	            return delayedPromise( {
 	                edit: {}
 	            } );
 	        case 0:
@@ -3987,6 +4018,18 @@ function requireSaveForm () {
 	    alert(msg);
 	};
 
+	const abortableReject = ( data ) => {
+	    const reject = Promise.reject( data );
+	    reject.abort = () => {};
+	    return reject;
+	};
+
+	const abortableResolve = ( data ) => {
+	    const resolve = Promise.resolve( data );
+	    resolve.abort = () => {};
+	    return resolve;
+	};
+
 	/**
 	 * Execute the logic to post listing editor changes to the server so that
 	 * they are saved. After saving the page is refreshed to show the updated
@@ -4007,11 +4050,12 @@ function requireSaveForm () {
 	    if (minor) {
 	        $.extend( editPayload, { minor: 'true' } );
 	    }
-	    return savePayload( editPayload ).then(function(data) {
+	    const payload = savePayload(editPayload);
+	    const newPayload = payload.then(function(data) {
 	        if (data && data.edit && data.edit.result == 'Success') {
 	            if ( data.edit.nochange !== undefined ) {
 	                alert( 'Save skipped as there was no change to the content!' );
-	                return;
+	                return abortableResolve();
 	            }
 	            // since the listing editor can be used on diff pages, redirect
 	            // to the canonical URL if it is different from the current URL
@@ -4028,12 +4072,12 @@ function requireSaveForm () {
 	            }
 	        } else if (data && data.error) {
 	            saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
-	            return Promise.reject( {} );
+	            return abortableReject( {} );
 	        } else if (data && data.edit.spamblacklist) {
 	            saveFailed(`${translate( 'submitBlacklistError' )}: ${data.edit.spamblacklist}` );
-	            return Promise.reject( {} );
+	            return abortableReject( {} );
 	        } else if (data && data.edit.captcha) {
-	            return Promise.reject( {
+	            return abortableReject( {
 	                edit: data.edit,
 	                    args: [
 	                    summary,
@@ -4044,7 +4088,7 @@ function requireSaveForm () {
 	            } );
 	        } else {
 	            saveFailed(translate( 'submitUnknownError' ));
-	            return Promise.reject( {} );
+	            return abortableReject( {} );
 	        }
 	    }, function(code, result) {
 	        if (code === "http") {
@@ -4054,8 +4098,10 @@ function requireSaveForm () {
 	        } else {
 	            saveFailed(`${translate( 'submitUnknownError' )}: ${code}` );
 	        }
-	        return Promise.reject( {} );
+	        return abortableReject( {} );
 	    });
+	    newPayload.abort = payload.abort;
+	    return newPayload;
 	};
 
 	saveForm_1 = saveForm;
@@ -4448,6 +4494,8 @@ function requireFormToText () {
 	 * replaces the original template string in the section text with the
 	 * updated entry, and then submits the section text to be saved on the
 	 * server.
+	 *
+	 * @return {JQuery.Ajax}
 	 */
 	const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
 	    const { LISTING_TYPE_PARAMETER, DEFAULT_LISTING_TEMPLATE } = getConfig();
@@ -4670,7 +4718,7 @@ function requireListingTemplateAsMapToEnglish () {
 	    Object.keys( LISTING_TEMPLATE_PARAMETERS ).forEach( ( key ) => {
 	        const { id } = LISTING_TEMPLATE_PARAMETERS[ key ];
 	        // strip input to get associated parameter name.
-	        enMap[ id.replace( 'input-', '' ) ] = map[ key ];
+	        enMap[ id.replace( 'input-', '' ).replace( '-value', '' ) ] = map[ key ];
 	    } );
 	    return enMap;
 	};
@@ -4758,21 +4806,25 @@ function requireOpenListingEditorDialog () {
 	            }, handleCaptchaError( setCaptcha, closeAction ) );
 	        }
 	    };
+	    /**
+	     * @param {Function} closeDialog
+	     * @param {Function} reset
+	     * @param {Function} setCaptcha
+	     * @return {JQuery.Ajax}
+	     */
 	    const onSubmit = ( closeDialog, reset, setCaptcha ) => {
 	        const teardown = handleCaptchaError( setCaptcha, reset );
-
+	        let rtn;
 	        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
 	            // no need to validate the form upon deletion request
-	            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
-	                .then(
-	                    closeDialog,
-	                    handleCaptchaError()
-	                );
+	            rtn = formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
 	        } else {
 	            fixupFormValues();
-	            formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber)
-	                .then( closeDialog, teardown );
+	            rtn = formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
 	        }
+	        const newRtn = rtn.then( closeDialog, teardown );
+	        newRtn.abort = rtn.abort;
+	        return newRtn;
 	    };
 
 	    const customListingType = isCustomListingType(listingType) ? listingType : undefined;
@@ -4782,7 +4834,7 @@ function requireOpenListingEditorDialog () {
 	        hours, checkin, checkout, price,
 	        name, content, lastedit, url } = listingTemplateAsMapEn;
 
-	    dialog.render( ListingEditorFormDialog, {
+	    const app = dialog.render( ListingEditorFormDialog, {
 	        wikipedia, wikidata, image,
 	        lat, url, long, content,
 	        lastedit,
@@ -4815,6 +4867,12 @@ function requireOpenListingEditorDialog () {
 	            translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
 	        dialogClass: 'listing-editor-dialog'
 	    } );
+	    app.test = {
+	        handleCaptchaError,
+	        onCaptchaSubmit,
+	        onSubmit
+	    };
+	    return app;
 	};
 
 	openListingEditorDialog_1 = openListingEditorDialog;

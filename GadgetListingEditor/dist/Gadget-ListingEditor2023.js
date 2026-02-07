@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.2.0
+ * Listing Editor v4.4.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.2.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.4.0'
 
 'use strict';
 
@@ -382,27 +382,27 @@ const fn = function() {
 		}
 		wrapContent();
 		$bodyContent.attr( 'data-listing-editor-enabled', '1' );
-		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length > 0) {
-			return false;
-		}
 		loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
 			contentTransform.addListingButtons(
 				_sectionToTemplateType,
 				TRANSLATIONS.add
 			);
 		} );
-		document.addEventListener( 'click', ( ev ) => {
-			if ( !ev.target.closest( '.listingeditor-add' ) ) {
-				return;
-			}
-			// dont collapse section on mobile.
-			ev.stopPropagation();
-			const $this = $(ev.target);
-			loadMain().then( function ( core ) {
-				core.initListingEditorDialog(MODE_ADD, $this);
-			} );
-		}, true );
-		addEditButtons();
+
+		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length === 0) {
+			document.addEventListener( 'click', ( ev ) => {
+				if ( !ev.target.closest( '.listingeditor-add' ) ) {
+					return;
+				}
+				// dont collapse section on mobile.
+				ev.stopPropagation();
+				const $this = $(ev.target);
+				loadMain().then( function ( core ) {
+					core.initListingEditorDialog(MODE_ADD, $this);
+				} );
+			}, true );
+			addEditButtons();
+		}
 		mw.hook( 'wikipage.content' ).add(
 			initListingEditor
 		);

@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.2.0
+ * Listing Editor v4.4.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.2.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.4.0'
 
 'use strict';
 
@@ -1495,7 +1495,7 @@ function requireListingSyncRow () {
     <div>&nbsp;<label :for="field.label + '-wd'"><listing-sync-row-link
         :href="wikidataUrl">{{ wikidataText }}</listing-sync-row-link></label>
     </div>
-    <div id="has-guid">
+    <div class="has-guid">
         <input type="radio" :id="field.label+'-wd'" :name="field.label"
             :checked="remoteFlag || selected === 'wd'">
         <input type="hidden" :value="guid">
@@ -1503,7 +1503,7 @@ function requireListingSyncRow () {
     <div v-if="!remoteFlag">
         <input type="radio" :name="field.label" :checked="selected === ''">
     </div>
-    <div id="has-json">
+    <div class="has-json">
         <input v-if="remoteFlag !== true && field.doNotUpload !== true"
             :checked="selected === 'wv'"
             type="radio" :id="field.label+'-wv'" :name="field.label">
@@ -1573,7 +1573,7 @@ function requireListingEditorSync () {
 <div class="editor-fullwidth">
     <listing-sync-row v-for="row in syncValues"
         :field="row.field"
-        :guid="row.guid"
+        :guid="row.guid || 'null'"
         :wikidataUrl="row.wikidataUrl"
         :localUrl="row.localUrl"
         :localText="row.localText"
@@ -1656,7 +1656,7 @@ function requireMakeSyncLinks () {
 	        case WIKIDATA_CLAIMS.coords.p:
 	            prefix += 'https://geohack.toolforge.org/geohack.php?params=';
 	            prefix += value.map(v=>parseDMS(v)).join(';');
-	            suffix = ';_type:landmark'; // sets the default zoom
+	            suffix = '_type:landmark'; // sets the default zoom
 	            break;
 	        case WIKIDATA_CLAIMS.image.p:
 	            prefix += `https://${LANG}.wikivoyage.org/wiki/File:`;
@@ -2057,12 +2057,12 @@ function requireLaunchSyncDialog () {
 	            // @todo: Do not rely on label.text for something so important
 	            // Switch this to data attribute.
 	            var syncedValue = label.text().split('\n');
-	            var field = JSON.parse($(this).parents('.choose-row').find('#has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
+	            var field = JSON.parse($(this).parents('.choose-row').find('.has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
 	            var editorField = [];
 	            for( var i = 0; i < field.fields.length; i++ ) {
 	                editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`;
 	            }
-	            var guidObj = $(this).parents('.choose-row').find('#has-guid > input:hidden:not(:radio)').val();
+	            var guidObj = $(this).parents('.choose-row').find('.has-guid > input:hidden:not(:radio)').val();
 
 	            if ( field.p === WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
 	                var DDValue = [];

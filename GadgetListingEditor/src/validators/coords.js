@@ -1,3 +1,5 @@
+const parseDMS = require( '../parseDMS.js' );
+
 /**
  * @param {string} latInput
  * @param {string} longInput
@@ -8,7 +10,8 @@ const validateCoords = ( latInput, longInput ) => {
         const lat = Number( latInput );
         const long = Number( longInput );
         if ( isNaN( lat ) || isNaN( long ) ) {
-            return false;
+            return !isNaN( parseDMS( latInput ) ) &&
+                !isNaN( parseDMS( longInput ) );
         }
     } else if ( latInput && !longInput ) {
         return false;

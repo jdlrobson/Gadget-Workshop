@@ -24,6 +24,16 @@ describe( 'fixupFormValues', () => {
 		expect( $('#input-long').val() ).toBe( '-122.614588' );
 	} );
 
+	it( 'does not modify DMS values', () => {
+		makeForm();
+
+		$('#input-lat').val( '49°11’35.242”' );
+		$('#input-long').val( '16°36’23.708”' );
+		fixupFormValues( [] );
+		expect( $('#input-lat').val() ).toBe( '49°11’35.242”' );
+		expect( $('#input-long').val() ).toBe( '16°36’23.708”' );
+	} );
+
 	it( 'retains zeroes', () => {
 		makeForm();
 		$('#input-lat').val( '+32.0000000' );

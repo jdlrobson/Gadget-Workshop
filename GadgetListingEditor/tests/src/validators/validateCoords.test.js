@@ -9,9 +9,9 @@ describe( 'validateCoords', () => {
 		expect( validateCoords( '3.1', '2.2' ) ).toBe( true );
 	} );
 
-	it( 'validate (only accepts decimals)', () => {
+	it( 'validate (accepts DMS)', () => {
 		const validated = validateCoords( '32° 18\' 23.1 N', '122° 36\' 52.5" W' );
-		expect( validated ).toBe( false );
+		expect( validated ).toBe( true );
 	} );
 
 	it( 'validate (both latitude and longitude must be provided)', () => {

@@ -57,6 +57,10 @@ const fixupLatLon = ( latInput, longInput, precision ) => {
     );
     const lat = Number( latInput );
     const long = Number( longInput );
+    // they are likely in the DMS format so let them be
+    if ( isNaN( lat ) || isNaN( long ) ) {
+        return;
+    }
     const savedLat = trimDecimal( lat, inputLatLength );
     const savedLong = trimDecimal( long, inputLongLength );
     $('#input-lat').val( savedLat );

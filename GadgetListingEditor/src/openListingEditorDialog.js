@@ -73,6 +73,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             }, handleCaptchaError( setCaptcha, closeAction ) );
         }
     };
+
     /**
      * @param {Function} closeDialog
      * @param {Function} reset
@@ -80,7 +81,13 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
      * @return {JQuery.Ajax}
      */
     const onSubmit = ( closeDialog, reset, setCaptcha ) => {
-        const teardown = handleCaptchaError( setCaptcha, reset );
+        const restoreText = getSectionText();
+        const teardown = ( arg ) => {
+            handleCaptchaError( setCaptcha, reset )( arg );
+            // if it failed we need to restore it for subsequent attempts
+            // since formToText has side effects on the section text
+            setSectionText( restoreText );
+        };
         let rtn;
         if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
             // no need to validate the form upon deletion request

@@ -34,7 +34,7 @@ v-model:open="isOpen"
         {{ $translate( 'saving' ) }}
     </div>
 </div>
-<div v-else class="ui-dialog-content" ref="targetElement">
+<div class="ui-dialog-content" ref="targetElement" :style="saveInProgress ? 'display:none;' : ''">
     <slot />
 </div>
 <template #footer>

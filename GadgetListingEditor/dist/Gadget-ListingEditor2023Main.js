@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.6.0
+ * Listing Editor v4.8.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.6.0'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.8.0'
 
 'use strict';
 
@@ -1286,7 +1286,7 @@ v-model:open="isOpen"
         {{ $translate( 'saving' ) }}
     </div>
 </div>
-<div v-else class="ui-dialog-content" ref="targetElement">
+<div class="ui-dialog-content" ref="targetElement" :style="saveInProgress ? 'display:none;' : ''">
     <slot />
 </div>
 <template #footer>
@@ -2938,7 +2938,7 @@ function requireListingToStr () {
 	            continue;
 	        }
 	        if (listing[parameter] !== '' || (!l.skipIfEmpty && !inlineListing)) {
-	            saveStr += `| ${parameter}=${listing[parameter]}`;
+	            saveStr += `| ${parameter}=${listing[parameter] || ''}`;
 	        }
 	        if (!saveStr.match(/\n$/)) {
 	            if (!inlineListing && l.newline) {
@@ -2959,11 +2959,11 @@ function requireListingToStr () {
 	                // skip unrecognized fields without values
 	                continue;
 	            }
-	            saveStr += `| ${key}=${listing[key]}`;
+	            saveStr += `| ${key}=${listing[key] || ''}`;
 	            saveStr += (inlineListing) ? ' ' : '\n';
 	        }
 	    }
-	    saveStr += `| ${LISTING_CONTENT_PARAMETER}=${listing[LISTING_CONTENT_PARAMETER]}`;
+	    saveStr += `| ${LISTING_CONTENT_PARAMETER}=${listing[LISTING_CONTENT_PARAMETER] || ''}`;
 	    saveStr += (inlineListing || !listingParameters[LISTING_CONTENT_PARAMETER].newline) ? ' ' : '\n';
 	    saveStr += '}}';
 	    return saveStr;
@@ -4283,7 +4283,7 @@ function requireFixupFormValues () {
 	 * editor form and fix correctable issues.
 	 */
 	const fixupFormValues = function() {
-	    const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION } = getConfig();
+	    const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION, COORD_PRECISION } = getConfig();
 	    // newlines in listing content won't render properly in lists, so replace them with <br> tags
 	    if ( REPLACE_NEW_LINE_CHARS ) {
 	        $('#input-content').val(
@@ -4317,17 +4317,25 @@ function requireFixupFormValues () {
 	    const longInput = ( $('#input-long').val() || '' ).trim();
 
 	    if ( latInput && longInput ) {
-	        fixupLatLon( latInput, longInput );
+	        fixupLatLon( latInput, longInput, COORD_PRECISION || 6 );
 	    }
 	    fixupUrl();
 	    return true;
 	};
 
-	const fixupLatLon = ( latInput, longInput ) => {
+	const fixupLatLon = ( latInput, longInput, precision ) => {
+	    const inputLatLength = Math.min(
+	        latInput.indexOf('.') > - 1 ? latInput.split('.')[1].length : 0,
+	        precision
+	    );
+	    const inputLongLength = Math.min(
+	        longInput.indexOf('.') > - 1 ? longInput.split('.')[1].length : 0,
+	        precision
+	    );
 	    const lat = Number( latInput );
 	    const long = Number( longInput );
-	    const savedLat = trimDecimal( lat, 6 );
-	    const savedLong = trimDecimal( long, 6 );
+	    const savedLat = trimDecimal( lat, inputLatLength );
+	    const savedLong = trimDecimal( long, inputLongLength );
 	    $('#input-lat').val( savedLat );
 	    $('#input-long').val( savedLong );
 	};
@@ -4971,6 +4979,7 @@ function requireOpenListingEditorDialog () {
 	            }, handleCaptchaError( setCaptcha, closeAction ) );
 	        }
 	    };
+
 	    /**
 	     * @param {Function} closeDialog
 	     * @param {Function} reset
@@ -4978,7 +4987,13 @@ function requireOpenListingEditorDialog () {
 	     * @return {JQuery.Ajax}
 	     */
 	    const onSubmit = ( closeDialog, reset, setCaptcha ) => {
-	        const teardown = handleCaptchaError( setCaptcha, reset );
+	        const restoreText = getSectionText();
+	        const teardown = ( arg ) => {
+	            handleCaptchaError( setCaptcha, reset )( arg );
+	            // if it failed we need to restore it for subsequent attempts
+	            // since formToText has side effects on the section text
+	            setSectionText( restoreText );
+	        };
 	        let rtn;
 	        if ($(EDITOR_CLOSED_SELECTOR).is(':checked')) {
 	            // no need to validate the form upon deletion request

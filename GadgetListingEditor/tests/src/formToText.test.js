@@ -77,6 +77,21 @@ describe( 'formToText', () => {
     <input id='input-lat' value='53.205875'>
     <input id='input-type' value='see'>
     <input id='input-name' value='[[Sherwood Forest]] Country Park'>
+    <input id='input-name' value='[[Sherwood Forest]] Country Park'>
+    <input id='input-address' value=''>
+    <input id='input-image' value=''>
+    <input id='input-wikipedia' value=''>
+    <input id='input-alt' value=''>
+    <input id='input-url' value=''>
+    <input id='input-email' value=''>
+    <input id='input-directions' value=''>
+    <input id='input-phone' value=''>
+    <input id='input-tollfree' value=''>
+    <input id='input-fax' value=''>
+    <input id='input-hours' value=''>
+    <input id='input-checkin' value=''>
+    <input id='input-checkout' value=''>
+    <input id='input-price' value=''>
 ` ).appendTo( document.body );
         window.location = {
             reload: windowReload
@@ -110,4 +125,19 @@ describe( 'formToText', () => {
             expect( getSectionText() ).toBe( MODIFIED_NOTTINGHAM );
         } )
 	} );
+
+    it( 'missing fields are not overwritten', () => {
+            const text = `{{see
+| name=Sherwood Forest
+| facebook=https://facebook.com/sherwood
+}}`;
+        return formToText('edit', text, {
+            name: 'Sherwood',
+            facebook: 'https://facebook.com/sherwood'
+        }, 15, dialog).then( () => {
+            setSectionText( text );
+            expect( window.location.reload ).toBeCalled();
+            expect( getSectionText() ).toBe( text );
+        } );
+    } );
 } );

@@ -28,7 +28,11 @@ const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMa
     var listingType = $(`#${listingTypeInput}`).val();
     var listingParameters = getListingInfo(listingType);
     for (var parameter in listingParameters) {
-        listing[parameter] = $(`#${listingParameters[parameter].id}`).val() || '';
+        let $node = $(`#${listingParameters[parameter].id}`);
+        // do not drop custom fields that were in the original listing
+        if ( $node.length ) {
+            listing[parameter] = $node.val() || '';
+        }
     }
     var text = listingToStr(listing);
     var summary = editSummarySection();

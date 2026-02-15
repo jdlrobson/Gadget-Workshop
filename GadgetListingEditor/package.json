@@ -2,6 +2,7 @@
   "name": "gadget-listing-editor",
   "version": "4.8.0",
   "scripts": {
+    "dev": "node makeHtml.js && npx http-server dist -p 8080",
     "start": "npm test && rollup -c",
     "test": "eslint . && jest"
   },

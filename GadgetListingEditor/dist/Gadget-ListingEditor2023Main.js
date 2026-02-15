@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.5.1
+ * Listing Editor v4.6.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.5.1'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.6.0'
 
 'use strict';
 
@@ -4666,7 +4666,11 @@ function requireFormToText () {
 	    var listingType = $(`#${listingTypeInput}`).val();
 	    var listingParameters = getListingInfo(listingType);
 	    for (var parameter in listingParameters) {
-	        listing[parameter] = $(`#${listingParameters[parameter].id}`).val() || '';
+	        let $node = $(`#${listingParameters[parameter].id}`);
+	        // do not drop custom fields that were in the original listing
+	        if ( $node.length ) {
+	            listing[parameter] = $node.val() || '';
+	        }
 	    }
 	    var text = listingToStr(listing);
 	    var summary = editSummarySection();

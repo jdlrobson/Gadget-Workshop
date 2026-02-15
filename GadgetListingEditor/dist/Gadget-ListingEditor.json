@@ -25,6 +25,7 @@
 		"Get_around": "go"
 	},
 	"iata": "{{IATA|%s}}",
+	"COORD_PRECISION": 6,
 	"listingTypeRegExp": "({{\\s*(%s)\\b)(\\s*[\\|}])",
 	"APPEND_FULL_STOP_TO_DESCRIPTION": false,
 	"REPLACE_NEW_LINE_CHARS": true,

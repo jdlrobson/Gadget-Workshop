@@ -95,10 +95,20 @@ describe( 'fixupFormValues', () => {
 		makeForm();
 
 		$('#input-lat').val( '+32.30642' );
-		$('#input-long').val( '-122.61458' );
+		$('#input-long').val( '-122.6145801' );
 		const validated = fixupFormValues();
 		expect( validated ).toBe( true );
-		expect( $('#input-lat').val() ).toBe( '32.306420' );
+		expect( $('#input-lat').val() ).toBe( '32.30642' );
 		expect( $('#input-long').val() ).toBe( '-122.614580' );
+	} );
+
+	it( 'but does not add zeroes (#41)', () => {
+		makeForm();
+
+		$('#input-lat').val( '2' );
+		$('#input-long').val( '-122.43' );
+		fixupFormValues( [] );
+		expect( $('#input-lat').val() ).toBe( '2' );
+		expect( $('#input-long').val() ).toBe( '-122.43' );
 	} );
 } );

@@ -6,7 +6,7 @@ const { getConfig } = require( './Config.js' );
  * editor form and fix correctable issues.
  */
 const fixupFormValues = function() {
-    const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION } = getConfig();
+    const { REPLACE_NEW_LINE_CHARS, APPEND_FULL_STOP_TO_DESCRIPTION, COORD_PRECISION } = getConfig();
     // newlines in listing content won't render properly in lists, so replace them with <br> tags
     if ( REPLACE_NEW_LINE_CHARS ) {
         $('#input-content').val(
@@ -40,17 +40,25 @@ const fixupFormValues = function() {
     const longInput = ( $('#input-long').val() || '' ).trim();
 
     if ( latInput && longInput ) {
-        fixupLatLon( latInput, longInput );
+        fixupLatLon( latInput, longInput, COORD_PRECISION || 6 );
     }
     fixupUrl();
     return true;
 }
 
-const fixupLatLon = ( latInput, longInput ) => {
+const fixupLatLon = ( latInput, longInput, precision ) => {
+    const inputLatLength = Math.min(
+        latInput.indexOf('.') > - 1 ? latInput.split('.')[1].length : 0,
+        precision
+    );
+    const inputLongLength = Math.min(
+        longInput.indexOf('.') > - 1 ? longInput.split('.')[1].length : 0,
+        precision
+    );
     const lat = Number( latInput );
     const long = Number( longInput );
-    const savedLat = trimDecimal( lat, 6 );
-    const savedLong = trimDecimal( long, 6 );
+    const savedLat = trimDecimal( lat, inputLatLength );
+    const savedLong = trimDecimal( long, inputLongLength );
     $('#input-lat').val( savedLat );
     $('#input-long').val( savedLong );
 };

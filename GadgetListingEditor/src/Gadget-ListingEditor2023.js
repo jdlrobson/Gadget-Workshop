@@ -238,8 +238,8 @@ const fn = function() {
 					core.initListingEditorDialog(MODE_ADD, $this);
 				} );
 			}, true );
-			addEditButtons();
 		}
+		addEditButtons();
 		mw.hook( 'wikipage.content' ).add(
 			initListingEditor
 		);

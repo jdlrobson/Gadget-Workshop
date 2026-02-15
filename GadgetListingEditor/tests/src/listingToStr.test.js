@@ -54,4 +54,12 @@ describe( 'listingToStr', () => {
         } ) );
 		expect( wikitext ).toContain( '| type=random' );
     } );
+    it( 'works with custom fields', () => {
+                const wikitext = listingToStr( {
+            type: 'see',
+            name: 'Golden Gate Bridge'
+        } );
+		expect( wikitext ).toContain( '| hours= ' );
+		expect( wikitext ).toContain( '| content=\n' );
+    } );
 } );

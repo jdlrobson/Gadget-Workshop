@@ -42,7 +42,7 @@ const listingToStr = function(listing) {
             continue;
         }
         if (listing[parameter] !== '' || (!l.skipIfEmpty && !inlineListing)) {
-            saveStr += `| ${parameter}=${listing[parameter]}`;
+            saveStr += `| ${parameter}=${listing[parameter] || ''}`;
         }
         if (!saveStr.match(/\n$/)) {
             if (!inlineListing && l.newline) {
@@ -63,11 +63,11 @@ const listingToStr = function(listing) {
                 // skip unrecognized fields without values
                 continue;
             }
-            saveStr += `| ${key}=${listing[key]}`;
+            saveStr += `| ${key}=${listing[key] || ''}`;
             saveStr += (inlineListing) ? ' ' : '\n';
         }
     }
-    saveStr += `| ${LISTING_CONTENT_PARAMETER}=${listing[LISTING_CONTENT_PARAMETER]}`;
+    saveStr += `| ${LISTING_CONTENT_PARAMETER}=${listing[LISTING_CONTENT_PARAMETER] || ''}`;
     saveStr += (inlineListing || !listingParameters[LISTING_CONTENT_PARAMETER].newline) ? ' ' : '\n';
     saveStr += '}}';
     return saveStr;

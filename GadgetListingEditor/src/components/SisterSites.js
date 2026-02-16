@@ -10,6 +10,7 @@ const { translate } = require( '../translate.js' );
 const { CdxLookup } = require( '@wikimedia/codex' );
 
 module.exports = {
+    name: 'SisterSites',
     props: {
         api: {
             type: Object
@@ -212,6 +213,12 @@ module.exports = {
                     nextTick( () => {
                         wikidata.value = wikidataID;
                         wikidataInput.value = wikidataID;
+                        emit( 'updated:listing', {
+                            wikidata: wikidataID
+                        } );
+                        nextTick( () => {
+                            wikidataInput.value = wikidataID;
+                        } );
                     } );
                 })
             };

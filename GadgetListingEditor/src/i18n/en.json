@@ -1,4 +1,9 @@
 {
+    "@metadata": {
+		"authors": [
+            "Jon Robson"
+        ]
+    },
     "report-bug": "Report bug",
     "listing-editor-version": "Version $1",
     "coordinates-error": "Coordinates are in an invalid form. Please use decimal degrees.",

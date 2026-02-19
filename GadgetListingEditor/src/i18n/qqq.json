@@ -1,0 +1,42 @@
+{
+    "@metadata": {
+		"authors": [
+            "Jon Robson"
+        ]
+    },
+    "report-bug": "Report a bug link label",
+    "listing-editor-version": "Version number label. $1 is version number.",
+    "coordinates-error": "Validation error for coordinates in unexpected format.",
+    "placeholder-name": "input placeholder",
+    "placeholder-alt": "input placeholder for alternative name",
+    "placeholder-url": "input placeholder url",
+    "placeholder-address": "input placeholder",
+    "placeholder-directions": "input placeholder",
+    "placeholder-phone": "input placeholder",
+    "placeholder-tollfree": "input placeholder",
+    "placeholder-fax": "input placeholder",
+    "placeholder-email": "input placeholder",
+    "placeholder-lastedit": "input placeholder",
+    "placeholder-lat": "input placeholder for coordinate",
+    "placeholder-long": "input placeholder for coordinate",
+    "placeholder-hours": "input placeholder",
+    "placeholder-checkin": "input placeholder",
+    "placeholder-checkout": "input placeholder",
+    "placeholder-price": "input placeholder",
+    "placeholder-wikidata-label": "input placeholder",
+    "placeholder-wikipedia": "input placeholder",
+    "placeholder-image": "input placeholder",
+    "placeholder-content": "textarea label",
+    "placeholder-summary": "edit summary label",
+    "propertyP625-0": "lat",
+    "propertyP625-1":  "long",
+    "propertyP856": "url",
+    "propertyP968": "email",
+    "propertyP238": "alt",
+    "propertyP18": "image",
+    "addTitle": "overlay title for new listing",
+    "editTitle": "overlay title for existing listing",
+    "addTitleBeta": "overlay title for new listing in beta release",
+    "editTitleBeta": "overlay title for edit in beta",
+    "syncTitle": "button label for sync function"
+}

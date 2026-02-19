@@ -49,8 +49,9 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		var WIKIDATAID = PROJECT_CONFIG.WIKIDATAID;
 
 		var lookupField = function ( property ) {
-			const key = `property${property}`;
-			const value = TRANSLATIONS[`property${property}`] || [];
+			const key = `property${property}`
+			const tval = TRANSLATIONS[key];
+			const value = tval ? (typeof tval === 'string' ? [ tval ] : tval) : [];
 			let i = 0;
 			let v = TRANSLATIONS[`${key}-${i}`];
 			while ( v ) {

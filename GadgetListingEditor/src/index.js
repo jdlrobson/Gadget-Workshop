@@ -49,7 +49,16 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		var WIKIDATAID = PROJECT_CONFIG.WIKIDATAID;
 
 		var lookupField = function ( property ) {
-			return TRANSLATIONS[`property${property}`] || [];
+			const key = `property${property}`;
+			const value = TRANSLATIONS[`property${property}`] || [];
+			let i = 0;
+			let v = TRANSLATIONS[`${key}-${i}`];
+			while ( v ) {
+				value.push( v );
+				i++;
+				v = TRANSLATIONS[`${key}-${i}`];
+			}
+			return value;
 		};
 
 

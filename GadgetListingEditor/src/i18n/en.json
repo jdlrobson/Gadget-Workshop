@@ -23,22 +23,12 @@
     "placeholder-image": "image of place",
     "placeholder-content": "description of place",
     "placeholder-summary": "reason listing was changed",
-    "propertyP625": [
-        "lat",
-        "long"
-    ],
-    "propertyP856": [
-        "url"
-    ],
-    "propertyP968": [
-        "email"
-    ],
-    "propertyP238": [
-        "alt"
-    ],
-    "propertyP18": [
-        "image"
-    ],
+    "propertyP625-0": "lat",
+    "propertyP625-1":  "long",
+    "propertyP856": "url",
+    "propertyP968": "email",
+    "propertyP238": "alt",
+    "propertyP18": "image",
     "addTitle": "Add New Listing",
     "editTitle": "Edit Existing Listing",
     "addTitleBeta": "Add New Listing (Beta)",

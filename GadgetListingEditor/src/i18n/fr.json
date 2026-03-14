@@ -1,4 +1,4 @@
-{	
+{
 	"added": "Élément ajouté : ",
 	"address": "Adresse",
 	"addTitle": "Ajouter un nouvel élément",
@@ -108,5 +108,7 @@
 	"wikidataSharedMatch": "Aucune différence trouvée entre les valeurs locales et celles de Wikidata",
 	"wikidataSharedNotFound": "Aucune donnée n’a été récupérée depuis Wikidata",
 	"wikidataSyncBlurb": "La valeur sélectionnée sera modifiée sur les deux sites afin de correspondre (sélectionner une valeur vide la supprimera des deux). Ne rien sélectionner n’entraînera aucun changement. Il vaut mieux risquer de se tromper en choisissant une valeur que de ne rien faire — certains cas nécessitent volontairement des valeurs différentes entre les deux sites. Vous êtes encouragé à ajouter des références aux données modifiées directement sur Wikidata.",
-	"wpWd": "Obtenir l’ID depuis l’article Wikipédia"
+	"wpWd": "Obtenir l’ID depuis l’article Wikipédia",
+	"form-tab-label-edit": "Modifier",
+	"form-tab-label-preview": "Aperçu"
 }

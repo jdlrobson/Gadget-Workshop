@@ -89,5 +89,7 @@
 	"listingUpdatedTooltip": "Centang kotak ini jika informasi dalam butir senarai ini telah diverifikasi sebagai informasi terkini dan akurat, sehingga  tanggal pembaruan terakhir akan diubah ke tanggal hari ini",
 	"listingUpdatedLabel": "tandai butir senarai sebagai yang terkini?",
 	"natlCurrencyTitle": "Mata uang Nasional",
-	"intlCurrenciesTitle": "Mata uang Internasional"
+	"intlCurrenciesTitle": "Mata uang Internasional",
+	"form-tab-label-edit": "Sunting",
+	"form-tab-label-preview": "Pratinjau"
 }

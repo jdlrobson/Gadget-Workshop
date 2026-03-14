@@ -107,5 +107,7 @@
   "listingUpdatedTooltip": "Tích vào ô nếu thông tin trong địa điểm này là có thật và chính xác, và ngày cập nhật lần cuối sẽ được thay đổi thành ngày hiện tại",
   "listingUpdatedLabel": "đánh dấu địa điểm là đã cập nhật?",
   "natlCurrencyTitle": "",
-  "intlCurrenciesTitle": ""
+  "intlCurrenciesTitle": "",
+	"form-tab-label-edit": "Sửa đổi",
+	"form-tab-label-preview": "Xem trước"
 }

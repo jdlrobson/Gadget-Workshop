@@ -34,6 +34,8 @@
     "propertyP968": "email",
     "propertyP238": "alt",
     "propertyP18": "image",
+    "form-tab-label-edit": "Edit link label in edit form",
+    "form-tab-label-preview": "Preview button label in edit form",
     "addTitle": "overlay title for new listing",
     "editTitle": "overlay title for existing listing",
     "addTitleBeta": "overlay title for new listing in beta release",

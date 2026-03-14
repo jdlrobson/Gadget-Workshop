@@ -122,7 +122,7 @@ module.exports = {
     v-for="( tab, index ) in tabsData"
     :key="index"
     :name="tab.name"
-    :label="tab.label"
+    :label="$translate('form-tab-label-' + tab.name)"
 >
 <form id="listing-editor" ref="form">
     <template v-if="tab.name === 'edit'">
@@ -410,11 +410,9 @@ module.exports = {
         } );
         const tabsData = ref( [
             {
-                name: 'edit',
-                label: 'edit'
+                name: 'edit'
             }, {
-                name: 'preview',
-                label: 'preview'
+                name: 'preview'
             }
         ] );
         const form = ref(null);

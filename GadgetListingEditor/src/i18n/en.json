@@ -46,6 +46,8 @@
     "splurge": "Splurge",
     "cancel": "Cancel",
     "cancelAll": "Clear all",
+    "form-tab-label-edit": "edit",
+    "form-tab-label-preview": "preview",
     "preview": "Preview",
     "previewOff": "Preview off",
     "refresh": "↺",

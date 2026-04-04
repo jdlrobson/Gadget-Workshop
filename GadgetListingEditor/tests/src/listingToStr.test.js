@@ -1,4 +1,5 @@
 const listingToStr = require( '../../src/listingToStr' );
+const { setInlineListing } = require( '../../src/currentEdit.js' );
 
 const listingData = {
     type: 'see',
@@ -36,11 +37,13 @@ const expectedWikitext = `{{see
 
 describe( 'listingToStr', () => {
 	it( 'object can be converted to listing wikitext', () => {
+        setInlineListing(false);
         const wikitext = listingToStr( listingData );
 		expect( wikitext ).toBe( expectedWikitext );
 	} );
 
 	it( 'object cannot contain unexpected values', () => {
+        setInlineListing(false);
         const wikitext = listingToStr( Object.assign( listingData, {
             random: 'random text',
             randomEmpty: ''
@@ -50,13 +53,15 @@ describe( 'listingToStr', () => {
     } );
 
 	it( 'works with custom types', () => {
+        setInlineListing(false);
         const wikitext = listingToStr( Object.assign( listingData, {
             type: 'random'
         } ) );
 		expect( wikitext ).toContain( '| type=random' );
     } );
     it( 'works with custom fields', () => {
-                const wikitext = listingToStr( {
+        setInlineListing(false);
+        const wikitext = listingToStr( {
             type: 'see',
             name: 'Golden Gate Bridge'
         } );

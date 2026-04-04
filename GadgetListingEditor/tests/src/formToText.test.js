@@ -1,6 +1,7 @@
 const formToText = require( '../../src/formToText' );
 const { setSectionText, getSectionText } = require('../../src/currentEdit');
 const { NOTTINGHAM, SEE_TEST } = require('./assets/see');
+const { setInlineListing } = require( '../../src/currentEdit.js' );
 
 const content = 'Robin Hood innit!';
 const sherwoodWikitext = `{{see
@@ -97,6 +98,7 @@ describe( 'formToText', () => {
             reload: windowReload
         };
 		setSectionText( NOTTINGHAM );
+        setInlineListing(false);
         return formToText('add', sherwoodWikitext, sherwoodJSON, 15, dialog).then( () => {
             const MODIFIED_NOTTINGHAM = `${NOTTINGHAM}
 * ${sherwoodWikitext}`;
@@ -118,6 +120,7 @@ describe( 'formToText', () => {
             reload: windowReload
         };
 		setSectionText( NOTTINGHAM );
+        setInlineListing(false);
         return formToText('edit', SEE_TEST, {}, 15, dialog).then( () => {
             expect( window.location.reload ).toBeCalled();
             // reflect change in Wikidata value

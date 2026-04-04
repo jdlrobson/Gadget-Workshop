@@ -39,7 +39,7 @@ const updateVersion = () => ({
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '${version}'
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '${version}';
 `;
 		}
 	}

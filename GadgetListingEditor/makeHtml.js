@@ -54,7 +54,7 @@ setTimeout( () => {
 const titles = {
     en: 'Nottingham',
     fr: 'Arlanc',
-    it: 'Naro'
+    it: 'Eminönü'
 };
 
 [ 'en', 'fr', 'it' ].forEach( async ( lang ) => {

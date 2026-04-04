@@ -33,10 +33,8 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 	const missingTranslations = require( './missingTranslations.js' )(
 		userLanguage
 	);
-	Object.keys( missingTranslations ).forEach( ( lang ) => {
-		missingTranslations[ lang ].forEach( ( missing ) => {
-			mw.log.warn( `Language missing translation ${missing.key} will fall back to English.` );
-		} );
+	missingTranslations.forEach( ( missing ) => {
+		mw.log.warn( `Language missing translation ${missing.key} will fall back to English.` );
 	} );
 
 	translateModule.init( TRANSLATIONS );

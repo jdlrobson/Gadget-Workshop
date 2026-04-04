@@ -1,8 +1,8 @@
 {
   "name": "gadget-listing-editor",
-  "version": "4.11.0",
+  "version": "4.11.1",
   "scripts": {
-    "dev": "node makeHtml.js && npx http-server dist -p 8080",
+    "dev": "node makeHtml.js && npx http-server dist -p 9999",
     "start": "npm test && rollup -c",
     "test": "eslint . && jest"
   },

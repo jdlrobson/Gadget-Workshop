@@ -1,6 +1,6 @@
 {
   "name": "gadget-listing-editor",
-  "version": "4.10.3",
+  "version": "4.11.0",
   "scripts": {
     "dev": "node makeHtml.js && npx http-server dist -p 8080",
     "start": "npm test && rollup -c",

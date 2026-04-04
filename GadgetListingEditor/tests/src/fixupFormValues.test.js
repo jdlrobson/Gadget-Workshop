@@ -1,5 +1,5 @@
 const fixupFormValues = require( '../../src/fixupFormValues.js' );
-const { loadConfig } = require( '../../src/Config.js' );
+const { extendConfig } = require( '../../src/Config.js' );
 
 describe( 'fixupFormValues', () => {
 	const makeForm = () => {
@@ -45,7 +45,7 @@ describe( 'fixupFormValues', () => {
 
 
 	it( 'does not modify empty content', () => {
-		loadConfig( {
+		extendConfig( {
 			REPLACE_NEW_LINE_CHARS: true
 		} );
 		makeForm();
@@ -60,7 +60,7 @@ describe( 'fixupFormValues', () => {
 	} );
 
 	it( 'validate (REPLACE_NEW_LINE_CHARS)', () => {
-		loadConfig( {
+		extendConfig( {
 			REPLACE_NEW_LINE_CHARS: true,
 			APPEND_FULL_STOP_TO_DESCRIPTION: true
 		} );
@@ -76,7 +76,7 @@ describe( 'fixupFormValues', () => {
 	} );
 
 	it( 'validate (APPEND_FULL_STOP_TO_DESCRIPTION)', () => {
-		loadConfig( {
+		extendConfig( {
 			REPLACE_NEW_LINE_CHARS: false,
 			APPEND_FULL_STOP_TO_DESCRIPTION: false
 		} );

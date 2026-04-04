@@ -40,12 +40,13 @@ describe( 'listingToStr', () => {
 		expect( wikitext ).toBe( expectedWikitext );
 	} );
 
-	it( 'object can contain unexpected values', () => {
+	it( 'object cannot contain unexpected values', () => {
         const wikitext = listingToStr( Object.assign( listingData, {
             random: 'random text',
             randomEmpty: ''
         } ) );
-		expect( wikitext ).toContain( '| random=random text' );
+        // random is dropped since it is has not been identified as an allowed field
+		expect( wikitext ).not.toContain( '| random=random text' );
     } );
 
 	it( 'works with custom types', () => {

@@ -30,16 +30,12 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		TRANSLATIONS_ALL[ userLanguage ]
 	);
 
-	Object.keys( TRANSLATIONS_ALL.en ).forEach( function ( key ) {
-		// check the key is present in all the other configurations
-		Object.keys( TRANSLATIONS_ALL ).forEach( function ( lang ) {
-			if ( lang === 'en' ) {
-				return; // no need to check against itself
-			} else {
-				if ( TRANSLATIONS_ALL[ lang ][ key ] === undefined && userLanguage === lang) {
-					mw.log.warn( `Language missing translation ${key} will fall back to English.` );
-				}
-			}
+	const missingTranslations = require( './missingTranslations.js' )(
+		userLanguage
+	);
+	Object.keys( missingTranslations ).forEach( ( lang ) => {
+		missingTranslations[ lang ].forEach( ( missing ) => {
+			mw.log.warn( `Language missing translation ${missing.key} will fall back to English.` );
 		} );
 	} );
 

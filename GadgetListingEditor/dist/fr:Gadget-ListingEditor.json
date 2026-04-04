@@ -1,124 +1,150 @@
 {
-    "SHOW_LAST_EDITED_FIELD": true,
-    "SUPPORTED_SECTIONS": [
-      "listing",
-      "see",
-      "do",
-      "buy",
-      "eat",
-      "drink",
-      "go",
-      "sleep"
-    ],
-    "doNotParseDMS": true,
-    "iata": "{{IATA|%s}}",
-    "listingTypeRegExp": "({{\\s*(%s)\\b)(\\s*[\\|}])",
-    "REPLACE_NEW_LINE_CHARS": true,
-    "LISTING_TEMPLATES_OMIT": [],
-    "VALIDATE_CALLBACKS_EMAIL": false,
-    "SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT": true,
-    "ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP": true,
-    "LISTING_TYPE_PARAMETER": "type",
-    "LISTING_CONTENT_PARAMETER": "description",
-    "DEFAULT_LISTING_TEMPLATE": "Listing",
-    "SLEEP_TEMPLATE_PARAMETERS": {
-      "hours": {
-        "hideDivIfEmpty": "div_hours",
-        "skipIfEmpty": true
-      },
-      "checkin": {
-        "hideDivIfEmpty": null,
-        "skipIfEmpty": false
-      },
-      "checkout": {
-        "hideDivIfEmpty": null,
-        "skipIfEmpty": false
-      }
-    },
-    "LISTING_TEMPLATE_PARAMETERS": {
-      "type": {
-        "id": "input-type",
-        "hideDivIfEmpty": "div_type",
-        "newline": true
-      },
-      "name": {
-        "id": "input-name"
-      },
-      "alt": {
-        "id": "input-alt"
-      },
-      "url": {
-        "id": "input-url"
-      },
-      "email": {
-        "id": "input-email",
-        "newline": true
-      },
-      "address": {
-        "id": "input-address"
-      },
-      "lat": {
-        "id": "input-lat"
-      },
-      "long": {
-        "id": "input-long"
-      },
-      "directions": {
-        "id": "input-directions",
-        "newline": true
-      },
-      "phone": {
-        "id": "input-phone"
-      },
-      "tollfree": {
-        "id": "input-tollfree"
-      },
-      "fax": {
-        "id": "input-fax",
-        "hideDivIfEmpty": "div_fax",
-        "newline": true,
-        "skipIfEmpty": true
-      },
-      "hours": {
-        "id": "input-hours"
-      },
-      "checkin": {
-        "id": "input-checkin",
-        "hideDivIfEmpty": "div_checkin",
-        "skipIfEmpty": true
-      },
-      "checkout": {
-        "id": "input-checkout",
-        "hideDivIfEmpty": "div_checkout",
-        "skipIfEmpty": true
-      },
-      "price": {
-        "id": "input-price",
-        "newline": true
-      },
-      "wikipedia": {
-        "id": "input-wikipedia",
-        "skipIfEmpty": true
-      },
-      "image": {
-        "id": "input-image",
-        "skipIfEmpty": true
-      },
-      "wikidata": {
-        "id": "input-wikidata-value",
-        "newline": true,
-        "skipIfEmpty": true
-      },
-      "lastedit": {
-        "id": "input-lastedit",
-        "newline": true,
-        "skipIfEmpty": true
-      },
-      "content": {
-        "id": "input-content",
-        "newline": true
-      }
-    },
-    "WIKIDATAID": "19826574",
-    "SPECIAL_CHARS": []
+	"SHOW_LAST_EDITED_FIELD": true,
+	"SUPPORTED_SECTIONS": [
+		"listing",
+		"voir",
+		"faire",
+		"acheter",
+		"manger",
+		"sortir",
+		"aller",
+		"circuler",
+		"se loger"
+	],
+	"sectionType": {
+		"Aller": "aller",
+		"Circuler": "circuler",
+		"Voir": "voir",
+		"Faire": "faire",
+		"Acheter": "acheter",
+		"Manger": "manger",
+		"Communiquer": "listing",
+		"Boire_un_verre_.2F_Sortir": "sortir",
+		"Sortir": "sortir",
+		"Se_loger": "se loger",
+		"S.C3.A9curit.C3.A9": "listing"
+	},
+	"iata": "{{IATA|%s}}",
+	"listingTypeRegExp": "({{\\s*(%s)\\b)\\s*([\\|}])",
+	"APPEND_FULL_STOP_TO_DESCRIPTION": true,
+	"REPLACE_NEW_LINE_CHARS": false,
+	"LISTING_TEMPLATES_OMIT": [],
+	"VALIDATE_CALLBACKS_EMAIL": false,
+	"SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT": true,
+	"ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP": false,
+	"LISTING_TYPE_PARAMETER": "type",
+	"LISTING_CONTENT_PARAMETER": "description",
+	"DEFAULT_LISTING_TEMPLATE": "listing",
+	"SLEEP_TEMPLATE_PARAMETERS": {
+		"horaire": {
+			"hideDivIfEmpty": "div_hours",
+			"skipIfEmpty": true
+		},
+		"arrivée": {
+			"hideDivIfEmpty": null,
+			"skipIfEmpty": false
+		},
+		"départ": {
+			"hideDivIfEmpty": null,
+			"skipIfEmpty": false
+		}
+	},
+	"LISTING_TEMPLATE_PARAMETERS": {
+		"type": {
+			"id": "input-type",
+			"hideDivIfEmpty": "div_type",
+			"newline": true
+		},
+		"nom": {
+			"id": "input-name"
+		},
+		"alt": {
+			"id": "input-alt"
+		},
+		"url": {
+			"id": "input-url"
+		},
+		"email": {
+			"id": "input-email",
+			"newline": true
+		},
+		"adresse": {
+			"id": "input-address"
+		},
+		"latitude": {
+			"id": "input-lat"
+		},
+		"longitude": {
+			"id": "input-long"
+		},
+		"direction": {
+			"id": "input-directions",
+			"newline": true
+		},
+		"téléphone": {
+			"id": "input-phone"
+		},
+		"numéro gratuit": {
+			"id": "input-tollfree"
+		},
+		"fax": {
+			"id": "input-fax",
+			"newline": true
+		},
+		"horaire": {
+			"id": "input-hours"
+		},
+		"arrivée": {
+			"id": "input-checkin",
+			"hideDivIfEmpty": "div_checkin",
+			"skipIfEmpty": true
+		},
+		"départ": {
+			"id": "input-checkout",
+			"hideDivIfEmpty": "div_checkout",
+			"skipIfEmpty": true
+		},
+		"prix": {
+			"id": "input-price",
+			"newline": true
+		},
+		"wikipédia": {
+			"id": "input-wikipedia",
+			"skipIfEmpty": true
+		},
+		"image": {
+			"id": "input-image",
+			"skipIfEmpty": true
+		},
+		"facebook": {
+			"id": "input-facebook",
+			"skipIfEmpty": true
+		},
+		"twitter": {
+			"id": "input-twitter",
+			"skipIfEmpty": true
+		},
+		"wikidata": {
+			"id": "input-wikidata-value",
+			"newline": true,
+			"skipIfEmpty": true
+		},
+		"mise à jour": {
+			"id": "input-lastedit",
+			"newline": true,
+			"skipIfEmpty": true
+		},
+		"description": {
+			"id": "input-content",
+			"newline": true
+		}
+	},
+	"WIKIDATAID": "24237997",
+	"SPECIAL_CHARS": [
+		"È",
+		"É",
+		"â",
+		"î",
+		"ô"
+	]
 }

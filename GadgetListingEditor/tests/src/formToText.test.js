@@ -120,12 +120,17 @@ describe( 'formToText', () => {
             reload: windowReload
         };
 		setSectionText( NOTTINGHAM );
-        setInlineListing(false);
+        setInlineListing(true);
         return formToText('edit', SEE_TEST, {}, 15, dialog).then( () => {
             expect( window.location.reload ).toBeCalled();
             // reflect change in Wikidata value
-            const MODIFIED_NOTTINGHAM = NOTTINGHAM.replace( SEE_TEST, sherwoodWikitext );
-            expect( getSectionText() ).toBe( MODIFIED_NOTTINGHAM );
+            // strip whitespace to make easier to test since this contains other listings
+            const MODIFIED_NOTTINGHAM = NOTTINGHAM.replace( SEE_TEST, sherwoodWikitext )
+                .replace(/[ \n]/g, '')
+                // since this is an inline listing also strip the skip if empty fields
+                .replace( 'directions=|phone=|tollfree=|hours=|price=|', '' )
+                .replace( 'alt=|url=|email=|address=|', '');
+            expect( getSectionText().replace(/[ \n]/g, '') ).toBe( MODIFIED_NOTTINGHAM );
         } )
 	} );
 

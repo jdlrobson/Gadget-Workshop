@@ -41,7 +41,8 @@ const listingToStr = function(listing) {
             // processed last
             continue;
         }
-        if (listing[parameter] !== '' || (!l.skipIfEmpty && !inlineListing)) {
+        const isEmpty = listing[parameter] !== '' && listing[parameter] !== undefined;
+        if (isEmpty || (!l.skipIfEmpty && !inlineListing)) {
             saveStr += `| ${parameter}=${listing[parameter] || ''}`;
         }
         if (!saveStr.match(/\n$/)) {

@@ -1,5 +1,6 @@
 const listingToStr = require( '../../src/listingToStr' );
 const { setInlineListing } = require( '../../src/currentEdit.js' );
+const { loadConfig } = require( '../../src/Config.js' );
 
 const listingData = {
     type: 'see',
@@ -67,5 +68,25 @@ describe( 'listingToStr', () => {
         } );
 		expect( wikitext ).toContain( '| hours= ' );
 		expect( wikitext ).toContain( '| content=\n' );
+    } );
+    it( 'stores custom fields', () => {
+        setInlineListing(true);
+        loadConfig( require( '../../dist/fr:Gadget-ListingEditor.json' ) );
+        const wikitext = listingToStr( {
+            nom: 'Garage Mavel',
+            type: 'circuler',
+            facebook: 'Garage'
+        } );
+        expect( wikitext ).toContain( '| facebook=' );
+    } );
+    it( 'skips if empty if skipIfEmpty is set', () => {
+        setInlineListing(true);
+        loadConfig( require( '../../dist/fr:Gadget-ListingEditor.json' ) );
+        const wikitext = listingToStr( {
+            nom: 'Garage Mavel',
+            type: 'circuler',
+            'mise à jour': '2024-10-01',
+        } );
+        expect( wikitext ).not.toContain( '| facebook=' );
     } );
 } );

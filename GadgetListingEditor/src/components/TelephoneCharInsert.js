@@ -10,6 +10,6 @@ module.exports = {
     },
     template: `<div class="input-cc" :data-for="updates">
     <span v-for="(code, i) in codes"
-        class="listing-charinsert" :data-for="updates"><a>{{ code }}</a>&nbsp;</span>
+        class="listing-charinsert" :data-for="updates"><a>{{ code + ' ' }}</a></span>
 </div>`
 };

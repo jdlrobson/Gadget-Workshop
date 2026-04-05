@@ -30,7 +30,7 @@ describe( 'asyncGetColor', () => {
             set: ( key, value ) => {
                 cache[key] = value;
             }
-        }
+        };
     } );
 	it( 'caches', () => {
         $.ajax = respondWithColor;

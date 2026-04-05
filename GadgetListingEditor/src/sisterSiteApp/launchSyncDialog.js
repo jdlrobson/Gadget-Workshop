@@ -95,7 +95,7 @@ const makeSubmitFunction = function( updateModel, ss, closeFn ) {
                 closeFn();
             }
         });
-    }
+    };
 };
 
 module.exports = function (jsonObj, wikidataRecord, updateModel, ss, close ) {

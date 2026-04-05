@@ -61,6 +61,6 @@ const prepareRadio = function(field, claimValue, guid) {
         wikidataText: claimValue.map( a => a ).join( '\n' ),
         localText: editorField.map( ( selector ) => $(selector).val() ).join( '\n' )
     };
-}
+};
 
-module.exports = prepareRadio
+module.exports = prepareRadio;

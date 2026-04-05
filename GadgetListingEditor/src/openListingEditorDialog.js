@@ -60,7 +60,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             } else {
                 reset();
             }
-        }
+        };
     };
 
     const onCaptchaSubmit = ( setCaptcha, closeAction ) => {

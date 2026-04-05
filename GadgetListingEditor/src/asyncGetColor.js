@@ -2,7 +2,7 @@ const asyncGetColor = ( listingType ) => {
     const colorKey = `listingeditor-color-${listingType}`;
     const cachedColor = mw.storage.get(colorKey);
     if ( cachedColor ) {
-        return $.Deferred().resolve( cachedColor )
+        return $.Deferred().resolve( cachedColor );
     }
     return $.ajax ({
         listingType,

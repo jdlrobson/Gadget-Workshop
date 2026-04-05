@@ -13,7 +13,7 @@ const savePayload = ( editPayload ) => {
         const rtn = $.Deferred();
         setTimeout(() => {
             if ( !abortedByUser ) {
-                rtn.reject( res, data )
+                rtn.reject( res, data );
             }
         }, window.__save_debug_timeout || 5000 );
         rtn.abort = abort( rtn );
@@ -23,9 +23,9 @@ const savePayload = ( editPayload ) => {
         const rtn = $.Deferred();
         setTimeout(() => {
             if ( !abortedByUser ) {
-                rtn.resolve( res )
+                rtn.resolve( res );
             }
-            rtn.resolve( res )
+            rtn.resolve( res );
         }, window.__save_debug_timeout || 5000 );
         rtn.abort = abort( rtn );
         return rtn;
@@ -87,7 +87,7 @@ const savePayload = ( editPayload ) => {
             return api.postWithToken(
                 "csrf",
                 editPayload
-            )
+            );
     }
 };
 

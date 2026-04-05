@@ -19,7 +19,7 @@ describe( 'savePayload', () => {
 	it( 'posts and returns result', () => {
         savePayload( NOTTINGHAM ).then( (r) => {
             expect( r.edit.result ).toBe( 'Success' );
-        } )
+        } );
 	} );
 
 	it( 'for debugging we can force it to return successfully', () => {

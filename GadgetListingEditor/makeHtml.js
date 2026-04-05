@@ -68,7 +68,7 @@ const titles = {
         content,
         script: script( lang ),
         theme: 'day'
-    }
+    };
     Object.keys( data ).forEach( key => {
         console.log( `Replacing <!-- data:${key} --> with ${data[key].substring( 0, 100 )}...` );
         html = html.replaceAll( `<!-- data:${key} -->`, data[key] );

@@ -15,6 +15,7 @@ module.exports = {
         "mw": "readonly"
     },
     "rules": {
+        "semi": 2,
         "no-shadow": 2,
         "no-trailing-spaces": 2,
         "template-curly-spacing": [ "error", "never" ],
@@ -22,4 +23,4 @@ module.exports = {
         "object-shorthand": 2,
         "prefer-template": 2
     }
-}
+};

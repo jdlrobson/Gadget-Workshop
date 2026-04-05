@@ -220,7 +220,7 @@ module.exports = {
                             wikidataInput.value = wikidataID;
                         } );
                     } );
-                })
+                });
             };
 
         const onBlur = () => {
@@ -233,7 +233,7 @@ module.exports = {
                 wikipedia: wikipediaInput.value,
                 wikidata: wikidataInput.value
             } );
-        }
+        };
 
         function onWikidataSelected( selected ) {
             if ( selected ) {
@@ -294,7 +294,7 @@ module.exports = {
                     namespace: 0
                 } )
             ).then( (  jsonObj ) => {
-                wikipediaMenuItems.value = mapSearchResult( jsonObj )
+                wikipediaMenuItems.value = mapSearchResult( jsonObj );
             } );
         }
 
@@ -322,6 +322,6 @@ module.exports = {
             onCommonsInput,
             wikipedia,
             commons
-        }
+        };
     }
 };

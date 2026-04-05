@@ -16,7 +16,7 @@ const fixupFormValues = function() {
     }
     // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
     // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
-    const $content = $('#input-content')
+    const $content = $('#input-content');
     const contentValue = $content.val() || '';
     if ( APPEND_FULL_STOP_TO_DESCRIPTION && contentValue ) {
         $content
@@ -44,7 +44,7 @@ const fixupFormValues = function() {
     }
     fixupUrl();
     return true;
-}
+};
 
 const fixupLatLon = ( latInput, longInput, precision ) => {
     const inputLatLength = Math.min(

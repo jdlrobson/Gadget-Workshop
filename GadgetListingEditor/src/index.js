@@ -81,7 +81,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 
 	return {
 		initListingEditorDialog: require( './initListingEditorDialog.js' )
-	}
+	};
 } );
 
 //</nowiki>

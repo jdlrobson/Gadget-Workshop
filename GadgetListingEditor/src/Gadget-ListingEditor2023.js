@@ -218,7 +218,7 @@ const fn = function() {
 			return;
 		}
 		wrapContent();
-		$bodyContent.attr( 'data-listing-editor-enabled', '1' )
+		$bodyContent.attr( 'data-listing-editor-enabled', '1' );
 		loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
 			contentTransform.addListingButtons(
 				_sectionToTemplateType,
@@ -245,7 +245,7 @@ const fn = function() {
 		);
 	};
 	initListingEditor();
-}
+};
 
 if ( typeof process === 'undefined' ) {
 	$(fn);

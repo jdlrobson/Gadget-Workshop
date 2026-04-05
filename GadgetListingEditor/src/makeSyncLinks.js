@@ -31,7 +31,7 @@ const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
 
 const makeSyncLinks = function(unprocessedValue, mode, valBool) {
     const href = prepareSyncUrl( unprocessedValue, mode, valBool );
-    return `<a target="_blank" rel="noopener noreferrer"href="${href}">`
+    return `<a target="_blank" rel="noopener noreferrer"href="${href}">`;
 };
 
 module.exports = {

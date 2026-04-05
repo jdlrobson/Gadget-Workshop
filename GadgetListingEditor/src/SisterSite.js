@@ -38,10 +38,10 @@ module.exports = function() {
                 index = index + 1;
                 if( !(propertyObj[index]) ) { return null; } // if we run out of langs and none of them matched
             }
-            if (guidBool === true) { return propertyObj[index].id }
+            if (guidBool === true) { return propertyObj[index].id; }
             return propertyObj[index].mainsnak.datavalue.value.text;
         }
-        if (guidBool === true) { return propertyObj[index].id }
+        if (guidBool === true) { return propertyObj[index].id; }
         return propertyObj[index].mainsnak.datavalue.value;
     };
     // parse the wikidata "entity" object from the wikidata response
@@ -125,7 +125,7 @@ module.exports = function() {
                     }
                 }
             }
-            return Promise.resolve( promises )
+            return Promise.resolve( promises );
         };
         var api = new mw.ForeignApi( API_WIKIDATA );
         return api.postWithToken( 'csrf', ajaxData, {async: false} ).then( ajaxSuccess );

@@ -4,7 +4,7 @@ let config = {};
 
 function generateWikidataClaims() {
     const lookupField = function ( property ) {
-        const key = `property${property}`
+        const key = `property${property}`;
         let value = [];
         try {
             const tval = translate(key);
@@ -115,7 +115,7 @@ const loadConfig = ( newConfig, projectConfig ) => {
     config = Object.assign( {}, newConfig, projectConfig );
     config.LISTING_TEMPLATES = generateListingTemplateConfig( config );
     config.WIKIDATA_CLAIMS = generateWikidataClaims();
-}
+};
 
 const extendConfig = ( newConfig ) => {
     config = Object.assign( {}, newConfig );

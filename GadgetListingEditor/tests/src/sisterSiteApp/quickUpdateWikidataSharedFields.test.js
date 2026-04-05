@@ -11,7 +11,7 @@ describe( 'quickUpdateWikidataSharedFields', () => {
 		$( '<input id="input-url">' ).appendTo( document.body );
 		$( '<input id="input-lat">' ).appendTo( document.body );
 		$( '<input id="input-long">' ).appendTo( document.body );
-	})
+	});
 	it( 'maps results', () => {
 		const api = SisterSite();
 		api.ajaxSisterSiteSearch = jest.fn( () => Promise.resolve( wikidataClaims ) );

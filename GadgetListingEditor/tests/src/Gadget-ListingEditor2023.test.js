@@ -1,4 +1,4 @@
-const html = require( './assets/Samara.js' )
+const html = require( './assets/Samara.js' );
 const config = require( '../../dist/Gadget-ListingEditor.json' );
 describe( 'initialization', () => {
     const core = {
@@ -38,5 +38,5 @@ describe( 'initialization', () => {
                 resolve();
             }, 1000 );
         } );
-    } )
+    } );
 } );

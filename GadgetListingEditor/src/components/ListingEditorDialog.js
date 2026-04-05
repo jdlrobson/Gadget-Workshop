@@ -141,7 +141,7 @@ v-model:open="isOpen"
                 targetElement.value.appendChild( dialogElement );
             }
             onMount( targetElement.value );
-        })
+        });
         return {
             onCaptchaSubmit: () => {
                 onCaptchaSubmit( setCaptcha, closeAction );
@@ -157,6 +157,6 @@ v-model:open="isOpen"
             isOpen,
             helpClickAction: onHelp,
             submitAction
-        }
+        };
     }
 } );

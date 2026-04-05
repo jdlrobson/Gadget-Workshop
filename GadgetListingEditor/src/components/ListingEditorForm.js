@@ -431,7 +431,7 @@ module.exports = {
                 clearInterval( previewTimeout );
                 mw.util.throttle( () => {
                     previewTimeout = setTimeout( () => {
-                        showPreview( {} )
+                        showPreview( {} );
                     currentTab.value = activeTab;
                     }, 200 );
                 }, 300 )();

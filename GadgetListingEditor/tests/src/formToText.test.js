@@ -104,7 +104,7 @@ describe( 'formToText', () => {
 * ${sherwoodWikitext}`;
             expect( window.location.reload ).toBeCalled();
             expect( getSectionText() ).toBe( MODIFIED_NOTTINGHAM );
-        } )
+        } );
 	} );
 
 
@@ -131,7 +131,7 @@ describe( 'formToText', () => {
                 .replace( 'directions=|phone=|tollfree=|hours=|price=|', '' )
                 .replace( 'alt=|url=|email=|address=|', '');
             expect( getSectionText().replace(/[ \n]/g, '') ).toBe( MODIFIED_NOTTINGHAM );
-        } )
+        } );
 	} );
 
     it( 'missing fields are not overwritten', () => {

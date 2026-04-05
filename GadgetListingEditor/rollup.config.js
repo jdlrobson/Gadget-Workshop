@@ -41,9 +41,9 @@ const updateVersion = () => ({
  //<nowiki>
 window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '${version}';
 `;
-		}
+		};
 	}
-  })
+  });
 
 
 module.exports = [

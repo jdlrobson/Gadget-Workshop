@@ -33,7 +33,7 @@ function render( Dialog, options ) {
             app.unmount();
             close();
         }
-    }
+    };
 }
 
 module.exports = {

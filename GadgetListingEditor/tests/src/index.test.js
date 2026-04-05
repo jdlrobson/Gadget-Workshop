@@ -12,7 +12,7 @@ describe( 'index', () => {
         lastEdit.type = 'checkbox';
         lastEdit.checked = true;
         document.body.appendChild( lastEdit );
-    })
+    });
 	it( 'is responsible for loading config', () => {
         main(
             [ 0, 400 ],

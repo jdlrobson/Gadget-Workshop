@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.11.0
+ * Listing Editor v4.11.3
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.11.0';
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.11.3';
 
 'use strict';
 
@@ -152,7 +152,6 @@ var sectionToTemplateType$1 = function ( config ) {
         return config.sectionType;
     }
     throw new Error( `Please define config.sectionType in [[MediaWikiGadget-ListingEditor.json]].
-Failure to do this will break future versions of the listing editor.
 See https://en.wikivoyage.org/w/index.php?title=MediaWiki%3AGadget-ListingEditor.json for reference.` );
 };
 
@@ -319,6 +318,9 @@ const fn = function() {
 			return mw.loader.using( GADGET_CONFIG_NAME ).then( ( req ) => {
 				config = req( GADGET_CONFIG_NAME );
 				return config;
+			}, () => {
+				console.log( 'Error: Please define ext.gadget.ListingEditorConfig in your project to use the listing editor');
+				return Promise.reject();
 			} );
 		}
 	}
@@ -331,6 +333,8 @@ const fn = function() {
 			return loadConfigFromSite().then( ( _config ) => {
 				sectionToTemplateTypeFn = sectionToTemplateType( _config );
 				return sectionToTemplateTypeFn;
+			}, () => {
+				return Promise.reject();
 			} );
 		}
 	}
@@ -344,6 +348,8 @@ const fn = function() {
 		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
 			const module = localModuleForDebugging || req( GADGET_NAME );
 			return module( ALLOWED_NAMESPACE, _sectionToTemplateType, _config );
+		}, () => {
+			throw new Error( 'Error in setup' );
 		} );
 	}
 

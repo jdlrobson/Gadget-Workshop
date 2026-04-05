@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.11.0
+ * Listing Editor v4.11.3
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.11.0';
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.11.3';
 
 'use strict';
 
@@ -1394,7 +1394,7 @@ function requireDialogs () {
 	            app.unmount();
 	            close();
 	        }
-	    }
+	    };
 	}
 
 	dialogs = {
@@ -1568,7 +1568,7 @@ v-model:open="isOpen"
 	            isOpen,
 	            helpClickAction: onHelp,
 	            submitAction
-	        }
+	        };
 	    }
 	} );
 	return ListingEditorDialog;
@@ -1991,7 +1991,7 @@ function requireMakeSyncLinks () {
 
 	const makeSyncLinks = function(unprocessedValue, mode, valBool) {
 	    const href = prepareSyncUrl( unprocessedValue, mode, valBool );
-	    return `<a target="_blank" rel="noopener noreferrer"href="${href}">`
+	    return `<a target="_blank" rel="noopener noreferrer"href="${href}">`;
 	};
 
 	makeSyncLinks_1 = {
@@ -2121,10 +2121,10 @@ function requireSisterSite () {
 	                index = index + 1;
 	                if( !(propertyObj[index]) ) { return null; } // if we run out of langs and none of them matched
 	            }
-	            if (guidBool === true) { return propertyObj[index].id }
+	            if (guidBool === true) { return propertyObj[index].id; }
 	            return propertyObj[index].mainsnak.datavalue.value.text;
 	        }
-	        if (guidBool === true) { return propertyObj[index].id }
+	        if (guidBool === true) { return propertyObj[index].id; }
 	        return propertyObj[index].mainsnak.datavalue.value;
 	    };
 	    // parse the wikidata "entity" object from the wikidata response
@@ -2208,7 +2208,7 @@ function requireSisterSite () {
 	                    }
 	                }
 	            }
-	            return Promise.resolve( promises )
+	            return Promise.resolve( promises );
 	        };
 	        var api = new mw.ForeignApi( API_WIKIDATA );
 	        return api.postWithToken( 'csrf', ajaxData, {async: false} ).then( ajaxSuccess );
@@ -2448,7 +2448,7 @@ function requireLaunchSyncDialog () {
 	                closeFn();
 	            }
 	        });
-	    }
+	    };
 	};
 
 	launchSyncDialog = function (jsonObj, wikidataRecord, updateModel, ss, close ) {
@@ -2927,7 +2927,7 @@ function requireSisterSites () {
 	            onCommonsInput,
 	            wikipedia,
 	            commons
-	        }
+	        };
 	    }
 	};
 	return SisterSites;
@@ -3249,7 +3249,7 @@ function requireAsyncGetColor () {
 	    const colorKey = `listingeditor-color-${listingType}`;
 	    const cachedColor = mw.storage.get(colorKey);
 	    if ( cachedColor ) {
-	        return $.Deferred().resolve( cachedColor )
+	        return $.Deferred().resolve( cachedColor );
 	    }
 	    return $.ajax ({
 	        listingType,
@@ -4317,7 +4317,7 @@ function requireSavePayload () {
 	            return api.postWithToken(
 	                "csrf",
 	                editPayload
-	            )
+	            );
 	    }
 	};
 
@@ -5137,7 +5137,7 @@ function requireOpenListingEditorDialog () {
 	            } else {
 	                reset();
 	            }
-	        }
+	        };
 	    };
 
 	    const onCaptchaSubmit = ( setCaptcha, closeAction ) => {
@@ -5492,10 +5492,8 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 	const missingTranslations = requireMissingTranslations()(
 		userLanguage
 	);
-	Object.keys( missingTranslations ).forEach( ( lang ) => {
-		missingTranslations[ lang ].forEach( ( missing ) => {
-			mw.log.warn( `Language missing translation ${missing.key} will fall back to English.` );
-		} );
+	missingTranslations.forEach( ( missing ) => {
+		mw.log.warn( `Language missing translation ${missing.key} will fall back to English.` );
 	} );
 
 	translateModule.init( TRANSLATIONS );
@@ -5542,7 +5540,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 
 	return {
 		initListingEditorDialog: requireInitListingEditorDialog()
-	}
+	};
 } );
 
 //</nowiki>

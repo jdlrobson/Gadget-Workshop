@@ -52,12 +52,15 @@ setTimeout( () => {
 `;
 
 const titles = {
+	vi: 'Sainshand',
+	id: 'Danau_Toba/Utara',
+	he: 'טוקיו',
     en: 'Nottingham',
     fr: 'Arlanc',
     it: 'Eminönü'
 };
 
-[ 'en', 'fr', 'it' ].forEach( async ( lang ) => {
+Object.keys(titles).forEach( async ( lang ) => {
     let html = fs.readFileSync( `./template.html`, 'utf-8' );
     const title = titles[ lang ];
     const json = await fetch( `https://${lang}.wikivoyage.org/w/api.php?action=parse&format=json&page=${title}&parser=parsoid&formatversion=2` ).then( res => res.json() );

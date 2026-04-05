@@ -156,6 +156,9 @@ const fn = function() {
 			return mw.loader.using( GADGET_CONFIG_NAME ).then( ( req ) => {
 				config = req( GADGET_CONFIG_NAME );
 				return config;
+			}, () => {
+				console.log( 'Error: Please define ext.gadget.ListingEditorConfig in your project to use the listing editor');
+				return Promise.reject();
 			} );
 		}
 	}
@@ -168,6 +171,8 @@ const fn = function() {
 			return loadConfigFromSite().then( ( _config ) => {
 				sectionToTemplateTypeFn = sectionToTemplateType( _config );
 				return sectionToTemplateTypeFn;
+			}, () => {
+				return Promise.reject();
 			} );
 		}
 	}
@@ -181,6 +186,8 @@ const fn = function() {
 		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
 			const module = localModuleForDebugging || req( GADGET_NAME );
 			return module( ALLOWED_NAMESPACE, _sectionToTemplateType, _config );
+		}, () => {
+			throw new Error( 'Error in setup' );
 		} );
 	}
 

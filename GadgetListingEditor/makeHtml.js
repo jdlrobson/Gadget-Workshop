@@ -76,6 +76,7 @@ Object.keys(titles).forEach( async ( lang ) => {
     const content = json.parse.text;
     const data = {
         lang,
+		languser: lang,
 		version: require( './package.json' ).version,
         title,
         content,

@@ -29,7 +29,6 @@ function generateWikidataClaims( config ) {
     };
 
     const lookupField = function ( property ) {
-        console.log('lookup', property, WIKIDATA_FIELDS[ property ]);
         return WIKIDATA_FIELDS[ property ];
     };
 

@@ -31,6 +31,10 @@ const hideEmptyFormValues = ( form, listingParameters ) => {
 module.exports = {
     name: 'ListingEditorForm',
     props: {
+        customFields: {
+            type: Array,
+            default: []
+        },
         aka: {
             type: String
         },
@@ -275,6 +279,17 @@ module.exports = {
                     :placeholder="$translate('placeholder-url' )"
                     :modelValue="url"></cdx-text-input></div>
             </div>
+            <div v-for="field in customFields" :key="field.name" class="editor-row">
+                <div class="editor-label-col">
+                    <label :for="'input-'+field.name">{{ field.name }}</label>
+                </div>
+                <div>
+                    <cdx-text-input class="editor-fullwidth" :id="'input-'+field.name"
+                        :placeholder="field.name"
+                        v-model="customFieldData[field.name]"
+                        :modelValue="customFieldData[field.name]"></cdx-text-input>
+                </div>
+            </div>
             <div id="div_email" class="editor-row">
                 <div class="editor-label-col"><label for="input-email">{{ $translate( 'email' ) }}<span class="wikidata-update"></span></label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-email"
@@ -387,6 +402,7 @@ module.exports = {
     emits: [ 'updated:listing' ],
     setup( props, { emit } ) {
         const { showLastEditedField, mode, listingType, lat, long, lastedit,
+            customFields,
             email,
             wikidata, wikipedia, image,
             aka, address, listingName
@@ -463,7 +479,14 @@ module.exports = {
             onListingUpdate();
         };
 
+        const customFieldData = ref( {} );
+        customFields.forEach(( field ) => {
+            customFieldData.value[field.name] = field.value;
+        } );
+
         return {
+            customFields,
+            customFieldData,
             currentImage,
             currentWikidata,
             currentWikipedia,

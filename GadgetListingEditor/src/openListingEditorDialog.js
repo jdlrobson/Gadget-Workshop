@@ -109,12 +109,12 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         hours, checkin, checkout, price,
         name, content, lastedit, url, ...other } = listingTemplateAsMapEn;
     const customFields = [];
-    Object.keys( other ).forEach( name => {
-        if ( name !== 'type' ) {
+    Object.keys( other ).forEach( ( customFieldName ) => {
+        if ( customFieldName !== 'type' ) {
             customFields.push( {
-                name,
-                label: LISTING_TEMPLATE_PARAMETERS[ name ].label || name,
-                value: other[name]
+                name: customFieldName,
+                label: LISTING_TEMPLATE_PARAMETERS[ customFieldName ].label || customFieldName,
+                value: other[customFieldName]
             } );
         }
     } );

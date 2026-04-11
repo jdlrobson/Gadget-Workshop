@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.11.3
+ * Listing Editor v4.12.8-next
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.11.3';
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.12.8-next';
 
 'use strict';
 
@@ -39,10 +39,10 @@ function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
-var propertyP856$3 = "url";
-var propertyP968$3 = "email";
-var propertyP238$3 = "alt";
-var propertyP18$3 = "image";
+var propertyP856$1 = "url";
+var propertyP968$1 = "email";
+var propertyP238$1 = "alt";
+var propertyP18$1 = "image";
 var addTitle$4 = "Add New Listing";
 var editTitle$4 = "Edit Existing Listing";
 var addTitleBeta$4 = "Add New Listing (Beta)";
@@ -155,10 +155,10 @@ var require$$0 = {
 	"placeholder-summary": "reason listing was changed",
 	"propertyP625-0": "lat",
 	"propertyP625-1": "long",
-	propertyP856: propertyP856$3,
-	propertyP968: propertyP968$3,
-	propertyP238: propertyP238$3,
-	propertyP18: propertyP18$3,
+	propertyP856: propertyP856$1,
+	propertyP968: propertyP968$1,
+	propertyP238: propertyP238$1,
+	propertyP18: propertyP18$1,
 	addTitle: addTitle$4,
 	editTitle: editTitle$4,
 	addTitleBeta: addTitleBeta$4,
@@ -243,10 +243,6 @@ var require$$0 = {
 	intlCurrenciesTitle: intlCurrenciesTitle$4
 };
 
-var propertyP856$2 = "url";
-var propertyP968$2 = "email";
-var propertyP238$2 = "tên khác";
-var propertyP18$2 = "hình ảnh";
 var addTitle$3 = "Thêm địa điểm mới";
 var editTitle$3 = "Sửa địa điểm hiện tại";
 var addTitleBeta$3 = "Thêm địa điểm mới (beta)";
@@ -351,12 +347,6 @@ var require$$1 = {
 	"placeholder-image": "hình ảnh địa điểm",
 	"placeholder-content": "mô tả địa điểm",
 	"placeholder-summary": "lý do thay đổi địa điểm",
-	"propertyP625-0": "vĩ độ",
-	"propertyP625-1": "kinh độ",
-	propertyP856: propertyP856$2,
-	propertyP968: propertyP968$2,
-	propertyP238: propertyP238$2,
-	propertyP18: propertyP18$2,
 	addTitle: addTitle$3,
 	editTitle: editTitle$3,
 	addTitleBeta: addTitleBeta$3,
@@ -482,10 +472,10 @@ var phone$2 = "Téléphone";
 var preview$2 = "Aperçu";
 var previewOff$2 = "Pas d’aperçu";
 var price$2 = "Prix";
-var propertyP18$1 = "image";
-var propertyP238$1 = "alt";
-var propertyP856$1 = "site";
-var propertyP968$1 = "email";
+var propertyP18 = "image";
+var propertyP238 = "alt";
+var propertyP856 = "site";
+var propertyP968 = "email";
 var refresh$2 = "↺";
 var refreshTitle$2 = "Actualiser l’aperçu";
 var removed$2 = "Élément effacé : ";
@@ -590,12 +580,12 @@ var require$$2 = {
 	preview: preview$2,
 	previewOff: previewOff$2,
 	price: price$2,
-	propertyP18: propertyP18$1,
-	propertyP238: propertyP238$1,
+	propertyP18: propertyP18,
+	propertyP238: propertyP238,
 	"propertyP625-0": "lat",
 	"propertyP625-1": "long",
-	propertyP856: propertyP856$1,
-	propertyP968: propertyP968$1,
+	propertyP856: propertyP856,
+	propertyP968: propertyP968,
 	refresh: refresh$2,
 	refreshTitle: refreshTitle$2,
 	removed: removed$2,
@@ -849,10 +839,6 @@ var phone = "Telefono";
 var preview = "Anteprima";
 var previewOff = "Niente anteprima";
 var price = "Prezzo";
-var propertyP18 = "immagine";
-var propertyP238 = "alt";
-var propertyP856 = "sito";
-var propertyP968 = "email";
 var refresh = "↺";
 var refreshTitle = "Aggiorna anteprima";
 var removed = "Rimosso elemento: ";
@@ -957,12 +943,6 @@ var require$$4 = {
 	preview: preview,
 	previewOff: previewOff,
 	price: price,
-	propertyP18: propertyP18,
-	propertyP238: propertyP238,
-	"propertyP625-0": "lat",
-	"propertyP625-1": "long",
-	propertyP856: propertyP856,
-	propertyP968: propertyP968,
 	refresh: refresh,
 	refreshTitle: refreshTitle,
 	removed: removed,
@@ -1056,7 +1036,7 @@ var makeTranslateFunction$1 = ( translations ) => {
 const makeTranslateFunction = makeTranslateFunction$1;
 let internalTranslateFn;
 
-const translate$1 = ( key, ...parameters ) => {
+const translate = ( key, ...parameters ) => {
     if ( !internalTranslateFn ) {
         throw 'Translations not setup';
     } else {
@@ -1069,43 +1049,44 @@ const init = ( TRANSLATIONS ) => {
 };
 
 var translate_1 = {
-    translate: translate$1,
+    translate,
     init
 };
 
-const { translate } = translate_1;
-
 let config = {};
 
-function generateWikidataClaims() {
+function generateWikidataClaims( newConfig ) {
+    const { LISTING_TEMPLATE_PARAMETERS } = newConfig;
+    const CLAIM_NAMES = {};
+
+    const mapToClaimKey = ( id ) => {
+        const claimKeyMaps = {
+            'input-lat': 'lat',
+            'input-long': 'long',
+            'input-image': 'image',
+            'input-url': 'url',
+            'input-email': 'email',
+            'input-alt': 'alt'
+        };
+        return claimKeyMaps[ id ];
+    };
+    Object.keys( LISTING_TEMPLATE_PARAMETERS ).forEach( key => {
+        const id =  LISTING_TEMPLATE_PARAMETERS[ key ].id;
+        const claimKey = mapToClaimKey( id );
+        if ( claimKey ) {
+            CLAIM_NAMES[ claimKey ] = key;
+        }
+    } );
+    const WIKIDATA_FIELDS = {
+        P18: [ CLAIM_NAMES.image ],
+        P238: [ CLAIM_NAMES.alt ],
+        P625: [ CLAIM_NAMES.lat, CLAIM_NAMES.long ],
+        P856: [ CLAIM_NAMES.url ],
+        P968: [ CLAIM_NAMES.email ]
+    };
+
     const lookupField = function ( property ) {
-        const key = `property${property}`;
-        let value = [];
-        try {
-            const tval = translate(key);
-            if ( typeof tval === 'string' ) {
-                value = [ tval ];
-            }
-        } catch ( e ) {
-            // all good.
-        }
-        let i = 0;
-        let v;
-        try {
-            v = translate(`${key}-${i}`);
-        } catch ( e ) {
-            return value;
-        }
-        while ( v ) {
-            value.push( v );
-            i++;
-            try {
-                v = translate(`${key}-${i}`);
-            } catch ( e ) {
-                v = undefined;
-            }
-        }
-        return value;
+        return WIKIDATA_FIELDS[ property ];
     };
 
 
@@ -1189,7 +1170,7 @@ const loadConfig$1 = ( newConfig, projectConfig ) => {
     _loaded = true;
     config = Object.assign( {}, newConfig, projectConfig );
     config.LISTING_TEMPLATES = generateListingTemplateConfig( config );
-    config.WIKIDATA_CLAIMS = generateWikidataClaims();
+    config.WIKIDATA_CLAIMS = generateWikidataClaims( config );
 };
 
 const extendConfig = ( newConfig ) => {
@@ -3383,6 +3364,10 @@ function requireListingEditorForm () {
 	ListingEditorForm = {
 	    name: 'ListingEditorForm',
 	    props: {
+	        customFields: {
+	            type: Array,
+	            default: []
+	        },
 	        aka: {
 	            type: String
 	        },
@@ -3627,6 +3612,17 @@ function requireListingEditorForm () {
                     :placeholder="$translate('placeholder-url' )"
                     :modelValue="url"></cdx-text-input></div>
             </div>
+            <div v-for="field in customFields" :key="field.name" class="editor-row">
+                <div class="editor-label-col">
+                    <label :for="'input-'+field.name">{{ field.name }}</label>
+                </div>
+                <div>
+                    <cdx-text-input class="editor-fullwidth" :id="'input-'+field.name"
+                        :placeholder="field.name"
+                        v-model="customFieldData[field.name]"
+                        :modelValue="customFieldData[field.name]"></cdx-text-input>
+                </div>
+            </div>
             <div id="div_email" class="editor-row">
                 <div class="editor-label-col"><label for="input-email">{{ $translate( 'email' ) }}<span class="wikidata-update"></span></label></div>
                 <div><cdx-text-input class="editor-fullwidth" id="input-email"
@@ -3739,6 +3735,7 @@ function requireListingEditorForm () {
 	    emits: [ 'updated:listing' ],
 	    setup( props, { emit } ) {
 	        const { showLastEditedField, mode, listingType, lat, long, lastedit,
+	            customFields,
 	            email,
 	            wikidata, wikipedia, image,
 	            aka, address, listingName
@@ -3815,7 +3812,14 @@ function requireListingEditorForm () {
 	            onListingUpdate();
 	        };
 
+	        const customFieldData = ref( {} );
+	        customFields.forEach(( field ) => {
+	            customFieldData.value[field.name] = field.value;
+	        } );
+
 	        return {
+	            customFields,
+	            customFieldData,
 	            currentImage,
 	            currentWikidata,
 	            currentWikipedia,
@@ -3984,9 +3988,14 @@ function requireListingEditorFormDialog () {
         :price="price"
         :telephoneCodes="telephoneCodes"
         :characters="characters"
+        :custom-fields="customFields"
         :show-last-edited-field="showLastEditedField" />
 </ListingEditorDialog>`,
 	    props: {
+	        customFields: {
+	            type: Array,
+	            default: []
+	        },
 	        aka: {
 	            type: String
 	        },
@@ -4073,7 +4082,7 @@ function requireListingEditorFormDialog () {
 	        ListingEditorDialog,
 	        ListingEditorForm
 	    },
-	    setup( { listingName, address, aka, email, wikipedia, image, lat, long } ) {
+	    setup( { listingName, address, aka, email, wikipedia, image, lat, long, customFields } ) {
 	        // All listings must have a name, address or alt name.
 	        const hasData = ref( listingName || address || aka );
 
@@ -4105,6 +4114,7 @@ function requireListingEditorFormDialog () {
 	            coordsValid.value = validateCoords( data.lat, data.long );
 	        };
 	        return {
+	            customFields,
 	            onListingUpdate,
 	            disabledMessage
 	        };
@@ -5104,6 +5114,7 @@ function requireOpenListingEditorDialog () {
 	     const {
 	        LISTING_TYPE_PARAMETER,
 	        SPECIAL_CHARS,
+	        LISTING_TEMPLATE_PARAMETERS,
 	        LISTING_TEMPLATES_OMIT,
 	        SUPPORTED_SECTIONS,
 	        SHOW_LAST_EDITED_FIELD
@@ -5183,7 +5194,17 @@ function requireOpenListingEditorDialog () {
 	    const { wikipedia, wikidata, image, lat, long,
 	        alt, address, email, directions, phone, tollfree, fax,
 	        hours, checkin, checkout, price,
-	        name, content, lastedit, url } = listingTemplateAsMapEn;
+	        name, content, lastedit, url, ...other } = listingTemplateAsMapEn;
+	    const customFields = [];
+	    Object.keys( other ).forEach( ( customFieldName ) => {
+	        if ( customFieldName !== 'type' ) {
+	            customFields.push( {
+	                name: customFieldName,
+	                label: LISTING_TEMPLATE_PARAMETERS[ customFieldName ].label || customFieldName,
+	                value: other[customFieldName]
+	            } );
+	        }
+	    } );
 
 	    const app = dialog.render( ListingEditorFormDialog, {
 	        wikipedia, wikidata, image,
@@ -5201,6 +5222,7 @@ function requireOpenListingEditorDialog () {
 	        aka: alt,
 	        listingName: name,
 	        listingType,
+	        customFields,
 	        nationalCurrencies: NATL_CURRENCY,
 	        listingTypes: (
 	                customListingType ? SUPPORTED_SECTIONS.concat( listingType ) : SUPPORTED_SECTIONS

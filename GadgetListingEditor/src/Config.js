@@ -1,5 +1,7 @@
-function generateWikidataClaims( config ) {
-    const { LISTING_TEMPLATE_PARAMETERS } = config;
+let config = {};
+
+function generateWikidataClaims( newConfig ) {
+    const { LISTING_TEMPLATE_PARAMETERS } = newConfig;
     const CLAIM_NAMES = {};
 
     const mapToClaimKey = ( id ) => {

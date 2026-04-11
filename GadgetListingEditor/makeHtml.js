@@ -1,4 +1,3 @@
-const { generate } = require('@vue/compiler-dom');
 const fs = require( 'fs' );
 const script = ( lang ) => `<script>
 const scrpt = document.createElement( 'script' );
@@ -63,7 +62,7 @@ const titles = {
 
 function generatePage( templatePath, outputPath, data ) {
     let html = fs.readFileSync( templatePath, 'utf-8' );
- 	Object.keys( data ).forEach( key => {
+    Object.keys( data ).forEach( key => {
         console.log( `Replacing <!-- data:${key} --> with ${data[key].substring( 0, 100 )}...` );
         html = html.replaceAll( `<!-- data:${key} -->`, data[key] );
     } );

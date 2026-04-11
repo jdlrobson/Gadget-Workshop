@@ -1,36 +1,36 @@
-const { translate } = require( './translate' );
+function generateWikidataClaims( config ) {
+    const { LISTING_TEMPLATE_PARAMETERS } = config;
+    const CLAIM_NAMES = {};
 
-let config = {};
+    const mapToClaimKey = ( id ) => {
+        const claimKeyMaps = {
+            'input-lat': 'lat',
+            'input-long': 'long',
+            'input-image': 'image',
+            'input-url': 'url',
+            'input-email': 'email',
+            'input-alt': 'alt'
+        };
+        return claimKeyMaps[ id ];
+    };
+    Object.keys( LISTING_TEMPLATE_PARAMETERS ).forEach( key => {
+        const id =  LISTING_TEMPLATE_PARAMETERS[ key ].id;
+        const claimKey = mapToClaimKey( id );
+        if ( claimKey ) {
+            CLAIM_NAMES[ claimKey ] = key;
+        }
+    } );
+    const WIKIDATA_FIELDS = {
+        P18: [ CLAIM_NAMES.image ],
+        P238: [ CLAIM_NAMES.alt ],
+        P625: [ CLAIM_NAMES.lat, CLAIM_NAMES.long ],
+        P856: [ CLAIM_NAMES.url ],
+        P968: [ CLAIM_NAMES.email ]
+    };
 
-function generateWikidataClaims() {
     const lookupField = function ( property ) {
-        const key = `property${property}`;
-        let value = [];
-        try {
-            const tval = translate(key);
-            if ( typeof tval === 'string' ) {
-                value = [ tval ];
-            }
-        } catch ( e ) {
-            // all good.
-        }
-        let i = 0;
-        let v;
-        try {
-            v = translate(`${key}-${i}`);
-        } catch ( e ) {
-            return value;
-        }
-        while ( v ) {
-            value.push( v );
-            i++;
-            try {
-                v = translate(`${key}-${i}`);
-            } catch ( e ) {
-                v = undefined;
-            }
-        }
-        return value;
+        console.log('lookup', property, WIKIDATA_FIELDS[ property ]);
+        return WIKIDATA_FIELDS[ property ];
     };
 
 
@@ -114,7 +114,7 @@ const loadConfig = ( newConfig, projectConfig ) => {
     _loaded = true;
     config = Object.assign( {}, newConfig, projectConfig );
     config.LISTING_TEMPLATES = generateListingTemplateConfig( config );
-    config.WIKIDATA_CLAIMS = generateWikidataClaims();
+    config.WIKIDATA_CLAIMS = generateWikidataClaims( config );
 };
 
 const extendConfig = ( newConfig ) => {

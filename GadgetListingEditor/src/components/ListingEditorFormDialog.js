@@ -38,9 +38,14 @@ module.exports = {
         :price="price"
         :telephoneCodes="telephoneCodes"
         :characters="characters"
+        :custom-fields="customFields"
         :show-last-edited-field="showLastEditedField" />
 </ListingEditorDialog>`,
     props: {
+        customFields: {
+            type: Array,
+            default: []
+        },
         aka: {
             type: String
         },
@@ -127,7 +132,7 @@ module.exports = {
         ListingEditorDialog,
         ListingEditorForm
     },
-    setup( { listingName, address, aka, email, wikipedia, image, lat, long } ) {
+    setup( { listingName, address, aka, email, wikipedia, image, lat, long, customFields } ) {
         // All listings must have a name, address or alt name.
         const hasData = ref( listingName || address || aka );
 
@@ -159,6 +164,7 @@ module.exports = {
             coordsValid.value = validateCoords( data.lat, data.long );
         };
         return {
+            customFields,
             onListingUpdate,
             disabledMessage
         };

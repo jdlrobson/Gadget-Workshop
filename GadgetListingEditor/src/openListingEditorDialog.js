@@ -27,6 +27,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
      const {
         LISTING_TYPE_PARAMETER,
         SPECIAL_CHARS,
+        LISTING_TEMPLATE_PARAMETERS,
         LISTING_TEMPLATES_OMIT,
         SUPPORTED_SECTIONS,
         SHOW_LAST_EDITED_FIELD
@@ -106,7 +107,17 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
     const { wikipedia, wikidata, image, lat, long,
         alt, address, email, directions, phone, tollfree, fax,
         hours, checkin, checkout, price,
-        name, content, lastedit, url } = listingTemplateAsMapEn;
+        name, content, lastedit, url, ...other } = listingTemplateAsMapEn;
+    const customFields = [];
+    Object.keys( other ).forEach( name => {
+        if ( name !== 'type' ) {
+            customFields.push( {
+                name,
+                label: LISTING_TEMPLATE_PARAMETERS[ name ].label || name,
+                value: other[name]
+            } );
+        }
+    } );
 
     const app = dialog.render( ListingEditorFormDialog, {
         wikipedia, wikidata, image,
@@ -124,6 +135,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         aka: alt,
         listingName: name,
         listingType,
+        customFields,
         nationalCurrencies: NATL_CURRENCY,
         listingTypes: (
                 customListingType ? SUPPORTED_SECTIONS.concat( listingType ) : SUPPORTED_SECTIONS

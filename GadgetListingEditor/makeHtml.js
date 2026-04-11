@@ -1,3 +1,4 @@
+const { generate } = require('@vue/compiler-dom');
 const fs = require( 'fs' );
 const script = ( lang ) => `<script>
 const scrpt = document.createElement( 'script' );
@@ -60,22 +61,28 @@ const titles = {
     it: 'Eminönü'
 };
 
+function generatePage( templatePath, outputPath, data ) {
+    let html = fs.readFileSync( templatePath, 'utf-8' );
+ 	Object.keys( data ).forEach( key => {
+        console.log( `Replacing <!-- data:${key} --> with ${data[key].substring( 0, 100 )}...` );
+        html = html.replaceAll( `<!-- data:${key} -->`, data[key] );
+    } );
+    fs.writeFileSync( outputPath, html, 'utf-8' );
+}
+
 Object.keys(titles).forEach( async ( lang ) => {
-    let html = fs.readFileSync( `./template.html`, 'utf-8' );
     const title = titles[ lang ];
     const json = await fetch( `https://${lang}.wikivoyage.org/w/api.php?action=parse&format=json&page=${title}&parser=parsoid&formatversion=2` ).then( res => res.json() );
     const content = json.parse.text;
     const data = {
         lang,
+		version: require( './package.json' ).version,
         title,
         content,
         script: script( lang ),
         theme: 'day'
     };
-    Object.keys( data ).forEach( key => {
-        console.log( `Replacing <!-- data:${key} --> with ${data[key].substring( 0, 100 )}...` );
-        html = html.replaceAll( `<!-- data:${key} -->`, data[key] );
-    } );
-    fs.writeFileSync( `./dist/index-${lang}.html`, html, 'utf-8' );
+	generatePage( `./template.html`, `./dist/index-${lang}.html`, data );
+	generatePage( `./template-index.html`, `./dist/index.html`, data );
 } );
 

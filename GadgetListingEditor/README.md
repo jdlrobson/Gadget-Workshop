@@ -1,4 +1,4 @@
-The GadgetListingEditor can be seen on the https://en.wikivoyage.org/wiki/Nottingham page:
+9The GadgetListingEditor can be seen on the https://en.wikivoyage.org/wiki/Nottingham page:
 It adds the "[ add listing ]" link to the "Get in" heading and "edit" link next to Nottingham Castle.
 
 The code lives in two files:
@@ -38,7 +38,7 @@ importStylesheetURI('https://en.wikivoyage.org/w/load.php?modules=ext.gadget.Lis
 Projects that wish to use this gadget must create two modules in [[MediaWiki:Gadgets-definition]]
 
 * ListingEditorConfig[ResourceLoader|package|hidden]|ListingEditorConfig.js|ListingEditor.json
-* ListingEditor2023[ResourceLoader|default|skins=vector-2022,vector,timeless,modern,cologneblue,monobook|type=general|dependencies=mediawiki.util]|ListingEditor2023.js
+* ListingEditor2023[ResourceLoader|default|skins=vector-2022,vector,minerva|type=general|dependencies=mediawiki.util]|ListingEditor2023.js
 
 and copy the following files:
 * MediaWiki:Gadget-ListingEditorConfig: https://en.wikivoyage.org/wiki/MediaWiki:Gadget-ListingEditorConfig.js

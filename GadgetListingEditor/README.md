@@ -1,4 +1,4 @@
-9The GadgetListingEditor can be seen on the https://en.wikivoyage.org/wiki/Nottingham page:
+The GadgetListingEditor can be seen on the https://en.wikivoyage.org/wiki/Nottingham page:
 It adds the "[ add listing ]" link to the "Get in" heading and "edit" link next to Nottingham Castle.
 
 The code lives in two files:

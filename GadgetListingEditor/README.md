@@ -1,3 +1,5 @@
+Test pages and the latest code can be found at https://wvlistingeditor.netlify.app
+
 The GadgetListingEditor can be seen on the https://en.wikivoyage.org/wiki/Nottingham page:
 It adds the "[ add listing ]" link to the "Get in" heading and "edit" link next to Nottingham Castle.
 

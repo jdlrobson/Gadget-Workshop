@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.12.8-next
+ * Listing Editor v4.12.12
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.12.8-next';
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.12.12';
 
 'use strict';
 
@@ -1135,8 +1135,7 @@ function generateListingTemplateConfig( {
     //	  in the listing template syntax unless it has a value.
     //	- newline: Append a newline after the parameter in the listing
     //	  template syntax when the article is saved.
-    LISTING_TEMPLATE_PARAMETERS,
-    LISTING_TEMPLATES_OMIT
+    LISTING_TEMPLATE_PARAMETERS
 } ) {
     // map the template name to configuration information needed by the listing
     // editor
@@ -1154,10 +1153,6 @@ function generateListingTemplateConfig( {
         } else {
             LISTING_TEMPLATES[ key ] = LISTING_TEMPLATE_PARAMETERS;
         }
-    } );
-
-    ( LISTING_TEMPLATES_OMIT || [] ).forEach( function ( key ) {
-        delete LISTING_TEMPLATES[ key ];
     } );
     return LISTING_TEMPLATES;
 }
@@ -5115,7 +5110,6 @@ function requireOpenListingEditorDialog () {
 	        LISTING_TYPE_PARAMETER,
 	        SPECIAL_CHARS,
 	        LISTING_TEMPLATE_PARAMETERS,
-	        LISTING_TEMPLATES_OMIT,
 	        SUPPORTED_SECTIONS,
 	        SHOW_LAST_EDITED_FIELD
 	    } = getConfig();
@@ -5194,14 +5188,21 @@ function requireOpenListingEditorDialog () {
 	    const { wikipedia, wikidata, image, lat, long,
 	        alt, address, email, directions, phone, tollfree, fax,
 	        hours, checkin, checkout, price,
-	        name, content, lastedit, url, ...other } = listingTemplateAsMapEn;
+	        name, content, lastedit, url } = listingTemplateAsMapEn;
+	    // RL cannot support spread operator so have to do this.
+	    const otherKeys = Object.keys( listingTemplateAsMap )
+	        .filter( ( key ) => ![ 'wikipedia', 'wikidata', 'image', 'lat', 'long',
+	            'alt', 'address', 'email', 'directions', 'phone', 'tollfree', 'fax',
+	            'hours', 'checkin', 'checkout', 'price',
+	            'name', 'content', 'lastedit', 'url'
+	        ].includes( key ) );
 	    const customFields = [];
-	    Object.keys( other ).forEach( ( customFieldName ) => {
+	    otherKeys.forEach( ( customFieldName ) => {
 	        if ( customFieldName !== 'type' ) {
 	            customFields.push( {
 	                name: customFieldName,
 	                label: LISTING_TEMPLATE_PARAMETERS[ customFieldName ].label || customFieldName,
-	                value: other[customFieldName]
+	                value: listingTemplateAsMapEn[customFieldName]
 	            } );
 	        }
 	    } );
@@ -5226,7 +5227,7 @@ function requireOpenListingEditorDialog () {
 	        nationalCurrencies: NATL_CURRENCY,
 	        listingTypes: (
 	                customListingType ? SUPPORTED_SECTIONS.concat( listingType ) : SUPPORTED_SECTIONS
-	            ).filter( ( a ) => !LISTING_TEMPLATES_OMIT.includes( a ) ),
+	            ),
 	        mode,
 	        onCaptchaSubmit,
 	        onSubmit,
@@ -5489,7 +5490,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 
 	var PROJECT_CONFIG_KEYS = [
 		'SHOW_LAST_EDITED_FIELD', 'SUPPORTED_SECTIONS',
-		'listingTypeRegExp', 'REPLACE_NEW_LINE_CHARS', 'LISTING_TEMPLATES_OMIT',
+		'listingTypeRegExp', 'REPLACE_NEW_LINE_CHARS',
 		'VALIDATE_CALLBACKS_EMAIL',
 		'ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP',
 		'LISTING_TYPE_PARAMETER', 'LISTING_CONTENT_PARAMETER',

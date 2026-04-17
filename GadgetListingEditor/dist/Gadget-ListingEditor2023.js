@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.12.8-next
+ * Listing Editor v4.12.12
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.12.8-next';
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.12.12';
 
 'use strict';
 
@@ -348,8 +348,8 @@ const fn = function() {
 		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
 			const module = localModuleForDebugging || req( GADGET_NAME );
 			return module( ALLOWED_NAMESPACE, _sectionToTemplateType, _config );
-		}, () => {
-			throw new Error( 'Error in setup' );
+		}, ( e ) => {
+			throw new Error( `Error in setup: ${e}` );
 		} );
 	}
 

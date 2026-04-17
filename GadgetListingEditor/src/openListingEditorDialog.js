@@ -106,14 +106,21 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
     const { wikipedia, wikidata, image, lat, long,
         alt, address, email, directions, phone, tollfree, fax,
         hours, checkin, checkout, price,
-        name, content, lastedit, url, ...other } = listingTemplateAsMapEn;
+        name, content, lastedit, url } = listingTemplateAsMapEn;
+    // RL cannot support spread operator so have to do this.
+    const otherKeys = Object.keys( listingTemplateAsMap )
+        .filter( ( key ) => ![ 'wikipedia', 'wikidata', 'image', 'lat', 'long',
+            'alt', 'address', 'email', 'directions', 'phone', 'tollfree', 'fax',
+            'hours', 'checkin', 'checkout', 'price',
+            'name', 'content', 'lastedit', 'url'
+        ].includes( key ) );
     const customFields = [];
-    Object.keys( other ).forEach( ( customFieldName ) => {
+    otherKeys.forEach( ( customFieldName ) => {
         if ( customFieldName !== 'type' ) {
             customFields.push( {
                 name: customFieldName,
                 label: LISTING_TEMPLATE_PARAMETERS[ customFieldName ].label || customFieldName,
-                value: other[customFieldName]
+                value: listingTemplateAsMapEn[customFieldName]
             } );
         }
     } );

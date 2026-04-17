@@ -108,10 +108,10 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         hours, checkin, checkout, price,
         name, content, lastedit, url } = listingTemplateAsMapEn;
     // RL cannot support spread operator so have to do this.
-    const otherKeys = Object.keys( listingTemplateAsMap )
+    const otherKeys = Object.keys( listingTemplateAsMapEn )
         .filter( ( key ) => ![ 'wikipedia', 'wikidata', 'image', 'lat', 'long',
             'alt', 'address', 'email', 'directions', 'phone', 'tollfree', 'fax',
-            'hours', 'checkin', 'checkout', 'price',
+            'hours', 'checkin', 'checkout', 'price', 'type',
             'name', 'content', 'lastedit', 'url'
         ].includes( key ) );
     const customFields = [];

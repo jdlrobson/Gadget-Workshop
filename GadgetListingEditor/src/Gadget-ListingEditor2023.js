@@ -186,8 +186,8 @@ const fn = function() {
 		] ).then( function ( [ req, _config, _sectionToTemplateType ] ) {
 			const module = localModuleForDebugging || req( GADGET_NAME );
 			return module( ALLOWED_NAMESPACE, _sectionToTemplateType, _config );
-		}, () => {
-			throw new Error( 'Error in setup' );
+		}, ( e ) => {
+			throw new Error( `Error in setup: ${e}` );
 		} );
 	}
 

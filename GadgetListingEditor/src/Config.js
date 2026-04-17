@@ -80,8 +80,7 @@ function generateListingTemplateConfig( {
     //	  in the listing template syntax unless it has a value.
     //	- newline: Append a newline after the parameter in the listing
     //	  template syntax when the article is saved.
-    LISTING_TEMPLATE_PARAMETERS,
-    LISTING_TEMPLATES_OMIT
+    LISTING_TEMPLATE_PARAMETERS
 } ) {
     // map the template name to configuration information needed by the listing
     // editor
@@ -99,10 +98,6 @@ function generateListingTemplateConfig( {
         } else {
             LISTING_TEMPLATES[ key ] = LISTING_TEMPLATE_PARAMETERS;
         }
-    } );
-
-    ( LISTING_TEMPLATES_OMIT || [] ).forEach( function ( key ) {
-        delete LISTING_TEMPLATES[ key ];
     } );
     return LISTING_TEMPLATES;
 }

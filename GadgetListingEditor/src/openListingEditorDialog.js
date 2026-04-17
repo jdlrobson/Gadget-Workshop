@@ -28,7 +28,6 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         LISTING_TYPE_PARAMETER,
         SPECIAL_CHARS,
         LISTING_TEMPLATE_PARAMETERS,
-        LISTING_TEMPLATES_OMIT,
         SUPPORTED_SECTIONS,
         SHOW_LAST_EDITED_FIELD
     } = getConfig();
@@ -139,7 +138,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         nationalCurrencies: NATL_CURRENCY,
         listingTypes: (
                 customListingType ? SUPPORTED_SECTIONS.concat( listingType ) : SUPPORTED_SECTIONS
-            ).filter( ( a ) => !LISTING_TEMPLATES_OMIT.includes( a ) ),
+            ),
         mode,
         onCaptchaSubmit,
         onSubmit,

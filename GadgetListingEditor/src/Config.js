@@ -1,19 +1,23 @@
+/** @type {Partial<ListingConfig>} */
 let config = {};
-
+/**
+ * @param {Partial<ListingConfig>} newConfig
+ * @return {ListingWikidataClaims}
+ */
 function generateWikidataClaims( newConfig ) {
     const { LISTING_TEMPLATE_PARAMETERS } = newConfig;
+    /** @type {Record<string, string>} */
     const CLAIM_NAMES = {};
+    if ( !LISTING_TEMPLATE_PARAMETERS ) {
+        throw new Error( 'Cannot generate Wikidata claims without LISTING_TEMPLATE_PARAMETERS.' );
+    }
 
+    /**
+     * @param {string} id
+     * @return {string}
+     */
     const mapToClaimKey = ( id ) => {
-        const claimKeyMaps = {
-            'input-lat': 'lat',
-            'input-long': 'long',
-            'input-image': 'image',
-            'input-url': 'url',
-            'input-email': 'email',
-            'input-alt': 'alt'
-        };
-        return claimKeyMaps[ id ];
+        return id.replace( 'input-', '' );
     };
     Object.keys( LISTING_TEMPLATE_PARAMETERS ).forEach( key => {
         const id =  LISTING_TEMPLATE_PARAMETERS[ key ].id;
@@ -22,6 +26,7 @@ function generateWikidataClaims( newConfig ) {
             CLAIM_NAMES[ claimKey ] = key;
         }
     } );
+    /** @type {Record<string,string[]>} */
     const WIKIDATA_FIELDS = {
         P18: [ CLAIM_NAMES.image ],
         P238: [ CLAIM_NAMES.alt ],
@@ -30,8 +35,12 @@ function generateWikidataClaims( newConfig ) {
         P968: [ CLAIM_NAMES.email ]
     };
 
+    /**
+     * @param {string} property
+     * @return {string[]}
+     */
     const lookupField = function ( property ) {
-        return WIKIDATA_FIELDS[ property ];
+        return WIKIDATA_FIELDS[ property ] || [];
     };
 
 
@@ -46,6 +55,10 @@ function generateWikidataClaims( newConfig ) {
     };
 }
 
+/**
+ * @param {Partial<ListingConfig>} obj
+ * @return {ListingTemplateConfig}
+ */
 function generateListingTemplateConfig( {
     SUPPORTED_SECTIONS,
     SLEEP_TEMPLATE_PARAMETERS,
@@ -84,9 +97,10 @@ function generateListingTemplateConfig( {
 } ) {
     // map the template name to configuration information needed by the listing
     // editor
+    /** @type ListingTemplateConfig */
     const LISTING_TEMPLATES = {};
 
-    SUPPORTED_SECTIONS.forEach( function ( key ) {
+    ( SUPPORTED_SECTIONS || [] ).forEach( function ( key ) {
         if ( key === 'sleep' ) {
             // override the default settings for "sleep" listings since that
             // listing type uses "checkin"/"checkout" instead of "hours"
@@ -95,7 +109,7 @@ function generateListingTemplateConfig( {
                 LISTING_TEMPLATE_PARAMETERS,
                 SLEEP_TEMPLATE_PARAMETERS
             );
-        } else {
+        } else if ( LISTING_TEMPLATE_PARAMETERS ) {
             LISTING_TEMPLATES[ key ] = LISTING_TEMPLATE_PARAMETERS;
         }
     } );
@@ -103,6 +117,11 @@ function generateListingTemplateConfig( {
 }
 
 let _loaded = false;
+
+/**
+ * @param {Object} newConfig
+ * @param {Object} projectConfig
+ */
 const loadConfig = ( newConfig, projectConfig ) => {
     if ( _loaded ) {
         mw.log.warn( 'Configuration was already loaded. @todo: fix this!' );
@@ -113,10 +132,17 @@ const loadConfig = ( newConfig, projectConfig ) => {
     config.WIKIDATA_CLAIMS = generateWikidataClaims( config );
 };
 
+/**
+ * @param {ListingConfig} newConfig
+ */
 const extendConfig = ( newConfig ) => {
     config = Object.assign( {}, newConfig );
 };
 
+/**
+ * @return {ListingConfig}
+ */
+// @ts-ignore
 const getConfig = () => config;
 
 module.exports = {

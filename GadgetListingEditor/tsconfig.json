@@ -1,0 +1,23 @@
+{
+	"include": [
+		"src/"
+	],
+	"compilerOptions": {
+	    "types": ["jquery"],
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"newLine": "lf",
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"pretty": true,
+		"target": "es6",
+		"lib": [ "dom" ],
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true
+	}
+}

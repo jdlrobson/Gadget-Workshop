@@ -1,4 +1,8 @@
 const fs = require( 'fs' );
+/**
+ * @param {string} lang
+ * @returns {string}
+ */
 const script = ( lang ) => `<script>
 const scrpt = document.createElement( 'script' );
 scrpt.src = './Gadget-ListingEditor2023.js';
@@ -52,14 +56,30 @@ setTimeout( () => {
 `;
 
 const titles = {
+	de: 'Brünn',
 	vi: 'Sainshand',
 	id: 'Danau_Toba/Utara',
 	he: 'טוקיו',
-    en: 'Nottingham',
-    fr: 'Arlanc',
-    it: 'Eminönü'
+	en: 'Nottingham',
+	fr: 'La_Tremblade',
+	it: 'Eminönü'
 };
 
+const langs = {
+	de: 'German',
+	vi: 'vietnamese',
+	id: 'indonesian',
+	he: 'hebrew',
+	en: 'english',
+	fr: 'french',
+	it: 'italian'
+}
+
+/**
+ * @param {string} templatePath
+ * @param {string} outputPath
+ * @param {Object} data
+ */
 function generatePage( templatePath, outputPath, data ) {
     let html = fs.readFileSync( templatePath, 'utf-8' );
     Object.keys( data ).forEach( key => {
@@ -74,6 +94,9 @@ Object.keys(titles).forEach( async ( lang ) => {
     const json = await fetch( `https://${lang}.wikivoyage.org/w/api.php?action=parse&format=json&page=${title}&parser=parsoid&formatversion=2` ).then( res => res.json() );
     const content = json.parse.text;
     const data = {
+		previews: '<ul>' + Object.keys( titles ).map( ( key ) => `<li>
+    <a href="index-${key}.html">${langs[key]}</a>
+  </li>`).join('') + '</ul>',
         lang,
 		languser: lang,
 		version: require( './package.json' ).version,

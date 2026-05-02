@@ -1,6 +1,9 @@
 /**
  * Given an editable heading, examine it to determine what section index
  * the heading represents. First heading is 1, second is 2, etc.
+ *
+ * @param {JQuery|undefined} heading
+ * @return {number}
  */
 const findSectionIndex = function(heading) {
     if (heading === undefined) {

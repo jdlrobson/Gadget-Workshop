@@ -8,6 +8,11 @@ const { EDITOR_CLOSED_SELECTOR } = require( './selectors.js' );
  * After the listing has been converted to a string, add additional
  * processing required for edits (as opposed to adds), returning an
  * appropriate edit summary string.
+ *
+ * @param {string} editSummary
+ * @param {string} listingWikiText
+ * @param {string} listingTemplateWikiSyntax
+ * @return {string}
  */
 const updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
     let sectionText = getSectionText();

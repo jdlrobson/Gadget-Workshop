@@ -6,6 +6,8 @@ const { getConfig } = require( './Config.js' );
 /**
  * Convert raw wiki listing syntax into a mapping of key-value pairs
  * corresponding to the listing template parameters.
+ *
+ * @param {string} listingTemplateWikiSyntax
  */
 const wikiTextToListing = function(listingTemplateWikiSyntax) {
     const { LISTING_TYPE_PARAMETER,
@@ -15,6 +17,7 @@ const wikiTextToListing = function(listingTemplateWikiSyntax) {
     listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);
     // remove the trailing braces
     listingTemplateWikiSyntax = listingTemplateWikiSyntax.slice(0,-2);
+    /** @type {Record<string,string>} */
     var listingTemplateAsMap = {};
     var lastKey;
     var listParams = listingTemplateToParamsArray(listingTemplateWikiSyntax);

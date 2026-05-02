@@ -35,10 +35,18 @@ const wrapContent = function() {
     }
 };
 
+/**
+ * @param {string} addMsg
+ * @return {JQuery}
+ */
 const insertAddListingBracketedLink = ( addMsg ) => {
     return $( `<a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">${addMsg}</a>` );
 };
 
+/**
+ * @param {string} addMsg
+ * @return {JQuery}
+ */
 const insertAddListingIconButton = ( addMsg ) => {
 return $( `<button class="listingeditor-add cdx-button cdx-button--size-large cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--icon-only cdx-button--weight-quiet">
     <span class="minerva-icon minerva-icon--addListing"></span>
@@ -48,6 +56,10 @@ return $( `<button class="listingeditor-add cdx-button cdx-button--size-large cd
 
 /**
  * Utility function for appending the "add listing" link text to a heading.
+ *
+ * @param {JQuery|HTMLElement} parentHeading
+ * @param {string} addMsg
+ * @param {boolean} useButton
  */
 const insertAddListingPlaceholder = function(parentHeading, addMsg = '', useButton = false ) {
     const $pheading =  $(parentHeading);
@@ -59,6 +71,10 @@ const insertAddListingPlaceholder = function(parentHeading, addMsg = '', useButt
     editSection.append( btn );
 };
 
+/**
+ * @param {string} sectionId
+ * @return {JQuery}
+ */
 const getHeading = ( sectionId ) => {
     // do not search using "#id" for two reasons. one, the article might
     // re-use the same heading elsewhere and thus have two of the same ID.
@@ -73,6 +89,10 @@ const getHeading = ( sectionId ) => {
     }
 };
 
+/**
+ * @param {JQuery} $headingElement
+ * @return {JQuery}
+ */
 const getSectionElement = ( $headingElement ) => {
     if ( $headingElement.is( '.section-heading' ) ) {
         return $headingElement.next( 'section.mw-h2section' );
@@ -84,6 +104,9 @@ const getSectionElement = ( $headingElement ) => {
 /**
  * Place an "add listing" link at the top of each section heading next to
  * the "edit" link in the section heading.
+ *
+ * @param {Object} SECTION_TO_TEMPLATE_TYPE
+ * @param {string} addMsg
  */
 const addListingButtons = function( SECTION_TO_TEMPLATE_TYPE, addMsg = '' ) {
     const useButton = mw.config.get( 'skin' ) === 'minerva';
@@ -93,7 +116,7 @@ const addListingButtons = function( SECTION_TO_TEMPLATE_TYPE, addMsg = '' ) {
             insertAddListingPlaceholder(topHeading, addMsg, useButton );
             const parentHeading = getSectionElement( topHeading );
             $('h3', parentHeading).each(function() {
-                insertAddListingPlaceholder(this, addMsg, useButton );
+                insertAddListingPlaceholder( this, addMsg, useButton );
             });
         }
     }

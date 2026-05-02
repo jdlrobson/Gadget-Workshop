@@ -4,6 +4,9 @@ const { addReplacement } = require( './replacements' );
  * Commented-out listings can result in the wrong listing being edited, so
  * strip out any comments and replace them with placeholders that can be
  * restored prior to saving changes.
+ *
+ * @param {string} text
+ * @return {string}
  */
 const stripComments = function(text) {
     var comments = text.match(/<!--[\s\S]*?-->/mig);

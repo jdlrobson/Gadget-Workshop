@@ -1,3 +1,7 @@
+/**
+ * @param {[string, string[]]} results
+ * @return {Object[]}
+ */
 const mapSearchResult = ( results ) => {
     return ( results[1] || [] ).map( ( result ) => {
         const value = result.indexOf( ':' ) === -1 ? result : result.split( ':' )[ 1 ];

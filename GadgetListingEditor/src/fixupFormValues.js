@@ -46,6 +46,11 @@ const fixupFormValues = function() {
     return true;
 };
 
+/**
+ * @param {string} latInput
+ * @param {string} longInput
+ * @param {string} precision
+ */
 const fixupLatLon = ( latInput, longInput, precision ) => {
     const inputLatLength = Math.min(
         latInput.indexOf('.') > - 1 ? latInput.split('.')[1].length : 0,

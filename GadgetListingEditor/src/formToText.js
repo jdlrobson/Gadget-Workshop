@@ -18,6 +18,10 @@ const { getConfig } = require( './Config.js' );
  * updated entry, and then submits the section text to be saved on the
  * server.
  *
+ * @param {string} mode
+ * @param {string} listingTemplateWikiSyntax
+ * @param {Record<string,Object>} listingTemplateAsMap
+ * @param {string} sectionNumber
  * @return {JQuery.Ajax}
  */
 const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {

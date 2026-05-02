@@ -3,6 +3,9 @@ const { getConfig } = require( './Config.js' );
 /**
  * Determine if the specified listing type is a custom type - for example "go"
  * instead of "see", "do", "listing", etc.
+ *
+ * @param {string} listingType
+ * @return {boolean}
  */
 const isCustomListingType = function(listingType) {
     const { LISTING_TEMPLATES } = getConfig();

@@ -3,6 +3,9 @@
  * an entry in a list; inline listings will be formatted slightly
  * differently than entries in lists (no newlines in the template syntax,
  * skip empty fields).
+ *
+ * @param {JQuery} entry
+ * @return {boolean}
  */
 const isInline = function(entry) {
     // if the edit link clicked is within a paragraph AND, since

@@ -5,6 +5,9 @@ const { getConfig } = require( './Config.js' );
 
 /**
  * Trim whitespace at the end of a string.
+ *
+ * @param {string} str
+ * @return {string}
  */
 const rtrim = function(str) {
     return str.replace(/\s+$/, '');
@@ -12,6 +15,9 @@ const rtrim = function(str) {
 
 /**
  * Convert the listing map back to a wiki text string.
+ *
+ * @param {Record<string,string>} listing
+ * @return {string}
  */
 const listingToStr = function(listing) {
     const { LISTING_TYPE_PARAMETER,

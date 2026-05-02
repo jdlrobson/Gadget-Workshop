@@ -4,6 +4,11 @@ const replaceSpecial = require( './replaceSpecial.js' );
  * Utility method for finding a matching end pattern for a specified start
  * pattern, including nesting. The specified value must start with the
  * start value, otherwise an empty string will be returned.
+ *
+ * @param {string} value
+ * @param {string} startPattern
+ * @param {string} endPattern
+ * @return {string}
  */
 const findPatternMatch = function(value, startPattern, endPattern) {
     var matchString = '';

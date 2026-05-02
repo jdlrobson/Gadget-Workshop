@@ -7,6 +7,10 @@ const { getSectionText, setSectionText } = require( './currentEdit.js' );
  * After the listing has been converted to a string, add additional
  * processing required for adds (as opposed to edits), returning an
  * appropriate edit summary string.
+ *
+ * @param {string} originalEditSummary
+ * @param {string} listingWikiText
+ * @return {string}
  */
 const updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText) {
     let sectionText = getSectionText();
@@ -29,6 +33,13 @@ const updateSectionTextWithAddedListingDefault = function(originalEditSummary, l
     return summary;
 };
 
+/**
+ * @param {string} originalEditSummary
+ * @param {string} listingWikiText
+ * @param {Record<string, string>} listing
+ * @param {string} LISTING_TYPE_PARAMETER
+ * @return {string}
+ */
 const updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing, LISTING_TYPE_PARAMETER) {
     let sectionText = getSectionText();
     var summary = originalEditSummary;
@@ -104,12 +115,19 @@ const updateSectionTextWithAddedListingIt = function (originalEditSummary, listi
     return summary;
 };
 
+/**
+ * @param {string} originalEditSummary
+ * @param {string} listingWikiText
+ * @param {Record<string, string>} listing
+ * @param {string} LISTING_TYPE_PARAMETER
+ * @return {string}
+ */
 const updateSectionTextWithAddedListing = function (originalEditSummary, listingWikiText, listing, LISTING_TYPE_PARAMETER) {
     switch ( DB_NAME ) {
         case 'itwikivoyage':
             return updateSectionTextWithAddedListingIt(originalEditSummary, listingWikiText, listing, LISTING_TYPE_PARAMETER);
         default:
-            return updateSectionTextWithAddedListingDefault(originalEditSummary, listingWikiText, listing);
+            return updateSectionTextWithAddedListingDefault(originalEditSummary, listingWikiText);
     }
 };
 

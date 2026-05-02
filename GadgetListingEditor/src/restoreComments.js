@@ -3,6 +3,10 @@ const { replacements, clear } = require( './replacements' );
 /**
  * Search the text provided, and if it contains any text that was
  * previously stripped out for replacement purposes, restore it.
+ *
+ * @param {string} text
+ * @param {boolean} resetReplacements
+ * @return {string}
  */
 const restoreComments = function(text, resetReplacements) {
     for (var key in replacements) {

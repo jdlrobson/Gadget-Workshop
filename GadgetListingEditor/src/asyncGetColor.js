@@ -1,9 +1,14 @@
+/**
+ * @param {string} listingType
+ * @return {Promise<string>}
+ */
 const asyncGetColor = ( listingType ) => {
     const colorKey = `listingeditor-color-${listingType}`;
     const cachedColor = mw.storage.get(colorKey);
     if ( cachedColor ) {
-        return $.Deferred().resolve( cachedColor );
+        return Promise.resolve( cachedColor );
     }
+    // @ts-ignore
     return $.ajax ({
         listingType,
         url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({

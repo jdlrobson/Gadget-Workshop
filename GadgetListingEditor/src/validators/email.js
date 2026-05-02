@@ -4,6 +4,9 @@ const { getConfig } = require( '../Config' );
  * still get through, but this method implements a minimal amount of
  * validation in order to catch the worst offenders.
  * Disabled for now, TODO: multiple email support.
+ *
+ * @param {string} fieldValue
+ * @return {boolean}
  */
 module.exports = function( fieldValue ) {
     const { VALIDATE_CALLBACKS_EMAIL } = getConfig();

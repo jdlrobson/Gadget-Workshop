@@ -1,6 +1,6 @@
 {
   "name": "gadget-listing-editor",
-  "version": "4.12.13",
+  "version": "4.12.16",
   "scripts": {
     "dev": "node makeHtml.js && npx http-server dist -p 9999",
     "start": "npx tsc && npm test && rollup -c",
@@ -20,8 +20,9 @@
   "devDependencies": {
     "@types/jquery": "^4.0.0",
     "@vue/server-renderer": "^3.5.26",
-    "eslint": "^8.45.0",
-    "@wikimedia/types-wikimedia": "^0.5.0"
+    "@vue/tsconfig": "^0.9.1",
+    "@wikimedia/types-wikimedia": "^0.6.0",
+    "eslint": "^8.45.0"
   },
   "dependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",

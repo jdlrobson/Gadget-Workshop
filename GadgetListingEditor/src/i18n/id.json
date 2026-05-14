@@ -1,4 +1,7 @@
 {
+	"@metadata": {
+		"authors": []
+	},
 	"report-bug": "Lapor kekutu",
 	"listing-editor-version": "Versi $1",
 	"coordinates-error": "Format koordinat yang dimasukkan tidak valid. Harap gunakan derajat desimal.",
@@ -27,6 +30,8 @@
 	"submit": "Kirim",
 	"cancel": "Batal",
 	"cancelAll": "hapus semua",
+	"form-tab-label-edit": "Sunting",
+	"form-tab-label-preview": "Pratinjau",
 	"preview": "Pratinjau",
 	"previewOff": "Pratinjau mati",
 	"refresh": "↺",
@@ -37,9 +42,9 @@
 	"validationEmail": "Pastikan alamat surelnya sudah benar",
 	"validationWikipedia": "Mohon hanya masukkan judul halaman Wikipedia; bukan alamat URL lengkapnya",
 	"validationImage": "Harap masukkan judul gambar Commons saja tanpa bagian awalannya",
-	"added": "Menambahkan butir senarai ",
-	"updated": "Memperbarui butir senarai ",
-	"removed": "Menghapus butir senarai ",
+	"added": "Menambahkan butir senarai",
+	"updated": "Memperbarui butir senarai",
+	"removed": "Menghapus butir senarai",
 	"helpPage": "//id.wikivoyage.org/wiki/Wikiwisata:Penyunting_senarai",
 	"enterCaptcha": "Masukkan CAPTCHA",
 	"externalLinks": "Hasil suntingan Anda menyertakan pranala luar yang baru.",
@@ -89,7 +94,5 @@
 	"listingUpdatedTooltip": "Centang kotak ini jika informasi dalam butir senarai ini telah diverifikasi sebagai informasi terkini dan akurat, sehingga  tanggal pembaruan terakhir akan diubah ke tanggal hari ini",
 	"listingUpdatedLabel": "tandai butir senarai sebagai yang terkini?",
 	"natlCurrencyTitle": "Mata uang Nasional",
-	"intlCurrenciesTitle": "Mata uang Internasional",
-	"form-tab-label-edit": "Sunting",
-	"form-tab-label-preview": "Pratinjau"
+	"intlCurrenciesTitle": "Mata uang Internasional"
 }

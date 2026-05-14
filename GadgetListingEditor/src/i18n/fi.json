@@ -1,0 +1,36 @@
+{
+	"@metadata": {
+		"authors": [
+			"Wikipeedikko"
+		]
+	},
+	"report-bug": "Ilmoita virheestä",
+	"listing-editor-version": "Versio $1",
+	"placeholder-url": "https://www.esimerkki.com",
+	"placeholder-address": "paikan osoite",
+	"placeholder-wikipedia": "wikipedia-artikkeli",
+	"placeholder-image": "paikan kuva",
+	"propertyP18": "kuva",
+	"saving": "Tallennetaan...",
+	"submit": "Lähetä",
+	"budget": "Budjetti",
+	"cancel": "Peruuta",
+	"form-tab-label-edit": "muokkaa",
+	"preview": "Esikatselu",
+	"refresh": "↺",
+	"selectAll": "Valitse kaikki",
+	"validationEmptyListing": "Anna nimi tai osoite",
+	"validationEmail": "Varmista, että sähköpostiosoite on kelvollinen",
+	"externalLinks": "Muokkauksessasi on uusia ulkoisia linkkejä.",
+	"sharedWikipedia": "wikipedia",
+	"editSummary": "Muokkaa yhteenvetoa",
+	"name": "Nimi",
+	"website": "Sivusto",
+	"phone": "Puhelin",
+	"fax": "Faksi",
+	"content": "Sisältö",
+	"latitude": "Leveyspiiri",
+	"price": "Hinta",
+	"wikidataRemoveLabel": "poista",
+	"image": "Kuva"
+}

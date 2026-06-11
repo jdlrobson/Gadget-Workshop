@@ -70,7 +70,7 @@
 	"sharedWikipedia": "Wikipedia",
 	"synchronized": "gesynchroniseerd.",
 	"submitApiError": "Fout: De server heeft een foutmelding gegeven tijdens het opslaan van de vermelding. Probeer het opnieuw.",
-	"submitBlacklistError": "Fout: Een waarde in de ingediende gegevens staat op de zwarte lijst. Verwijder het geblokkeerde patroon en probeer het opnieuw.",
+	"submitBlacklistError": "Fout: Een waarde in de ingediende gegevens staat op de blokkeerlijst. Verwijder het geblokkeerde patroon en probeer het opnieuw.",
 	"submitUnknownError": "Fout: Er is een onbekende fout opgetreden tijdens het opslaan van de vermelding. Probeer het opnieuw.",
 	"submitHttpError": "De server gaf een HTTP-foutmelding tijdens het opslaan van de vermelding. Probeer het opnieuw.",
 	"submitEmptyError": "Fout: De server gaf een lege reactie terug tijdens het opslaan van de vermelding. Probeer het opnieuw.",

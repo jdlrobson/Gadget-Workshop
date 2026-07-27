@@ -1,0 +1,33 @@
+{
+	"@metadata": {
+		"authors": [
+			"Volvox"
+		]
+	},
+	"report-bug": "Feeler mellen",
+	"listing-editor-version": "Versioun $1",
+	"placeholder-name": "Numm vun der Plaz",
+	"placeholder-alt": "och bekannt als",
+	"placeholder-wikipedia": "Wikipedia-Artikel",
+	"placeholder-image": "Bild vun der Plaz",
+	"placeholder-content": "Beschreiwung vun der Plaz",
+	"propertyP856": "URL",
+	"propertyP18": "Bild",
+	"saving": "Gëtt gespäichert ...",
+	"cancel": "Ofbriechen",
+	"validationEmptyListing": "Gitt wgl. entweeder en Numm oder eng Adress an",
+	"sharedWikipedia": "Wikipedia",
+	"synchronized": "synchroniséiert.",
+	"viewCommonsPage": "Commons-Säit weisen",
+	"viewWikipediaPage": "Wikipedia-Säit weisen",
+	"name": "Numm",
+	"website": "Internetsite",
+	"address": "Adress",
+	"fax": "Fax",
+	"minorLabel": "kleng Ännerung?",
+	"email": "E-Mail",
+	"type": "Typ",
+	"hours": "Stonnen",
+	"price": "Präis",
+	"image": "Bild"
+}

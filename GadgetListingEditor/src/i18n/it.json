@@ -1,6 +1,8 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"Beta16"
+		]
 	},
 	"report-bug": "Segnala un problema",
 	"listing-editor-version": "Versione $1",
@@ -37,7 +39,7 @@
 	"midrange": "Prezzi medi",
 	"splurge": "Prezzi elevati",
 	"cancel": "Annulla",
-	"cancelAll": "Annulla tutto",
+	"cancelAll": "Pulisci tutto",
 	"form-tab-label-edit": "Modifica",
 	"form-tab-label-preview": "Anteprima",
 	"preview": "Anteprima",

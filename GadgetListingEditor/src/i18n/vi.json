@@ -1,8 +1,10 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"Nvdtn19"
+		]
 	},
-	"report-bug": "Báo cáo lỗi",
+	"report-bug": "Báo lỗi",
 	"listing-editor-version": "Phiên bản $1",
 	"coordinates-error": "Tọa độ không hợp lệ. Vui lòng sử dụng độ thập phân.",
 	"placeholder-name": "tên địa điểm",
@@ -38,8 +40,8 @@
 	"splurge": "Hạng sang",
 	"cancel": "Hủy",
 	"cancelAll": "Xóa tất cả",
-	"form-tab-label-edit": "Sửa đổi",
-	"form-tab-label-preview": "Xem trước",
+	"form-tab-label-edit": "sửa",
+	"form-tab-label-preview": "xem trước",
 	"preview": "Xem trước",
 	"previewOff": "Tắt xem trước",
 	"refresh": "↺",

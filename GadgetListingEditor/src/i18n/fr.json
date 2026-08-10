@@ -1,6 +1,8 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"NClara"
+		]
 	},
 	"report-bug": "Signaler un problème",
 	"listing-editor-version": "Version $1",
@@ -43,9 +45,9 @@
 	"midrange": "Prix moyens",
 	"splurge": "Luxe",
 	"cancel": "Annuler",
-	"cancelAll": "Tout annuler",
+	"cancelAll": "Tout effacer",
 	"form-tab-label-edit": "Modifier",
-	"form-tab-label-preview": "Aperçu",
+	"form-tab-label-preview": "aperçu",
 	"preview": "Aperçu",
 	"previewOff": "Pas d’aperçu",
 	"refresh": "↺",
@@ -54,7 +56,7 @@
 	"selectAlternatives": "Sélectionner toutes les valeurs dont l’alternative est vide.",
 	"validationEmptyListing": "Entrez au moins un nom ou une adresse",
 	"validationEmail": "Controler que l'adresse électronique soit correcte",
-	"validationWikipedia": "Veuillez insérer le titre de la page Wikipédia seulement; Pas l'adresse URL complète",
+	"validationWikipedia": "Veuillez insérer seulement le titre de la page Wikipédia, et pas l'adresse URL complète",
 	"validationImage": "Veuillez insérer le titre de l'image de Commons sans préfixe",
 	"validationCoords": "Entrez les coordonnées de latitude et longitude au format décimal, par exemple 29.9773, 31.1325",
 	"added": "Élément ajouté :",
@@ -108,10 +110,10 @@
 	"wikidataRemoveTitle": "Supprimer l’élément Wikidata de cette fiche",
 	"wikidataRemoveLabel": "supprimer",
 	"image": "Image",
-	"listingTooltip": "Cochez la case si l’établissement n’est plus en activité afin de le retirer de cet article",
+	"listingTooltip": "Cochez la case si l’établissement n’est plus en activité ou s'il doit être supprimé pour une autre raison, afin de le retirer de cet article",
 	"listingLabel": "Supprimer ?",
 	"listingUpdatedTooltip": "Cochez la case si les informations de cette fiche ont été vérifiées comme à jour et exactes ; la date de dernière mise à jour sera remplacée par la date du jour.",
-	"listingUpdatedLabel": "marquer l’élément comme mis à jour ?",
+	"listingUpdatedLabel": "marquer l’élément comme à jour ?",
 	"natlCurrencyTitle": "Symboles de la monnaie nationale",
 	"intlCurrenciesTitle": "Symboles des monnaies internationales"
 }

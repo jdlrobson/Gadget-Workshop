@@ -226,14 +226,14 @@ const fn = function() {
 		}
 		wrapContent();
 		$bodyContent.attr( 'data-listing-editor-enabled', '1' );
-		loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
-			contentTransform.addListingButtons(
-				_sectionToTemplateType,
-				TRANSLATIONS.add
-			);
-		} );
 
 		if ($(DISALLOW_ADD_LISTING_IF_PRESENT.join(',')).length === 0) {
+			loadSectionToTemplateType().then( ( _sectionToTemplateType ) => {
+				contentTransform.addListingButtons(
+					_sectionToTemplateType,
+					TRANSLATIONS.add
+				);
+			} );
 			document.addEventListener( 'click', ( ev ) => {
 				if ( !ev.target.closest( '.listingeditor-add' ) ) {
 					return;

@@ -261,7 +261,7 @@ exports[`listingEditorForm makes use of specialCharactersString 1`] = `
           </div>
         </div>
         <div id="div_content" class="editor-row">
-          <div class="editor-label-col"><label for="input-content">Content <span><br>(<span class="listing-charinsert" data-for="input-content"><a>é</a>&nbsp;</span> &nbsp;)</span></label></div>
+          <div class="editor-label-col"><label for="input-content">Content <span><br>(&nbsp;<span class="listing-charinsert" data-for="input-content"><a>é</a>&nbsp;</span>)</span></label></div>
           <div>
             <div class="cdx-text-area cdx-text-area--status-default editor-fullwidth"><textarea id="input-content" rows="8" placeholder="description of place" class="cdx-text-area__textarea"></textarea>
               <!--v-if-->

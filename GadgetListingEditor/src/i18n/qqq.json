@@ -34,6 +34,7 @@
 	"addTitleBeta": "overlay title for new listing in beta release",
 	"editTitleBeta": "overlay title for edit in beta",
 	"syncTitle": "button label for sync function",
+	"confirmDiscard": "Confirmation prompt shown when closing the listing editor with unsaved changes.",
 	"form-tab-label-edit": "Edit link label in edit form",
 	"form-tab-label-preview": "Preview button label in edit form",
 	"refresh": "{{optional}}",

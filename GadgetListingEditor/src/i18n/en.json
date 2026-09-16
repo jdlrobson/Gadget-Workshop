@@ -46,6 +46,7 @@
     "splurge": "Splurge",
     "cancel": "Cancel",
     "cancelAll": "Clear all",
+    "confirmDiscard": "You have unsaved changes. Are you sure you want to close without saving?",
     "form-tab-label-edit": "edit",
     "form-tab-label-preview": "preview",
     "preview": "Preview",

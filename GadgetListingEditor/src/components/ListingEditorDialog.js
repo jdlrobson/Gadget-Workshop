@@ -1,5 +1,6 @@
 const { CdxDialog, CdxTextInput, CdxMessage, CdxButton, CdxProgressBar } = require( '@wikimedia/codex' );
 const { defineComponent, ref, onMounted } = require( 'vue' );
+const { translate } = require( '../translate.js' );
 
 module.exports = defineComponent( {
     name: 'ListingEditorDialog',
@@ -11,7 +12,7 @@ module.exports = defineComponent( {
         CdxButton
     },
     template: `<cdx-dialog
-v-model:open="isOpen"
+:open="isOpen"
 :title="title"
 :default-action="defaultAction"
 :class="dialogClass"
@@ -117,6 +118,37 @@ v-model:open="isOpen"
         const setCaptcha = ( url ) => {
             captchaRequested.value = url;
         };
+        const targetElement = ref( null );
+        // Snapshot of the form field values taken when the dialog opens, used to
+        // detect whether the user has made any changes before closing.
+        const initialValues = {};
+        const fieldValue = ( el ) => (
+            el.type === 'checkbox' || el.type === 'radio' ? String( el.checked ) : el.value
+        );
+        const captureInitialValues = () => {
+            if ( !targetElement.value ) {
+                return;
+            }
+            targetElement.value.querySelectorAll( 'input, textarea, select' ).forEach( ( el ) => {
+                if ( el.id ) {
+                    initialValues[ el.id ] = fieldValue( el );
+                }
+            } );
+        };
+        const hasUnsavedChanges = () => {
+            if ( !targetElement.value ) {
+                return false;
+            }
+            const fields = targetElement.value.querySelectorAll( 'input, textarea, select' );
+            for ( let i = 0; i < fields.length; i++ ) {
+                const el = fields[ i ];
+                if ( el.id && ( el.id in initialValues ) &&
+                    initialValues[ el.id ] !== fieldValue( el ) ) {
+                    return true;
+                }
+            }
+            return false;
+        };
         const submitAction = () => {
             saveInProgress.value = true;
             const xhr = onSubmit( closeDialog, () => {
@@ -132,15 +164,20 @@ v-model:open="isOpen"
                 saveInProgress.value = false;
                 return;
             }
+            if ( hasUnsavedChanges() && !window.confirm( translate( 'confirmDiscard' ) ) ) {
+                // Keep the dialog open; isOpen is controlled one-way via :open so
+                // simply not closing leaves the dialog visible.
+                return;
+            }
             onClose();
             closeDialog();
         };
-        const targetElement = ref(null);
         onMounted(() => {
             if (targetElement.value && dialogElement ) {
                 targetElement.value.appendChild( dialogElement );
             }
             onMount( targetElement.value );
+            captureInitialValues();
         });
         return {
             onCaptchaSubmit: () => {

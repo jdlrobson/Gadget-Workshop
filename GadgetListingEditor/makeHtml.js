@@ -60,7 +60,7 @@ const titles = {
 	vi: 'Sainshand',
 	id: 'Danau_Toba/Utara',
 	he: 'טוקיו',
-	en: 'Nottingham',
+	en: 'Berlin',
 	fr: 'La_Tremblade',
 	it: 'Eminönü'
 };
@@ -73,7 +73,7 @@ const langs = {
 	en: 'english',
 	fr: 'french',
 	it: 'italian'
-}
+};
 
 /**
  * @param {string} templatePath
@@ -94,9 +94,9 @@ Object.keys(titles).forEach( async ( lang ) => {
     const json = await fetch( `https://${lang}.wikivoyage.org/w/api.php?action=parse&format=json&page=${title}&parser=parsoid&formatversion=2` ).then( res => res.json() );
     const content = json.parse.text;
     const data = {
-		previews: '<ul>' + Object.keys( titles ).map( ( key ) => `<li>
+		previews: `<ul>${Object.keys( titles ).map( ( key ) => `<li>
     <a href="index-${key}.html">${langs[key]}</a>
-  </li>`).join('') + '</ul>',
+  </li>`).join('')}</ul>`,
         lang,
 		languser: lang,
 		version: require( './package.json' ).version,

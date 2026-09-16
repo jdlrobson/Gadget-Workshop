@@ -40,7 +40,7 @@ const wrapContent = function() {
  * @return {JQuery}
  */
 const insertAddListingBracketedLink = ( addMsg ) => {
-    return $( `<a role="button" href="javascript:" class="listingeditor-add listingeditor-add-brackets">${addMsg}</a>` );
+    return $( `<a role="button" href="javascript:" class="listingeditor-add">${addMsg}</a>` );
 };
 
 /**

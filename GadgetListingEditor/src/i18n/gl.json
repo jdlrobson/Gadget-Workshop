@@ -40,6 +40,7 @@
 	"splurge": "Desbalde",
 	"cancel": "Cancelar",
 	"cancelAll": "Limpar todo",
+	"confirmDiscard": "Tes cambios sen gardar. Queres pechar sen gardalos?",
 	"form-tab-label-edit": "editar",
 	"form-tab-label-preview": "vista previa",
 	"preview": "Vista previa",

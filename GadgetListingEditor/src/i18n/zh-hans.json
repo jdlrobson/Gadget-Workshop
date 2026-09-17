@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"GuoPC",
 			"TFX202X"
 		]
 	},
@@ -39,6 +40,7 @@
 	"splurge": "挥霍",
 	"cancel": "取消",
 	"cancelAll": "全部清除",
+	"confirmDiscard": "您有未保存的更改。您确定要在不保存的情况下关闭吗？",
 	"form-tab-label-edit": "编辑",
 	"form-tab-label-preview": "预览",
 	"preview": "预览",

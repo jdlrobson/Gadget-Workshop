@@ -1,0 +1,34 @@
+{
+	"@metadata": {
+		"authors": [
+			"Milicevic01"
+		]
+	},
+	"report-bug": "Пријави баг",
+	"listing-editor-version": "Верзија $1",
+	"propertyP968": "имејл",
+	"propertyP18": "слика",
+	"saving": "Чување...",
+	"submit": "Проследи",
+	"budget": "Буџет",
+	"cancel": "Откажи",
+	"cancelAll": "Очисти све",
+	"form-tab-label-edit": "уреди",
+	"preview": "Преглед",
+	"selectAll": "Изабери све",
+	"sharedWikipedia": "википедија",
+	"editSummary": "Опис измене",
+	"website": "Веб-сајт",
+	"address": "Адреса",
+	"phone": "Телефон",
+	"tollfree": "Бесплатан телефонски број",
+	"fax": "Факс",
+	"minorLabel": "мања измена?",
+	"email": "Имејл",
+	"type": "Тип",
+	"latitude": "Географска ширина",
+	"hours": "сати",
+	"price": "Цена",
+	"wikidataRemoveLabel": "уклони",
+	"image": "Слика"
+}

@@ -40,6 +40,7 @@
 	"splurge": "Prezzi elevati",
 	"cancel": "Annulla",
 	"cancelAll": "Pulisci tutto",
+	"confirmDiscard": "Hai modifiche non salvate. Sei sicuro di voler chiudere senza salvare?",
 	"form-tab-label-edit": "Modifica",
 	"form-tab-label-preview": "Anteprima",
 	"preview": "Anteprima",

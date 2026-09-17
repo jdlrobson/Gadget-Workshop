@@ -5,6 +5,16 @@ function close() {
     document.documentElement.classList.remove( 'listing-editor-dialog-open' );
 }
 
+/**
+ * @typedef {Object} UnmountableDialog
+ * @property {Function} unmount
+ */
+
+/**
+ * @param {Vue.Component} Dialog
+ * @param {Object} options
+ * @return {UnmountableDialog}
+ */
 function render( Dialog, options ) {
     const vueAppContainer = document.createElement( 'div' );
     document.body.appendChild(vueAppContainer);

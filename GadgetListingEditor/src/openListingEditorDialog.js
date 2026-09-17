@@ -15,10 +15,21 @@ const { getConfig } = require( './Config' );
 const listingTemplateAsMapToEnglish = require( './listingTemplateAsMapToEnglish' );
 
 /**
+ * @typedef {Object} ListingEditorDialogOptions
+ * @property {string[]} telephoneCodes
+ * @property {string[]} NATL_CURRENCY
+ */
+/**
  * This method is called asynchronously after the initListingEditorDialog()
  * method has retrieved the existing wiki section content that the
  * listing is being added to (and that contains the listing wiki syntax
  * when editing).
+ *
+ * @param {string} mode
+ * @param {number} sectionNumber
+ * @param {number} listingIndex
+ * @param {string} listingType
+ * @param {ListingEditorDialogOptions} options
  */
 var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType, {
     telephoneCodes,
@@ -37,8 +48,8 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             getSectionText()
         )
     );
-
-    var listingTemplateAsMap, listingTemplateWikiSyntax;
+    var /** @type {Object<String,string>} */listingTemplateAsMap,
+        /** @type {string} */listingTemplateWikiSyntax;
     if (mode == MODE_ADD) {
         listingTemplateAsMap = {};
         listingTemplateAsMap[LISTING_TYPE_PARAMETER] = listingType;
@@ -50,9 +61,22 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
     // modal form - must submit or cancel
     const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
 
+    /**
+     * @type {string[]|null}
+     */
     let captchaSaveArgs;
 
+    /**
+     * @param {Function} setCaptcha
+     * @param {Function} reset
+     * @return {Function}
+     */
     const handleCaptchaError = ( setCaptcha, reset ) => {
+        /**
+         * @param {Object} options
+         * @param {MwApiEditObjResponse} options.edit
+         * @param {string[]} options.args
+         */
         return ( { edit, args } ) => {
             if ( edit && edit.captcha ) {
                 captchaSaveArgs = args;
@@ -63,25 +87,35 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
         };
     };
 
+   /**
+     * @param {Function} setCaptcha
+     * @param {Function} closeAction
+     */
     const onCaptchaSubmit = ( setCaptcha, closeAction ) => {
         if ( captchaSaveArgs ) {
+            // @ts-ignore
             captchaSaveArgs.push( $('#input-captcha').val() );
             setCaptcha( '' );
+            // @ts-ignore
             saveForm.apply( null, captchaSaveArgs ).then( () => {
                 captchaSaveArgs = null;
                 closeAction();
+            // @ts-ignore
             }, handleCaptchaError( setCaptcha, closeAction ) );
         }
     };
 
     /**
-     * @param {Function} closeDialog
+     * @param {() => void} closeDialog
      * @param {Function} reset
      * @param {Function} setCaptcha
-     * @return {JQuery.Ajax}
+     * @return {AbortableJQueryDeferred<any>}
      */
     const onSubmit = ( closeDialog, reset, setCaptcha ) => {
         const restoreText = getSectionText();
+        /**
+         * @param {string} arg
+         */
         const teardown = ( arg ) => {
             handleCaptchaError( setCaptcha, reset )( arg );
             // if it failed we need to restore it for subsequent attempts
@@ -97,8 +131,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             rtn = formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
         }
         const newRtn = rtn.then( closeDialog, teardown );
-        newRtn.abort = rtn.abort;
-        return newRtn;
+        return Object.assign( newRtn, { abort: rtn.abort } );
     };
 
     const customListingType = isCustomListingType(listingType) ? listingType : undefined;
@@ -114,6 +147,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             'hours', 'checkin', 'checkout', 'price', 'type',
             'name', 'content', 'lastedit', 'url'
         ].includes( key ) );
+    /** @type {ListingEditorFieldDefinition[]} */
     const customFields = [];
     otherKeys.forEach( ( customFieldName ) => {
         if ( customFieldName !== 'type' ) {
@@ -159,6 +193,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
         dialogClass: 'listing-editor-dialog'
     } );
+    // @ts-ignore
     app.test = {
         handleCaptchaError,
         onCaptchaSubmit,

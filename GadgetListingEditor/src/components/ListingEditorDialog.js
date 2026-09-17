@@ -81,17 +81,20 @@ module.exports = defineComponent( {
             required: false
         },
         onCaptchaSubmit: {
-            type: Function
+            type: Function,
+            default: () => {}
         },
         onSubmit: {
-            type: Function
+            type: Function,
+            default: () => {}
         },
         onMount: {
             type: Function,
             default: () => {}
         },
         onClose: {
-            type: Function
+            type: Function,
+            default: () => {}
         },
         onHelp: {
             type: Function,
@@ -100,10 +103,12 @@ module.exports = defineComponent( {
     },
     setup( {
         title,
+        // @ts-ignore
         disabledSubmitButton,
         onCaptchaSubmit,
         onSubmit, onClose, dialogElement, dialogClass, onHelp, onMount
     } ) {
+        /** @type {Vue.Ref<AbortableJQueryDeferred<any>|null>} */
         const activeXhr = ref( null );
         const captchaRequested = ref( '' );
         const saveInProgress = ref( false );
@@ -115,21 +120,34 @@ module.exports = defineComponent( {
             isOpen.value = false;
             saveInProgress.value = false;
         };
+        /**
+         * @param {string} url
+         */
         const setCaptcha = ( url ) => {
             captchaRequested.value = url;
         };
+        /** @type {Vue.Ref<HTMLElement|null>} */
         const targetElement = ref( null );
         // Snapshot of the form field values taken when the dialog opens, used to
         // detect whether the user has made any changes before closing.
+        /**
+         * @type {Record<string,boolean>}
+         */
         const initialValues = {};
+        /**
+         * @param {HTMLInputElement} el
+         * @return {boolean}
+         */
         const fieldValue = ( el ) => (
+            // @ts-ignore
             el.type === 'checkbox' || el.type === 'radio' ? String( el.checked ) : el.value
         );
         const captureInitialValues = () => {
             if ( !targetElement.value ) {
                 return;
             }
-            targetElement.value.querySelectorAll( 'input, textarea, select' ).forEach( ( el ) => {
+            // @ts-ignore
+            ( /** @type {NodeListOf<HTMLInputElement>} */ ( targetElement.value.querySelectorAll( 'input, textarea, select' ) ) ).forEach( ( el ) => {
                 if ( el.id ) {
                     initialValues[ el.id ] = fieldValue( el );
                 }
@@ -139,7 +157,8 @@ module.exports = defineComponent( {
             if ( !targetElement.value ) {
                 return false;
             }
-            const fields = targetElement.value.querySelectorAll( 'input, textarea, select' );
+            // @ts-ignore
+            const fields = /** @type {NodeListOf<HTMLInputElement>} */ ( targetElement.value.querySelectorAll( 'input, textarea, select' ) );
             for ( let i = 0; i < fields.length; i++ ) {
                 const el = fields[ i ];
                 if ( el.id && ( el.id in initialValues ) &&

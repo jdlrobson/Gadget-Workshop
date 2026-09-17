@@ -1,6 +1,9 @@
 const ListingEditorDialog = require( './ListingEditorDialog.js' );
 const ListingEditorSync = require( './ListingEditorSync.js' );
 
+/**
+ * @type {Vue.VueElement}
+ */
 module.exports = {
     name: 'ListingEditorSyncDialog',
     template: `<ListingEditorDialog>

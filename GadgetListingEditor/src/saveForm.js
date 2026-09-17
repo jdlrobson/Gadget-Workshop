@@ -8,27 +8,45 @@ const { getConfig } = require( './Config.js' );
  * If an error occurs while saving the form, remove the "saving" dialog,
  * restore the original listing editor form (with all user content), and
  * display an alert with a failure message.
+ *
+ * @param {string} msg
  */
 const saveFailed = function(msg) {
     alert(msg);
 };
 
+/**
+ * @param {any} [data]
+ * @return {AbortableJQueryDeferred<any>}
+ */
 const abortableReject = ( data ) => {
     const reject = Promise.reject( data );
-    reject.abort = () => {};
-    return reject;
+    return Object.assign( reject, {
+        abort: () => {}
+    } );
 };
-
+/**
+ * @param {any} [data]
+ * @return {AbortableJQueryDeferred<Object>}
+ */
 const abortableResolve = ( data ) => {
     const resolve = Promise.resolve( data );
-    resolve.abort = () => {};
-    return resolve;
+    return Object.assign( resolve, {
+        abort: () => {}
+    } );
 };
 
 /**
  * Execute the logic to post listing editor changes to the server so that
  * they are saved. After saving the page is refreshed to show the updated
  * article.
+ *
+ * @param {string} summary
+ * @param {boolean} minor
+ * @param {number} sectionNumber
+ * @param {string} cid
+ * @param {string} answer
+ * @return {AbortableJQueryDeferred<Object>}
  */
 const saveForm = function(summary, minor, sectionNumber, cid, answer) {
     const { EDITOR_TAG } = getConfig();
@@ -46,7 +64,8 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
         $.extend( editPayload, { minor: 'true' } );
     }
     const payload = savePayload(editPayload);
-    const newPayload = payload.then(function(data) {
+    const abort = payload.abort;
+    const newPayload = payload.then(function(/** @type {MwApiEditResponse} */ data) {
         if (data && data.edit && data.edit.result == 'Success') {
             if ( data.edit.nochange !== undefined ) {
                 alert( 'Save skipped as there was no change to the content!' );
@@ -57,6 +76,7 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
             var canonicalUrl = $("link[rel='canonical']").attr("href");
             var currentUrlWithoutHash = window.location.href.replace(window.location.hash, "");
             if (canonicalUrl && currentUrlWithoutHash != canonicalUrl) {
+                // @ts-ignore
                 var sectionName = mw.util.escapeIdForLink(getSectionName());
                 if (sectionName.length) {
                     canonicalUrl += `#${sectionName}`;
@@ -65,6 +85,7 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
             } else {
                 window.location.reload();
             }
+            return;
         } else if (data && data.error) {
             saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
             return abortableReject( {} );
@@ -85,8 +106,9 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
             saveFailed(translate( 'submitUnknownError' ));
             return abortableReject( {} );
         }
-    }, function(code, result) {
+    }, function(/** @type {string} */code, /** @type {Object}*/ result) {
         if (code === "http") {
+            // @ts-ignore
             saveFailed(`${translate( 'submitHttpError' )}: ${result.textStatus}` );
         } else if (code === "ok-but-empty") {
             saveFailed(translate( 'submitEmptyError' ));
@@ -95,8 +117,9 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
         }
         return abortableReject( {} );
     });
-    newPayload.abort = payload.abort;
-    return newPayload;
+    return Object.assign( newPayload, {
+        abort
+    } );
 };
 
 module.exports = saveForm;

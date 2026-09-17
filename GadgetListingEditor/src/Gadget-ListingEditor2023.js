@@ -55,6 +55,8 @@ const fn = function() {
 	/**
 	 * Determine if the specified DOM element contains only whitespace or
 	 * whitespace HTML characters (&nbsp;).
+	 *
+	 * @param {Element} element
 	 */
 	var isElementEmpty = function(element) {
 		var text = $(element).text();
@@ -95,6 +97,7 @@ const fn = function() {
 	var TRANSLATIONS = $.extend( true,
 		{},
 		TRANSLATIONS_ALL.en,
+		// @ts-ignore
 		TRANSLATIONS_ALL[ mw.config.get( 'wgUserLanguage' ) ]
 	);
 
@@ -128,14 +131,17 @@ const fn = function() {
 	var isLoaded = false;
 	function importForeignModule() {
 		if ( isLoaded ) {
+			// @ts-ignore
 			return Promise.resolve( mw.loader.require );
 		} else if (  mw.loader.getState( GADGET_NAME ) !== 'ready' ) {
 			isLoaded = true;
 			if ( mw.loader.getState( GADGET_NAME ) === null ) {
 				return mw.loader.using( GADGET_DEPENDENCIES ).then( () => new Promise(
 					( resolve ) => {
+						// @ts-ignore
 						mw.loader.addScriptTag( `https://en.wikivoyage.org/w/load.php?modules=${GADGET_NAME}`, function () {
 							setTimeout( function () {
+								// @ts-ignore
 								resolve( mw.loader.require );
 							}, 300 );
 						} );
@@ -143,16 +149,25 @@ const fn = function() {
 				) );
 			} else {
 				// use the local gadget
+				// @ts-ignore
 				return mw.loader.using( `${GADGET_NAME}` ).then( () => mw.loader.require );
 			}
 		}
+		return;
 	}
 
+	/**
+	 * @type {ListingConfig}
+	 */
 	let config;
+	/**
+	 * @return {Promise<ListingConfig>}
+	 */
 	function loadConfigFromSite() {
 		if ( config ) {
 			return Promise.resolve( config );
 		} else {
+			// @ts-ignore
 			return mw.loader.using( GADGET_CONFIG_NAME ).then( ( req ) => {
 				config = req( GADGET_CONFIG_NAME );
 				return config;
@@ -163,12 +178,16 @@ const fn = function() {
 		}
 	}
 
+	/**
+	 * @type {Record<string, string>}
+	 */
 	let sectionToTemplateTypeFn;
 	function loadSectionToTemplateType() {
 		if ( sectionToTemplateTypeFn ) {
 			return Promise.resolve( sectionToTemplateTypeFn );
 		} else {
-			return loadConfigFromSite().then( ( _config ) => {
+			return loadConfigFromSite().then(
+				( /** @type {ListingConfig} */_config ) => {
 				sectionToTemplateTypeFn = sectionToTemplateType( _config );
 				return sectionToTemplateTypeFn;
 			}, () => {
@@ -180,6 +199,7 @@ const fn = function() {
 	function loadMain() {
 		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
+			// @ts-ignore
 			localModuleForDebugging ? Promise.resolve( mw.loader.require ) : importForeignModule(),
 			loadConfigFromSite(),
 			loadSectionToTemplateType()
@@ -235,6 +255,9 @@ const fn = function() {
 				);
 			} );
 			document.addEventListener( 'click', ( ev ) => {
+				if ( !( ev.target instanceof HTMLElement ) ) {
+					return;
+				}
 				if ( !ev.target.closest( '.listingeditor-add' ) ) {
 					return;
 				}
@@ -254,6 +277,7 @@ const fn = function() {
 	initListingEditor();
 };
 
+// @ts-ignore
 if ( typeof process === 'undefined' ) {
 	$(fn);
 } else {

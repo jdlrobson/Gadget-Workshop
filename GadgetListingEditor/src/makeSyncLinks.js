@@ -2,11 +2,23 @@ const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
 const { getConfig } = require( './Config.js' );
 
+/**
+ * @param {string[]} value
+ * @param {boolean} valBool
+ * @return {string[]}
+ */
 const prepareSyncValues = ( value, valBool ) => {
+    // @ts-ignore
     return value.map( ( selectorOrValue ) => valBool ?
         $(selectorOrValue).val() : selectorOrValue );
 };
 
+/**
+ * @param {string[]} unprocessedValue
+ * @param {string} mode
+ * @param {boolean} valBool
+ * @return {string}
+ */
 const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
     const value = prepareSyncValues( unprocessedValue, valBool );
     const { WIKIDATA_CLAIMS } = getConfig();
@@ -29,6 +41,12 @@ const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
     return `${prefix}${suffix}`;
 };
 
+/**
+ * @param {string[]} unprocessedValue
+ * @param {string} mode
+ * @param {boolean} valBool
+ * @return {string}
+ */
 const makeSyncLinks = function(unprocessedValue, mode, valBool) {
     const href = prepareSyncUrl( unprocessedValue, mode, valBool );
     return `<a target="_blank" rel="noopener noreferrer"href="${href}">`;

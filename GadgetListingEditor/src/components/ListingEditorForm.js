@@ -15,6 +15,9 @@ const initStringFormFields = require( '../initStringFormFields.js' );
 /**
  * Generate the form UI for the listing editor. If editing an existing
  * listing, pre-populate the form input fields with the existing values.
+ *
+ * @param {HTMLFormElement} form
+ * @param {ListingInfo} listingParameters
  */
 const hideEmptyFormValues = ( form, listingParameters ) => {
     for (var parameter in listingParameters) {
@@ -28,6 +31,9 @@ const hideEmptyFormValues = ( form, listingParameters ) => {
     }
 };
 
+/**
+ * @type {Vue.VueElement}
+ */
 module.exports = {
     name: 'ListingEditorForm',
     props: {
@@ -400,6 +406,7 @@ module.exports = {
         sistersites
     },
     emits: [ 'updated:listing' ],
+    // @ts-ignore
     setup( props, { emit } ) {
         const { showLastEditedField, mode, listingType, lat, long, lastedit,
             customFields,
@@ -435,21 +442,27 @@ module.exports = {
         onMounted( () => {
             if ( form.value ) {
                 hideEmptyFormValues( form.value, listingParameters );
+                // @ts-ignore
                 initColor( form.value, mode );
+                // @ts-ignore
                 initStringFormFields( form.value, mode );
             }
         } );
 
-        let previewTimeout;
+        // @ts-ignore
+        /** @type {Number} */let previewTimeout;
         const currentTab = ref( 'edit' );
+        /**
+         * @param {string} activeTab
+         */
         const onUpdateTab = ( activeTab ) => {
             if ( activeTab === 'preview' ) {
                 clearInterval( previewTimeout );
                 mw.util.throttle( () => {
-                    previewTimeout = setTimeout( () => {
+                    previewTimeout = /** @type {number} */ ( /** @type {unknown} */ ( setTimeout( () => {
                         showPreview( {} );
                     currentTab.value = activeTab;
-                    }, 200 );
+                    }, 200 ) ) );
                 }, 300 )();
             } else {
                 currentTab.value = activeTab;
@@ -472,6 +485,9 @@ module.exports = {
                 image: currentImage.value
             } );
         };
+        /**
+         * @param {SisterSiteData} sisterSiteData
+         */
         const onSisterSiteUpdate = ( sisterSiteData ) => {
             currentWikipedia.value = sisterSiteData.wikipedia;
             currentWikidata.value = sisterSiteData.wikidata;
@@ -479,10 +495,16 @@ module.exports = {
             onListingUpdate();
         };
 
+        /** @type {Vue.Ref<Record<string,string>>} */
         const customFieldData = ref( {} );
-        customFields.forEach(( field ) => {
-            customFieldData.value[field.name] = field.value;
-        } );
+        customFields.forEach(
+            /**
+             * @param {ListingEditorFieldDefinition} field
+             */
+            ( field ) => {
+                customFieldData.value[field.name] = field.value;
+            }
+        );
 
         return {
             customFields,

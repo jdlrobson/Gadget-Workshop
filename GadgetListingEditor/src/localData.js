@@ -1,6 +1,10 @@
 let CC = '';
 let LC = '';
 
+/**
+ * @param {JQuery} $el
+ * @return {Record<string,string[]>}
+ */
 const loadFromCountryData = ( $el ) => {
     CC = '';
     dataSel = $el.attr('data-country-calling-code');
@@ -9,6 +13,7 @@ const loadFromCountryData = ( $el ) => {
     dataSel = $el.attr('data-local-dialing-code');
     if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
 
+    /** @type {string[]} */
     let NATL_CURRENCY = [];
     var dataSel =  $el.attr('data-currency');
     if ((dataSel !== undefined) && (dataSel !== '')) {

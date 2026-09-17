@@ -6,6 +6,9 @@ const validateWikipedia = require( '../validators/wikipedia.js' );
 const validateImage = require( '../validators/image.js' );
 const validateCoords = require( '../validators/coords.js' );
 
+/**
+ * @type {Vue.Component}
+ */
 module.exports = {
     name: 'ListingEditorFormDialog',
     template: `<ListingEditorDialog
@@ -156,6 +159,9 @@ module.exports = {
             }
         } );
 
+        /**
+         * @param {Record<string,string>} data
+         */
         const onListingUpdate = ( data ) => {
             hasData.value = data.name || data.address || data.alt;
             emailValid.value = validateEmail( data.email );

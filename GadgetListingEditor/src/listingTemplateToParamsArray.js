@@ -5,6 +5,9 @@ const findPatternMatch = require( './findPatternMatch.js' );
  * symbol delimits template params, but this method will also inspect the
  * content to deal with nested templates or wikilinks that might contain
  * pipe characters that should not be used as delimiters.
+ *
+ * @param {string} listingTemplateWikiSyntax
+ * @return {string[]}
  */
 const listingTemplateToParamsArray = function(listingTemplateWikiSyntax) {
     var results = [];

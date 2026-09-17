@@ -1,5 +1,8 @@
 const ListingSyncRowLink = require( './ListingSyncRowLink' );
 
+/**
+ * @type {Vue.VueElement}
+ */
 module.exports = {
     name: 'ListingSyncRow',
     components: {
@@ -37,7 +40,11 @@ module.exports = {
         }
     },
     computed: {
+        /**
+         * @return {string}
+         */
         divStyle() {
+            // @ts-ignore
             return this.remoteFlag ? 'display: none' : undefined;
         }
     },

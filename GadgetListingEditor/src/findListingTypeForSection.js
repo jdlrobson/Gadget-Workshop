@@ -1,3 +1,9 @@
+/**
+ * @param {JQuery<HTMLElement>} entry
+ * @param {Record<string,string>} sectionToTemplateType
+ * @param {string} defaultType
+ * @return {string}
+ */
 module.exports = function(entry, sectionToTemplateType, defaultType) {
     let closestSection = entry.closest('div.mw-h2section, section');
     while ( closestSection.is( 'section' ) && closestSection.parents( 'section' ).length ) {

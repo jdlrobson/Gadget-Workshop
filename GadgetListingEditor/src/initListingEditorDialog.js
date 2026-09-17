@@ -19,6 +19,10 @@ const { getConfig } = require( './Config.js' );
  * type is returned.
  */
 const _findListingTypeForSection = require( './findListingTypeForSection.js' );
+/**
+ * @param {JQuery<HTMLElement>} entry
+ * @return {string}
+ */
 const findListingTypeForSection = function(entry ) {
     const { SECTION_TO_TEMPLATE_TYPE,
         DEFAULT_LISTING_TEMPLATE } = getConfig();
@@ -31,8 +35,12 @@ const findListingTypeForSection = function(entry ) {
  * syntax contained within the specified section. This wiki text will
  * later be modified via the listing editor and re-submitted as a section
  * edit.
+ *
+ * @param {string} mode
+ * @param {JQuery<HTMLElement>} clicked
  */
 var initListingEditorDialog = function(mode, clicked) {
+    /** @type {string} */
     var listingType;
     if (mode === MODE_ADD) {
         listingType = findListingTypeForSection(clicked);
@@ -72,7 +80,11 @@ var initListingEditorDialog = function(mode, clicked) {
                 NATL_CURRENCY
             }
         );
-    }, function( _jqXHR, textStatus, errorThrown ) {
+    }, function(
+        /** @type JQuery.jqXHR} */_jqXHR,
+        /** @type string} */textStatus,
+        /** @type string} */errorThrown
+    ) {
         alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
     });
 };

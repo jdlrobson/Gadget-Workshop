@@ -105,7 +105,7 @@ const getSectionElement = ( $headingElement ) => {
  * Place an "add listing" link at the top of each section heading next to
  * the "edit" link in the section heading.
  *
- * @param {Object} SECTION_TO_TEMPLATE_TYPE
+ * @param {Record<string,string>} SECTION_TO_TEMPLATE_TYPE
  * @param {string} addMsg
  */
 const addListingButtons = function( SECTION_TO_TEMPLATE_TYPE, addMsg = '' ) {

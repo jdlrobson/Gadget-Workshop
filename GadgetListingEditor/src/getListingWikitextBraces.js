@@ -4,6 +4,9 @@ const { getSectionText, setSectionText } = require( './currentEdit.js' );
  * Given a listing index, return the full wikitext for that listing
  * ("{{listing|key=value|...}}"). An index of 0 returns the first listing
  * template invocation, 1 returns the second, etc.
+ *
+ * @param {number} listingIndex
+ * @return {string}
  */
 const getListingWikitextBraces = function(listingIndex) {
     let sectionText = getSectionText();
@@ -19,7 +22,9 @@ const getListingWikitextBraces = function(listingIndex) {
 
     for (var i = 0; i <= listingIndex; i++) {
         regexResult = listingRegex.exec(sectionText);
+        // @ts-ignore
         listingMatchIndex = regexResult.index;
+        // @ts-ignore
         listingSyntax = regexResult[1];
     }
     // listings may contain nested templates, so step through all section
@@ -28,6 +33,9 @@ const getListingWikitextBraces = function(listingIndex) {
     // captured in the listingSyntax variable
     var curlyBraceCount = 2;
     var endPos = sectionText.length;
+    if ( !listingMatchIndex || !listingSyntax ) {
+        throw new Error( 'Unable to locate listing index' );
+    }
     var startPos = listingMatchIndex + listingSyntax.length;
     var matchFound = false;
     for (var j = startPos; j < endPos; j++) {
@@ -45,6 +53,7 @@ const getListingWikitextBraces = function(listingIndex) {
     if (!matchFound) {
         listingSyntax = sectionText.substring(listingMatchIndex);
     }
+    // @ts-ignore
     return listingSyntax.trim();
 };
 

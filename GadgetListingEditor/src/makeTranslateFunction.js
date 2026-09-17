@@ -1,6 +1,6 @@
 /**
  * @param {Object<string,string>} translations
- * @return {string}
+ * @return {TranslationFunction}
  */
 module.exports = ( translations ) => {
     return ( key, params = [] ) => {

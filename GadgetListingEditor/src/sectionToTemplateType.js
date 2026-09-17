@@ -1,4 +1,8 @@
 // map section heading ID to the listing template to use for that section
+/**
+ * @param {ListingConfig} config
+ * @return {Record<string, string>}
+ */
 module.exports = function ( config ) {
     if ( config.sectionType ) {
         return config.sectionType;

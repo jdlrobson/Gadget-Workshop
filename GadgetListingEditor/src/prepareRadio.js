@@ -3,6 +3,12 @@ const parseDMS = require( './parseDMS.js' );
 const trimDecimal = require( './trimDecimal.js' );
 const { getConfig } = require( './Config.js' );
 
+/**
+ * @param {RadioDefinitionField} field
+ * @param {(string|null)[]} claimValue
+ * @param {string|null} guid
+ * @return {RadioDefinition}
+ */
 const prepareRadio = function(field, claimValue, guid) {
     const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
 
@@ -24,11 +30,13 @@ const prepareRadio = function(field, claimValue, guid) {
         // compare the present value to the Wikidata value
         if ( field.p === WIKIDATA_CLAIMS.coords.p) {
         //If coords, then compared the values after trimming the WD one into decimal and converting into decimal and trimming the present one
+            // @ts-ignore
             if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(parseDMS($(editorField[j]).val()), 6)) ) {
                 break;
             }
         } else if ( field.p === WIKIDATA_CLAIMS.image.p) {
         //If image, then compared the values after converting underscores into spaces on the local value
+            // @ts-ignore
             if( claimValue[j] != $(editorField[j]).val().replace(/_/g, ' ') ) {
                 break;
             }
@@ -47,10 +55,15 @@ const prepareRadio = function(field, claimValue, guid) {
         WIKIDATA_CLAIMS.coords.p,
         WIKIDATA_CLAIMS.url.p,
         WIKIDATA_CLAIMS.image.p
-    ].indexOf(field.p) >= 0;
+    ].indexOf(
+        // @ts-ignore
+        field.p
+    ) >= 0;
     return {
         field,
-        wikidataUrl: hasSyncLink ? prepareSyncUrl(claimValue, field.p, false) : undefined,
+        // @ts-ignore
+        wikidataUrl: hasSyncLink ? prepareSyncUrl( /** @type {string[]} */ ( claimValue ), field.p, false) : undefined,
+        // @ts-ignore
         localUrl: hasSyncLink ? prepareSyncUrl(editorField, field.p, true): undefined,
         editorField,
         skip: ( j === claimValue.length && field.remotely_sync !== true ) ||

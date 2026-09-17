@@ -10,11 +10,18 @@ const { translate } = require( '../translate.js' );
 const { getConfig } = require( '../Config.js' );
 const SisterSite = require( '../SisterSite.js' );
 
+/**
+ * @param {Function} updateModel
+ * @param {SisterSiteApi} ss
+ * @param {() => void} [closeFn]
+ * @return {Function}
+ */
 const makeSubmitFunction = function( updateModel, ss, closeFn ) {
-    return ( close ) => {
+    return ( /** @type {() => void} */ close ) => {
         if ( !closeFn ) {
             closeFn = () => close();
         }
+        const doClose = closeFn;
         const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
         const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
             removeFromWikidata, ajaxSisterSiteSearch } = ss;
@@ -23,25 +30,36 @@ const makeSubmitFunction = function( updateModel, ss, closeFn ) {
             var label = $(`label[for="${$(this).attr('id')}"]`);
             // @todo: Do not rely on label.text for something so important
             // Switch this to data attribute.
+            /** @type {string[]|string} */
             var syncedValue = label.text().split('\n');
-            var field = JSON.parse($(this).parents('.choose-row').find('.has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
+            const chooseRowValue = $(this).parents('.choose-row').find('.has-json > input:hidden:not(:radio)').val();
+            if ( typeof chooseRowValue !== 'string' ) {
+                return;
+            }
+            var field = JSON.parse(chooseRowValue); // not radio needed, remotely_synced values use hidden radio buttons
             var editorField = [];
             for( var i = 0; i < field.fields.length; i++ ) {
                 editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`;
             }
-            var guidObj = $(this).parents('.choose-row').find('.has-guid > input:hidden:not(:radio)').val();
+            var guidObj = /** @type {string} */(
+                $(this).parents('.choose-row').find('.has-guid > input:hidden:not(:radio)').val()
+            );
 
             if ( field.p === WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
+                /** @type {string[]} */
                 var DDValue = [];
                 for ( i = 0; i < editorField.length; i++) {
                     DDValue[i] = syncedValue[i] ?
                         trimDecimal(parseDMS(syncedValue[i]), 6) : '';
                     updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync);
                 }
+                /** @type {string} */syncedValue = '';
                 // TODO: make the find on map link work for placeholder coords
                 if( (DDValue[0]==='') && (DDValue[1]==='') ) {
                     syncedValue = ''; // dummy empty value to removeFromWikidata
+                // @ts-ignore
                 } else if( !isNaN(DDValue[0]) && !isNaN(DDValue[1]) ){
+                    // @ts-ignore
                     var precision = Math.min(DDValue[0].toString().replace(/\d/g, "0").replace(/$/, "1"), DDValue[1].toString().replace(/\d/g, "0").replace(/$/, "1"));
                     syncedValue = `{ "latitude": ${DDValue[0]}, "longitude": ${DDValue[1]}, "precision": ${precision} }`;
                 }
@@ -64,7 +82,8 @@ const makeSubmitFunction = function( updateModel, ss, closeFn ) {
                 }
             }
 
-            if( (field.doNotUpload !== true) && ($(this).attr('id').search(/-wd$/) === -1) ) { // -1: regex not found
+            const elementId = $(this).attr('id');
+            if( (field.doNotUpload !== true) && (elementId && elementId.search(/-wd$/) === -1) ) { // -1: regex not found
                 ajaxSisterSiteSearch(
                     API_WIKIDATA,
                     {
@@ -72,32 +91,39 @@ const makeSubmitFunction = function( updateModel, ss, closeFn ) {
                         ids: field.p,
                         props: 'datatype',
                     }
-                ).then( ( jsonObj ) => {
+                ).then( ( /** @type {MwApiWikidataEntityResponseJSON} */ jsonObj ) => {
                      //if ( TODO: add logic for detecting Wikipedia and not doing this test. Otherwise get an error trying to find undefined. Keep in mind that we would in the future call sitelink changing here maybe. Not urgent, error harmless ) { }
                     /*else*/ if ( jsonObj.entities[field.p].datatype === 'monolingualtext' ) {
                         syncedValue = `{"text": ${syncedValue}, "language": "${LANG}"}`;
                     }
                     if ( guidObj === "null" ) { // no value on Wikidata, string "null" gets saved in hidden field. There should be no cases in which there is no Wikidata item but this string does not equal "null"
                         if (syncedValue !== '') {
-                            sendToWikidata(field.p , syncedValue, 'value');
+                            sendToWikidata(field.p , /** @type {string} */ ( syncedValue ), 'value');
                         }
                     } else {
                         if ( syncedValue !== "" ) {
                             // this is changing, for when guid is not null and neither is the value
                             // Wikidata silently ignores a request to change a value to its existing value
-                            changeOnWikidata(guidObj, field.p, syncedValue, 'value');
+                            changeOnWikidata(guidObj, field.p, /** @type {string} */ ( syncedValue ), 'value');
                         } else if( (field.p !== WIKIDATA_CLAIMS.coords.p) || (DDValue[0] === '' && DDValue[1] === '') ) {
                             removeFromWikidata(guidObj);
                         }
                     }
-                } ).then( closeFn );
+                } ).then( doClose );
             } else {
-                closeFn();
+                doClose();
             }
         });
     };
 };
 
+/**
+ * @param {MwApiWikidataEntityResponseJSON} jsonObj
+ * @param {string} wikidataRecord
+ * @param {Function} updateModel
+ * @param {SisterSiteApi} [ss]
+ * @param {() => void} [close]
+ */
 module.exports = function (jsonObj, wikidataRecord, updateModel, ss, close ) {
     const syncValues = getSyncValues(
         jsonObj, wikidataRecord
@@ -108,7 +134,7 @@ module.exports = function (jsonObj, wikidataRecord, updateModel, ss, close ) {
         syncValues,
         dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
         onSubmit: submitFunction
-    }, translate );
+    } );
 
     const $syncDialogElement = $('#listing-editor-sync');
     if($syncDialogElement.find('.sync_label').length === 0) { // if no choices, close the dialog and display a message

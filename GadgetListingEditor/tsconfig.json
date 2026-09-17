@@ -1,9 +1,20 @@
 {
+	"extends": "@vue/tsconfig/tsconfig.json",
 	"include": [
 		"src/"
 	],
+	"exclude": [
+		"node_modules"
+	],
 	"compilerOptions": {
-	    "types": ["jquery"],
+	    "types": [ "jquery", "vue", "node" ],
+		// @vue/tsconfig sets moduleDetection: "force", which treats every .js
+		// file (even ones with no import/export) as a module. That makes the
+		// shared @typedef definitions in src/types.js module-scoped, so bare
+		// cross-file references (AbortableJQueryDeferred, TranslationFunction,
+		// etc.) fail with "Cannot find name". Restore "auto" so types.js is a
+		// global script and its typedefs are visible project-wide.
+		"moduleDetection": "auto",
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"strict": true,
@@ -15,7 +26,7 @@
 		"skipLibCheck": true,
 		"pretty": true,
 		"target": "es6",
-		"lib": [ "dom" ],
+		"lib": [ "dom", "es2016" ],
 		"allowJs": true,
 		"checkJs": true,
 		"noEmit": true

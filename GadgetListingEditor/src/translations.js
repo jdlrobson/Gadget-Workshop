@@ -3,6 +3,10 @@ const vi = require( './i18n/vi.json' );
 const fr = require( './i18n/fr.json' );
 const id = require( './i18n/id.json' );
 const it = require( './i18n/it.json' );
+
+/**
+ * @type {Record<string,Record<string,string>>}
+ */
 module.exports = {
     en,
     vi,

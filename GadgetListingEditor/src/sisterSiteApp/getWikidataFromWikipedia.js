@@ -1,5 +1,12 @@
+/**
+ *
+ * @param {string} titles
+ * @param {SisterSiteApi} SisterSite
+ * @return {Promise<string|null>}
+ */
 module.exports = function( titles, SisterSite ) {
     const { API_WIKIPEDIA, ajaxSisterSiteSearch, wikipediaWikidata } = SisterSite;
+    // @ts-ignore returns JQueryXHR
     return ajaxSisterSiteSearch(
         API_WIKIPEDIA,
         {

@@ -20,9 +20,9 @@ const { getConfig } = require( './Config.js' );
  *
  * @param {string} mode
  * @param {string} listingTemplateWikiSyntax
- * @param {Record<string,Object>} listingTemplateAsMap
- * @param {string} sectionNumber
- * @return {JQuery.Ajax}
+ * @param {Record<string,string>} listingTemplateAsMap
+ * @param {number} sectionNumber
+ * @return {AbortableJQueryDeferred<Object>}
  */
 const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
     const { LISTING_TYPE_PARAMETER, DEFAULT_LISTING_TEMPLATE } = getConfig();
@@ -30,17 +30,20 @@ const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMa
     var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
     var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
     var listingType = $(`#${listingTypeInput}`).val();
+    // @ts-ignore
     var listingParameters = getListingInfo(listingType);
     for (var parameter in listingParameters) {
         let $node = $(`#${listingParameters[parameter].id}`);
         // do not drop custom fields that were in the original listing
         if ( $node.length ) {
+            // @ts-ignore
             listing[parameter] = $node.val() || '';
         }
     }
     var text = listingToStr(listing);
     var summary = editSummarySection();
     if (mode == MODE_ADD) {
+        // @ts-ignore
         summary = updateSectionTextWithAddedListing(summary, text, listing);
     } else {
         summary = updateSectionTextWithEditedListing(summary, text, listingTemplateWikiSyntax);

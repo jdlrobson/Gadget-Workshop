@@ -1,6 +1,9 @@
 /**
  * Given a DOM element, find the nearest editable section (h2 or h3) that
  * it is contained within.
+ *
+ * @param {JQuery<HTMLElement>} element
+ * @return {JQuery<HTMLElement>}
  */
 const findSectionHeading = function(element) {
     // mw-h3section and mw-h2section can be removed when useparsoid=1 is everywhere.

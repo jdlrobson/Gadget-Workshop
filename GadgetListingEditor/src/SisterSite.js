@@ -13,6 +13,11 @@ module.exports = function() {
     var WIKIDATA_PROP_WMPRJ = 'P4656'; // Wikimedia project source of import
 
     // perform an ajax query of a sister site
+    /**
+     * @param {string} url
+     * @param {Object} ajaxData
+     * @return {JQueryXHR}
+     */
     const ajaxSisterSiteSearch = function(url, ajaxData ) {
         return $.ajax({
             url,
@@ -23,6 +28,13 @@ module.exports = function() {
         });
     };
     // parse the wikidata "claim" object from the wikidata response
+    /**
+     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+     * @param {string} value
+     * @param {string} property
+     * @param {boolean} [guidBool]
+     * @return {string|null|CoordValue}
+     */
     var wikidataClaim = function(jsonObj, value, property, guidBool) {
         var entity = _wikidataEntity(jsonObj, value);
         if (!entity || !entity.claims || !entity.claims[property]) {
@@ -42,9 +54,15 @@ module.exports = function() {
             return propertyObj[index].mainsnak.datavalue.value.text;
         }
         if (guidBool === true) { return propertyObj[index].id; }
+        // @ts-ignore
         return propertyObj[index].mainsnak.datavalue.value;
     };
     // parse the wikidata "entity" object from the wikidata response
+    /**
+     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+     * @param {string} value
+     * @return {MwApiWikidataEntityJSON|null}
+     */
     var _wikidataEntity = function(jsonObj, value) {
         if (!jsonObj || !jsonObj.entities || !jsonObj.entities[value]) {
             return null;
@@ -52,6 +70,11 @@ module.exports = function() {
         return jsonObj.entities[value];
     };
     // parse the wikidata display label from the wikidata response
+    /**
+     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+     * @param {string} value
+     * @return {string|null}
+     */
     var wikidataLabel = function(jsonObj, value) {
         var entityObj = _wikidataEntity(jsonObj, value);
         if (!entityObj || !entityObj.labels || !entityObj.labels.en) {
@@ -60,6 +83,11 @@ module.exports = function() {
         return entityObj.labels.en.value;
     };
     // parse the wikipedia link from the wikidata response
+    /**
+     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+     * @param {string} value
+     * @return {string|null}
+     */
     var wikidataWikipedia = function(jsonObj, value) {
         var entityObj = _wikidataEntity(jsonObj, value);
         if (!entityObj || !entityObj.sitelinks || !entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA] || !entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA].title) {
@@ -67,7 +95,10 @@ module.exports = function() {
         }
         return entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA].title;
     };
-
+    /**
+     * @param {MwApiQueryResponseJSON} jsonObj
+     * @return {string|null}
+     */
     var wikipediaWikidata = function(jsonObj) {
         if (!jsonObj || !jsonObj.query || jsonObj.query.pageids[0] == "-1" ) { // wikipedia returns -1 pageid when page is not found
             return null;
@@ -75,6 +106,12 @@ module.exports = function() {
         var pageID = jsonObj.query.pageids[0];
         return jsonObj['query']['pages'][pageID]['pageprops']['wikibase_item'];
     };
+    /**
+     * @param {string} prop
+     * @param {string} value
+     * @param {string} snaktype
+    * @return {JQuery.Promise<any>}
+     */
     var sendToWikidata = function(prop, value, snaktype) {
         var ajaxData = {
             action: 'wbcreateclaim',
@@ -87,6 +124,10 @@ module.exports = function() {
         var api = new mw.ForeignApi( API_WIKIDATA );
         return api.postWithToken( 'csrf', ajaxData, { async: false } ).then( referenceWikidata ); // async disabled because otherwise get edit conflicts with multiple changes submitted at once
     };
+    /**
+     * @param {string} guidObj
+    * @return {JQuery.Promise<any>}
+     */
     var removeFromWikidata = function(guidObj) {
         var ajaxData = {
             action: 'wbremoveclaims',
@@ -95,13 +136,24 @@ module.exports = function() {
         var api = new mw.ForeignApi( API_WIKIDATA );
         return api.postWithToken( 'csrf', ajaxData, { async: false } );
     };
-    var changeOnWikidata = function(guidObj, prop, value, snaktype) {
+    /**
+     * @param {string} guidObj
+     * @param {string} _prop
+     * @param {string} value
+     * @param {string} snaktype
+    * @return {JQuery.Promise<any>}
+     */
+    var changeOnWikidata = function(guidObj, _prop, value, snaktype) {
         var ajaxData = {
             action: 'wbsetclaimvalue',
             claim: guidObj,
             snaktype,
             value
         };
+        /**
+         * @param {MwApiWikidataClaimResponse} jsonObj
+         * @return {Promise<any>}
+         */
         var ajaxSuccess = function(jsonObj) {
             const promises = [];
             if( jsonObj.claim ) {
@@ -112,6 +164,7 @@ module.exports = function() {
                 }
                 else if ( jsonObj.claim.references.length === 1 ) { // skip if >1 reference; too complex to automatically set
                     var acceptedProps = [WIKIDATA_PROP_WMURL, WIKIDATA_PROP_WMPRJ]; // properties relating to Wikimedia import only
+                    // @ts-ignore
                     var diff = $(jsonObj.claim.references[0]['snaks-order']).not(acceptedProps).get(); // x-compatible method for diff on arrays, from https://stackoverflow.com/q/1187518
                     if( diff.length === 0 ) { // if the set of present properties is a subset of the set of acceptable properties
                         promises.push(
@@ -130,6 +183,10 @@ module.exports = function() {
         var api = new mw.ForeignApi( API_WIKIDATA );
         return api.postWithToken( 'csrf', ajaxData, {async: false} ).then( ajaxSuccess );
     };
+    /**
+     * @param {MwApiWikidataClaimResponse} jsonObj
+     * @return {JQuery.Promise<any>}
+     */
     var referenceWikidata = function(jsonObj) {
         var revUrl = `https:${mw.config.get('wgServer')}${mw.config.get('wgArticlePath').replace('$1', '')}${mw.config.get('wgPageName')}?oldid=${mw.config.get('wgCurRevisionId')}`; // surprising that there is no API call for this
         var ajaxData = {
@@ -141,6 +198,11 @@ module.exports = function() {
         var api = new mw.ForeignApi( API_WIKIDATA );
         return api.postWithToken( 'csrf', ajaxData, { async: false } );
     };
+    /**
+     * @param {string} statement
+     * @param {string} references
+     * @return {JQuery.Promise<any>}
+     */
     var unreferenceWikidata = function(statement, references) {
         var ajaxData = {
             action: 'wbremovereferences',
@@ -159,6 +221,9 @@ module.exports = function() {
     };
 
     // expose public members
+    /**
+     * @name SisterSiteApi
+     */
     return {
         SEARCH_PARAMS,
         API_WIKIDATA,

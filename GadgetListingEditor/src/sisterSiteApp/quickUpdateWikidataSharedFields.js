@@ -5,6 +5,11 @@ const trimDecimal = require( '../trimDecimal.js' );
 const { getConfig } = require( '../Config.js' );
 const updateFieldIfNotNull = require( './updateFieldIfNotNull.js' );
 
+/**
+ * @param {string} wikidataRecord
+ * @param {SisterSiteApi} SisterSite
+ * @return {JQuery.Promise<SisterSiteData>}
+ */
 module.exports = function(wikidataRecord, SisterSite) {
     const { API_WIKIDATA, wikidataClaim, wikidataWikipedia,
         ajaxSisterSiteSearch } = SisterSite;
@@ -14,8 +19,12 @@ module.exports = function(wikidataRecord, SisterSite) {
         ids: wikidataRecord,
         languages: LANG
     };
+    /**
+     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+     */
     const ajaxSuccess = function (jsonObj) {
         let msg = '';
+        /** @type {Record<string,any>} */
         const res = [];
         for (let key in WIKIDATA_CLAIMS) {
             res[key] = wikidataClaim(jsonObj, wikidataRecord, WIKIDATA_CLAIMS[key].p);
@@ -41,6 +50,9 @@ module.exports = function(wikidataRecord, SisterSite) {
         }
 
         if (msg) {
+            /**
+             * @type {Record<string, string|null>}
+             */
             const result = {
                 wikipedia
             };
@@ -53,6 +65,7 @@ module.exports = function(wikidataRecord, SisterSite) {
                         }
 
                         if ( (key !== 'iata') || ($('#input-alt').val() === '') ||
+                            // @ts-ignore
                             (/^IATA: ...$/.test($('#input-alt').val())) ) {
                             if (key === 'coords') {
                                 updateFieldIfNotNull(editorField[0], res[key].latitude, WIKIDATA_CLAIMS[key].remotely_sync);
@@ -72,5 +85,6 @@ module.exports = function(wikidataRecord, SisterSite) {
         }
         return false;
     };
+    // @ts-ignore returns jqXHR not JQuery.Promise<SisterSiteData>
     return ajaxSisterSiteSearch(API_WIKIDATA, ajaxData ).then(  ajaxSuccess );
 };

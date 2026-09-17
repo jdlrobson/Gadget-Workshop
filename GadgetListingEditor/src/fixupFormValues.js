@@ -10,14 +10,16 @@ const fixupFormValues = function() {
     // newlines in listing content won't render properly in lists, so replace them with <br> tags
     if ( REPLACE_NEW_LINE_CHARS ) {
         $('#input-content').val(
-            ($('#input-content').val() || '')
+            /** @type {string} */($('#input-content').val() || '')
                 .trim().replace(/\n/g, '<br />')
         );
     }
     // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
     // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
     const $content = $('#input-content');
-    const contentValue = $content.val() || '';
+    const contentValue = /** @type {string} */(
+        $content.val() || ''
+    );
     if ( APPEND_FULL_STOP_TO_DESCRIPTION && contentValue ) {
         $content
             .val(
@@ -28,16 +30,18 @@ const fixupFormValues = function() {
 
     // remove trailing period from price and address block
     $('#input-price').val(
-        ($('#input-price').val() || '')
+        /** @type {string} */($('#input-price').val() || '')
             .trim().replace(/\.$/, '')
     );
     $('#input-address').val(
-        ($('#input-address').val() || '')
+        /** @type {string} */($('#input-address').val() || '')
             .trim().replace(/\.$/, '')
     );
     // in case of decimal format, decimal digits will be limited to 6
-    const latInput = ( $('#input-lat').val() || '' ).trim();
-    const longInput = ( $('#input-long').val() || '' ).trim();
+    const latInput = /** @type {string} */(
+        $('#input-lat').val() || '' ).trim();
+    const longInput = /** @type {string} */(
+        $('#input-long').val() || '' ).trim();
 
     if ( latInput && longInput ) {
         fixupLatLon( latInput, longInput, COORD_PRECISION || 6 );
@@ -49,7 +53,7 @@ const fixupFormValues = function() {
 /**
  * @param {string} latInput
  * @param {string} longInput
- * @param {string} precision
+ * @param {number} precision
  */
 const fixupLatLon = ( latInput, longInput, precision ) => {
     const inputLatLength = Math.min(
@@ -74,7 +78,9 @@ const fixupLatLon = ( latInput, longInput, precision ) => {
 
 const fixupUrl = () => {
     var webRegex = new RegExp('^https?://', 'i');
-    var url = $('#input-url').val();
+    var url = /** @type {string} */(
+        $('#input-url').val()
+    );
     if (!webRegex.test(url) && url !== '') {
         $('#input-url').val(`http://${url}`);
     }

@@ -7,7 +7,7 @@ const { getConfig } = require( './Config.js' );
  * listing template type if not enty exists for the specified type.
  *
  * @param {string} type
- * @return {string}
+ * @return {ListingInfo}
  */
 const getListingInfo = function(type) {
     const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();

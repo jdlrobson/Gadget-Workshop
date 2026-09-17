@@ -1,3 +1,6 @@
+/**
+ * @type {Vue.VueElement}
+ */
 module.exports = {
     name: 'ListingSyncRowLink',
     props: {

@@ -5,6 +5,8 @@ const { getConfig } = require( './Config.js' );
  * within a section of wikitext. Note that the returned regex simply
  * matches the start of the template ("{{listing") and not the full
  * template ("{{listing|key=value|...}}").
+ *
+ * @return {RegExp}
  */
 const getListingTypesRegex = function() {
     const { LISTING_TEMPLATES, listingTypeRegExp } = getConfig();

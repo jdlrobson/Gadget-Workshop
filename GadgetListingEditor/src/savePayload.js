@@ -1,6 +1,13 @@
+/**
+ * @param {Object} editPayload
+ * @return {AbortableJQueryDeferred<MwApiEditResponse>}
+ */
 const savePayload = ( editPayload ) => {
     const api = new mw.Api();
     let abortedByUser = false;
+    /**
+     * @param {JQuery.Deferred<any>} rtn
+     */
     const abort = ( rtn ) => {
         return () => {
             abortedByUser = true;
@@ -9,26 +16,37 @@ const savePayload = ( editPayload ) => {
             } );
         };
     };
+    /**
+     * @param {string} res
+     * @param {Object} [data]
+     * @return {AbortableJQueryDeferred<MwApiEditResponse>}
+     */
     const delayedReject = ( res, data ) => {
-        const rtn = $.Deferred();
+        const rtn = /** @type {AbortableJQueryDeferred<MwApiEditResponse>} */$.Deferred();
         setTimeout(() => {
             if ( !abortedByUser ) {
                 rtn.reject( res, data );
             }
         }, window.__save_debug_timeout || 5000 );
-        rtn.abort = abort( rtn );
-        return rtn;
+        return Object.assign( rtn, {
+            abort: abort( rtn )
+        } );
     };
+    /**
+     * @param {Object} res
+     * @return {AbortableJQueryDeferred<MwApiEditResponse>}
+     */
     const delayedPromise = ( res ) => {
-        const rtn = $.Deferred();
+        const rtn = /** @type {AbortableJQueryDeferred<MwApiEditResponse>} */$.Deferred();
         setTimeout(() => {
             if ( !abortedByUser ) {
                 rtn.resolve( res );
             }
             rtn.resolve( res );
         }, window.__save_debug_timeout || 5000 );
-        rtn.abort = abort( rtn );
-        return rtn;
+        return Object.assign( rtn, {
+            abort: abort( rtn )
+        } );
     };
     switch ( window.__save_debug ) {
         case -1:
@@ -84,6 +102,7 @@ const savePayload = ( editPayload ) => {
                 }
             } );
         default:
+            // @ts-ignore
             return api.postWithToken(
                 "csrf",
                 editPayload

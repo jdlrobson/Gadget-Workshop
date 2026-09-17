@@ -7,8 +7,9 @@ const { WIKIPEDIA_URL, WIKIDATA_URL, COMMONS_URL,
     LANG } = require( '../globalConfig.js' );
 const { ref, computed, nextTick } = require( 'vue' );
 const { translate } = require( '../translate.js' );
+const { getConfig } = require( '../Config.js' );
 const { CdxLookup } = require( '@wikimedia/codex' );
-
+/** @type {Vue.Component} */
 module.exports = {
     name: 'SisterSites',
     props: {
@@ -93,7 +94,8 @@ module.exports = {
         v-model:selected="wikipedia"
         v-model:input-value="wikipediaInput"
         :menu-items="wikipediaMenuItems"
-        :placeholder="$translate( 'placeholder-wikipedia' )"
+        :placeholder="wikipediaPlaceholder"
+        :disabled="wikipediaDisabled"
         @update:input-value="onWikipediaInput"
         @update:selected="onWikipediaSelected"
         id="input-wikipedia"
@@ -118,7 +120,8 @@ module.exports = {
         v-model:selected="commons"
         v-model:input-value="commonsInput"
         :menu-items="commonsMenuItems"
-        :placeholder="$translate( 'placeholder-image' )"
+        :placeholder="commonsPlaceholder"
+        :disabled="commonsDisabled"
         @update:input-value="onCommonsInput"
         @update:selected="onCommonsSelected"
         id="input-image"
@@ -133,28 +136,43 @@ module.exports = {
 </div>
 </div>`,
     emits: [ 'updated:listing' ],
-    setup( { wikipedia, wikidata, image, api }, { emit } ) {
+    /**
+     * @param {{wikipedia: string, wikidata: string, image: string, api?: SisterSiteApi}} options
+     * @param {Vue.SetupContext} ctx
+     * @return {Object}
+     */
+    setup( { wikipedia: wikipediaProp, wikidata: wikidataProp, image, api }, { emit } ) {
         const SisterSite = api || require( '../SisterSite.js' )();
         const { SEARCH_PARAMS,
             API_WIKIDATA, API_COMMONS, API_WIKIPEDIA,
             ajaxSisterSiteSearch } = SisterSite;
-        wikipedia = ref( wikipedia );
-        wikidata = ref( wikidata );
+        const wikipedia = ref( wikipediaProp );
+        const wikidata = ref( wikidataProp );
         const commons = ref( image || '' );
         const wikidataInput = ref( wikidata.value );
         const wikipediaInput = ref( wikipedia.value );
         const commonsInput = ref( commons.value );
+        /** @type {Vue.Ref<SearchResult[]>} */
         const wikidataMenuItems = ref( [] );
+        /** @type {Vue.Ref<SearchResult[]>} */
         const commonsMenuItems = ref( [] );
+        /** @type {Vue.Ref<SearchResult[]>} */
         const wikipediaMenuItems = ref( [] );
+        const commonsPlaceholder = ref( translate( 'placeholder-image' ) );
+        const wikipediaPlaceholder = ref( translate( 'placeholder-wikipedia' ) );
+        const commonsDisabled = ref( false );
+        const wikipediaDisabled = ref( false );
 
         const wikidataUrl = computed(
+            // @ts-ignore
             () => `${WIKIDATA_URL}/wiki/${mw.util.wikiUrlencode(wikidata.value)}`
         );
         const wikipediaUrl = computed(
+            // @ts-ignore
             () => `${WIKIPEDIA_URL}/wiki/${mw.util.wikiUrlencode(wikipedia.value)}`,
         );
         const commonsUrl = computed(
+            // @ts-ignore
             () => `${COMMONS_URL}/wiki/${mw.util.wikiUrlencode(`File:${commons.value}`)}`
         );
 
@@ -163,19 +181,46 @@ module.exports = {
             wikidataInput.value = '';
         };
 
+        // updateModel is only ever called as the result of a Wikidata sync
+        // (quick sync or the sync dialog). When WIKIDATA_SYNC_PLACEHOLDER is
+        // enabled, the wikipedia/commons values that Wikidata can supply at
+        // render time are shown as a disabled placeholder and kept blank
+        // locally, so the article saves them empty (see updateFieldIfNotNull).
+        const placeholderSync = getConfig().WIKIDATA_SYNC_PLACEHOLDER === true;
+        /**
+         * @param {SisterSiteData} newValues
+         */
         const updateModel = ( newValues ) => {
             nextTick( () => {
                 if ( newValues.commons ) {
-                    commons.value = newValues.commons;
-                    nextTick( () => {
-                        commonsInput.value = newValues.commons;
-                    } );
+                    if ( placeholderSync ) {
+                        commons.value = '';
+                        commonsDisabled.value = true;
+                        commonsPlaceholder.value = newValues.commons;
+                        nextTick( () => {
+                            commonsInput.value = '';
+                        } );
+                    } else {
+                        commons.value = newValues.commons;
+                        nextTick( () => {
+                            commonsInput.value = /** @type {string} */ ( newValues.commons );
+                        } );
+                    }
                 }
                 if ( newValues.wikipedia ) {
-                    wikipedia.value = newValues.wikipedia;
-                    nextTick( () => {
-                        wikipediaInput.value = newValues.wikipedia;
-                    } );
+                    if ( placeholderSync ) {
+                        wikipedia.value = '';
+                        wikipediaDisabled.value = true;
+                        wikipediaPlaceholder.value = newValues.wikipedia;
+                        nextTick( () => {
+                            wikipediaInput.value = '';
+                        } );
+                    } else {
+                        wikipedia.value = newValues.wikipedia;
+                        nextTick( () => {
+                            wikipediaInput.value = newValues.wikipedia;
+                        } );
+                    }
                 }
             } );
         };
@@ -211,12 +256,15 @@ module.exports = {
                     SisterSite
                 ).then( ( wikidataID ) => {
                     nextTick( () => {
+                        // @ts-ignore
                         wikidata.value = wikidataID;
+                        // @ts-ignore
                         wikidataInput.value = wikidataID;
                         emit( 'updated:listing', {
                             wikidata: wikidataID
                         } );
                         nextTick( () => {
+                            // @ts-ignore
                             wikidataInput.value = wikidataID;
                         } );
                     } );
@@ -235,12 +283,18 @@ module.exports = {
             } );
         };
 
+        /**
+         * @param {string} selected
+         */
         function onWikidataSelected( selected ) {
             if ( selected ) {
                 wikidataInput.value = selected;
                 emitUpdatedEvent();
             }
         }
+        /**
+         * @param {string} search
+         */
         function onWikidataInput( search ) {
             if ( !search ) {
                 wikidataMenuItems.value = [];
@@ -253,13 +307,16 @@ module.exports = {
                     search,
                     language: LANG
                 }
-            ).then( (  jsonObj ) => {
+            ).then( ( /** @type {MwApiWikidataSearchResponse} */ jsonObj ) => {
                 wikidataMenuItems.value = ( jsonObj.search || [] ).map(
                     ( { title, label } ) => ( { value: title, label } )
                 );
             } );
         }
 
+        /**
+         * @param {string} selected
+         */
         function onCommonsSelected( selected ) {
             if ( selected ) {
                 commonsInput.value = selected;
@@ -267,6 +324,9 @@ module.exports = {
             }
         }
 
+        /**
+         * @param {string} search
+         */
         function onCommonsInput( search ) {
             ajaxSisterSiteSearch(
                 API_COMMONS,
@@ -274,11 +334,14 @@ module.exports = {
                     search,
                     namespace: 6
                 } )
-            ).then( (  jsonObj ) => {
+            ).then( ( /** @type {[string, string[]]} */jsonObj ) => {
                 commonsMenuItems.value = mapSearchResult( jsonObj );
             } );
         }
 
+        /**
+         * @param {string} selected
+         */
         function onWikipediaSelected( selected ) {
             if ( selected ) {
                 wikipediaInput.value = selected;
@@ -286,6 +349,9 @@ module.exports = {
             }
         }
 
+        /**
+         * @param {string} search
+         */
         function onWikipediaInput( search ) {
             ajaxSisterSiteSearch(
                 API_WIKIPEDIA,
@@ -293,7 +359,7 @@ module.exports = {
                     search,
                     namespace: 0
                 } )
-            ).then( (  jsonObj ) => {
+            ).then( ( /** @type {[string, string[]]} */jsonObj ) => {
                 wikipediaMenuItems.value = mapSearchResult( jsonObj );
             } );
         }
@@ -321,7 +387,11 @@ module.exports = {
             onWikipediaInput,
             onCommonsInput,
             wikipedia,
-            commons
+            commons,
+            commonsPlaceholder,
+            wikipediaPlaceholder,
+            commonsDisabled,
+            wikipediaDisabled
         };
     }
 };

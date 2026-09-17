@@ -17,9 +17,14 @@ module.exports = {
     },
     methods: {
         clearAll() {
+            // @ts-ignore
             this.selected = '';
         },
+        /**
+         * @param {string} selected
+         */
         syncSelect( selected ) {
+            // @ts-ignore
             this.selected = selected;
         }
     },

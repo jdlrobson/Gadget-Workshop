@@ -1,6 +1,6 @@
 /**
  * @param {[string, string[]]} results
- * @return {Object[]}
+ * @return {SearchResult[]}
  */
 const mapSearchResult = ( results ) => {
     return ( results[1] || [] ).map( ( result ) => {

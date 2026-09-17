@@ -2,6 +2,9 @@
 const listingToStr = require( './listingToStr.js' );
 const createListingFromForm = require( './createListingFromForm.js' );
 
+/**
+ * @param {Record<string,string>} listingTemplateAsMap
+ */
 const showPreview = function(listingTemplateAsMap) {
     var listing = createListingFromForm( listingTemplateAsMap );
     var text = listingToStr(listing);

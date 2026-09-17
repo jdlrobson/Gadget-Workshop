@@ -3,7 +3,14 @@ const { LANG } = require( './globalConfig.js' );
 const translateModule = require( './translate.js' );
 const { loadConfig } = require( './Config.js' );
 
-module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
+module.exports = (
+	/**
+	 * @param {boolean} ALLOWED_NAMESPACE
+	 * @param {Record<string,string>} SECTION_TO_TEMPLATE_TYPE
+	 * @param {ListingConfig} PROJECT_CONFIG
+	 * @return {Object}
+	 */
+	function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 	'use strict';
 
 	var PROJECT_CONFIG_KEYS = [
@@ -18,6 +25,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 
 	// check project has been setup correctly with no missing keys.
 	PROJECT_CONFIG_KEYS.forEach( function ( key ) {
+		// @ts-ignore
 		if ( PROJECT_CONFIG[ key ] === undefined ) {
 			throw new Error( `Project must define project setting ${key}` );
 		}
@@ -27,6 +35,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 	var TRANSLATIONS = Object.assign(
 		{},
 		TRANSLATIONS_ALL.en,
+		// @ts-ignore
 		TRANSLATIONS_ALL[ userLanguage ]
 	);
 
@@ -34,6 +43,7 @@ module.exports = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJE
 		userLanguage
 	);
 	missingTranslations.forEach( ( missing ) => {
+		// @ts-ignore
 		mw.log.warn( `Language missing translation ${missing.key} will fall back to English.` );
 	} );
 

@@ -1,53 +1,3 @@
-/**
- * @typedef {Object} ListingWikidataClaimValue
- * @property {string} p
- * @property {string} label
- * @property {string[]} fields
- * @property {boolean} remotely_sync
- */
-/**
- * @typedef {Record<string, ListingWikidataClaimValue>} ListingWikidataClaims
-*/
-/**
- * @typedef {Object} ListingTemplateParameterConfig
- * @property {string} id
- * @property {string|null} [hideDivIfEmpty]
- * @property {boolean} [skipIfEmpty]
- * @property {boolean} [newline]
- */
-/**
- * @typedef {Record<string, ListingTemplateParameterConfig>} ListingTemplateParametersConfig
- */
-/**
- * @typedef {Record<string, ListingTemplateParametersConfig>} ListingTemplateConfig
- */
-/**
- * @typedef {Object} ListingConfig
- * @property {boolean} SHOW_LAST_EDITED_FIELD
- * @property {string[]} SUPPORTED_SECTIONS
- * @property {Record<string, string>} sectionType
- * @property {string} iata
- * @property {number} COORD_PRECISION
- * @property {string} EDITOR_TAG
- * @property {string} listingTypeRegExp
- * @property {Object} SECTION_TO_TEMPLATE_TYPE
- * @property {boolean} APPEND_FULL_STOP_TO_DESCRIPTION
- * @property {boolean} REPLACE_NEW_LINE_CHARS
- * @property {string[]} LISTING_TEMPLATES_OMIT
- * @property {boolean} VALIDATE_CALLBACKS_EMAIL
- * @property {boolean} SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT
- * @property {boolean} ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP
- * @property {string} LISTING_TYPE_PARAMETER
- * @property {string} LISTING_CONTENT_PARAMETER
- * @property {string} DEFAULT_LISTING_TEMPLATE
- * @property {ListingTemplateParametersConfig} SLEEP_TEMPLATE_PARAMETERS
- * @property {ListingTemplateParametersConfig} LISTING_TEMPLATE_PARAMETERS
- * @property {string} WIKIDATAID
- * @property {string[]} SPECIAL_CHARS
- * @property {ListingTemplateConfig} LISTING_TEMPLATES
- * @property {ListingWikidataClaims} WIKIDATA_CLAIMS
- */
-
 /** @type {Partial<ListingConfig>} */
 let config = {};
 /**
@@ -147,7 +97,7 @@ function generateListingTemplateConfig( {
 } ) {
     // map the template name to configuration information needed by the listing
     // editor
-    /** @type ListingTemplateConfig */
+    /** @type {ListingTemplateConfig} */
     const LISTING_TEMPLATES = {};
 
     ( SUPPORTED_SECTIONS || [] ).forEach( function ( key ) {
@@ -169,8 +119,9 @@ function generateListingTemplateConfig( {
 let _loaded = false;
 
 /**
- * @param {Object} newConfig
+ * @param {Partial<ListingConfig>} newConfig
  * @param {Object} projectConfig
+ * @return {void}
  */
 const loadConfig = ( newConfig, projectConfig ) => {
     if ( _loaded ) {
@@ -184,6 +135,7 @@ const loadConfig = ( newConfig, projectConfig ) => {
 
 /**
  * @param {ListingConfig} newConfig
+ * @return {void}
  */
 const extendConfig = ( newConfig ) => {
     config = Object.assign( {}, newConfig );

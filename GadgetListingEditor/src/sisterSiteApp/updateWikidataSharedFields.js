@@ -1,5 +1,10 @@
 const { LANG } = require( '../globalConfig.js' );
 
+/**
+ * @param {string} wikidataRecord
+ * @param {SisterSiteApi} SisterSite
+ * @return {JQuery.Promise<any>}
+ */
 module.exports = function(
     wikidataRecord, SisterSite
 ) {

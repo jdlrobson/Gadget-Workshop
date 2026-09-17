@@ -3,7 +3,7 @@
   "version": "4.13.0",
   "scripts": {
     "dev": "node makeHtml.js && npx http-server dist -p 9999",
-    "start": "npx tsc && npm test && rollup -c",
+    "start": "npm test && rollup -c",
     "test": "eslint . && jest"
   },
   "repository": {

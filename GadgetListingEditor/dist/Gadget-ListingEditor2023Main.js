@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.12.12
+ * Listing Editor v4.13.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.12.12';
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.13.0';
 
 'use strict';
 
@@ -41,8 +41,8 @@ function getDefaultExportFromCjs (x) {
 
 var propertyP856$1 = "url";
 var propertyP968$1 = "email";
-var propertyP238$1 = "alt";
-var propertyP18$1 = "image";
+var propertyP238$2 = "alt";
+var propertyP18$2 = "image";
 var addTitle$4 = "Add New Listing";
 var editTitle$4 = "Edit Existing Listing";
 var addTitleBeta$4 = "Add New Listing (Beta)";
@@ -55,6 +55,7 @@ var midrange$3 = "Mid-range";
 var splurge$3 = "Splurge";
 var cancel$4 = "Cancel";
 var cancelAll$4 = "Clear all";
+var confirmDiscard$2 = "You have unsaved changes. Are you sure you want to close without saving?";
 var preview$4 = "Preview";
 var previewOff$4 = "Preview off";
 var refresh$4 = "↺";
@@ -65,7 +66,7 @@ var validationEmptyListing$4 = "Please enter either a name or an address";
 var validationEmail$4 = "Please ensure the email address is valid";
 var validationWikipedia$4 = "Please insert the Wikipedia page title only; not the full URL address";
 var validationImage$4 = "Please insert the Commons image title only without any prefix";
-var validationCoords$2 = "Please enter latitude and longitude coordinates both in the decimal form e.g. 29.9773, 31.1325";
+var validationCoords$3 = "Please enter latitude and longitude coordinates both in the decimal form e.g. 29.9773, 31.1325";
 var added$4 = "Added listing for ";
 var updated$4 = "Updated listing for ";
 var removed$4 = "Deleted listing for ";
@@ -157,8 +158,8 @@ var require$$0 = {
 	"propertyP625-1": "long",
 	propertyP856: propertyP856$1,
 	propertyP968: propertyP968$1,
-	propertyP238: propertyP238$1,
-	propertyP18: propertyP18$1,
+	propertyP238: propertyP238$2,
+	propertyP18: propertyP18$2,
 	addTitle: addTitle$4,
 	editTitle: editTitle$4,
 	addTitleBeta: addTitleBeta$4,
@@ -171,6 +172,7 @@ var require$$0 = {
 	splurge: splurge$3,
 	cancel: cancel$4,
 	cancelAll: cancelAll$4,
+	confirmDiscard: confirmDiscard$2,
 	"form-tab-label-edit": "edit",
 	"form-tab-label-preview": "preview",
 	preview: preview$4,
@@ -183,7 +185,7 @@ var require$$0 = {
 	validationEmail: validationEmail$4,
 	validationWikipedia: validationWikipedia$4,
 	validationImage: validationImage$4,
-	validationCoords: validationCoords$2,
+	validationCoords: validationCoords$3,
 	added: added$4,
 	updated: updated$4,
 	removed: removed$4,
@@ -243,6 +245,8 @@ var require$$0 = {
 	intlCurrenciesTitle: intlCurrenciesTitle$4
 };
 
+var propertyP238$1 = "tên khác";
+var propertyP18$1 = "hình";
 var addTitle$3 = "Thêm địa điểm mới";
 var editTitle$3 = "Sửa địa điểm hiện tại";
 var addTitleBeta$3 = "Thêm địa điểm mới (beta)";
@@ -255,6 +259,7 @@ var midrange$2 = "Tầm trung";
 var splurge$2 = "Hạng sang";
 var cancel$3 = "Hủy";
 var cancelAll$3 = "Xóa tất cả";
+var confirmDiscard$1 = "Bạn có thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng mà không lưu không?";
 var preview$3 = "Xem trước";
 var previewOff$3 = "Tắt xem trước";
 var refresh$3 = "↺";
@@ -265,9 +270,10 @@ var validationEmptyListing$3 = "Vui lòng nhập tên hoặc địa chỉ";
 var validationEmail$3 = "Vui lòng đảm bảo địa chỉ email hợp lệ";
 var validationWikipedia$3 = "Vui lòng chỉ nhập tên trang Wikipedia, không phải URL đầy đủ";
 var validationImage$3 = "Vui lòng chỉ nhập tiêu đề hình ảnh trên Commons, không có tiền tố";
-var added$3 = "Thêm địa điểm ";
-var updated$3 = "Cập nhật địa điểm ";
-var removed$3 = "Xóa địa điểm ";
+var validationCoords$2 = "Vui lòng nhập cả vĩ độ và kinh độ ở dạng thập phân, ví dụ: 29.9773, 31.1325";
+var added$3 = "Thêm địa điểm";
+var updated$3 = "Cập nhật địa điểm";
+var removed$3 = "Xóa địa điểm";
 var helpPage$3 = "//vi.wikivoyage.org/wiki/Wikivoyage:Trình_soạn_thảo_địa_điểm";
 var enterCaptcha$3 = "Nhập CAPTCHA";
 var externalLinks$3 = "Sửa đổi của bạn có chứa các liên kết ngoài mới.";
@@ -323,7 +329,12 @@ var listingUpdatedLabel$3 = "đánh dấu địa điểm là đã cập nhật?"
 var natlCurrencyTitle$3 = "";
 var intlCurrenciesTitle$3 = "";
 var require$$1 = {
-	"report-bug": "Báo cáo lỗi",
+	"@metadata": {
+	authors: [
+		"Nvdtn19"
+	]
+},
+	"report-bug": "Báo lỗi",
 	"listing-editor-version": "Phiên bản $1",
 	"coordinates-error": "Tọa độ không hợp lệ. Vui lòng sử dụng độ thập phân.",
 	"placeholder-name": "tên địa điểm",
@@ -347,6 +358,10 @@ var require$$1 = {
 	"placeholder-image": "hình ảnh địa điểm",
 	"placeholder-content": "mô tả địa điểm",
 	"placeholder-summary": "lý do thay đổi địa điểm",
+	"propertyP625-0": "vĩ độ",
+	"propertyP625-1": "kinh độ",
+	propertyP238: propertyP238$1,
+	propertyP18: propertyP18$1,
 	addTitle: addTitle$3,
 	editTitle: editTitle$3,
 	addTitleBeta: addTitleBeta$3,
@@ -359,6 +374,9 @@ var require$$1 = {
 	splurge: splurge$2,
 	cancel: cancel$3,
 	cancelAll: cancelAll$3,
+	confirmDiscard: confirmDiscard$1,
+	"form-tab-label-edit": "sửa",
+	"form-tab-label-preview": "xem trước",
 	preview: preview$3,
 	previewOff: previewOff$3,
 	refresh: refresh$3,
@@ -369,6 +387,7 @@ var require$$1 = {
 	validationEmail: validationEmail$3,
 	validationWikipedia: validationWikipedia$3,
 	validationImage: validationImage$3,
+	validationCoords: validationCoords$2,
 	added: added$3,
 	updated: updated$3,
 	removed: removed$3,
@@ -425,208 +444,211 @@ var require$$1 = {
 	listingUpdatedTooltip: listingUpdatedTooltip$3,
 	listingUpdatedLabel: listingUpdatedLabel$3,
 	natlCurrencyTitle: natlCurrencyTitle$3,
-	intlCurrenciesTitle: intlCurrenciesTitle$3,
-	"form-tab-label-edit": "Sửa đổi",
-	"form-tab-label-preview": "Xem trước"
+	intlCurrenciesTitle: intlCurrenciesTitle$3
 };
 
-var added$2 = "Élément ajouté : ";
-var address$2 = "Adresse";
-var addTitle$2 = "Ajouter un nouvel élément";
-var addTitleBeta$2 = "Ajouter un nouvel élément (Bêta)";
-var ajaxInitFailure$2 = "Erreur : impossible d’initialiser l’éditeur de fiches";
-var alt$1 = "Autre nom";
-var budget$1 = "Bon marché";
-var cancel$2 = "Annuler";
-var cancelAll$2 = "Tout annuler";
-var checkin$1 = "Arrivée";
-var checkout$1 = "Départ";
-var content$2 = "Description";
-var directions$2 = "Indications";
-var editSummary$2 = "Résumé de la modification";
-var editTitle$2 = "Modifier l’élément existant";
-var editTitleBeta$2 = "Modifier l’élément existant (Bêta)";
-var email$3 = "Email";
-var enterCaptcha$2 = "Entrez le CAPTCHA";
-var externalLinks$2 = "Votre modification inclut de nouveaux liens externes.";
-var fax$2 = "Fax";
-var findOnMap$2 = "localiser sur geomap";
-var helpPage$2 = "//fr.wikivoyage.org/wiki/Aide:Éditeur_de_Listing";
-var hours$2 = "Horaires";
-var image$3 = "Image";
-var intlCurrenciesTitle$2 = "Symboles des monnaies internationales";
-var lastUpdated$2 = "Dernière mise à jour";
-var latitude$2 = "Latitude";
-var licenseText$2 = "En cliquant sur « Enregistrer », vous acceptez expressément les <a class=\"external\" target=\"_blank\" href=\"http://wikimediafoundation.org/wiki/Terms_of_Use/fr\">Conditions d’utilisation</a>, et acceptez irrévocablement de publier votre contribution sous la <a class=\"external\" target=\"_blank\" href=\"https://fr.wikivoyage.org/wiki/Wikivoyage:Texte_de_la_licence_Creative_Commons_Attribution-Partage_dans_les_Mêmes_Conditions_3.0_Unported\">licence CC‑BY‑SA 3.0</a>.";
-var listingLabel$2 = "Supprimer ?";
-var listingTooltip$2 = "Cochez la case si l’établissement n’est plus en activité afin de le retirer de cet article";
-var listingUpdatedLabel$2 = "marquer l’élément comme mis à jour ?";
-var listingUpdatedTooltip$2 = "Cochez la case si les informations de cette fiche ont été vérifiées comme à jour et exactes ; la date de dernière mise à jour sera remplacée par la date du jour.";
-var longitude$2 = "Longitude";
-var midrange$1 = "Prix moyens";
-var minorLabel$2 = "modification mineure ?";
-var minorTitle$2 = "Cochez la case si la modification est mineure, comme la correction d’une faute";
-var name$2 = "Nom";
-var natlCurrencyTitle$2 = "Symboles de la monnaie nationale";
-var phone$2 = "Téléphone";
-var preview$2 = "Aperçu";
-var previewOff$2 = "Pas d’aperçu";
-var price$2 = "Prix";
-var propertyP18 = "image";
-var propertyP238 = "alt";
 var propertyP856 = "site";
 var propertyP968 = "email";
+var propertyP238 = "alt";
+var propertyP18 = "image";
+var addTitle$2 = "Ajouter un nouvel élément";
+var editTitle$2 = "Modifier l’élément existant";
+var addTitleBeta$2 = "Ajouter un nouvel élément (Bêta)";
+var editTitleBeta$2 = "Modifier l’élément existant (Bêta)";
+var syncTitle$2 = "Synchronisation Wikidata";
+var saving$2 = "Enregistrement...";
+var submit$2 = "Enregistrer";
+var budget$1 = "Bon marché";
+var midrange$1 = "Prix moyens";
+var splurge$1 = "Luxe";
+var cancel$2 = "Annuler";
+var cancelAll$2 = "Tout effacer";
+var preview$2 = "Aperçu";
+var previewOff$2 = "Pas d’aperçu";
 var refresh$2 = "↺";
 var refreshTitle$2 = "Actualiser l’aperçu";
-var removed$2 = "Élément effacé : ";
-var saving$2 = "Enregistrement...";
 var selectAll$2 = "Tout sélectionner";
 var selectAlternatives$2 = "Sélectionner toutes les valeurs dont l’alternative est vide.";
+var validationEmptyListing$2 = "Entrez au moins un nom ou une adresse";
+var validationEmail$2 = "Controler que l'adresse électronique soit correcte";
+var validationWikipedia$2 = "Veuillez insérer seulement le titre de la page Wikipédia, et pas l'adresse URL complète";
+var validationImage$2 = "Veuillez insérer le titre de l'image de Commons sans préfixe";
+var validationCoords$1 = "Entrez les coordonnées de latitude et longitude au format décimal, par exemple 29.9773, 31.1325";
+var added$2 = "Élément ajouté :";
+var updated$2 = "Élément mis à jour :";
+var removed$2 = "Élément effacé :";
+var helpPage$2 = "//fr.wikivoyage.org/wiki/Aide:Éditeur_de_Listing";
+var enterCaptcha$2 = "Entrez le CAPTCHA";
+var externalLinks$2 = "Votre modification inclut de nouveaux liens externes.";
+var licenseText$2 = "En cliquant sur « Enregistrer », vous acceptez expressément les <a class=\"external\" target=\"_blank\" href=\"http://wikimediafoundation.org/wiki/Terms_of_Use/fr\">Conditions d’utilisation</a>, et acceptez irrévocablement de publier votre contribution sous la <a class=\"external\" target=\"_blank\" href=\"https://fr.wikivoyage.org/wiki/Wikivoyage:Texte_de_la_licence_Creative_Commons_Attribution-Partage_dans_les_Mêmes_Conditions_3.0_Unported\">licence CC‑BY‑SA 3.0</a>.";
+var ajaxInitFailure$2 = "Erreur : impossible d’initialiser l’éditeur de fiches";
 var sharedWikipedia$1 = "wikipédia";
-var splurge$1 = "Luxe";
-var submit$2 = "Enregistrer";
+var synchronized$2 = "- champ synchronisé.";
 var submitApiError$2 = "Erreur : le serveur a renvoyé une erreur lors de l’enregistrement de l’élément, veuillez réessayer";
 var submitBlacklistError$2 = "Erreur : une valeur envoyée figure dans la « blacklist », veuillez la retirer et réessayer";
-var submitEmptyError$2 = "Erreur : le serveur a renvoyé une réponse vide lors de l’enregistrement de l’élément, veuillez réessayer";
-var submitHttpError$2 = "Erreur : le serveur a renvoyé une erreur HTTP lors de l’enregistrement de l’élément, veuillez réessayer";
 var submitUnknownError$2 = "Erreur : une erreur inconnue s’est produite lors de l’enregistrement de l’élément, veuillez réessayer";
-var synchronized$2 = "- champ synchronisé.";
-var syncTitle$2 = "Synchronisation Wikidata";
-var syncWikidata$2 = "Synchroniser avec Wikidata";
-var syncWikidataLabel$2 = "(insertion rapide)";
-var syncWikidataTitle$2 = "Cela remplace simplement les valeurs locales par celles de Wikidata. Utile pour les nouvelles fiches.";
-var tollfree$2 = "Numéro gratuit";
-var type$2 = "Type";
-var updated$2 = "Élément mis à jour : ";
-var validationCoords$1 = "Entrez les coordonnées de latitude et longitude au format décimal, par exemple 29.9773, 31.1325";
-var validationEmail$2 = "Controler que l'adresse électronique soit correcte";
-var validationEmptyListing$2 = "Entrez au moins un nom ou une adresse";
-var validationImage$2 = "Veuillez insérer le titre de l'image de Commons sans préfixe";
-var validationWikipedia$2 = "Veuillez insérer le titre de la page Wikipédia seulement; Pas l'adresse URL complète";
+var submitHttpError$2 = "Erreur : le serveur a renvoyé une erreur HTTP lors de l’enregistrement de l’élément, veuillez réessayer";
+var submitEmptyError$2 = "Erreur : le serveur a renvoyé une réponse vide lors de l’enregistrement de l’élément, veuillez réessayer";
 var viewCommonsPage$2 = "Voir l’image sur Commons";
 var viewWikidataPage$2 = "Voir l’élément sur Wikidata";
 var viewWikipediaPage$2 = "Voir l’article sur Wikipédia";
-var website$2 = "Site web";
-var wikidataRemoveLabel$2 = "supprimer";
-var wikidataRemoveTitle$2 = "Supprimer l’élément Wikidata de cette fiche";
-var wikidataShared$2 = "Les données suivantes ont été trouvées sur Wikidata. Mettre à jour les champs correspondants avec ces valeurs ?";
 var wikidataSharedMatch$2 = "Aucune différence trouvée entre les valeurs locales et celles de Wikidata";
+var wikidataShared$2 = "Les données suivantes ont été trouvées sur Wikidata. Mettre à jour les champs correspondants avec ces valeurs ?";
 var wikidataSharedNotFound$2 = "Aucune donnée n’a été récupérée depuis Wikidata";
 var wikidataSyncBlurb$2 = "La valeur sélectionnée sera modifiée sur les deux sites afin de correspondre (sélectionner une valeur vide la supprimera des deux). Ne rien sélectionner n’entraînera aucun changement. Il vaut mieux risquer de se tromper en choisissant une valeur que de ne rien faire — certains cas nécessitent volontairement des valeurs différentes entre les deux sites. Vous êtes encouragé à ajouter des références aux données modifiées directement sur Wikidata.";
+var editSummary$2 = "Résumé de la modification";
+var name$2 = "Nom";
+var alt$1 = "Autre nom";
+var website$2 = "Site web";
+var address$2 = "Adresse";
+var directions$2 = "Indications";
+var phone$2 = "Téléphone";
+var tollfree$2 = "Numéro gratuit";
+var fax$2 = "Fax";
+var lastUpdated$2 = "Dernière mise à jour";
+var syncWikidata$2 = "Synchroniser avec Wikidata";
+var syncWikidataTitle$2 = "Cela remplace simplement les valeurs locales par celles de Wikidata. Utile pour les nouvelles fiches.";
+var syncWikidataLabel$2 = "(insertion rapide)";
+var content$2 = "Description";
+var minorTitle$2 = "Cochez la case si la modification est mineure, comme la correction d’une faute";
+var minorLabel$2 = "modification mineure ?";
+var email$3 = "Email";
+var type$2 = "Type";
+var latitude$2 = "Latitude";
+var longitude$2 = "Longitude";
+var findOnMap$2 = "localiser sur geomap";
+var hours$2 = "Horaires";
+var checkin$1 = "Arrivée";
+var checkout$1 = "Départ";
+var price$2 = "Prix";
 var wpWd$2 = "Obtenir l’ID depuis l’article Wikipédia";
+var wikidataRemoveTitle$2 = "Supprimer l’élément Wikidata de cette fiche";
+var wikidataRemoveLabel$2 = "supprimer";
+var image$3 = "Image";
+var listingTooltip$2 = "Cochez la case si l’établissement n’est plus en activité ou s'il doit être supprimé pour une autre raison, afin de le retirer de cet article";
+var listingLabel$2 = "Supprimer ?";
+var listingUpdatedTooltip$2 = "Cochez la case si les informations de cette fiche ont été vérifiées comme à jour et exactes ; la date de dernière mise à jour sera remplacée par la date du jour.";
+var listingUpdatedLabel$2 = "marquer l’élément comme à jour ?";
+var natlCurrencyTitle$2 = "Symboles de la monnaie nationale";
+var intlCurrenciesTitle$2 = "Symboles des monnaies internationales";
 var require$$2 = {
-	added: added$2,
-	address: address$2,
-	addTitle: addTitle$2,
-	addTitleBeta: addTitleBeta$2,
-	ajaxInitFailure: ajaxInitFailure$2,
-	alt: alt$1,
-	budget: budget$1,
-	cancel: cancel$2,
-	cancelAll: cancelAll$2,
-	checkin: checkin$1,
-	checkout: checkout$1,
-	content: content$2,
-	"coordinates-error": "Les coordonnées ont un format non valide. Utilisez les degrés décimaux.",
-	directions: directions$2,
-	editSummary: editSummary$2,
-	editTitle: editTitle$2,
-	editTitleBeta: editTitleBeta$2,
-	email: email$3,
-	enterCaptcha: enterCaptcha$2,
-	externalLinks: externalLinks$2,
-	fax: fax$2,
-	findOnMap: findOnMap$2,
-	helpPage: helpPage$2,
-	hours: hours$2,
-	image: image$3,
-	intlCurrenciesTitle: intlCurrenciesTitle$2,
-	lastUpdated: lastUpdated$2,
-	latitude: latitude$2,
-	licenseText: licenseText$2,
+	"@metadata": {
+	authors: [
+		"NClara"
+	]
+},
+	"report-bug": "Signaler un problème",
 	"listing-editor-version": "Version $1",
-	listingLabel: listingLabel$2,
-	listingTooltip: listingTooltip$2,
-	listingUpdatedLabel: listingUpdatedLabel$2,
-	listingUpdatedTooltip: listingUpdatedTooltip$2,
-	longitude: longitude$2,
-	midrange: midrange$1,
-	minorLabel: minorLabel$2,
-	minorTitle: minorTitle$2,
-	name: name$2,
-	natlCurrencyTitle: natlCurrencyTitle$2,
-	phone: phone$2,
-	"placeholder-address": "adresse du lieu",
+	"coordinates-error": "Les coordonnées ont un format non valide. Utilisez les degrés décimaux.",
+	"placeholder-name": "nom du lieu",
 	"placeholder-alt": "également connu sous le nom de",
-	"placeholder-checkin": "heure d’arrivée",
-	"placeholder-checkout": "heure de départ",
-	"placeholder-content": "description du lieu",
+	"placeholder-url": "https://www.exemple.com",
+	"placeholder-address": "adresse du lieu",
 	"placeholder-directions": "comment arriver ici",
-	"placeholder-email": "info@exemple.com",
+	"placeholder-phone": "+55 555 555 5555",
+	"placeholder-tollfree": "+1 800 100 1000",
 	"placeholder-fax": "+55 555 555 555",
-	"placeholder-hours": "Lun-Ven 9:00-17:00",
-	"placeholder-image": "image du lieu",
+	"placeholder-email": "info@exemple.com",
 	"placeholder-lastedit": "2020-01-15",
 	"placeholder-lat": "11.11111",
 	"placeholder-long": "111.11111",
-	"placeholder-name": "nom du lieu",
-	"placeholder-phone": "+55 555 555 5555",
+	"placeholder-hours": "Lun-Ven 9:00-17:00",
+	"placeholder-checkin": "heure d’arrivée",
+	"placeholder-checkout": "heure de départ",
 	"placeholder-price": "prix",
-	"placeholder-summary": "Motif de modification de l’élément",
-	"placeholder-tollfree": "+1 800 100 1000",
-	"placeholder-url": "https://www.exemple.com",
 	"placeholder-wikidata-label": "élément Wikidata",
 	"placeholder-wikipedia": "article Wikipédia",
-	preview: preview$2,
-	previewOff: previewOff$2,
-	price: price$2,
-	propertyP18: propertyP18,
-	propertyP238: propertyP238,
+	"placeholder-image": "image du lieu",
+	"placeholder-content": "description du lieu",
+	"placeholder-summary": "Motif de modification de l’élément",
 	"propertyP625-0": "lat",
 	"propertyP625-1": "long",
 	propertyP856: propertyP856,
 	propertyP968: propertyP968,
+	propertyP238: propertyP238,
+	propertyP18: propertyP18,
+	addTitle: addTitle$2,
+	editTitle: editTitle$2,
+	addTitleBeta: addTitleBeta$2,
+	editTitleBeta: editTitleBeta$2,
+	syncTitle: syncTitle$2,
+	saving: saving$2,
+	submit: submit$2,
+	budget: budget$1,
+	midrange: midrange$1,
+	splurge: splurge$1,
+	cancel: cancel$2,
+	cancelAll: cancelAll$2,
+	"form-tab-label-edit": "Modifier",
+	"form-tab-label-preview": "aperçu",
+	preview: preview$2,
+	previewOff: previewOff$2,
 	refresh: refresh$2,
 	refreshTitle: refreshTitle$2,
-	removed: removed$2,
-	"report-bug": "Signaler un problème",
-	saving: saving$2,
 	selectAll: selectAll$2,
 	selectAlternatives: selectAlternatives$2,
+	validationEmptyListing: validationEmptyListing$2,
+	validationEmail: validationEmail$2,
+	validationWikipedia: validationWikipedia$2,
+	validationImage: validationImage$2,
+	validationCoords: validationCoords$1,
+	added: added$2,
+	updated: updated$2,
+	removed: removed$2,
+	helpPage: helpPage$2,
+	enterCaptcha: enterCaptcha$2,
+	externalLinks: externalLinks$2,
+	licenseText: licenseText$2,
+	ajaxInitFailure: ajaxInitFailure$2,
 	sharedWikipedia: sharedWikipedia$1,
-	splurge: splurge$1,
-	submit: submit$2,
+	synchronized: synchronized$2,
 	submitApiError: submitApiError$2,
 	submitBlacklistError: submitBlacklistError$2,
-	submitEmptyError: submitEmptyError$2,
-	submitHttpError: submitHttpError$2,
 	submitUnknownError: submitUnknownError$2,
-	synchronized: synchronized$2,
-	syncTitle: syncTitle$2,
-	syncWikidata: syncWikidata$2,
-	syncWikidataLabel: syncWikidataLabel$2,
-	syncWikidataTitle: syncWikidataTitle$2,
-	tollfree: tollfree$2,
-	type: type$2,
-	updated: updated$2,
-	validationCoords: validationCoords$1,
-	validationEmail: validationEmail$2,
-	validationEmptyListing: validationEmptyListing$2,
-	validationImage: validationImage$2,
-	validationWikipedia: validationWikipedia$2,
+	submitHttpError: submitHttpError$2,
+	submitEmptyError: submitEmptyError$2,
 	viewCommonsPage: viewCommonsPage$2,
 	viewWikidataPage: viewWikidataPage$2,
 	viewWikipediaPage: viewWikipediaPage$2,
-	website: website$2,
-	wikidataRemoveLabel: wikidataRemoveLabel$2,
-	wikidataRemoveTitle: wikidataRemoveTitle$2,
-	wikidataShared: wikidataShared$2,
 	wikidataSharedMatch: wikidataSharedMatch$2,
+	wikidataShared: wikidataShared$2,
 	wikidataSharedNotFound: wikidataSharedNotFound$2,
 	wikidataSyncBlurb: wikidataSyncBlurb$2,
+	editSummary: editSummary$2,
+	name: name$2,
+	alt: alt$1,
+	website: website$2,
+	address: address$2,
+	directions: directions$2,
+	phone: phone$2,
+	tollfree: tollfree$2,
+	fax: fax$2,
+	lastUpdated: lastUpdated$2,
+	syncWikidata: syncWikidata$2,
+	syncWikidataTitle: syncWikidataTitle$2,
+	syncWikidataLabel: syncWikidataLabel$2,
+	content: content$2,
+	minorTitle: minorTitle$2,
+	minorLabel: minorLabel$2,
+	email: email$3,
+	type: type$2,
+	latitude: latitude$2,
+	longitude: longitude$2,
+	findOnMap: findOnMap$2,
+	hours: hours$2,
+	checkin: checkin$1,
+	checkout: checkout$1,
+	price: price$2,
 	wpWd: wpWd$2,
-	"form-tab-label-edit": "Modifier",
-	"form-tab-label-preview": "Aperçu"
+	wikidataRemoveTitle: wikidataRemoveTitle$2,
+	wikidataRemoveLabel: wikidataRemoveLabel$2,
+	image: image$3,
+	listingTooltip: listingTooltip$2,
+	listingLabel: listingLabel$2,
+	listingUpdatedTooltip: listingUpdatedTooltip$2,
+	listingUpdatedLabel: listingUpdatedLabel$2,
+	natlCurrencyTitle: natlCurrencyTitle$2,
+	intlCurrenciesTitle: intlCurrenciesTitle$2
 };
 
 var addTitle$1 = "Tambah Butir Baru";
@@ -648,9 +670,9 @@ var validationEmptyListing$1 = "Silakan masukkan nama atau alamat tempat";
 var validationEmail$1 = "Pastikan alamat surelnya sudah benar";
 var validationWikipedia$1 = "Mohon hanya masukkan judul halaman Wikipedia; bukan alamat URL lengkapnya";
 var validationImage$1 = "Harap masukkan judul gambar Commons saja tanpa bagian awalannya";
-var added$1 = "Menambahkan butir senarai ";
-var updated$1 = "Memperbarui butir senarai ";
-var removed$1 = "Menghapus butir senarai ";
+var added$1 = "Menambahkan butir senarai";
+var updated$1 = "Memperbarui butir senarai";
+var removed$1 = "Menghapus butir senarai";
 var helpPage$1 = "//id.wikivoyage.org/wiki/Wikiwisata:Penyunting_senarai";
 var enterCaptcha$1 = "Masukkan CAPTCHA";
 var externalLinks$1 = "Hasil suntingan Anda menyertakan pranala luar yang baru.";
@@ -702,6 +724,10 @@ var listingUpdatedLabel$1 = "tandai butir senarai sebagai yang terkini?";
 var natlCurrencyTitle$1 = "Mata uang Nasional";
 var intlCurrenciesTitle$1 = "Mata uang Internasional";
 var require$$3 = {
+	"@metadata": {
+	authors: [
+	]
+},
 	"report-bug": "Lapor kekutu",
 	"listing-editor-version": "Versi $1",
 	"coordinates-error": "Format koordinat yang dimasukkan tidak valid. Harap gunakan derajat desimal.",
@@ -730,6 +756,8 @@ var require$$3 = {
 	submit: submit$1,
 	cancel: cancel$1,
 	cancelAll: cancelAll$1,
+	"form-tab-label-edit": "Sunting",
+	"form-tab-label-preview": "Pratinjau",
 	preview: preview$1,
 	previewOff: previewOff$1,
 	refresh: refresh$1,
@@ -792,198 +820,203 @@ var require$$3 = {
 	listingUpdatedTooltip: listingUpdatedTooltip$1,
 	listingUpdatedLabel: listingUpdatedLabel$1,
 	natlCurrencyTitle: natlCurrencyTitle$1,
-	intlCurrenciesTitle: intlCurrenciesTitle$1,
-	"form-tab-label-edit": "Sunting",
-	"form-tab-label-preview": "Pratinjau"
+	intlCurrenciesTitle: intlCurrenciesTitle$1
 };
 
-var added = "Aggiunto elemento: ";
-var address = "Indirizzo";
 var addTitle = "Aggiungi un nuovo elemento";
-var addTitleBeta = "Aggiungi un nuovo elemento (Beta)";
-var ajaxInitFailure = "Errore: Impossibile inizializzare il listing editor";
-var alt = "Altro nome";
-var budget = "Prezzi modici";
-var cancel = "Annulla";
-var cancelAll = "Annulla tutto";
-var checkin = "Check-in";
-var checkout = "Check-out";
-var content = "Descrizione";
-var directions = "Indicazioni";
-var editSummary = "Oggetto della modifica";
 var editTitle = "Modifica l'elemento esistente";
+var addTitleBeta = "Aggiungi un nuovo elemento (Beta)";
 var editTitleBeta = "Modifica l'elemento esistente (Beta)";
-var email$1 = "Email";
-var enterCaptcha = "Inserisci il CAPTCHA";
-var externalLinks = "La tua modifica include nuovi collegamenti esterni.";
-var fax = "Fax";
-var findOnMap = "localizza su geomap";
-var helpPage = "//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor";
-var hours = "Orari";
-var image$1 = "Immagine";
-var intlCurrenciesTitle = "Simboli di valute internazionali";
-var lastUpdated = "Ultimo aggiornamento";
-var latitude = "Latitudine";
-var licenseText = "Facendo click su \"Salva\", accetti espressamente i <a class=\"external\" target=\"_blank\" href=\"http://wikimediafoundation.org/wiki/Terms_of_Use/it\">Termini d'uso</a>, e accetti irrevocabilmente a rilasciare il tuo contributo sotto la <a class=\"external\" target=\"_blank\" href=\"https://it.wikivoyage.org/wiki/Wikivoyage:Testo_della_Creative_Commons_Attribuzione-Condividi_allo_stesso_modo_3.0_Unported\">licenza CC-BY-SA 3.0</a>.";
-var listingLabel = "Cancello?";
-var listingTooltip = "Spunta il riquadro se l'attività non è più operativa, al fine di rimuoverla da questo articolo";
-var listingUpdatedLabel = "segno l'elemento come aggiornato?";
-var listingUpdatedTooltip = "Metti la spunta se le informazioni in questa scheda sono state verificate come aggiornate e accurate; la data dell’ultimo aggiornamento verrà modificata alla data odierna.";
-var longitude = "Longitudine";
+var syncTitle = "Wikidata Sync";
+var saving = "Salvataggio...";
+var submit = "Salva";
+var budget = "Prezzi modici";
 var midrange = "Prezzi medi";
-var minorLabel = "modifica minore?";
-var minorTitle = "Spunta il riquadro se la modifica dell'elemento non è rilevante, come la correzione di un refuso";
-var name = "Nome";
-var natlCurrencyTitle = "Simboli della valuta nazionale";
-var phone = "Telefono";
+var splurge = "Prezzi elevati";
+var cancel = "Annulla";
+var cancelAll = "Pulisci tutto";
+var confirmDiscard = "Hai modifiche non salvate. Sei sicuro di voler chiudere senza salvare?";
 var preview = "Anteprima";
 var previewOff = "Niente anteprima";
-var price = "Prezzo";
 var refresh = "↺";
 var refreshTitle = "Aggiorna anteprima";
-var removed = "Rimosso elemento: ";
-var saving = "Salvataggio...";
 var selectAll = "Seleziona tutto";
 var selectAlternatives = "Seleziona tutti i valori dove l'alternativa è vuota.";
+var validationEmptyListing = "Inserisci almeno un'informazione tra nome o indirizzo";
+var validationEmail = "Assicurati che l'indirizzo mail sia valido";
+var validationWikipedia = "Inserisci solo il titolo della voce su Wikipedia e non l'indirizzo internet";
+var validationImage = "Inserisci solo il titolo dell'immagine su Commons senza alcun prefisso";
+var validationCoords = "Inserisci le coordinate di latitudine e longitudine entrambe in formato decimale, ad esempio 29.9773, 31.1325";
+var added = "Aggiunto elemento:";
+var updated = "Aggiornato elemento:";
+var removed = "Rimosso elemento:";
+var helpPage = "//en.wikivoyage.org/wiki/Wikivoyage:Listing_editor";
+var enterCaptcha = "Inserisci il CAPTCHA";
+var externalLinks = "La tua modifica include nuovi collegamenti esterni.";
+var licenseText = "Facendo click su \"Salva\", accetti espressamente i <a class=\"external\" target=\"_blank\" href=\"http://wikimediafoundation.org/wiki/Terms_of_Use/it\">Termini d'uso</a>, e accetti irrevocabilmente a rilasciare il tuo contributo sotto la <a class=\"external\" target=\"_blank\" href=\"https://it.wikivoyage.org/wiki/Wikivoyage:Testo_della_Creative_Commons_Attribuzione-Condividi_allo_stesso_modo_3.0_Unported\">licenza CC-BY-SA 3.0</a>.";
+var ajaxInitFailure = "Errore: Impossibile inizializzare il listing editor";
 var sharedWikipedia = "wikipedia";
-var splurge = "Prezzi elevati";
-var submit = "Salva";
+var synchronized = "- campo sincronizzato.";
 var submitApiError = "Errore: Il server ha restituito un errore durante il salvataggio dell'elemento, per favore, prova ancora";
 var submitBlacklistError = "Errore: Un valore nei dati inviati è in \"blacklist\", per favore rimuovilo e prova ancora";
-var submitEmptyError = "Errore: Il server ha restituito una risposta vuota durante il salvataggio dell'elemento, per favore, prova ancora";
-var submitHttpError = "Errore: Il server ha risposto con un errore HTTP durante il salvataggio dell'elemento, per favore, prova ancora";
 var submitUnknownError = "Errore: Un errore sconosciuto si è verificato durante il salvataggio dell'elemento, per favore, prova ancora";
-var synchronized = "- campo sincronizzato.";
-var syncTitle = "Wikidata Sync";
-var syncWikidata = "Uniforma le informazioni con Wikidata";
-var syncWikidataLabel = "(inserimento rapido)";
-var syncWikidataTitle = "Questo semplicemente prende i valori da Wikidata sostituendoli a quelli locali. Utile per i nuovi listings.";
-var tollfree = "Numero verde";
-var type = "Tipo";
-var updated = "Aggiornato elemento: ";
-var validationCoords = "Inserisci le coordinate di latitudine e longitudine entrambe in formato decimale, ad esempio 29.9773, 31.1325";
-var validationEmail = "Assicurati che l'indirizzo mail sia valido";
-var validationEmptyListing = "Inserisci almeno un'informazione tra nome o indirizzo";
-var validationImage = "Inserisci solo il titolo dell'immagine su Commons senza alcun prefisso";
-var validationWikipedia = "Inserisci solo il titolo della voce su Wikipedia e non l'indirizzo internet";
+var submitHttpError = "Errore: Il server ha risposto con un errore HTTP durante il salvataggio dell'elemento, per favore, prova ancora";
+var submitEmptyError = "Errore: Il server ha restituito una risposta vuota durante il salvataggio dell'elemento, per favore, prova ancora";
 var viewCommonsPage = "Vedi l'immagine su Commons";
 var viewWikidataPage = "Vedi l'istanza su Wikidata";
 var viewWikipediaPage = "Vedi la voce su Wikipedia";
-var website = "Sito web";
-var wikidataRemoveLabel = "rimuovi";
-var wikidataRemoveTitle = "Cancella l'istanza Wikidata da questo elemento";
-var wikidataShared = "I seguenti dati sono stati trovati su Wikidata. Aggiorno i relativi campi con questi valori?";
 var wikidataSharedMatch = "Nessuna differenza trovata tra i valori locali e quelli su Wikidata";
+var wikidataShared = "I seguenti dati sono stati trovati su Wikidata. Aggiorno i relativi campi con questi valori?";
 var wikidataSharedNotFound = "Nessun dato è stato recuperato da Wikidata";
 var wikidataSyncBlurb = "Il valore selezionato cambierà in entrambi i siti Web in modo che corrispondano (selezionando un valore vuoto verrà eliminato da entrambi). Non selezionare nessuno dei due, non comporterà alcuna modifica. Si prega rischiare di sbagliare scegliendo uno dei valori piuttosto che non fare niente - ci sono alcuni casi in cui è preferibile avere intenzionalmente un valore diverso tra i due siti. Sei incoraggiato ad andare nell'elemento Wikidata per aggiungere i riferimenti di un qualsiasi dato che cambi.";
+var editSummary = "Oggetto della modifica";
+var name = "Nome";
+var alt = "Altro nome";
+var website = "Sito web";
+var address = "Indirizzo";
+var directions = "Indicazioni";
+var phone = "Telefono";
+var tollfree = "Numero verde";
+var fax = "Fax";
+var lastUpdated = "Ultimo aggiornamento";
+var syncWikidata = "Uniforma le informazioni con Wikidata";
+var syncWikidataTitle = "Questo semplicemente prende i valori da Wikidata sostituendoli a quelli locali. Utile per i nuovi listings.";
+var syncWikidataLabel = "(inserimento rapido)";
+var content = "Descrizione";
+var minorTitle = "Spunta il riquadro se la modifica dell'elemento non è rilevante, come la correzione di un refuso";
+var minorLabel = "modifica minore?";
+var email$1 = "Email";
+var type = "Tipo";
+var latitude = "Latitudine";
+var longitude = "Longitudine";
+var findOnMap = "localizza su geomap";
+var hours = "Orari";
+var checkin = "Check-in";
+var checkout = "Check-out";
+var price = "Prezzo";
 var wpWd = "Ottieni l'ID dalla voce Wikipedia";
+var wikidataRemoveTitle = "Cancella l'istanza Wikidata da questo elemento";
+var wikidataRemoveLabel = "rimuovi";
+var image$1 = "Immagine";
+var listingTooltip = "Spunta il riquadro se l'attività non è più operativa, al fine di rimuoverla da questo articolo";
+var listingLabel = "Cancello?";
+var listingUpdatedTooltip = "Metti la spunta se le informazioni in questa scheda sono state verificate come aggiornate e accurate; la data dell’ultimo aggiornamento verrà modificata alla data odierna.";
+var listingUpdatedLabel = "segno l'elemento come aggiornato?";
+var natlCurrencyTitle = "Simboli della valuta nazionale";
+var intlCurrenciesTitle = "Simboli di valute internazionali";
 var require$$4 = {
-	added: added,
-	address: address,
-	addTitle: addTitle,
-	addTitleBeta: addTitleBeta,
-	ajaxInitFailure: ajaxInitFailure,
-	alt: alt,
-	budget: budget,
-	cancel: cancel,
-	cancelAll: cancelAll,
-	checkin: checkin,
-	checkout: checkout,
-	content: content,
-	"coordinates-error": "Le coordinate hanno un formato non valido. Usare i gradi decimali.",
-	directions: directions,
-	editSummary: editSummary,
-	editTitle: editTitle,
-	editTitleBeta: editTitleBeta,
-	email: email$1,
-	enterCaptcha: enterCaptcha,
-	externalLinks: externalLinks,
-	fax: fax,
-	findOnMap: findOnMap,
-	helpPage: helpPage,
-	hours: hours,
-	image: image$1,
-	intlCurrenciesTitle: intlCurrenciesTitle,
-	lastUpdated: lastUpdated,
-	latitude: latitude,
-	licenseText: licenseText,
+	"@metadata": {
+	authors: [
+		"Beta16"
+	]
+},
+	"report-bug": "Segnala un problema",
 	"listing-editor-version": "Versione $1",
-	listingLabel: listingLabel,
-	listingTooltip: listingTooltip,
-	listingUpdatedLabel: listingUpdatedLabel,
-	listingUpdatedTooltip: listingUpdatedTooltip,
-	longitude: longitude,
-	midrange: midrange,
-	minorLabel: minorLabel,
-	minorTitle: minorTitle,
-	name: name,
-	natlCurrencyTitle: natlCurrencyTitle,
-	phone: phone,
-	"placeholder-address": "indirizzo del posto",
+	"coordinates-error": "Le coordinate hanno un formato non valido. Usare i gradi decimali.",
+	"placeholder-name": "nome del posto",
 	"placeholder-alt": "noto anche come",
-	"placeholder-checkin": "orario di check in",
-	"placeholder-checkout": "orario di check out",
-	"placeholder-content": "descrizione del posto",
+	"placeholder-url": "https://www.esempio.com",
+	"placeholder-address": "indirizzo del posto",
 	"placeholder-directions": "come arrivare qui",
-	"placeholder-email": "info@esempio.com",
+	"placeholder-phone": "+55 555 555 5555",
+	"placeholder-tollfree": "+1 800 100 1000",
 	"placeholder-fax": "+55 555 555 555",
-	"placeholder-hours": "Lun-Ven 9:00-17:00",
-	"placeholder-image": "immagine del luogo",
+	"placeholder-email": "info@esempio.com",
 	"placeholder-lastedit": "2020-01-15",
 	"placeholder-lat": "11.11111",
 	"placeholder-long": "111.11111",
-	"placeholder-name": "nome del posto",
-	"placeholder-phone": "+55 555 555 5555",
+	"placeholder-hours": "Lun-Ven 9:00-17:00",
+	"placeholder-checkin": "orario di check in",
+	"placeholder-checkout": "orario di check out",
 	"placeholder-price": "prezzo e riferimento temporale (mese anno)",
-	"placeholder-summary": "Motivo di modifica dell'elemento",
-	"placeholder-tollfree": "+1 800 100 1000",
-	"placeholder-url": "https://www.esempio.com",
 	"placeholder-wikidata-label": "istanza wikidata",
 	"placeholder-wikipedia": "voce wikipedia",
+	"placeholder-image": "immagine del luogo",
+	"placeholder-content": "descrizione del posto",
+	"placeholder-summary": "Motivo di modifica dell'elemento",
+	addTitle: addTitle,
+	editTitle: editTitle,
+	addTitleBeta: addTitleBeta,
+	editTitleBeta: editTitleBeta,
+	syncTitle: syncTitle,
+	saving: saving,
+	submit: submit,
+	budget: budget,
+	midrange: midrange,
+	splurge: splurge,
+	cancel: cancel,
+	cancelAll: cancelAll,
+	confirmDiscard: confirmDiscard,
+	"form-tab-label-edit": "Modifica",
+	"form-tab-label-preview": "Anteprima",
 	preview: preview,
 	previewOff: previewOff,
-	price: price,
 	refresh: refresh,
 	refreshTitle: refreshTitle,
-	removed: removed,
-	"report-bug": "Segnala un problema",
-	saving: saving,
 	selectAll: selectAll,
 	selectAlternatives: selectAlternatives,
+	validationEmptyListing: validationEmptyListing,
+	validationEmail: validationEmail,
+	validationWikipedia: validationWikipedia,
+	validationImage: validationImage,
+	validationCoords: validationCoords,
+	added: added,
+	updated: updated,
+	removed: removed,
+	helpPage: helpPage,
+	enterCaptcha: enterCaptcha,
+	externalLinks: externalLinks,
+	licenseText: licenseText,
+	ajaxInitFailure: ajaxInitFailure,
 	sharedWikipedia: sharedWikipedia,
-	splurge: splurge,
-	submit: submit,
+	synchronized: synchronized,
 	submitApiError: submitApiError,
 	submitBlacklistError: submitBlacklistError,
-	submitEmptyError: submitEmptyError,
-	submitHttpError: submitHttpError,
 	submitUnknownError: submitUnknownError,
-	synchronized: synchronized,
-	syncTitle: syncTitle,
-	syncWikidata: syncWikidata,
-	syncWikidataLabel: syncWikidataLabel,
-	syncWikidataTitle: syncWikidataTitle,
-	tollfree: tollfree,
-	type: type,
-	updated: updated,
-	validationCoords: validationCoords,
-	validationEmail: validationEmail,
-	validationEmptyListing: validationEmptyListing,
-	validationImage: validationImage,
-	validationWikipedia: validationWikipedia,
+	submitHttpError: submitHttpError,
+	submitEmptyError: submitEmptyError,
 	viewCommonsPage: viewCommonsPage,
 	viewWikidataPage: viewWikidataPage,
 	viewWikipediaPage: viewWikipediaPage,
-	website: website,
-	wikidataRemoveLabel: wikidataRemoveLabel,
-	wikidataRemoveTitle: wikidataRemoveTitle,
-	wikidataShared: wikidataShared,
 	wikidataSharedMatch: wikidataSharedMatch,
+	wikidataShared: wikidataShared,
 	wikidataSharedNotFound: wikidataSharedNotFound,
 	wikidataSyncBlurb: wikidataSyncBlurb,
+	editSummary: editSummary,
+	name: name,
+	alt: alt,
+	website: website,
+	address: address,
+	directions: directions,
+	phone: phone,
+	tollfree: tollfree,
+	fax: fax,
+	lastUpdated: lastUpdated,
+	syncWikidata: syncWikidata,
+	syncWikidataTitle: syncWikidataTitle,
+	syncWikidataLabel: syncWikidataLabel,
+	content: content,
+	minorTitle: minorTitle,
+	minorLabel: minorLabel,
+	email: email$1,
+	type: type,
+	latitude: latitude,
+	longitude: longitude,
+	findOnMap: findOnMap,
+	hours: hours,
+	checkin: checkin,
+	checkout: checkout,
+	price: price,
 	wpWd: wpWd,
-	"form-tab-label-edit": "Modifica",
-	"form-tab-label-preview": "Anteprima"
+	wikidataRemoveTitle: wikidataRemoveTitle,
+	wikidataRemoveLabel: wikidataRemoveLabel,
+	image: image$1,
+	listingTooltip: listingTooltip,
+	listingLabel: listingLabel,
+	listingUpdatedTooltip: listingUpdatedTooltip,
+	listingUpdatedLabel: listingUpdatedLabel,
+	natlCurrencyTitle: natlCurrencyTitle,
+	intlCurrenciesTitle: intlCurrenciesTitle
 };
 
 const en = require$$0;
@@ -1053,22 +1086,77 @@ var translate_1 = {
     init
 };
 
-let config = {};
+/**
+ * @typedef {Object} ListingWikidataClaimValue
+ * @property {string} p
+ * @property {string} label
+ * @property {string[]} fields
+ * @property {boolean} remotely_sync
+ */
 
+/**
+ * @typedef {Record<string, ListingWikidataClaimValue>} ListingWikidataClaims
+*/
+/**
+ * @typedef {Object} ListingTemplateParameterConfig
+ * @property {string} id
+ * @property {string|null} [hideDivIfEmpty]
+ * @property {boolean} [skipIfEmpty]
+ * @property {boolean} [newline]
+ */
+/**
+ * @typedef {Record<string, ListingTemplateParameterConfig>} ListingTemplateParametersConfig
+ */
+/**
+ * @typedef {Record<string, ListingTemplateParametersConfig>} ListingTemplateConfig
+ */
+/**
+ * @typedef {Object} ListingConfig
+ * @property {boolean} SHOW_LAST_EDITED_FIELD
+ * @property {string[]} SUPPORTED_SECTIONS
+ * @property {Record<string, string>} sectionType
+ * @property {string} iata
+ * @property {number} COORD_PRECISION
+ * @property {string} EDITOR_TAG
+ * @property {string} listingTypeRegExp
+ * @property {Object} SECTION_TO_TEMPLATE_TYPE
+ * @property {boolean} APPEND_FULL_STOP_TO_DESCRIPTION
+ * @property {boolean} REPLACE_NEW_LINE_CHARS
+ * @property {string[]} LISTING_TEMPLATES_OMIT
+ * @property {boolean} VALIDATE_CALLBACKS_EMAIL
+ * @property {boolean} SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT
+ * @property {boolean} ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP
+ * @property {string} LISTING_TYPE_PARAMETER
+ * @property {string} LISTING_CONTENT_PARAMETER
+ * @property {string} DEFAULT_LISTING_TEMPLATE
+ * @property {ListingTemplateParametersConfig} SLEEP_TEMPLATE_PARAMETERS
+ * @property {ListingTemplateParametersConfig} LISTING_TEMPLATE_PARAMETERS
+ * @property {string} WIKIDATAID
+ * @property {string[]} SPECIAL_CHARS
+ * @property {ListingTemplateConfig} LISTING_TEMPLATES
+ * @property {ListingWikidataClaims} WIKIDATA_CLAIMS
+ */
+
+/** @type {Partial<ListingConfig>} */
+let config = {};
+/**
+ * @param {Partial<ListingConfig>} newConfig
+ * @return {ListingWikidataClaims}
+ */
 function generateWikidataClaims( newConfig ) {
     const { LISTING_TEMPLATE_PARAMETERS } = newConfig;
+    /** @type {Record<string, string>} */
     const CLAIM_NAMES = {};
+    if ( !LISTING_TEMPLATE_PARAMETERS ) {
+        throw new Error( 'Cannot generate Wikidata claims without LISTING_TEMPLATE_PARAMETERS.' );
+    }
 
+    /**
+     * @param {string} id
+     * @return {string}
+     */
     const mapToClaimKey = ( id ) => {
-        const claimKeyMaps = {
-            'input-lat': 'lat',
-            'input-long': 'long',
-            'input-image': 'image',
-            'input-url': 'url',
-            'input-email': 'email',
-            'input-alt': 'alt'
-        };
-        return claimKeyMaps[ id ];
+        return id.replace( 'input-', '' );
     };
     Object.keys( LISTING_TEMPLATE_PARAMETERS ).forEach( key => {
         const id =  LISTING_TEMPLATE_PARAMETERS[ key ].id;
@@ -1077,6 +1165,7 @@ function generateWikidataClaims( newConfig ) {
             CLAIM_NAMES[ claimKey ] = key;
         }
     } );
+    /** @type {Record<string,string[]>} */
     const WIKIDATA_FIELDS = {
         P18: [ CLAIM_NAMES.image ],
         P238: [ CLAIM_NAMES.alt ],
@@ -1085,8 +1174,12 @@ function generateWikidataClaims( newConfig ) {
         P968: [ CLAIM_NAMES.email ]
     };
 
+    /**
+     * @param {string} property
+     * @return {string[]}
+     */
     const lookupField = function ( property ) {
-        return WIKIDATA_FIELDS[ property ];
+        return WIKIDATA_FIELDS[ property ] || [];
     };
 
 
@@ -1101,6 +1194,10 @@ function generateWikidataClaims( newConfig ) {
     };
 }
 
+/**
+ * @param {Partial<ListingConfig>} obj
+ * @return {ListingTemplateConfig}
+ */
 function generateListingTemplateConfig( {
     SUPPORTED_SECTIONS,
     SLEEP_TEMPLATE_PARAMETERS,
@@ -1139,9 +1236,10 @@ function generateListingTemplateConfig( {
 } ) {
     // map the template name to configuration information needed by the listing
     // editor
+    /** @type ListingTemplateConfig */
     const LISTING_TEMPLATES = {};
 
-    SUPPORTED_SECTIONS.forEach( function ( key ) {
+    ( SUPPORTED_SECTIONS || [] ).forEach( function ( key ) {
         if ( key === 'sleep' ) {
             // override the default settings for "sleep" listings since that
             // listing type uses "checkin"/"checkout" instead of "hours"
@@ -1150,7 +1248,7 @@ function generateListingTemplateConfig( {
                 LISTING_TEMPLATE_PARAMETERS,
                 SLEEP_TEMPLATE_PARAMETERS
             );
-        } else {
+        } else if ( LISTING_TEMPLATE_PARAMETERS ) {
             LISTING_TEMPLATES[ key ] = LISTING_TEMPLATE_PARAMETERS;
         }
     } );
@@ -1158,6 +1256,11 @@ function generateListingTemplateConfig( {
 }
 
 let _loaded = false;
+
+/**
+ * @param {Object} newConfig
+ * @param {Object} projectConfig
+ */
 const loadConfig$1 = ( newConfig, projectConfig ) => {
     if ( _loaded ) {
         mw.log.warn( 'Configuration was already loaded. @todo: fix this!' );
@@ -1168,10 +1271,17 @@ const loadConfig$1 = ( newConfig, projectConfig ) => {
     config.WIKIDATA_CLAIMS = generateWikidataClaims( config );
 };
 
+/**
+ * @param {ListingConfig} newConfig
+ */
 const extendConfig = ( newConfig ) => {
     config = Object.assign( {}, newConfig );
 };
 
+/**
+ * @return {ListingConfig}
+ */
+// @ts-ignore
 const getConfig = () => config;
 
 var Config = {
@@ -1246,6 +1356,9 @@ function requireMode () {
  * an entry in a list; inline listings will be formatted slightly
  * differently than entries in lists (no newlines in the template syntax,
  * skip empty fields).
+ *
+ * @param {JQuery} entry
+ * @return {boolean}
  */
 
 var isInline_1;
@@ -1387,6 +1500,7 @@ function requireListingEditorDialog () {
 	hasRequiredListingEditorDialog = 1;
 	const { CdxDialog, CdxTextInput, CdxMessage, CdxButton, CdxProgressBar } = require$$0$1;
 	const { defineComponent, ref, onMounted } = require$$1$1;
+	const { translate } = translate_1;
 
 	ListingEditorDialog = defineComponent( {
 	    name: 'ListingEditorDialog',
@@ -1398,7 +1512,7 @@ function requireListingEditorDialog () {
 	        CdxButton
 	    },
 	    template: `<cdx-dialog
-v-model:open="isOpen"
+:open="isOpen"
 :title="title"
 :default-action="defaultAction"
 :class="dialogClass"
@@ -1504,6 +1618,37 @@ v-model:open="isOpen"
 	        const setCaptcha = ( url ) => {
 	            captchaRequested.value = url;
 	        };
+	        const targetElement = ref( null );
+	        // Snapshot of the form field values taken when the dialog opens, used to
+	        // detect whether the user has made any changes before closing.
+	        const initialValues = {};
+	        const fieldValue = ( el ) => (
+	            el.type === 'checkbox' || el.type === 'radio' ? String( el.checked ) : el.value
+	        );
+	        const captureInitialValues = () => {
+	            if ( !targetElement.value ) {
+	                return;
+	            }
+	            targetElement.value.querySelectorAll( 'input, textarea, select' ).forEach( ( el ) => {
+	                if ( el.id ) {
+	                    initialValues[ el.id ] = fieldValue( el );
+	                }
+	            } );
+	        };
+	        const hasUnsavedChanges = () => {
+	            if ( !targetElement.value ) {
+	                return false;
+	            }
+	            const fields = targetElement.value.querySelectorAll( 'input, textarea, select' );
+	            for ( let i = 0; i < fields.length; i++ ) {
+	                const el = fields[ i ];
+	                if ( el.id && ( el.id in initialValues ) &&
+	                    initialValues[ el.id ] !== fieldValue( el ) ) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        };
 	        const submitAction = () => {
 	            saveInProgress.value = true;
 	            const xhr = onSubmit( closeDialog, () => {
@@ -1519,15 +1664,20 @@ v-model:open="isOpen"
 	                saveInProgress.value = false;
 	                return;
 	            }
+	            if ( hasUnsavedChanges() && !window.confirm( translate( 'confirmDiscard' ) ) ) {
+	                // Keep the dialog open; isOpen is controlled one-way via :open so
+	                // simply not closing leaves the dialog visible.
+	                return;
+	            }
 	            onClose();
 	            closeDialog();
 	        };
-	        const targetElement = ref(null);
 	        onMounted(() => {
 	            if (targetElement.value && dialogElement ) {
 	                targetElement.value.appendChild( dialogElement );
 	            }
 	            onMount( targetElement.value );
+	            captureInitialValues();
 	        });
 	        return {
 	            onCaptchaSubmit: () => {
@@ -1549,6 +1699,11 @@ v-model:open="isOpen"
 	} );
 	return ListingEditorDialog;
 }
+
+/**
+ * @param {[string, string[]]} results
+ * @return {Object[]}
+ */
 
 var mapSearchResult_1;
 var hasRequiredMapSearchResult;
@@ -1624,6 +1779,12 @@ function requireTrimDecimal () {
  * Notes:
  * 1) Each D, M & S is checked to be a valid number plus M & S are checked to be in a valid range. If one parameter is not valid, NaN (Not a Number) is returned
  * 2) Empty string (provided from initial parsing section in parseDMS) are considered valid by isNaN function (i.e. isNaN('') is false)
+ *
+ * @param {Number} degrees
+ * @param {Number} minutes
+ * @param {Number} seconds
+ * @param {string} direction
+ * @return {Number}
  */
 
 var parseDMS_1;
@@ -1634,6 +1795,7 @@ function requireParseDMS () {
 	hasRequiredParseDMS = 1;
 	var convertDMS2DD = function(degrees, minutes, seconds, direction) {
 	    var dd = NaN;
+	    // @ts-ignore
 	    if( isNaN(degrees) )
 	        return NaN;
 	    else {
@@ -1675,6 +1837,9 @@ function requireParseDMS () {
 	 * 2) Missing parts are forced to be empty to use a common approach, altough M & S could be also "0" in fact North America coords 48°N 100°W are equivalent to 48° 0' 0" N, 100° 0' 0" W,
 	 *    but for compatibility with the DD notation where there is no alternative way to write it (i.e. 48° -100°), so the following parts are just empty, not 0
 	 * 3) The parsed parts could have also erroneous data if the input is badly formatted (e.g. 48°EE'00"N 100°00'4000""W"), but these checks will be performed inside convertDMS2DD
+	 *
+	 * @param {string} input
+	 * @return {Number}
 	 */
 	var parseDMS = function(input) {
 	    // Uniform alternative notation, into one common notation DD° MM' SS" [NSEW], then the DMS components are splitted into its 4 atomic component
@@ -1692,6 +1857,7 @@ function requireParseDMS () {
 	    for (var i=0; i<4; i++)
 	        if( !parts[i] )
 	            parts[i] = '';
+	    // @ts-ignore
 	    return convertDMS2DD( parts[0], parts[1], parts[2], parts[3] );
 	};
 
@@ -1705,6 +1871,11 @@ var hasRequiredUpdateFieldIfNotNull;
 function requireUpdateFieldIfNotNull () {
 	if (hasRequiredUpdateFieldIfNotNull) return updateFieldIfNotNull_1;
 	hasRequiredUpdateFieldIfNotNull = 1;
+	/**
+	 * @param {string} selector
+	 * @param {string} value
+	 * @param {boolean} placeholderBool
+	 */
 	const updateFieldIfNotNull = function(selector, value, placeholderBool) {
 	    if ( value !== null ) {
 	        if ( placeholderBool !== true ) {
@@ -2920,6 +3091,9 @@ function requireIsCustomListingType () {
 	/**
 	 * Determine if the specified listing type is a custom type - for example "go"
 	 * instead of "see", "do", "listing", etc.
+	 *
+	 * @param {string} listingType
+	 * @return {boolean}
 	 */
 	const isCustomListingType = function(listingType) {
 	    const { LISTING_TEMPLATES } = getConfig();
@@ -2943,6 +3117,9 @@ function requireGetListingInfo () {
 	 * Given a listing type, return the appropriate entry from the
 	 * LISTING_TEMPLATES array. This method returns the entry for the default
 	 * listing template type if not enty exists for the specified type.
+	 *
+	 * @param {string} type
+	 * @return {string}
 	 */
 	const getListingInfo = function(type) {
 	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
@@ -2991,11 +3168,10 @@ function requireSpecialCharactersString () {
 	        }
 	    },
 	    template: `<span v-if="characters.length">
-    <br />(<span
+    <br />(&nbsp;<span
     v-for="(char, i) in characters"
     class="listing-charinsert"
-    data-for="input-content"><a>{{ char }}</a>&nbsp;</span>
-&nbsp;)</span><span v-else></span>`
+    data-for="input-content"><a>{{ char }}</a>&nbsp;</span>)</span><span v-else></span>`
 	};
 	return specialCharactersString;
 }
@@ -3006,16 +3182,29 @@ var hasRequiredCurrentEdit;
 function requireCurrentEdit () {
 	if (hasRequiredCurrentEdit) return currentEdit;
 	hasRequiredCurrentEdit = 1;
-	let sectionText, inlineListing;
+	let sectionText = '', inlineListing = false;
 
+	/**
+	 * @param {boolean} isInline
+	 */
 	const setInlineListing = ( isInline ) => {
 	    inlineListing = isInline;
 	};
 
+	/**
+	 * @return {boolean}
+	 */
 	const isInlineListing = () => inlineListing;
 
+	/**
+	 * @return {string}
+	 */
 	const getSectionText = () => sectionText;
 
+	/**
+	 * @param {string} text
+	 * @return {string}
+	 */
 	const setSectionText = ( text ) => {
 	    sectionText = text;
 	    return sectionText;
@@ -3043,6 +3232,9 @@ function requireListingToStr () {
 
 	/**
 	 * Trim whitespace at the end of a string.
+	 *
+	 * @param {string} str
+	 * @return {string}
 	 */
 	const rtrim = function(str) {
 	    return str.replace(/\s+$/, '');
@@ -3050,6 +3242,9 @@ function requireListingToStr () {
 
 	/**
 	 * Convert the listing map back to a wiki text string.
+	 *
+	 * @param {Record<string,string>} listing
+	 * @return {string}
 	 */
 	const listingToStr = function(listing) {
 	    const { LISTING_TYPE_PARAMETER,
@@ -3197,6 +3392,11 @@ function requireCurrentLastEditDate () {
 	return currentLastEditDate_1;
 }
 
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+
 var isRTLString_1;
 var hasRequiredIsRTLString;
 
@@ -3215,6 +3415,11 @@ function requireIsRTLString () {
 	return isRTLString_1;
 }
 
+/**
+ * @param {string} listingType
+ * @return {Promise<string>}
+ */
+
 var asyncGetColor_1;
 var hasRequiredAsyncGetColor;
 
@@ -3225,8 +3430,9 @@ function requireAsyncGetColor () {
 	    const colorKey = `listingeditor-color-${listingType}`;
 	    const cachedColor = mw.storage.get(colorKey);
 	    if ( cachedColor ) {
-	        return $.Deferred().resolve( cachedColor );
+	        return Promise.resolve( cachedColor );
 	    }
+	    // @ts-ignore
 	    return $.ajax ({
 	        listingType,
 	        url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
@@ -3257,10 +3463,20 @@ function requireTypeToColor () {
 	if (hasRequiredTypeToColor) return typeToColor_1;
 	hasRequiredTypeToColor = 1;
 	const asyncGetColor = requireAsyncGetColor();
+
+	/**
+	 * @param {string} color
+	 * @param {HTMLElement} form
+	 */
 	const changeColor = function(color, form) {
 	    $('#input-type', form).css( 'box-shadow', `-20px 0 0 0 ${color} inset` );
 	};
 
+	/**
+	 * @param {string} listingType
+	 * @param {HTMLElement} form
+	 * @return {Promise<any>}
+	 */
 	const typeToColor = function(listingType, form) {
 	    changeColor( 'var(--background-color-base, white)', form );
 	    return asyncGetColor( listingType ).then(( color ) => {
@@ -3278,10 +3494,16 @@ function requireInitColor () {
 	if (hasRequiredInitColor) return initColor_1;
 	hasRequiredInitColor = 1;
 	const typeToColor = requireTypeToColor();
+
+	/**
+	 * @param {HTMLElement} form
+	 */
 	const initColor = function(form) {
+	    // @ts-ignore
 	    typeToColor( $('#input-type', form).val(), form );
 	    $('#input-type', form).on('change', function () {
-	        typeToColor(this.value, form);
+	        // @ts-ignore
+	        typeToColor( this.value, form);
 	    });
 	};
 
@@ -3853,6 +4075,9 @@ function requireEmail () {
 	 * still get through, but this method implements a minimal amount of
 	 * validation in order to catch the worst offenders.
 	 * Disabled for now, TODO: multiple email support.
+	 *
+	 * @param {string} fieldValue
+	 * @return {boolean}
 	 */
 	email = function( fieldValue ) {
 	    const { VALIDATE_CALLBACKS_EMAIL } = getConfig();
@@ -3870,6 +4095,9 @@ function requireEmail () {
 /**
  * Implement SIMPLE validation on Wikipedia field to verify that the
  * user is entering the article title and not a URL.
+ *
+ * @param {string} fieldValue
+ * @return {boolean}
  */
 
 var wikipedia;
@@ -3896,6 +4124,8 @@ function requireImage () {
 	/**
 	 * Implement SIMPLE validation on the Commons field to verify that the
 	 * user has not included a "File" or "Image" namespace.
+	 * @param {string} fieldValue
+	 * @return {boolean}
 	 */
 	image = function(fieldValue) {
 	    const VALID_IMAGE_REGEX = new RegExp(`^(?!(file|image|${translate( 'image' )}):)`, 'i');
@@ -4495,6 +4725,11 @@ function requireFixupFormValues () {
 	    return true;
 	};
 
+	/**
+	 * @param {string} latInput
+	 * @param {string} longInput
+	 * @param {string} precision
+	 */
 	const fixupLatLon = ( latInput, longInput, precision ) => {
 	    const inputLatLength = Math.min(
 	        latInput.indexOf('.') > - 1 ? latInput.split('.')[1].length : 0,
@@ -4528,6 +4763,8 @@ function requireFixupFormValues () {
 	return fixupFormValues_1;
 }
 
+/** @type {Record<string,string>} */
+
 var replacements_1;
 var hasRequiredReplacements;
 
@@ -4540,6 +4777,10 @@ function requireReplacements () {
 	    replacements = {};
 	};
 
+	/**
+	 * @param {string} rep
+	 * @param {string} comment
+	 */
 	const addReplacement = ( rep, comment ) => {
 	    replacements[rep] = comment;
 	};
@@ -4564,6 +4805,9 @@ function requireStripComments () {
 	 * Commented-out listings can result in the wrong listing being edited, so
 	 * strip out any comments and replace them with placeholders that can be
 	 * restored prior to saving changes.
+	 *
+	 * @param {string} text
+	 * @return {string}
 	 */
 	const stripComments = function(text) {
 	    var comments = text.match(/<!--[\s\S]*?-->/mig);
@@ -4593,6 +4837,10 @@ function requireRestoreComments () {
 	/**
 	 * Search the text provided, and if it contains any text that was
 	 * previously stripped out for replacement purposes, restore it.
+	 *
+	 * @param {string} text
+	 * @param {boolean} resetReplacements
+	 * @return {string}
 	 */
 	const restoreComments = function(text, resetReplacements) {
 	    for (var key in replacements) {
@@ -4608,6 +4856,11 @@ function requireRestoreComments () {
 	restoreComments_1 = restoreComments;
 	return restoreComments_1;
 }
+
+/**
+ * @param {string} str
+ * @return {string}
+ */
 
 var replaceSpecial_1;
 var hasRequiredReplaceSpecial;
@@ -4639,6 +4892,11 @@ function requireUpdateSectionTextWithEditedListing () {
 	 * After the listing has been converted to a string, add additional
 	 * processing required for edits (as opposed to adds), returning an
 	 * appropriate edit summary string.
+	 *
+	 * @param {string} editSummary
+	 * @param {string} listingWikiText
+	 * @param {string} listingTemplateWikiSyntax
+	 * @return {string}
 	 */
 	const updateSectionTextWithEditedListing = function(editSummary, listingWikiText, listingTemplateWikiSyntax) {
 	    let sectionText = getSectionText();
@@ -4679,6 +4937,10 @@ function requireUpdateSectionTextWithAddedListing () {
 	 * After the listing has been converted to a string, add additional
 	 * processing required for adds (as opposed to edits), returning an
 	 * appropriate edit summary string.
+	 *
+	 * @param {string} originalEditSummary
+	 * @param {string} listingWikiText
+	 * @return {string}
 	 */
 	const updateSectionTextWithAddedListingDefault = function(originalEditSummary, listingWikiText) {
 	    let sectionText = getSectionText();
@@ -4701,6 +4963,13 @@ function requireUpdateSectionTextWithAddedListing () {
 	    return summary;
 	};
 
+	/**
+	 * @param {string} originalEditSummary
+	 * @param {string} listingWikiText
+	 * @param {Record<string, string>} listing
+	 * @param {string} LISTING_TYPE_PARAMETER
+	 * @return {string}
+	 */
 	const updateSectionTextWithAddedListingIt = function (originalEditSummary, listingWikiText, listing, LISTING_TYPE_PARAMETER) {
 	    let sectionText = getSectionText();
 	    var summary = originalEditSummary;
@@ -4776,6 +5045,13 @@ function requireUpdateSectionTextWithAddedListing () {
 	    return summary;
 	};
 
+	/**
+	 * @param {string} originalEditSummary
+	 * @param {string} listingWikiText
+	 * @param {Record<string, string>} listing
+	 * @param {string} LISTING_TYPE_PARAMETER
+	 * @return {string}
+	 */
 	const updateSectionTextWithAddedListing = function (originalEditSummary, listingWikiText, listing, LISTING_TYPE_PARAMETER) {
 	    switch ( DB_NAME ) {
 	        case 'itwikivoyage':
@@ -4840,6 +5116,10 @@ function requireFormToText () {
 	 * updated entry, and then submits the section text to be saved on the
 	 * server.
 	 *
+	 * @param {string} mode
+	 * @param {string} listingTemplateWikiSyntax
+	 * @param {Record<string,Object>} listingTemplateAsMap
+	 * @param {string} sectionNumber
 	 * @return {JQuery.Ajax}
 	 */
 	const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
@@ -4887,6 +5167,11 @@ function requireFindPatternMatch () {
 	 * Utility method for finding a matching end pattern for a specified start
 	 * pattern, including nesting. The specified value must start with the
 	 * start value, otherwise an empty string will be returned.
+	 *
+	 * @param {string} value
+	 * @param {string} startPattern
+	 * @param {string} endPattern
+	 * @return {string}
 	 */
 	const findPatternMatch = function(value, startPattern, endPattern) {
 	    var matchString = '';
@@ -4978,6 +5263,8 @@ function requireWikiTextToListing () {
 	/**
 	 * Convert raw wiki listing syntax into a mapping of key-value pairs
 	 * corresponding to the listing template parameters.
+	 *
+	 * @param {string} listingTemplateWikiSyntax
 	 */
 	const wikiTextToListing = function(listingTemplateWikiSyntax) {
 	    const { LISTING_TYPE_PARAMETER,
@@ -4987,6 +5274,7 @@ function requireWikiTextToListing () {
 	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);
 	    // remove the trailing braces
 	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.slice(0,-2);
+	    /** @type {Record<string,string>} */
 	    var listingTemplateAsMap = {};
 	    var lastKey;
 	    var listParams = listingTemplateToParamsArray(listingTemplateWikiSyntax);
@@ -5190,10 +5478,10 @@ function requireOpenListingEditorDialog () {
 	        hours, checkin, checkout, price,
 	        name, content, lastedit, url } = listingTemplateAsMapEn;
 	    // RL cannot support spread operator so have to do this.
-	    const otherKeys = Object.keys( listingTemplateAsMap )
+	    const otherKeys = Object.keys( listingTemplateAsMapEn )
 	        .filter( ( key ) => ![ 'wikipedia', 'wikidata', 'image', 'lat', 'long',
 	            'alt', 'address', 'email', 'directions', 'phone', 'tollfree', 'fax',
-	            'hours', 'checkin', 'checkout', 'price',
+	            'hours', 'checkin', 'checkout', 'price', 'type',
 	            'name', 'content', 'lastedit', 'url'
 	        ].includes( key ) );
 	    const customFields = [];
@@ -5285,6 +5573,9 @@ function requireFindListingIndex () {
 /**
  * Given an editable heading, examine it to determine what section index
  * the heading represents. First heading is 1, second is 2, etc.
+ *
+ * @param {JQuery|undefined} heading
+ * @return {number}
  */
 
 var findSectionIndex_1;

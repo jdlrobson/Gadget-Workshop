@@ -46,6 +46,7 @@
 	"splurge": "Luxe",
 	"cancel": "Annuler",
 	"cancelAll": "Tout effacer",
+	"confirmDiscard": "Vous avez des modifications non enregistrées. Voulez-vous vraiment fermer sans enregistrer ?",
 	"form-tab-label-edit": "Modifier",
 	"form-tab-label-preview": "aperçu",
 	"preview": "Aperçu",

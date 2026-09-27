@@ -12,7 +12,7 @@ const missingTranslations = ( userLanguage ) => {
             if ( lang === 'en' ) {
                 return; // no need to check against itself
             } else {
-                // @ts-ignore
+                // @ts-ignore needs further inspection
                 if ( TRANSLATIONS_ALL[ lang ][ key ] === undefined && userLanguage === lang) {
                     missing.push( key );
                 }

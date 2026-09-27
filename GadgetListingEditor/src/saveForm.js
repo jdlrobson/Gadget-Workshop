@@ -76,7 +76,7 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
             var canonicalUrl = $("link[rel='canonical']").attr("href");
             var currentUrlWithoutHash = window.location.href.replace(window.location.hash, "");
             if (canonicalUrl && currentUrlWithoutHash != canonicalUrl) {
-                // @ts-ignore
+                // @ts-ignore needs @wikimedia/types-wikimedia update
                 var sectionName = mw.util.escapeIdForLink(getSectionName());
                 if (sectionName.length) {
                     canonicalUrl += `#${sectionName}`;
@@ -106,9 +106,8 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
             saveFailed(translate( 'submitUnknownError' ));
             return abortableReject( {} );
         }
-    }, function(/** @type {string} */code, /** @type {Object}*/ result) {
+    }, function(/** @type {string} */code, /** @type {{textStatus?: string}} */ result) {
         if (code === "http") {
-            // @ts-ignore
             saveFailed(`${translate( 'submitHttpError' )}: ${result.textStatus}` );
         } else if (code === "ok-but-empty") {
             saveFailed(translate( 'submitEmptyError' ));

@@ -93,14 +93,16 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
      */
     const onCaptchaSubmit = ( setCaptcha, closeAction ) => {
         if ( captchaSaveArgs ) {
-            // @ts-ignore
-            captchaSaveArgs.push( $('#input-captcha').val() );
+            captchaSaveArgs.push(
+                /** @type {string} */ (
+                    $('#input-captcha').val() || ''
+                )
+            );
             setCaptcha( '' );
-            // @ts-ignore
+            // @ts-ignore argument
             saveForm.apply( null, captchaSaveArgs ).then( () => {
                 captchaSaveArgs = null;
                 closeAction();
-            // @ts-ignore
             }, handleCaptchaError( setCaptcha, closeAction ) );
         }
     };
@@ -193,7 +195,7 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
             translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
         dialogClass: 'listing-editor-dialog'
     } );
-    // @ts-ignore
+    // @ts-ignore for testing only
     app.test = {
         handleCaptchaError,
         onCaptchaSubmit,

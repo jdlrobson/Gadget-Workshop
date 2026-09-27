@@ -36,7 +36,7 @@ const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMa
         let $node = $(`#${listingParameters[parameter].id}`);
         // do not drop custom fields that were in the original listing
         if ( $node.length ) {
-            // @ts-ignore
+            // @ts-ignore needs further inspection
             listing[parameter] = $node.val() || '';
         }
     }

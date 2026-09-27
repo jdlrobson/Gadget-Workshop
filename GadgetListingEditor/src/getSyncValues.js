@@ -18,28 +18,28 @@ module.exports = ( jsonObj, wikidataRecord ) => {
     /** @type {Record<string,WikidataClaimRecord>} */
     const res = {};
     for (let key in WIKIDATA_CLAIMS) {
-        // @ts-ignore
+        // @ts-ignore needs further inspection
         res[key] = {};
-        // @ts-ignore
+        // @ts-ignore needs further inspection
         res[key].value = wikidataClaim(jsonObj, wikidataRecord, WIKIDATA_CLAIMS[key].p);
-        // @ts-ignore
+        // @ts-ignore needs further inspection
         res[key].guidObj = wikidataClaim(jsonObj, wikidataRecord,
             WIKIDATA_CLAIMS[key].p, true);
         if (key === 'iata') {
             if( res[key].value ) {
-                // @ts-ignore
+                // @ts-ignore assert value type
                 res[key].value = iata.replace( '%s', res[key].value );
             }
         } else if (key === 'email') {
             if( res[key].value ) {
-                // @ts-ignore
+                // @ts-ignore assert value type
                 res[key].value = res[key].value.replace('mailto:', '');
             }
         } else if (key === 'coords') {
             if ( res[key].value ) {
-                // @ts-ignore
+                // @ts-ignore assert CoordValue
                 res[key].value.latitude = trimDecimal(res[key].value.latitude, 6);
-                // @ts-ignore
+                // @ts-ignore assert CoordValue
                 res[key].value.longitude = trimDecimal(res[key].value.longitude, 6);
             }
         }
@@ -86,7 +86,7 @@ module.exports = ( jsonObj, wikidataRecord ) => {
                 'remotely_sync': true
             },
             [wikipedia],
-            // @ts-ignore
+            // @ts-ignore jQuery.val can return non-string
             $('#input-wikidata-value').val()
         )
     );

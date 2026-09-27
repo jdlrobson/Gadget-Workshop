@@ -164,15 +164,15 @@ module.exports = {
         const wikipediaDisabled = ref( false );
 
         const wikidataUrl = computed(
-            // @ts-ignore
+            // @ts-ignore needs @wikimedia/types-wikimedia update
             () => `${WIKIDATA_URL}/wiki/${mw.util.wikiUrlencode(wikidata.value)}`
         );
         const wikipediaUrl = computed(
-            // @ts-ignore
+            // @ts-ignore needs @wikimedia/types-wikimedia update
             () => `${WIKIPEDIA_URL}/wiki/${mw.util.wikiUrlencode(wikipedia.value)}`,
         );
         const commonsUrl = computed(
-            // @ts-ignore
+            // @ts-ignore needs @wikimedia/types-wikimedia update
             () => `${COMMONS_URL}/wiki/${mw.util.wikiUrlencode(`File:${commons.value}`)}`
         );
 

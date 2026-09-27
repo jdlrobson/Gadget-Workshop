@@ -16,7 +16,7 @@ const createListingFromForm = ( listing ) => {
     // @ts-ignore
     var listingParameters = getListingInfo(listingType);
     for (var parameter in listingParameters) {
-        // @ts-ignore
+        // @ts-ignore jQuery.val can return non-string
         listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
     }
     return listing;

@@ -30,13 +30,13 @@ const prepareRadio = function(field, claimValue, guid) {
         // compare the present value to the Wikidata value
         if ( field.p === WIKIDATA_CLAIMS.coords.p) {
         //If coords, then compared the values after trimming the WD one into decimal and converting into decimal and trimming the present one
-            // @ts-ignore
+            // @ts-ignore jQuery.val can return non-string
             if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(parseDMS($(editorField[j]).val()), 6)) ) {
                 break;
             }
         } else if ( field.p === WIKIDATA_CLAIMS.image.p) {
         //If image, then compared the values after converting underscores into spaces on the local value
-            // @ts-ignore
+            // @ts-ignore jQuery.val can return non-string
             if( claimValue[j] != $(editorField[j]).val().replace(/_/g, ' ') ) {
                 break;
             }

@@ -57,9 +57,9 @@ const makeSubmitFunction = function( updateModel, ss, closeFn ) {
                 // TODO: make the find on map link work for placeholder coords
                 if( (DDValue[0]==='') && (DDValue[1]==='') ) {
                     syncedValue = ''; // dummy empty value to removeFromWikidata
-                // @ts-ignore
+                // @ts-ignore needs further review
                 } else if( !isNaN(DDValue[0]) && !isNaN(DDValue[1]) ){
-                    // @ts-ignore
+                    // @ts-ignore needs further review
                     var precision = Math.min(DDValue[0].toString().replace(/\d/g, "0").replace(/$/, "1"), DDValue[1].toString().replace(/\d/g, "0").replace(/$/, "1"));
                     syncedValue = `{ "latitude": ${DDValue[0]}, "longitude": ${DDValue[1]}, "precision": ${precision} }`;
                 }

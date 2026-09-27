@@ -102,7 +102,7 @@ const savePayload = ( editPayload ) => {
                 }
             } );
         default:
-            // @ts-ignore
+            // @ts-ignore returns JQueryXHR
             return api.postWithToken(
                 "csrf",
                 editPayload

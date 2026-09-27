@@ -97,7 +97,7 @@ const fn = function() {
 	var TRANSLATIONS = $.extend( true,
 		{},
 		TRANSLATIONS_ALL.en,
-		// @ts-ignore
+		// @ts-ignore needs further inspection
 		TRANSLATIONS_ALL[ mw.config.get( 'wgUserLanguage' ) ]
 	);
 
@@ -131,17 +131,17 @@ const fn = function() {
 	var isLoaded = false;
 	function importForeignModule() {
 		if ( isLoaded ) {
-			// @ts-ignore
+			// @ts-ignore mw.loader.require is not @stable API
 			return Promise.resolve( mw.loader.require );
 		} else if (  mw.loader.getState( GADGET_NAME ) !== 'ready' ) {
 			isLoaded = true;
 			if ( mw.loader.getState( GADGET_NAME ) === null ) {
 				return mw.loader.using( GADGET_DEPENDENCIES ).then( () => new Promise(
 					( resolve ) => {
-						// @ts-ignore
+						// @ts-ignore mw.loader.require is not @stable API
 						mw.loader.addScriptTag( `https://en.wikivoyage.org/w/load.php?modules=${GADGET_NAME}`, function () {
 							setTimeout( function () {
-								// @ts-ignore
+								// @ts-ignore mw.loader.require is not @stable API
 								resolve( mw.loader.require );
 							}, 300 );
 						} );
@@ -149,7 +149,7 @@ const fn = function() {
 				) );
 			} else {
 				// use the local gadget
-				// @ts-ignore
+				// @ts-ignore mw.loader.require is not @stable API
 				return mw.loader.using( `${GADGET_NAME}` ).then( () => mw.loader.require );
 			}
 		}
@@ -167,7 +167,7 @@ const fn = function() {
 		if ( config ) {
 			return Promise.resolve( config );
 		} else {
-			// @ts-ignore
+			// @ts-ignore Rewrite to Promise
 			return mw.loader.using( GADGET_CONFIG_NAME ).then( ( req ) => {
 				config = req( GADGET_CONFIG_NAME );
 				return config;
@@ -199,7 +199,7 @@ const fn = function() {
 	function loadMain() {
 		const localModuleForDebugging = window._listingEditorModule;
 		return Promise.all( [
-			// @ts-ignore
+			// @ts-ignore mw.loader.require is not @stable API
 			localModuleForDebugging ? Promise.resolve( mw.loader.require ) : importForeignModule(),
 			loadConfigFromSite(),
 			loadSectionToTemplateType()
@@ -277,7 +277,6 @@ const fn = function() {
 	initListingEditor();
 };
 
-// @ts-ignore
 if ( typeof process === 'undefined' ) {
 	$(fn);
 } else {

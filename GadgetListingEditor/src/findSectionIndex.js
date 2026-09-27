@@ -10,7 +10,7 @@ const findSectionIndex = function(heading) {
         return 0;
     }
     var link = heading.find('.mw-editsection a').attr('href');
-    // @ts-ignore
+    // @ts-ignore needs further inspection
     return (link !== undefined) ? link.split('=').pop() : 0;
 };
 

@@ -8,7 +8,7 @@ const { getConfig } = require( './Config.js' );
  * @return {string[]}
  */
 const prepareSyncValues = ( value, valBool ) => {
-    // @ts-ignore
+    // @ts-ignore jQuery.val can return non-string
     return value.map( ( selectorOrValue ) => valBool ?
         $(selectorOrValue).val() : selectorOrValue );
 };

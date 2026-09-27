@@ -75,7 +75,7 @@ var parseDMS = function(input) {
     for (var i=0; i<4; i++)
         if( !parts[i] )
             parts[i] = '';
-    // @ts-ignore
+    // @ts-ignore parts[0] should be number
     return convertDMS2DD( parts[0], parts[1], parts[2], parts[3] );
 };
 

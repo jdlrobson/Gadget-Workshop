@@ -8,7 +8,7 @@ const asyncGetColor = ( listingType ) => {
     if ( cachedColor ) {
         return Promise.resolve( cachedColor );
     }
-    // @ts-ignore
+    // @ts-ignore returns jQueryXHR not Promise
     return $.ajax ({
         listingType,
         url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({

@@ -25,7 +25,7 @@ module.exports = (
 
 	// check project has been setup correctly with no missing keys.
 	PROJECT_CONFIG_KEYS.forEach( function ( key ) {
-		// @ts-ignore
+		// @ts-ignore needs further inspection
 		if ( PROJECT_CONFIG[ key ] === undefined ) {
 			throw new Error( `Project must define project setting ${key}` );
 		}
@@ -35,7 +35,7 @@ module.exports = (
 	var TRANSLATIONS = Object.assign(
 		{},
 		TRANSLATIONS_ALL.en,
-		// @ts-ignore
+		// @ts-ignore needs further inspection
 		TRANSLATIONS_ALL[ userLanguage ]
 	);
 
@@ -43,8 +43,7 @@ module.exports = (
 		userLanguage
 	);
 	missingTranslations.forEach( ( missing ) => {
-		// @ts-ignore
-		mw.log.warn( `Language missing translation ${missing.key} will fall back to English.` );
+		mw.log.warn( `Language missing translation ${missing} will fall back to English.` );
 	} );
 
 	translateModule.init( TRANSLATIONS );

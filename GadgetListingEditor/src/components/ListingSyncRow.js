@@ -1,9 +1,7 @@
 const ListingSyncRowLink = require( './ListingSyncRowLink' );
+const { defineComponent } = require( 'vue' );
 
-/**
- * @type {Vue.VueElement}
- */
-module.exports = {
+module.exports = defineComponent( {
     name: 'ListingSyncRow',
     components: {
         ListingSyncRowLink
@@ -44,8 +42,7 @@ module.exports = {
          * @return {string}
          */
         divStyle() {
-            // @ts-ignore
-            return this.remoteFlag ? 'display: none' : undefined;
+            return this.remoteFlag ? 'display: none' : '';
         }
     },
     template: `<div>
@@ -73,4 +70,4 @@ module.exports = {
 :href="localUrl">{{ localText }}</listing-sync-row-link></label></div>
 </div>
 </div>`
-};
+} );

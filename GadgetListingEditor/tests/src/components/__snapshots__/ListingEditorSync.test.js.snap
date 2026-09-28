@@ -7,7 +7,7 @@ exports[`ListingEditorSync renders 1`] = `
   <div class="editor-fullwidth">
     <div>
       <div class="sync_label">a</div>
-      <div class="choose-row">
+      <div class="choose-row" style="">
         <div>&nbsp;<label for="a-wd"><a target="_blank" rel="noopener noreferrer" href="http://wikidata.org/wiki/A">wikidata A</a></label></div>
         <div class="has-guid"><input type="radio" id="a-wd" name="a"><input type="hidden" value="a-guid"></div>
         <div><input type="radio" name="a" checked=""></div>

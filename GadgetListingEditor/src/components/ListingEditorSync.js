@@ -1,6 +1,7 @@
 const ListingSyncRow = require( './ListingSyncRow.js' );
+const { defineComponent } = require( 'vue' );
 
-module.exports = {
+module.exports = defineComponent( {
     name: 'ListingEditorSync',
     components: {
         ListingSyncRow
@@ -17,14 +18,12 @@ module.exports = {
     },
     methods: {
         clearAll() {
-            // @ts-ignore
             this.selected = '';
         },
         /**
          * @param {string} selected
          */
         syncSelect( selected ) {
-            // @ts-ignore
             this.selected = selected;
         }
     },
@@ -68,4 +67,4 @@ module.exports = {
 </small>
 </form>
 `
-};
+} );

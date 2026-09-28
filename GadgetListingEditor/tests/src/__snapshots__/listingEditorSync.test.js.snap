@@ -7,7 +7,7 @@ exports[`listingEditorSync renders 1`] = `
   <div class="editor-fullwidth">
     <div>
       <div class="sync_label">coordinates</div>
-      <div class="choose-row">
+      <div class="choose-row" style="">
         <div>&nbsp;<label for="coordinates-wd"><a target="_blank" rel="noopener noreferrer" href="https://geohack.toolforge.org/geohack.php?params=52.949167;-1.154722_type:landmark">52.949167
               -1.154722</a></label></div>
         <div class="has-guid"><input type="radio" id="coordinates-wd" name="coordinates"><input type="hidden" value="Q17642916$A234478C-82BA-4387-816D-B62C542763A2"></div>
@@ -19,7 +19,7 @@ exports[`listingEditorSync renders 1`] = `
     </div>
     <div>
       <div class="sync_label">website</div>
-      <div class="choose-row">
+      <div class="choose-row" style="">
         <div>&nbsp;<label for="website-wd"><a target="_blank" rel="noopener noreferrer" href="https://www.nottinghamcastle.org.uk/">https://www.nottinghamcastle.org.uk/</a></label></div>
         <div class="has-guid"><input type="radio" id="website-wd" name="website"><input type="hidden" value="Q17642916$0CECD25F-25EC-49BF-9314-BEBFF209CAA2"></div>
         <div><input type="radio" name="website" checked=""></div>
@@ -29,7 +29,7 @@ exports[`listingEditorSync renders 1`] = `
     </div>
     <div>
       <div class="sync_label">e-mail</div>
-      <div class="choose-row">
+      <div class="choose-row" style="">
         <div>&nbsp;<label for="e-mail-wd"></label></div>
         <div class="has-guid"><input type="radio" id="e-mail-wd" name="e-mail"><input type="hidden" value="null"></div>
         <div><input type="radio" name="e-mail" checked=""></div>
@@ -39,7 +39,7 @@ exports[`listingEditorSync renders 1`] = `
     </div>
     <div>
       <div class="sync_label">image</div>
-      <div class="choose-row">
+      <div class="choose-row" style="">
         <div>&nbsp;<label for="image-wd"><a target="_blank" rel="noopener noreferrer" href="https://en.wikivoyage.org/wiki/File:Nottingham Castle Gate 2009.jpg">Nottingham Castle Gate 2009.jpg</a></label></div>
         <div class="has-guid"><input type="radio" id="image-wd" name="image"><input type="hidden" value="Q17642916$E8CC2F27-6315-4376-9F24-855810770399"></div>
         <div><input type="radio" name="image" checked=""></div>
@@ -49,7 +49,7 @@ exports[`listingEditorSync renders 1`] = `
     </div>
     <div>
       <div class="sync_label">wikipedia</div>
-      <div class="choose-row">
+      <div class="choose-row" style="">
         <div>&nbsp;<label for="wikipedia-wd">Nottingham Castle</label></div>
         <div class="has-guid"><input type="radio" id="wikipedia-wd" name="wikipedia"><input type="hidden" value="Q42"></div>
         <div><input type="radio" name="wikipedia" checked=""></div>

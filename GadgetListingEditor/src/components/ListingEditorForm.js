@@ -1,6 +1,6 @@
 const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 const sistersites = require( './SisterSites.js' );
-const { onMounted, ref, computed } = require( 'vue' );
+const { onMounted, ref, computed, defineComponent } = require( 'vue' );
 const { MODE_ADD } = require( '../mode.js' );
 const getListingInfo = require( '../getListingInfo.js' );
 const TelephoneCharInsert = require( './TelephoneCharInsert.js' );
@@ -31,10 +31,7 @@ const hideEmptyFormValues = ( form, listingParameters ) => {
     }
 };
 
-/**
- * @type {Vue.VueElement}
- */
-module.exports = {
+module.exports = defineComponent( {
     name: 'ListingEditorForm',
     props: {
         customFields: {
@@ -42,7 +39,8 @@ module.exports = {
             default: []
         },
         aka: {
-            type: String
+            type: String,
+            default: ''
         },
         address: {
             type: String
@@ -124,7 +122,8 @@ module.exports = {
             type: Array
         },
         listingType: {
-            type: String
+            type: String,
+            default: 'listing'
         }
     },
     template: `<cdx-tabs :framed="true" :active="currentTab" @update:active="onUpdateTab">
@@ -406,7 +405,6 @@ module.exports = {
         sistersites
     },
     emits: [ 'updated:listing' ],
-    // @ts-ignore
     setup( props, { emit } ) {
         const { showLastEditedField, mode, listingType, lat, long, lastedit,
             customFields,
@@ -415,8 +413,10 @@ module.exports = {
             aka, address, listingName
         } = props;
         const nowTimestamp = currentLastEditDate();
+        /** @type {Vue.Ref<boolean>} */
         const shouldUpdateTimestamp = ref( mode === MODE_ADD );
         const lastEditTimestamp = computed( () => shouldUpdateTimestamp.value ? nowTimestamp : lastedit );
+        /** @type {Vue.Ref<string>} */
         const currentAltName = ref( aka );
         const currentAddress = ref( address );
         const currentListingName = ref( listingName );
@@ -442,15 +442,12 @@ module.exports = {
         onMounted( () => {
             if ( form.value ) {
                 hideEmptyFormValues( form.value, listingParameters );
-                // @ts-ignore
-                initColor( form.value, mode );
-                // @ts-ignore
-                initStringFormFields( form.value, mode );
+                initColor( form.value );
+                initStringFormFields( form.value );
             }
         } );
 
-        // @ts-ignore
-        /** @type {Number} */let previewTimeout;
+        /** @type {Number} */let previewTimeout = 0;
         const currentTab = ref( 'edit' );
         /**
          * @param {string} activeTab
@@ -497,10 +494,9 @@ module.exports = {
 
         /** @type {Vue.Ref<Record<string,string>>} */
         const customFieldData = ref( {} );
-        customFields.forEach(
-            /**
-             * @param {ListingEditorFieldDefinition} field
-             */
+         /** @type {ListingEditorFieldDefinition[]} */(
+            customFields
+         ).forEach(
             ( field ) => {
                 customFieldData.value[field.name] = field.value;
             }
@@ -531,4 +527,4 @@ module.exports = {
             showLastEditedField
         };
     }
-};
+} );

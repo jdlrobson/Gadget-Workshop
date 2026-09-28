@@ -255,16 +255,16 @@ module.exports = {
                     wikipedia.value,
                     SisterSite
                 ).then( ( wikidataID ) => {
+                    if ( !wikidataID ) {
+                        return;
+                    }
                     nextTick( () => {
-                        // @ts-ignore
                         wikidata.value = wikidataID;
-                        // @ts-ignore
                         wikidataInput.value = wikidataID;
                         emit( 'updated:listing', {
                             wikidata: wikidataID
                         } );
                         nextTick( () => {
-                            // @ts-ignore
                             wikidataInput.value = wikidataID;
                         } );
                     } );

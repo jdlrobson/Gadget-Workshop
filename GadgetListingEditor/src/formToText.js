@@ -30,7 +30,9 @@ const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMa
     var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
     var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
     var listingType = $(`#${listingTypeInput}`).val();
-    // @ts-ignore
+    if ( !listingType ||  listingType !== 'string' ) {
+        listingType = 'listing';
+    }
     var listingParameters = getListingInfo(listingType);
     for (var parameter in listingParameters) {
         let $node = $(`#${listingParameters[parameter].id}`);
@@ -43,8 +45,7 @@ const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMa
     var text = listingToStr(listing);
     var summary = editSummarySection();
     if (mode == MODE_ADD) {
-        // @ts-ignore
-        summary = updateSectionTextWithAddedListing(summary, text, listing);
+        summary = updateSectionTextWithAddedListing(summary, text, listing, LISTING_TYPE_PARAMETER);
     } else {
         summary = updateSectionTextWithEditedListing(summary, text, listingTemplateWikiSyntax);
     }

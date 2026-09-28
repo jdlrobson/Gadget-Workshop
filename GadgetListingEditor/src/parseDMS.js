@@ -13,7 +13,6 @@
  */
 var convertDMS2DD = function(degrees, minutes, seconds, direction) {
     var dd = NaN;
-    // @ts-ignore
     if( isNaN(degrees) )
         return NaN;
     else {

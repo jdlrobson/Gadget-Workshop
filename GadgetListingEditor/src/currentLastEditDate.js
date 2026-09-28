@@ -8,11 +8,11 @@ const currentLastEditDate = function() {
     var year = d.getFullYear();
     // Date.getMonth() returns 0-11
     var month = d.getMonth() + 1;
-    // @ts-ignore
-    if (month < 10) month = `0${month}`;
+    const monthStr = month < 10 ?
+        `0${month}` : `${month}`;
     var day = d.getDate();
-    // @ts-ignore
-    if (day < 10) day = `0${day}`;
-    return `${year}-${month}-${day}`;
+    const dayStr = day < 10 ?
+        `0${day}` : `${day}`;
+    return `${year}-${monthStr}-${dayStr}`;
 };
 module.exports = currentLastEditDate;

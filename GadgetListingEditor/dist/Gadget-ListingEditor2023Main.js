@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.15.0
+ * Listing Editor v4.16.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.15.0';
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.16.0';
 
 'use strict';
 
@@ -1102,8 +1102,23 @@ var translate_1 = {
     init
 };
 
-/** @type {Partial<ListingConfig>} */
+/**
+ * Config defaults applied before a wiki's own project/gadget config, so
+ * every project gets an explicit, opt-in-only value rather than an
+ * implicit `undefined` that happens to behave like "off".
+ *
+ * @type {Partial<ListingConfig>}
+ */
 
+const DEFAULTS = {
+    // When true, wikipedia/image fields that were just synced from
+    // Wikidata are shown disabled with the synced value as a placeholder
+    // and saved empty, so the article re-fetches them from Wikidata at
+    // render time instead of drifting out of sync locally.
+    WIKIDATA_SYNC_PLACEHOLDER: false
+};
+
+/** @type {Partial<ListingConfig>} */
 let config = {};
 /**
  * @param {Partial<ListingConfig>} newConfig
@@ -1223,6 +1238,8 @@ function generateListingTemplateConfig( {
 
 let _loaded = false;
 
+/** @type {ListingTemplateConfig|undefined} */let _listingConfig;
+
 /**
  * @param {Partial<ListingConfig>} newConfig
  * @param {Object} projectConfig
@@ -1233,9 +1250,34 @@ const loadConfig$1 = ( newConfig, projectConfig ) => {
         mw.log.warn( 'Configuration was already loaded. @todo: fix this!' );
     }
     _loaded = true;
-    config = Object.assign( {}, newConfig, projectConfig );
-    config.LISTING_TEMPLATES = generateListingTemplateConfig( config );
-    config.WIKIDATA_CLAIMS = generateWikidataClaims( config );
+    config = Object.assign( {}, DEFAULTS, newConfig, projectConfig );
+    _listingConfig = undefined;
+};
+
+/**
+ * @return {ListingTemplateConfig}
+ */
+const getListingTemplateConfiguration = () => {
+    if ( _listingConfig ) {
+        return _listingConfig;
+    } else {
+        _listingConfig = generateListingTemplateConfig( config );
+        return _listingConfig;
+    }
+};
+
+/** @type {ListingWikidataClaims|undefined} */let _wikidataClaims;
+
+/**
+ * @return {ListingWikidataClaims}
+ */
+const getWikidataClaims = () => {
+    if ( _wikidataClaims ) {
+        return _wikidataClaims;
+    } else {
+        _wikidataClaims = generateWikidataClaims( config );
+        return _wikidataClaims;
+    }
 };
 
 /**
@@ -1252,6 +1294,8 @@ const extendConfig = ( newConfig ) => {
 const getConfig = () => /** @type {ListingConfig} */( config );
 
 var Config = {
+    getListingTemplateConfiguration,
+    getWikidataClaims,
     extendConfig,
     loadConfig: loadConfig$1,
     getConfig
@@ -2152,7 +2196,7 @@ function requireMakeSyncLinks () {
 	hasRequiredMakeSyncLinks = 1;
 	const parseDMS = requireParseDMS();
 	const { LANG } = globalConfig;
-	const { getConfig } = Config;
+	const { getWikidataClaims } = Config;
 
 	/**
 	 * @param {string[]} value
@@ -2173,7 +2217,7 @@ function requireMakeSyncLinks () {
 	 */
 	const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
 	    const value = prepareSyncValues( unprocessedValue, valBool );
-	    const { WIKIDATA_CLAIMS } = getConfig();
+	    const WIKIDATA_CLAIMS = getWikidataClaims();
 	    let prefix = '';
 	    let suffix = '';
 	    switch(mode) {
@@ -2220,7 +2264,7 @@ function requirePrepareRadio () {
 	const { prepareSyncUrl } = requireMakeSyncLinks();
 	const parseDMS = requireParseDMS();
 	const trimDecimal = requireTrimDecimal();
-	const { getConfig } = Config;
+	const { getWikidataClaims, getListingTemplateConfiguration } = Config;
 
 	/**
 	 * @param {RadioDefinitionField} field
@@ -2229,7 +2273,8 @@ function requirePrepareRadio () {
 	 * @return {RadioDefinition}
 	 */
 	const prepareRadio = function(field, claimValue, guid) {
-	    const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
+	    const LISTING_TEMPLATES = getListingTemplateConfiguration();
+	    const WIKIDATA_CLAIMS = getWikidataClaims();
 
 	    var j = 0;
 	    for (j = 0; j < claimValue.length; j++) {
@@ -2562,7 +2607,7 @@ function requireGetSyncValues () {
 	const { iata } = requireTemplates();
 	const prepareRadio = requirePrepareRadio();
 	const trimDecimal = requireTrimDecimal();
-	const { getConfig } = Config;
+	const { getWikidataClaims } = Config;
 	const { translate } = translate_1;
 
 	/**
@@ -2574,7 +2619,7 @@ function requireGetSyncValues () {
 	getSyncValues = ( jsonObj, wikidataRecord ) => {
 	    const SisterSite = requireSisterSite()();
 	    const { wikidataClaim, wikidataWikipedia } = SisterSite;
-	    const { WIKIDATA_CLAIMS } = getConfig();
+	    const WIKIDATA_CLAIMS = getWikidataClaims();
 
 	    /** @type {Record<string,WikidataClaimRecord>} */
 	    const res = {};
@@ -2670,7 +2715,7 @@ function requireLaunchSyncDialog () {
 	const ListingEditorSyncDialog = requireListingEditorSyncDialog();
 	const getSyncValues = requireGetSyncValues();
 	const { translate } = translate_1;
-	const { getConfig } = Config;
+	const { getListingTemplateConfiguration, getWikidataClaims } = Config;
 	const SisterSite = requireSisterSite();
 
 	/**
@@ -2685,7 +2730,8 @@ function requireLaunchSyncDialog () {
 	            closeFn = () => close();
 	        }
 	        const doClose = closeFn;
-	        const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
+	        const LISTING_TEMPLATES = getListingTemplateConfiguration();
+	        const WIKIDATA_CLAIMS = getWikidataClaims();
 	        const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
 	            removeFromWikidata, ajaxSisterSiteSearch } = ss;
 
@@ -2863,7 +2909,7 @@ function requireQuickUpdateWikidataSharedFields () {
 	const { translate } = translate_1;
 	const { iata } = requireTemplates();
 	const trimDecimal = requireTrimDecimal();
-	const { getConfig } = Config;
+	const { getListingTemplateConfiguration, getWikidataClaims } = Config;
 	const updateFieldIfNotNull = requireUpdateFieldIfNotNull();
 
 	/**
@@ -2874,7 +2920,8 @@ function requireQuickUpdateWikidataSharedFields () {
 	quickUpdateWikidataSharedFields = function(wikidataRecord, SisterSite) {
 	    const { API_WIKIDATA, wikidataClaim, wikidataWikipedia,
 	        ajaxSisterSiteSearch } = SisterSite;
-	    const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
+	    const LISTING_TEMPLATES = getListingTemplateConfiguration();
+	    const WIKIDATA_CLAIMS = getWikidataClaims();
 	    const ajaxData = {
 	        action: 'wbgetentities',
 	        ids: wikidataRecord,
@@ -3364,7 +3411,7 @@ var hasRequiredIsCustomListingType;
 function requireIsCustomListingType () {
 	if (hasRequiredIsCustomListingType) return isCustomListingType_1;
 	hasRequiredIsCustomListingType = 1;
-	const { getConfig } = Config;
+	const { getListingTemplateConfiguration } = Config;
 
 	/**
 	 * Determine if the specified listing type is a custom type - for example "go"
@@ -3374,7 +3421,7 @@ function requireIsCustomListingType () {
 	 * @return {boolean}
 	 */
 	const isCustomListingType = function(listingType) {
-	    const { LISTING_TEMPLATES } = getConfig();
+	    const LISTING_TEMPLATES = getListingTemplateConfiguration();
 	    return !(listingType in LISTING_TEMPLATES);
 	};
 
@@ -3389,7 +3436,7 @@ function requireGetListingInfo () {
 	if (hasRequiredGetListingInfo) return getListingInfo_1;
 	hasRequiredGetListingInfo = 1;
 	const isCustomListingType = requireIsCustomListingType();
-	const { getConfig } = Config;
+	const { getConfig, getListingTemplateConfiguration } = Config;
 
 	/**
 	 * Given a listing type, return the appropriate entry from the
@@ -3400,7 +3447,8 @@ function requireGetListingInfo () {
 	 * @return {ListingInfo}
 	 */
 	const getListingInfo = function(type) {
-	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
+	    const { DEFAULT_LISTING_TEMPLATE } = getConfig();
+	    const LISTING_TEMPLATES = getListingTemplateConfiguration();
 	    return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
 	};
 
@@ -4688,7 +4736,7 @@ var hasRequiredGetListingTypesRegex;
 function requireGetListingTypesRegex () {
 	if (hasRequiredGetListingTypesRegex) return getListingTypesRegex_1;
 	hasRequiredGetListingTypesRegex = 1;
-	const { getConfig } = Config;
+	const { getConfig, getListingTemplateConfiguration } = Config;
 	/**
 	 * Return a regular expression that can be used to find all listing
 	 * template invocations (as configured via the LISTING_TEMPLATES map)
@@ -4699,7 +4747,8 @@ function requireGetListingTypesRegex () {
 	 * @return {RegExp}
 	 */
 	const getListingTypesRegex = function() {
-	    const { LISTING_TEMPLATES, listingTypeRegExp } = getConfig();
+	    const { listingTypeRegExp } = getConfig();
+	    const LISTING_TEMPLATES = getListingTemplateConfiguration();
 	    if ( !listingTypeRegExp ) {
 	        throw new Error( 'please define listingTypeRegExp in [[MediaWiki:Gadget-ListingEditor.json]]' );
 	    }
@@ -4992,6 +5041,10 @@ function requireSaveForm () {
 	        captchaid: cid,
 	        captchaword: answer
 	    };
+	    // Don't send editor tag if not present
+	    if ( !EDITOR_TAG ) {
+	        delete editPayload.tags;
+	    }
 	    if (minor) {
 	        $.extend( editPayload, { minor: 'true' } );
 	    }
@@ -5657,7 +5710,7 @@ function requireWikiTextToListing () {
 	const getListingTypesRegex = requireGetListingTypesRegex();
 	const listingTemplateToParamsArray = requireListingTemplateToParamsArray();
 	const restoreComments = requireRestoreComments();
-	const { getConfig } = Config;
+	const { getConfig, getListingTemplateConfiguration } = Config;
 
 	/**
 	 * Convert raw wiki listing syntax into a mapping of key-value pairs
@@ -5667,7 +5720,8 @@ function requireWikiTextToListing () {
 	 */
 	const wikiTextToListing = function(listingTemplateWikiSyntax) {
 	    const { LISTING_TYPE_PARAMETER,
-	        LISTING_CONTENT_PARAMETER, LISTING_TEMPLATES } = getConfig();
+	        LISTING_CONTENT_PARAMETER } = getConfig();
+	    const LISTING_TEMPLATES = getListingTemplateConfiguration();
 	    var typeRegex = getListingTypesRegex();
 	    // convert "{{see" to {{listing|type=see"
 	    listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);

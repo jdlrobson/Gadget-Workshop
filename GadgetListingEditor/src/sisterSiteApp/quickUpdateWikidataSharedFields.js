@@ -57,6 +57,7 @@ module.exports = function(wikidataRecord, SisterSite) {
                 wikipedia
             };
             if ( confirm( `${translate( 'wikidataShared' )}\n${msg}`) ) {
+                const altValue = `${$('#input-alt').val()}`;
                 for (let key in res) {
                     if (res[key]) {
                         var editorField = [];
@@ -64,9 +65,8 @@ module.exports = function(wikidataRecord, SisterSite) {
                             editorField[i] = `#${LISTING_TEMPLATES.listing[WIKIDATA_CLAIMS[key].fields[i]].id}`;
                         }
 
-                        if ( (key !== 'iata') || ($('#input-alt').val() === '') ||
-                            // @ts-ignore
-                            (/^IATA: ...$/.test($('#input-alt').val())) ) {
+                        if ( (key !== 'iata') || altValue === '' ||
+                            (/^IATA: ...$/.test(altValue)) ) {
                             if (key === 'coords') {
                                 updateFieldIfNotNull(editorField[0], res[key].latitude, WIKIDATA_CLAIMS[key].remotely_sync);
                                 updateFieldIfNotNull(editorField[1], res[key].longitude, WIKIDATA_CLAIMS[key].remotely_sync);

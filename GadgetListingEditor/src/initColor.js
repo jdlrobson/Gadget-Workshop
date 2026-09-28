@@ -1,15 +1,19 @@
 const typeToColor = require( './typeToColor' );
 
 /**
- * @param {HTMLElement} form
+ * @param {HTMLFormElement} form
  */
 const initColor = function(form) {
-    // @ts-ignore
+    // @ts-ignore jQuery.val can return non-string
     typeToColor( $('#input-type', form).val(), form );
-    $('#input-type', form).on('change', function () {
-        // @ts-ignore
-        typeToColor( this.value, form);
-    });
+    $('#input-type', form).on('change',
+        /**
+         * @this HTMLInputElement
+         */
+        function () {
+            typeToColor( this.value, form);
+        }
+    );
 };
 
 module.exports = initColor;

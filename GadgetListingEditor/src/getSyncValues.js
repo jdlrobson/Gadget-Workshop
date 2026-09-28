@@ -63,7 +63,7 @@ module.exports = ( jsonObj, wikidataRecord ) => {
             }
         } else {
             // eslint-disable-next-line no-self-assign
-            value = /** @type {string|null} */( value );
+            value = /** @type {string} */( value );
             const radio = prepareRadio(
                 WIKIDATA_CLAIMS[key],
                 [ value ],
@@ -85,7 +85,7 @@ module.exports = ( jsonObj, wikidataRecord ) => {
                 doNotUpload: true,
                 'remotely_sync': true
             },
-            [wikipedia],
+            [wikipedia || ''],
             // @ts-ignore jQuery.val can return non-string
             $('#input-wikidata-value').val()
         )

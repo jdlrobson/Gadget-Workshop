@@ -5,7 +5,7 @@ const { getConfig } = require( './Config.js' );
 
 /**
  * @param {RadioDefinitionField} field
- * @param {(string|null)[]} claimValue
+ * @param {(string)[]} claimValue
  * @param {string|null} guid
  * @return {RadioDefinition}
  */
@@ -51,20 +51,18 @@ const prepareRadio = function(field, claimValue, guid) {
         remoteFlag = true;
     }
 
-    const hasSyncLink = [
+    const propertyCode = field.p;
+    const hasSyncLink = propertyCode && [
         WIKIDATA_CLAIMS.coords.p,
         WIKIDATA_CLAIMS.url.p,
         WIKIDATA_CLAIMS.image.p
     ].indexOf(
-        // @ts-ignore
-        field.p
+        propertyCode
     ) >= 0;
     return {
         field,
-        // @ts-ignore
-        wikidataUrl: hasSyncLink ? prepareSyncUrl( /** @type {string[]} */ ( claimValue ), field.p, false) : undefined,
-        // @ts-ignore
-        localUrl: hasSyncLink ? prepareSyncUrl(editorField, field.p, true): undefined,
+        wikidataUrl: hasSyncLink ? prepareSyncUrl( claimValue, propertyCode, false) : undefined,
+        localUrl: hasSyncLink ? prepareSyncUrl(editorField, propertyCode, true): undefined,
         editorField,
         skip: ( j === claimValue.length && field.remotely_sync !== true ) ||
             ( field.doNotUpload === true && claimValue[0] === '' ),

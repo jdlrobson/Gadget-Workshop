@@ -1,5 +1,5 @@
 /**
- * Listing Editor v4.13.0
+ * Listing Editor v4.15.0
  * @maintainer Jdlrobson
  * Please upstream any changes you make here to https://github.com/jdlrobson/Gadget-Workshop/tree/master/GadgetListingEditor
  * Raise issues at https://github.com/jdlrobson/Gadget-Workshop/issues
@@ -28,7 +28,7 @@
  *		- Figure out how to get this to upload properly
  */
  //<nowiki>
-window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.13.0';
+window.__WIKIVOYAGE_LISTING_EDITOR_VERSION__ = '4.15.0';
 
 'use strict';
 
@@ -55,7 +55,7 @@ var midrange$3 = "Mid-range";
 var splurge$3 = "Splurge";
 var cancel$4 = "Cancel";
 var cancelAll$4 = "Clear all";
-var confirmDiscard$2 = "You have unsaved changes. Are you sure you want to close without saving?";
+var confirmDiscard$3 = "You have unsaved changes. Are you sure you want to close without saving?";
 var preview$4 = "Preview";
 var previewOff$4 = "Preview off";
 var refresh$4 = "↺";
@@ -172,7 +172,7 @@ var require$$0 = {
 	splurge: splurge$3,
 	cancel: cancel$4,
 	cancelAll: cancelAll$4,
-	confirmDiscard: confirmDiscard$2,
+	confirmDiscard: confirmDiscard$3,
 	"form-tab-label-edit": "edit",
 	"form-tab-label-preview": "preview",
 	preview: preview$4,
@@ -259,7 +259,7 @@ var midrange$2 = "Tầm trung";
 var splurge$2 = "Hạng sang";
 var cancel$3 = "Hủy";
 var cancelAll$3 = "Xóa tất cả";
-var confirmDiscard$1 = "Bạn có thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng mà không lưu không?";
+var confirmDiscard$2 = "Bạn có thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng mà không lưu không?";
 var preview$3 = "Xem trước";
 var previewOff$3 = "Tắt xem trước";
 var refresh$3 = "↺";
@@ -374,7 +374,7 @@ var require$$1 = {
 	splurge: splurge$2,
 	cancel: cancel$3,
 	cancelAll: cancelAll$3,
-	confirmDiscard: confirmDiscard$1,
+	confirmDiscard: confirmDiscard$2,
 	"form-tab-label-edit": "sửa",
 	"form-tab-label-preview": "xem trước",
 	preview: preview$3,
@@ -463,6 +463,7 @@ var midrange$1 = "Prix moyens";
 var splurge$1 = "Luxe";
 var cancel$2 = "Annuler";
 var cancelAll$2 = "Tout effacer";
+var confirmDiscard$1 = "Vous avez des modifications non enregistrées. Voulez-vous vraiment fermer sans enregistrer ?";
 var preview$2 = "Aperçu";
 var previewOff$2 = "Pas d’aperçu";
 var refresh$2 = "↺";
@@ -579,6 +580,7 @@ var require$$2 = {
 	splurge: splurge$1,
 	cancel: cancel$2,
 	cancelAll: cancelAll$2,
+	confirmDiscard: confirmDiscard$1,
 	"form-tab-label-edit": "Modifier",
 	"form-tab-label-preview": "aperçu",
 	preview: preview$2,
@@ -1024,6 +1026,10 @@ const vi = require$$1;
 const fr = require$$2;
 const id = require$$3;
 const it = require$$4;
+
+/**
+ * @type {Record<string,Record<string,string>>}
+ */
 var translations = {
     en,
     vi,
@@ -1049,7 +1055,7 @@ var globalConfig = {
 
 /**
  * @param {Object<string,string>} translations
- * @return {string}
+ * @return {TranslationFunction}
  */
 
 var makeTranslateFunction$1 = ( translations ) => {
@@ -1067,8 +1073,15 @@ var makeTranslateFunction$1 = ( translations ) => {
 };
 
 const makeTranslateFunction = makeTranslateFunction$1;
+
+/** @type {Function} */
 let internalTranslateFn;
 
+/**
+ * @param {string} key
+ * @param  {string[]} parameters
+ * @return {string}
+ */
 const translate = ( key, ...parameters ) => {
     if ( !internalTranslateFn ) {
         throw 'Translations not setup';
@@ -1077,6 +1090,9 @@ const translate = ( key, ...parameters ) => {
     }
 };
 
+/**
+ * @param {Object<string,string>} TRANSLATIONS
+ */
 const init = ( TRANSLATIONS ) => {
     internalTranslateFn = makeTranslateFunction( TRANSLATIONS );
 };
@@ -1086,58 +1102,8 @@ var translate_1 = {
     init
 };
 
-/**
- * @typedef {Object} ListingWikidataClaimValue
- * @property {string} p
- * @property {string} label
- * @property {string[]} fields
- * @property {boolean} remotely_sync
- */
-
-/**
- * @typedef {Record<string, ListingWikidataClaimValue>} ListingWikidataClaims
-*/
-/**
- * @typedef {Object} ListingTemplateParameterConfig
- * @property {string} id
- * @property {string|null} [hideDivIfEmpty]
- * @property {boolean} [skipIfEmpty]
- * @property {boolean} [newline]
- */
-/**
- * @typedef {Record<string, ListingTemplateParameterConfig>} ListingTemplateParametersConfig
- */
-/**
- * @typedef {Record<string, ListingTemplateParametersConfig>} ListingTemplateConfig
- */
-/**
- * @typedef {Object} ListingConfig
- * @property {boolean} SHOW_LAST_EDITED_FIELD
- * @property {string[]} SUPPORTED_SECTIONS
- * @property {Record<string, string>} sectionType
- * @property {string} iata
- * @property {number} COORD_PRECISION
- * @property {string} EDITOR_TAG
- * @property {string} listingTypeRegExp
- * @property {Object} SECTION_TO_TEMPLATE_TYPE
- * @property {boolean} APPEND_FULL_STOP_TO_DESCRIPTION
- * @property {boolean} REPLACE_NEW_LINE_CHARS
- * @property {string[]} LISTING_TEMPLATES_OMIT
- * @property {boolean} VALIDATE_CALLBACKS_EMAIL
- * @property {boolean} SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT
- * @property {boolean} ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP
- * @property {string} LISTING_TYPE_PARAMETER
- * @property {string} LISTING_CONTENT_PARAMETER
- * @property {string} DEFAULT_LISTING_TEMPLATE
- * @property {ListingTemplateParametersConfig} SLEEP_TEMPLATE_PARAMETERS
- * @property {ListingTemplateParametersConfig} LISTING_TEMPLATE_PARAMETERS
- * @property {string} WIKIDATAID
- * @property {string[]} SPECIAL_CHARS
- * @property {ListingTemplateConfig} LISTING_TEMPLATES
- * @property {ListingWikidataClaims} WIKIDATA_CLAIMS
- */
-
 /** @type {Partial<ListingConfig>} */
+
 let config = {};
 /**
  * @param {Partial<ListingConfig>} newConfig
@@ -1236,7 +1202,7 @@ function generateListingTemplateConfig( {
 } ) {
     // map the template name to configuration information needed by the listing
     // editor
-    /** @type ListingTemplateConfig */
+    /** @type {ListingTemplateConfig} */
     const LISTING_TEMPLATES = {};
 
     ( SUPPORTED_SECTIONS || [] ).forEach( function ( key ) {
@@ -1258,8 +1224,9 @@ function generateListingTemplateConfig( {
 let _loaded = false;
 
 /**
- * @param {Object} newConfig
+ * @param {Partial<ListingConfig>} newConfig
  * @param {Object} projectConfig
+ * @return {void}
  */
 const loadConfig$1 = ( newConfig, projectConfig ) => {
     if ( _loaded ) {
@@ -1273,6 +1240,7 @@ const loadConfig$1 = ( newConfig, projectConfig ) => {
 
 /**
  * @param {ListingConfig} newConfig
+ * @return {void}
  */
 const extendConfig = ( newConfig ) => {
     config = Object.assign( {}, newConfig );
@@ -1281,8 +1249,7 @@ const extendConfig = ( newConfig ) => {
 /**
  * @return {ListingConfig}
  */
-// @ts-ignore
-const getConfig = () => config;
+const getConfig = () => /** @type {ListingConfig} */( config );
 
 var Config = {
     extendConfig,
@@ -1297,14 +1264,20 @@ function requireMissingTranslations () {
 	if (hasRequiredMissingTranslations) return missingTranslations_1;
 	hasRequiredMissingTranslations = 1;
 	const TRANSLATIONS_ALL = translations;
+	/**
+	 * @param {string} userLanguage
+	 * @return {string[]}
+	 */
 	const missingTranslations = ( userLanguage ) => {
+	    /** @type {string[]} */
 	    const missing = [];
-	    Object.keys( TRANSLATIONS_ALL.en ).forEach( function ( key ) {
+	    Object.keys( TRANSLATIONS_ALL.en ).forEach( function ( /** @type {string} */key ) {
 	        // check the key is present in all the other configurations
-	        Object.keys( TRANSLATIONS_ALL ).forEach( function ( lang ) {
+	        Object.keys( TRANSLATIONS_ALL ).forEach( function ( /** @type {string} */lang ) {
 	            if ( lang === 'en' ) {
 	                return; // no need to check against itself
 	            } else {
+	                // @ts-ignore needs further inspection
 	                if ( TRANSLATIONS_ALL[ lang ][ key ] === undefined && userLanguage === lang) {
 	                    missing.push( key );
 	                }
@@ -1388,8 +1361,20 @@ function requireTranslatePlugin () {
 	if (hasRequiredTranslatePlugin) return translatePlugin_1;
 	hasRequiredTranslatePlugin = 1;
 	const { translate } = translate_1;
+
+	/**
+	 * @type {Vue.Plugin}
+	 */
 	const translatePlugin = {
+	    /**
+	     * @param {Vue.App} app
+	     */
 	    install: ( app ) => {
+	        /**
+	         * @param {string} key
+	         * @param  {...string} parameters
+	         * @return {string}
+	         */
 	        const $translate = ( key, ...parameters ) => {
 	            return translate( key, ...parameters );
 	        };
@@ -1408,6 +1393,11 @@ function requireTranslateDirective () {
 	if (hasRequiredTranslateDirective) return translateDirective;
 	hasRequiredTranslateDirective = 1;
 	const { translate } = translate_1;
+
+	/**
+	 * @param {HTMLElement} el
+	 * @param {Object<any,any>} binding
+	 */
 	const renderI18nHtml = ( el, binding ) => {
 	    el.innerHTML = translate( binding.arg || binding.value );
 	};
@@ -1428,6 +1418,11 @@ function requireCreateApp () {
 	const translatePlugin = requireTranslatePlugin();
 	const translateDirective = requireTranslateDirective();
 
+	/**
+	 * @param {Vue.Component} component
+	 * @param {Record<string, any>} props
+	 * @return {Vue.App}
+	 */
 	const createListingEditorApp = ( component, props ) => {
 
 	    const app = createApp( component, props );
@@ -1455,6 +1450,16 @@ function requireDialogs () {
 	    document.documentElement.classList.remove( 'listing-editor-dialog-open' );
 	}
 
+	/**
+	 * @typedef {Object} UnmountableDialog
+	 * @property {Function} unmount
+	 */
+
+	/**
+	 * @param {Vue.Component} Dialog
+	 * @param {Object} options
+	 * @return {UnmountableDialog}
+	 */
 	function render( Dialog, options ) {
 	    const vueAppContainer = document.createElement( 'div' );
 	    document.body.appendChild(vueAppContainer);
@@ -1581,17 +1586,20 @@ function requireListingEditorDialog () {
 	            required: false
 	        },
 	        onCaptchaSubmit: {
-	            type: Function
+	            type: Function,
+	            default: () => {}
 	        },
 	        onSubmit: {
-	            type: Function
+	            type: Function,
+	            default: () => {}
 	        },
 	        onMount: {
 	            type: Function,
 	            default: () => {}
 	        },
 	        onClose: {
-	            type: Function
+	            type: Function,
+	            default: () => {}
 	        },
 	        onHelp: {
 	            type: Function,
@@ -1600,10 +1608,10 @@ function requireListingEditorDialog () {
 	    },
 	    setup( {
 	        title,
-	        disabledSubmitButton,
 	        onCaptchaSubmit,
 	        onSubmit, onClose, dialogElement, dialogClass, onHelp, onMount
 	    } ) {
+	        /** @type {Vue.Ref<AbortableJQueryDeferred<any>|null>} */
 	        const activeXhr = ref( null );
 	        const captchaRequested = ref( '' );
 	        const saveInProgress = ref( false );
@@ -1615,21 +1623,34 @@ function requireListingEditorDialog () {
 	            isOpen.value = false;
 	            saveInProgress.value = false;
 	        };
+	        /**
+	         * @param {string} url
+	         */
 	        const setCaptcha = ( url ) => {
 	            captchaRequested.value = url;
 	        };
+	        /** @type {Vue.Ref<HTMLElement|null>} */
 	        const targetElement = ref( null );
 	        // Snapshot of the form field values taken when the dialog opens, used to
 	        // detect whether the user has made any changes before closing.
+	        /**
+	         * @type {Record<string,boolean>}
+	         */
 	        const initialValues = {};
-	        const fieldValue = ( el ) => (
+	        /**
+	         * @param {HTMLInputElement} el
+	         * @return {boolean}
+	         */
+	        const fieldValue = ( el ) => !!(
 	            el.type === 'checkbox' || el.type === 'radio' ? String( el.checked ) : el.value
 	        );
 	        const captureInitialValues = () => {
 	            if ( !targetElement.value ) {
 	                return;
 	            }
-	            targetElement.value.querySelectorAll( 'input, textarea, select' ).forEach( ( el ) => {
+	            ( /** @type {NodeListOf<HTMLInputElement>} */ (
+	                targetElement.value.querySelectorAll( 'input, textarea, select' ) )
+	            ).forEach( ( el ) => {
 	                if ( el.id ) {
 	                    initialValues[ el.id ] = fieldValue( el );
 	                }
@@ -1639,7 +1660,9 @@ function requireListingEditorDialog () {
 	            if ( !targetElement.value ) {
 	                return false;
 	            }
-	            const fields = targetElement.value.querySelectorAll( 'input, textarea, select' );
+	            const fields = /** @type {NodeListOf<HTMLInputElement>} */ (
+	                targetElement.value.querySelectorAll( 'input, textarea, select' )
+	            );
 	            for ( let i = 0; i < fields.length; i++ ) {
 	                const el = fields[ i ];
 	                if ( el.id && ( el.id in initialValues ) &&
@@ -1683,7 +1706,6 @@ function requireListingEditorDialog () {
 	            onCaptchaSubmit: () => {
 	                onCaptchaSubmit( setCaptcha, closeAction );
 	            },
-	            disabledSubmitButton,
 	            captchaRequested,
 	            saveInProgress,
 	            title,
@@ -1702,7 +1724,7 @@ function requireListingEditorDialog () {
 
 /**
  * @param {[string, string[]]} results
- * @return {Object[]}
+ * @return {SearchResult[]}
  */
 
 var mapSearchResult_1;
@@ -1725,6 +1747,13 @@ function requireMapSearchResult () {
 	return mapSearchResult_1;
 }
 
+/**
+ *
+ * @param {string} titles
+ * @param {SisterSiteApi} SisterSite
+ * @return {Promise<string|null>}
+ */
+
 var getWikidataFromWikipedia;
 var hasRequiredGetWikidataFromWikipedia;
 
@@ -1733,6 +1762,7 @@ function requireGetWikidataFromWikipedia () {
 	hasRequiredGetWikidataFromWikipedia = 1;
 	getWikidataFromWikipedia = function( titles, SisterSite ) {
 	    const { API_WIKIPEDIA, ajaxSisterSiteSearch, wikipediaWikidata } = SisterSite;
+	    // @ts-ignore returns JQueryXHR
 	    return ajaxSisterSiteSearch(
 	        API_WIKIPEDIA,
 	        {
@@ -1795,7 +1825,6 @@ function requireParseDMS () {
 	hasRequiredParseDMS = 1;
 	var convertDMS2DD = function(degrees, minutes, seconds, direction) {
 	    var dd = NaN;
-	    // @ts-ignore
 	    if( isNaN(degrees) )
 	        return NaN;
 	    else {
@@ -1857,7 +1886,7 @@ function requireParseDMS () {
 	    for (var i=0; i<4; i++)
 	        if( !parts[i] )
 	            parts[i] = '';
-	    // @ts-ignore
+	    // @ts-ignore parts[0] should be number
 	    return convertDMS2DD( parts[0], parts[1], parts[2], parts[3] );
 	};
 
@@ -1865,17 +1894,18 @@ function requireParseDMS () {
 	return parseDMS_1;
 }
 
+/**
+ * @param {string} selector
+ * @param {string|null} value
+ * @param {boolean} [placeholderBool]
+ */
+
 var updateFieldIfNotNull_1;
 var hasRequiredUpdateFieldIfNotNull;
 
 function requireUpdateFieldIfNotNull () {
 	if (hasRequiredUpdateFieldIfNotNull) return updateFieldIfNotNull_1;
 	hasRequiredUpdateFieldIfNotNull = 1;
-	/**
-	 * @param {string} selector
-	 * @param {string} value
-	 * @param {boolean} placeholderBool
-	 */
 	const updateFieldIfNotNull = function(selector, value, placeholderBool) {
 	    if ( value !== null ) {
 	        if ( placeholderBool !== true ) {
@@ -1887,6 +1917,10 @@ function requireUpdateFieldIfNotNull () {
 	updateFieldIfNotNull_1 = updateFieldIfNotNull;
 	return updateFieldIfNotNull_1;
 }
+
+/**
+ * @type {Vue.VueElement}
+ */
 
 var ListingSyncRowLink;
 var hasRequiredListingSyncRowLink;
@@ -1914,8 +1948,9 @@ function requireListingSyncRow () {
 	if (hasRequiredListingSyncRow) return ListingSyncRow;
 	hasRequiredListingSyncRow = 1;
 	const ListingSyncRowLink = requireListingSyncRowLink();
+	const { defineComponent } = require$$1$1;
 
-	ListingSyncRow = {
+	ListingSyncRow = defineComponent( {
 	    name: 'ListingSyncRow',
 	    components: {
 	        ListingSyncRowLink
@@ -1952,8 +1987,11 @@ function requireListingSyncRow () {
 	        }
 	    },
 	    computed: {
+	        /**
+	         * @return {string}
+	         */
 	        divStyle() {
-	            return this.remoteFlag ? 'display: none' : undefined;
+	            return this.remoteFlag ? 'display: none' : '';
 	        }
 	    },
 	    template: `<div>
@@ -1981,7 +2019,7 @@ function requireListingSyncRow () {
 :href="localUrl">{{ localText }}</listing-sync-row-link></label></div>
 </div>
 </div>`
-	};
+	} );
 	return ListingSyncRow;
 }
 
@@ -1992,8 +2030,9 @@ function requireListingEditorSync () {
 	if (hasRequiredListingEditorSync) return ListingEditorSync;
 	hasRequiredListingEditorSync = 1;
 	const ListingSyncRow = requireListingSyncRow();
+	const { defineComponent } = require$$1$1;
 
-	ListingEditorSync = {
+	ListingEditorSync = defineComponent( {
 	    name: 'ListingEditorSync',
 	    components: {
 	        ListingSyncRow
@@ -2012,6 +2051,9 @@ function requireListingEditorSync () {
 	        clearAll() {
 	            this.selected = '';
 	        },
+	        /**
+	         * @param {string} selected
+	         */
 	        syncSelect( selected ) {
 	            this.selected = selected;
 	        }
@@ -2056,7 +2098,7 @@ function requireListingEditorSync () {
 </small>
 </form>
 `
-	};
+	} );
 	return ListingEditorSync;
 }
 
@@ -2069,6 +2111,9 @@ function requireListingEditorSyncDialog () {
 	const ListingEditorDialog = requireListingEditorDialog();
 	const ListingEditorSync = requireListingEditorSync();
 
+	/**
+	 * @type {Vue.VueElement}
+	 */
 	ListingEditorSyncDialog = {
 	    name: 'ListingEditorSyncDialog',
 	    template: `<ListingEditorDialog>
@@ -2109,11 +2154,23 @@ function requireMakeSyncLinks () {
 	const { LANG } = globalConfig;
 	const { getConfig } = Config;
 
+	/**
+	 * @param {string[]} value
+	 * @param {boolean} valBool
+	 * @return {string[]}
+	 */
 	const prepareSyncValues = ( value, valBool ) => {
+	    // @ts-ignore jQuery.val can return non-string
 	    return value.map( ( selectorOrValue ) => valBool ?
 	        $(selectorOrValue).val() : selectorOrValue );
 	};
 
+	/**
+	 * @param {string[]} unprocessedValue
+	 * @param {string} mode
+	 * @param {boolean} valBool
+	 * @return {string}
+	 */
 	const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
 	    const value = prepareSyncValues( unprocessedValue, valBool );
 	    const { WIKIDATA_CLAIMS } = getConfig();
@@ -2136,6 +2193,12 @@ function requireMakeSyncLinks () {
 	    return `${prefix}${suffix}`;
 	};
 
+	/**
+	 * @param {string[]} unprocessedValue
+	 * @param {string} mode
+	 * @param {boolean} valBool
+	 * @return {string}
+	 */
 	const makeSyncLinks = function(unprocessedValue, mode, valBool) {
 	    const href = prepareSyncUrl( unprocessedValue, mode, valBool );
 	    return `<a target="_blank" rel="noopener noreferrer"href="${href}">`;
@@ -2159,6 +2222,12 @@ function requirePrepareRadio () {
 	const trimDecimal = requireTrimDecimal();
 	const { getConfig } = Config;
 
+	/**
+	 * @param {RadioDefinitionField} field
+	 * @param {(string)[]} claimValue
+	 * @param {string|null} guid
+	 * @return {RadioDefinition}
+	 */
 	const prepareRadio = function(field, claimValue, guid) {
 	    const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
 
@@ -2180,11 +2249,13 @@ function requirePrepareRadio () {
 	        // compare the present value to the Wikidata value
 	        if ( field.p === WIKIDATA_CLAIMS.coords.p) {
 	        //If coords, then compared the values after trimming the WD one into decimal and converting into decimal and trimming the present one
+	            // @ts-ignore jQuery.val can return non-string
 	            if((trimDecimal(Number(claimValue[j]), 6) != trimDecimal(parseDMS($(editorField[j]).val()), 6)) ) {
 	                break;
 	            }
 	        } else if ( field.p === WIKIDATA_CLAIMS.image.p) {
 	        //If image, then compared the values after converting underscores into spaces on the local value
+	            // @ts-ignore jQuery.val can return non-string
 	            if( claimValue[j] != $(editorField[j]).val().replace(/_/g, ' ') ) {
 	                break;
 	            }
@@ -2199,15 +2270,18 @@ function requirePrepareRadio () {
 	        remoteFlag = true;
 	    }
 
-	    const hasSyncLink = [
+	    const propertyCode = field.p;
+	    const hasSyncLink = propertyCode && [
 	        WIKIDATA_CLAIMS.coords.p,
 	        WIKIDATA_CLAIMS.url.p,
 	        WIKIDATA_CLAIMS.image.p
-	    ].indexOf(field.p) >= 0;
+	    ].indexOf(
+	        propertyCode
+	    ) >= 0;
 	    return {
 	        field,
-	        wikidataUrl: hasSyncLink ? prepareSyncUrl(claimValue, field.p, false) : undefined,
-	        localUrl: hasSyncLink ? prepareSyncUrl(editorField, field.p, true): undefined,
+	        wikidataUrl: hasSyncLink ? prepareSyncUrl( claimValue, propertyCode, false) : undefined,
+	        localUrl: hasSyncLink ? prepareSyncUrl(editorField, propertyCode, true): undefined,
 	        editorField,
 	        skip: ( j === claimValue.length && field.remotely_sync !== true ) ||
 	            ( field.doNotUpload === true && claimValue[0] === '' ),
@@ -2243,6 +2317,11 @@ function requireSisterSite () {
 	    var WIKIDATA_PROP_WMPRJ = 'P4656'; // Wikimedia project source of import
 
 	    // perform an ajax query of a sister site
+	    /**
+	     * @param {string} url
+	     * @param {Object} ajaxData
+	     * @return {JQueryXHR}
+	     */
 	    const ajaxSisterSiteSearch = function(url, ajaxData ) {
 	        return $.ajax({
 	            url,
@@ -2253,6 +2332,13 @@ function requireSisterSite () {
 	        });
 	    };
 	    // parse the wikidata "claim" object from the wikidata response
+	    /**
+	     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+	     * @param {string} value
+	     * @param {string} property
+	     * @param {boolean} [guidBool]
+	     * @return {string|null|CoordValue|MwApiWikidataDataValueObject}
+	     */
 	    var wikidataClaim = function(jsonObj, value, property, guidBool) {
 	        var entity = _wikidataEntity(jsonObj, value);
 	        if (!entity || !entity.claims || !entity.claims[property]) {
@@ -2266,15 +2352,26 @@ function requireSisterSite () {
 	        if( propertyObj[index].mainsnak.datavalue.type === "monolingualtext" ) { // have to select correct language, Wikidata sends all despite specifying
 	            while( propertyObj[index].mainsnak.datavalue.value.language !== LANG ) {
 	                index = index + 1;
-	                if( !(propertyObj[index]) ) { return null; } // if we run out of langs and none of them matched
+	                if( !(propertyObj[index]) ) {
+	                    return null;
+	                } // if we run out of langs and none of them matched
 	            }
-	            if (guidBool === true) { return propertyObj[index].id; }
+	            if (guidBool === true) {
+	                return propertyObj[index].id;
+	            }
 	            return propertyObj[index].mainsnak.datavalue.value.text;
 	        }
-	        if (guidBool === true) { return propertyObj[index].id; }
+	        if (guidBool === true) {
+	            return propertyObj[index].id;
+	        }
 	        return propertyObj[index].mainsnak.datavalue.value;
 	    };
 	    // parse the wikidata "entity" object from the wikidata response
+	    /**
+	     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+	     * @param {string} value
+	     * @return {MwApiWikidataEntityJSON|null}
+	     */
 	    var _wikidataEntity = function(jsonObj, value) {
 	        if (!jsonObj || !jsonObj.entities || !jsonObj.entities[value]) {
 	            return null;
@@ -2282,6 +2379,11 @@ function requireSisterSite () {
 	        return jsonObj.entities[value];
 	    };
 	    // parse the wikidata display label from the wikidata response
+	    /**
+	     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+	     * @param {string} value
+	     * @return {string|null}
+	     */
 	    var wikidataLabel = function(jsonObj, value) {
 	        var entityObj = _wikidataEntity(jsonObj, value);
 	        if (!entityObj || !entityObj.labels || !entityObj.labels.en) {
@@ -2290,6 +2392,11 @@ function requireSisterSite () {
 	        return entityObj.labels.en.value;
 	    };
 	    // parse the wikipedia link from the wikidata response
+	    /**
+	     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+	     * @param {string} value
+	     * @return {string|null}
+	     */
 	    var wikidataWikipedia = function(jsonObj, value) {
 	        var entityObj = _wikidataEntity(jsonObj, value);
 	        if (!entityObj || !entityObj.sitelinks || !entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA] || !entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA].title) {
@@ -2297,7 +2404,10 @@ function requireSisterSite () {
 	        }
 	        return entityObj.sitelinks[WIKIDATA_SITELINK_WIKIPEDIA].title;
 	    };
-
+	    /**
+	     * @param {MwApiQueryResponseJSON} jsonObj
+	     * @return {string|null}
+	     */
 	    var wikipediaWikidata = function(jsonObj) {
 	        if (!jsonObj || !jsonObj.query || jsonObj.query.pageids[0] == "-1" ) { // wikipedia returns -1 pageid when page is not found
 	            return null;
@@ -2305,6 +2415,12 @@ function requireSisterSite () {
 	        var pageID = jsonObj.query.pageids[0];
 	        return jsonObj['query']['pages'][pageID]['pageprops']['wikibase_item'];
 	    };
+	    /**
+	     * @param {string} prop
+	     * @param {string} value
+	     * @param {string} snaktype
+	    * @return {JQuery.Promise<any>}
+	     */
 	    var sendToWikidata = function(prop, value, snaktype) {
 	        var ajaxData = {
 	            action: 'wbcreateclaim',
@@ -2317,6 +2433,10 @@ function requireSisterSite () {
 	        var api = new mw.ForeignApi( API_WIKIDATA );
 	        return api.postWithToken( 'csrf', ajaxData, { async: false } ).then( referenceWikidata ); // async disabled because otherwise get edit conflicts with multiple changes submitted at once
 	    };
+	    /**
+	     * @param {string} guidObj
+	    * @return {JQuery.Promise<any>}
+	     */
 	    var removeFromWikidata = function(guidObj) {
 	        var ajaxData = {
 	            action: 'wbremoveclaims',
@@ -2325,13 +2445,24 @@ function requireSisterSite () {
 	        var api = new mw.ForeignApi( API_WIKIDATA );
 	        return api.postWithToken( 'csrf', ajaxData, { async: false } );
 	    };
-	    var changeOnWikidata = function(guidObj, prop, value, snaktype) {
+	    /**
+	     * @param {string} guidObj
+	     * @param {string} _prop
+	     * @param {string} value
+	     * @param {string} snaktype
+	    * @return {JQuery.Promise<any>}
+	     */
+	    var changeOnWikidata = function(guidObj, _prop, value, snaktype) {
 	        var ajaxData = {
 	            action: 'wbsetclaimvalue',
 	            claim: guidObj,
 	            snaktype,
 	            value
 	        };
+	        /**
+	         * @param {MwApiWikidataClaimResponse} jsonObj
+	         * @return {Promise<any>}
+	         */
 	        var ajaxSuccess = function(jsonObj) {
 	            const promises = [];
 	            if( jsonObj.claim ) {
@@ -2342,6 +2473,7 @@ function requireSisterSite () {
 	                }
 	                else if ( jsonObj.claim.references.length === 1 ) { // skip if >1 reference; too complex to automatically set
 	                    var acceptedProps = [WIKIDATA_PROP_WMURL, WIKIDATA_PROP_WMPRJ]; // properties relating to Wikimedia import only
+	                    // @ts-ignore code needs review.
 	                    var diff = $(jsonObj.claim.references[0]['snaks-order']).not(acceptedProps).get(); // x-compatible method for diff on arrays, from https://stackoverflow.com/q/1187518
 	                    if( diff.length === 0 ) { // if the set of present properties is a subset of the set of acceptable properties
 	                        promises.push(
@@ -2360,6 +2492,10 @@ function requireSisterSite () {
 	        var api = new mw.ForeignApi( API_WIKIDATA );
 	        return api.postWithToken( 'csrf', ajaxData, {async: false} ).then( ajaxSuccess );
 	    };
+	    /**
+	     * @param {MwApiWikidataClaimResponse} jsonObj
+	     * @return {JQuery.Promise<any>}
+	     */
 	    var referenceWikidata = function(jsonObj) {
 	        var revUrl = `https:${mw.config.get('wgServer')}${mw.config.get('wgArticlePath').replace('$1', '')}${mw.config.get('wgPageName')}?oldid=${mw.config.get('wgCurRevisionId')}`; // surprising that there is no API call for this
 	        var ajaxData = {
@@ -2371,6 +2507,11 @@ function requireSisterSite () {
 	        var api = new mw.ForeignApi( API_WIKIDATA );
 	        return api.postWithToken( 'csrf', ajaxData, { async: false } );
 	    };
+	    /**
+	     * @param {string} statement
+	     * @param {string} references
+	     * @return {JQuery.Promise<any>}
+	     */
 	    var unreferenceWikidata = function(statement, references) {
 	        var ajaxData = {
 	            action: 'wbremovereferences',
@@ -2389,6 +2530,9 @@ function requireSisterSite () {
 	    };
 
 	    // expose public members
+	    /**
+	     * @name SisterSiteApi
+	     */
 	    return {
 	        SEARCH_PARAMS,
 	        API_WIKIDATA,
@@ -2421,37 +2565,53 @@ function requireGetSyncValues () {
 	const { getConfig } = Config;
 	const { translate } = translate_1;
 
+	/**
+	 * Gets sync values from Wikidata record.
+	 * @param {MwApiWikidataEntityResponseJSON} jsonObj - The Wikidata JSON object.
+	 * @param {string} wikidataRecord - The Wikidata record.
+	 * @return {RadioDefinition[]} The sync values array.
+	 */
 	getSyncValues = ( jsonObj, wikidataRecord ) => {
 	    const SisterSite = requireSisterSite()();
 	    const { wikidataClaim, wikidataWikipedia } = SisterSite;
 	    const { WIKIDATA_CLAIMS } = getConfig();
 
+	    /** @type {Record<string,WikidataClaimRecord>} */
 	    const res = {};
 	    for (let key in WIKIDATA_CLAIMS) {
+	        // @ts-ignore needs further inspection
 	        res[key] = {};
+	        // @ts-ignore needs further inspection
 	        res[key].value = wikidataClaim(jsonObj, wikidataRecord, WIKIDATA_CLAIMS[key].p);
+	        // @ts-ignore needs further inspection
 	        res[key].guidObj = wikidataClaim(jsonObj, wikidataRecord,
 	            WIKIDATA_CLAIMS[key].p, true);
 	        if (key === 'iata') {
 	            if( res[key].value ) {
+	                // @ts-ignore assert value type
 	                res[key].value = iata.replace( '%s', res[key].value );
 	            }
 	        } else if (key === 'email') {
 	            if( res[key].value ) {
+	                // @ts-ignore assert value type
 	                res[key].value = res[key].value.replace('mailto:', '');
 	            }
 	        } else if (key === 'coords') {
 	            if ( res[key].value ) {
+	                // @ts-ignore assert CoordValue
 	                res[key].value.latitude = trimDecimal(res[key].value.latitude, 6);
+	                // @ts-ignore assert CoordValue
 	                res[key].value.longitude = trimDecimal(res[key].value.longitude, 6);
 	            }
 	        }
 	    }
 	    const syncValues = [];
 	    for (let key in res) {
-	        const value = res[key].value;
+	        let value = res[key].value;
 	        const guidObj = res[key].guidObj;
 	        if (key === 'coords' && value) {
+	            // eslint-disable-next-line no-self-assign
+	            value = /** @type {CoordValue} */( value );
 	            const radio = prepareRadio(
 	                WIKIDATA_CLAIMS[key],
 	                [ value.latitude, value.longitude],
@@ -2463,6 +2623,8 @@ function requireGetSyncValues () {
 	                );
 	            }
 	        } else {
+	            // eslint-disable-next-line no-self-assign
+	            value = /** @type {string} */( value );
 	            const radio = prepareRadio(
 	                WIKIDATA_CLAIMS[key],
 	                [ value ],
@@ -2484,7 +2646,8 @@ function requireGetSyncValues () {
 	                doNotUpload: true,
 	                'remotely_sync': true
 	            },
-	            [wikipedia],
+	            [wikipedia || ''],
+	            // @ts-ignore jQuery.val can return non-string
 	            $('#input-wikidata-value').val()
 	        )
 	    );
@@ -2510,11 +2673,18 @@ function requireLaunchSyncDialog () {
 	const { getConfig } = Config;
 	const SisterSite = requireSisterSite();
 
+	/**
+	 * @param {Function} updateModel
+	 * @param {SisterSiteApi} ss
+	 * @param {() => void} [closeFn]
+	 * @return {Function}
+	 */
 	const makeSubmitFunction = function( updateModel, ss, closeFn ) {
-	    return ( close ) => {
+	    return ( /** @type {() => void} */ close ) => {
 	        if ( !closeFn ) {
 	            closeFn = () => close();
 	        }
+	        const doClose = closeFn;
 	        const { WIKIDATA_CLAIMS, LISTING_TEMPLATES } = getConfig();
 	        const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
 	            removeFromWikidata, ajaxSisterSiteSearch } = ss;
@@ -2523,25 +2693,36 @@ function requireLaunchSyncDialog () {
 	            var label = $(`label[for="${$(this).attr('id')}"]`);
 	            // @todo: Do not rely on label.text for something so important
 	            // Switch this to data attribute.
+	            /** @type {string[]|string} */
 	            var syncedValue = label.text().split('\n');
-	            var field = JSON.parse($(this).parents('.choose-row').find('.has-json > input:hidden:not(:radio)').val()); // not radio needed, remotely_synced values use hidden radio buttons
+	            const chooseRowValue = $(this).parents('.choose-row').find('.has-json > input:hidden:not(:radio)').val();
+	            if ( typeof chooseRowValue !== 'string' ) {
+	                return;
+	            }
+	            var field = JSON.parse(chooseRowValue); // not radio needed, remotely_synced values use hidden radio buttons
 	            var editorField = [];
 	            for( var i = 0; i < field.fields.length; i++ ) {
 	                editorField[i] = `#${LISTING_TEMPLATES.listing[field.fields[i]].id}`;
 	            }
-	            var guidObj = $(this).parents('.choose-row').find('.has-guid > input:hidden:not(:radio)').val();
+	            var guidObj = /** @type {string} */(
+	                $(this).parents('.choose-row').find('.has-guid > input:hidden:not(:radio)').val()
+	            );
 
 	            if ( field.p === WIKIDATA_CLAIMS.coords.p ) { //first latitude, then longitude
+	                /** @type {string[]} */
 	                var DDValue = [];
 	                for ( i = 0; i < editorField.length; i++) {
 	                    DDValue[i] = syncedValue[i] ?
 	                        trimDecimal(parseDMS(syncedValue[i]), 6) : '';
 	                    updateFieldIfNotNull(editorField[i], syncedValue[i], field.remotely_sync);
 	                }
+	                /** @type {string} */syncedValue = '';
 	                // TODO: make the find on map link work for placeholder coords
 	                if( (DDValue[0]==='') && (DDValue[1]==='') ) {
 	                    syncedValue = ''; // dummy empty value to removeFromWikidata
+	                // @ts-ignore needs further review
 	                } else if( !isNaN(DDValue[0]) && !isNaN(DDValue[1]) ){
+	                    // @ts-ignore needs further review
 	                    var precision = Math.min(DDValue[0].toString().replace(/\d/g, "0").replace(/$/, "1"), DDValue[1].toString().replace(/\d/g, "0").replace(/$/, "1"));
 	                    syncedValue = `{ "latitude": ${DDValue[0]}, "longitude": ${DDValue[1]}, "precision": ${precision} }`;
 	                }
@@ -2564,7 +2745,8 @@ function requireLaunchSyncDialog () {
 	                }
 	            }
 
-	            if( (field.doNotUpload !== true) && ($(this).attr('id').search(/-wd$/) === -1) ) { // -1: regex not found
+	            const elementId = $(this).attr('id');
+	            if( (field.doNotUpload !== true) && (elementId && elementId.search(/-wd$/) === -1) ) { // -1: regex not found
 	                ajaxSisterSiteSearch(
 	                    API_WIKIDATA,
 	                    {
@@ -2572,32 +2754,39 @@ function requireLaunchSyncDialog () {
 	                        ids: field.p,
 	                        props: 'datatype',
 	                    }
-	                ).then( ( jsonObj ) => {
+	                ).then( ( /** @type {MwApiWikidataEntityResponseJSON} */ jsonObj ) => {
 	                     //if ( TODO: add logic for detecting Wikipedia and not doing this test. Otherwise get an error trying to find undefined. Keep in mind that we would in the future call sitelink changing here maybe. Not urgent, error harmless ) { }
 	                    /*else*/ if ( jsonObj.entities[field.p].datatype === 'monolingualtext' ) {
 	                        syncedValue = `{"text": ${syncedValue}, "language": "${LANG}"}`;
 	                    }
 	                    if ( guidObj === "null" ) { // no value on Wikidata, string "null" gets saved in hidden field. There should be no cases in which there is no Wikidata item but this string does not equal "null"
 	                        if (syncedValue !== '') {
-	                            sendToWikidata(field.p , syncedValue, 'value');
+	                            sendToWikidata(field.p , /** @type {string} */ ( syncedValue ), 'value');
 	                        }
 	                    } else {
 	                        if ( syncedValue !== "" ) {
 	                            // this is changing, for when guid is not null and neither is the value
 	                            // Wikidata silently ignores a request to change a value to its existing value
-	                            changeOnWikidata(guidObj, field.p, syncedValue, 'value');
+	                            changeOnWikidata(guidObj, field.p, /** @type {string} */ ( syncedValue ), 'value');
 	                        } else if( (field.p !== WIKIDATA_CLAIMS.coords.p) || (DDValue[0] === '' && DDValue[1] === '') ) {
 	                            removeFromWikidata(guidObj);
 	                        }
 	                    }
-	                } ).then( closeFn );
+	                } ).then( doClose );
 	            } else {
-	                closeFn();
+	                doClose();
 	            }
 	        });
 	    };
 	};
 
+	/**
+	 * @param {MwApiWikidataEntityResponseJSON} jsonObj
+	 * @param {string} wikidataRecord
+	 * @param {Function} updateModel
+	 * @param {SisterSiteApi} [ss]
+	 * @param {() => void} [close]
+	 */
 	launchSyncDialog = function (jsonObj, wikidataRecord, updateModel, ss, close ) {
 	    const syncValues = getSyncValues(
 	        jsonObj, wikidataRecord
@@ -2608,7 +2797,7 @@ function requireLaunchSyncDialog () {
 	        syncValues,
 	        dialogClass: 'listing-editor-dialog listing-editor-dialog--wikidata-shared',
 	        onSubmit: submitFunction
-	    }, translate );
+	    } );
 
 	    const $syncDialogElement = $('#listing-editor-sync');
 	    if($syncDialogElement.find('.sync_label').length === 0) { // if no choices, close the dialog and display a message
@@ -2642,6 +2831,11 @@ function requireUpdateWikidataSharedFields () {
 	hasRequiredUpdateWikidataSharedFields = 1;
 	const { LANG } = globalConfig;
 
+	/**
+	 * @param {string} wikidataRecord
+	 * @param {SisterSiteApi} SisterSite
+	 * @return {JQuery.Promise<any>}
+	 */
 	updateWikidataSharedFields = function(
 	    wikidataRecord, SisterSite
 	) {
@@ -2672,6 +2866,11 @@ function requireQuickUpdateWikidataSharedFields () {
 	const { getConfig } = Config;
 	const updateFieldIfNotNull = requireUpdateFieldIfNotNull();
 
+	/**
+	 * @param {string} wikidataRecord
+	 * @param {SisterSiteApi} SisterSite
+	 * @return {JQuery.Promise<SisterSiteData>}
+	 */
 	quickUpdateWikidataSharedFields = function(wikidataRecord, SisterSite) {
 	    const { API_WIKIDATA, wikidataClaim, wikidataWikipedia,
 	        ajaxSisterSiteSearch } = SisterSite;
@@ -2681,8 +2880,12 @@ function requireQuickUpdateWikidataSharedFields () {
 	        ids: wikidataRecord,
 	        languages: LANG
 	    };
+	    /**
+	     * @param {MwApiWikidataEntityResponseJSON} jsonObj
+	     */
 	    const ajaxSuccess = function (jsonObj) {
 	        let msg = '';
+	        /** @type {Record<string,any>} */
 	        const res = [];
 	        for (let key in WIKIDATA_CLAIMS) {
 	            res[key] = wikidataClaim(jsonObj, wikidataRecord, WIKIDATA_CLAIMS[key].p);
@@ -2708,10 +2911,14 @@ function requireQuickUpdateWikidataSharedFields () {
 	        }
 
 	        if (msg) {
+	            /**
+	             * @type {Record<string, string|null>}
+	             */
 	            const result = {
 	                wikipedia
 	            };
 	            if ( confirm( `${translate( 'wikidataShared' )}\n${msg}`) ) {
+	                const altValue = `${$('#input-alt').val()}`;
 	                for (let key in res) {
 	                    if (res[key]) {
 	                        var editorField = [];
@@ -2719,8 +2926,8 @@ function requireQuickUpdateWikidataSharedFields () {
 	                            editorField[i] = `#${LISTING_TEMPLATES.listing[WIKIDATA_CLAIMS[key].fields[i]].id}`;
 	                        }
 
-	                        if ( (key !== 'iata') || ($('#input-alt').val() === '') ||
-	                            (/^IATA: ...$/.test($('#input-alt').val())) ) {
+	                        if ( (key !== 'iata') || altValue === '' ||
+	                            (/^IATA: ...$/.test(altValue)) ) {
 	                            if (key === 'coords') {
 	                                updateFieldIfNotNull(editorField[0], res[key].latitude, WIKIDATA_CLAIMS[key].remotely_sync);
 	                                updateFieldIfNotNull(editorField[1], res[key].longitude, WIKIDATA_CLAIMS[key].remotely_sync);
@@ -2739,6 +2946,7 @@ function requireQuickUpdateWikidataSharedFields () {
 	        }
 	        return false;
 	    };
+	    // @ts-ignore returns jqXHR not JQuery.Promise<SisterSiteData>
 	    return ajaxSisterSiteSearch(API_WIKIDATA, ajaxData ).then(  ajaxSuccess );
 	};
 	return quickUpdateWikidataSharedFields;
@@ -2759,8 +2967,9 @@ function requireSisterSites () {
 	    LANG } = globalConfig;
 	const { ref, computed, nextTick } = require$$1$1;
 	const { translate } = translate_1;
+	const { getConfig } = Config;
 	const { CdxLookup } = require$$0$1;
-
+	/** @type {Vue.Component} */
 	SisterSites = {
 	    name: 'SisterSites',
 	    props: {
@@ -2845,7 +3054,8 @@ function requireSisterSites () {
         v-model:selected="wikipedia"
         v-model:input-value="wikipediaInput"
         :menu-items="wikipediaMenuItems"
-        :placeholder="$translate( 'placeholder-wikipedia' )"
+        :placeholder="wikipediaPlaceholder"
+        :disabled="wikipediaDisabled"
         @update:input-value="onWikipediaInput"
         @update:selected="onWikipediaSelected"
         id="input-wikipedia"
@@ -2870,7 +3080,8 @@ function requireSisterSites () {
         v-model:selected="commons"
         v-model:input-value="commonsInput"
         :menu-items="commonsMenuItems"
-        :placeholder="$translate( 'placeholder-image' )"
+        :placeholder="commonsPlaceholder"
+        :disabled="commonsDisabled"
         @update:input-value="onCommonsInput"
         @update:selected="onCommonsSelected"
         id="input-image"
@@ -2885,28 +3096,43 @@ function requireSisterSites () {
 </div>
 </div>`,
 	    emits: [ 'updated:listing' ],
-	    setup( { wikipedia, wikidata, image, api }, { emit } ) {
+	    /**
+	     * @param {{wikipedia: string, wikidata: string, image: string, api?: SisterSiteApi}} options
+	     * @param {Vue.SetupContext} ctx
+	     * @return {Object}
+	     */
+	    setup( { wikipedia: wikipediaProp, wikidata: wikidataProp, image, api }, { emit } ) {
 	        const SisterSite = api || requireSisterSite()();
 	        const { SEARCH_PARAMS,
 	            API_WIKIDATA, API_COMMONS, API_WIKIPEDIA,
 	            ajaxSisterSiteSearch } = SisterSite;
-	        wikipedia = ref( wikipedia );
-	        wikidata = ref( wikidata );
+	        const wikipedia = ref( wikipediaProp );
+	        const wikidata = ref( wikidataProp );
 	        const commons = ref( image || '' );
 	        const wikidataInput = ref( wikidata.value );
 	        const wikipediaInput = ref( wikipedia.value );
 	        const commonsInput = ref( commons.value );
+	        /** @type {Vue.Ref<SearchResult[]>} */
 	        const wikidataMenuItems = ref( [] );
+	        /** @type {Vue.Ref<SearchResult[]>} */
 	        const commonsMenuItems = ref( [] );
+	        /** @type {Vue.Ref<SearchResult[]>} */
 	        const wikipediaMenuItems = ref( [] );
+	        const commonsPlaceholder = ref( translate( 'placeholder-image' ) );
+	        const wikipediaPlaceholder = ref( translate( 'placeholder-wikipedia' ) );
+	        const commonsDisabled = ref( false );
+	        const wikipediaDisabled = ref( false );
 
 	        const wikidataUrl = computed(
+	            // @ts-ignore needs @wikimedia/types-wikimedia update
 	            () => `${WIKIDATA_URL}/wiki/${mw.util.wikiUrlencode(wikidata.value)}`
 	        );
 	        const wikipediaUrl = computed(
+	            // @ts-ignore needs @wikimedia/types-wikimedia update
 	            () => `${WIKIPEDIA_URL}/wiki/${mw.util.wikiUrlencode(wikipedia.value)}`,
 	        );
 	        const commonsUrl = computed(
+	            // @ts-ignore needs @wikimedia/types-wikimedia update
 	            () => `${COMMONS_URL}/wiki/${mw.util.wikiUrlencode(`File:${commons.value}`)}`
 	        );
 
@@ -2915,19 +3141,46 @@ function requireSisterSites () {
 	            wikidataInput.value = '';
 	        };
 
+	        // updateModel is only ever called as the result of a Wikidata sync
+	        // (quick sync or the sync dialog). When WIKIDATA_SYNC_PLACEHOLDER is
+	        // enabled, the wikipedia/commons values that Wikidata can supply at
+	        // render time are shown as a disabled placeholder and kept blank
+	        // locally, so the article saves them empty (see updateFieldIfNotNull).
+	        const placeholderSync = getConfig().WIKIDATA_SYNC_PLACEHOLDER === true;
+	        /**
+	         * @param {SisterSiteData} newValues
+	         */
 	        const updateModel = ( newValues ) => {
 	            nextTick( () => {
 	                if ( newValues.commons ) {
-	                    commons.value = newValues.commons;
-	                    nextTick( () => {
-	                        commonsInput.value = newValues.commons;
-	                    } );
+	                    if ( placeholderSync ) {
+	                        commons.value = '';
+	                        commonsDisabled.value = true;
+	                        commonsPlaceholder.value = newValues.commons;
+	                        nextTick( () => {
+	                            commonsInput.value = '';
+	                        } );
+	                    } else {
+	                        commons.value = newValues.commons;
+	                        nextTick( () => {
+	                            commonsInput.value = /** @type {string} */ ( newValues.commons );
+	                        } );
+	                    }
 	                }
 	                if ( newValues.wikipedia ) {
-	                    wikipedia.value = newValues.wikipedia;
-	                    nextTick( () => {
-	                        wikipediaInput.value = newValues.wikipedia;
-	                    } );
+	                    if ( placeholderSync ) {
+	                        wikipedia.value = '';
+	                        wikipediaDisabled.value = true;
+	                        wikipediaPlaceholder.value = newValues.wikipedia;
+	                        nextTick( () => {
+	                            wikipediaInput.value = '';
+	                        } );
+	                    } else {
+	                        wikipedia.value = newValues.wikipedia;
+	                        nextTick( () => {
+	                            wikipediaInput.value = newValues.wikipedia;
+	                        } );
+	                    }
 	                }
 	            } );
 	        };
@@ -2962,6 +3215,9 @@ function requireSisterSites () {
 	                    wikipedia.value,
 	                    SisterSite
 	                ).then( ( wikidataID ) => {
+	                    if ( !wikidataID ) {
+	                        return;
+	                    }
 	                    nextTick( () => {
 	                        wikidata.value = wikidataID;
 	                        wikidataInput.value = wikidataID;
@@ -2987,12 +3243,18 @@ function requireSisterSites () {
 	            } );
 	        };
 
+	        /**
+	         * @param {string} selected
+	         */
 	        function onWikidataSelected( selected ) {
 	            if ( selected ) {
 	                wikidataInput.value = selected;
 	                emitUpdatedEvent();
 	            }
 	        }
+	        /**
+	         * @param {string} search
+	         */
 	        function onWikidataInput( search ) {
 	            if ( !search ) {
 	                wikidataMenuItems.value = [];
@@ -3005,13 +3267,16 @@ function requireSisterSites () {
 	                    search,
 	                    language: LANG
 	                }
-	            ).then( (  jsonObj ) => {
+	            ).then( ( /** @type {MwApiWikidataSearchResponse} */ jsonObj ) => {
 	                wikidataMenuItems.value = ( jsonObj.search || [] ).map(
 	                    ( { title, label } ) => ( { value: title, label } )
 	                );
 	            } );
 	        }
 
+	        /**
+	         * @param {string} selected
+	         */
 	        function onCommonsSelected( selected ) {
 	            if ( selected ) {
 	                commonsInput.value = selected;
@@ -3019,6 +3284,9 @@ function requireSisterSites () {
 	            }
 	        }
 
+	        /**
+	         * @param {string} search
+	         */
 	        function onCommonsInput( search ) {
 	            ajaxSisterSiteSearch(
 	                API_COMMONS,
@@ -3026,11 +3294,14 @@ function requireSisterSites () {
 	                    search,
 	                    namespace: 6
 	                } )
-	            ).then( (  jsonObj ) => {
+	            ).then( ( /** @type {[string, string[]]} */jsonObj ) => {
 	                commonsMenuItems.value = mapSearchResult( jsonObj );
 	            } );
 	        }
 
+	        /**
+	         * @param {string} selected
+	         */
 	        function onWikipediaSelected( selected ) {
 	            if ( selected ) {
 	                wikipediaInput.value = selected;
@@ -3038,6 +3309,9 @@ function requireSisterSites () {
 	            }
 	        }
 
+	        /**
+	         * @param {string} search
+	         */
 	        function onWikipediaInput( search ) {
 	            ajaxSisterSiteSearch(
 	                API_WIKIPEDIA,
@@ -3045,7 +3319,7 @@ function requireSisterSites () {
 	                    search,
 	                    namespace: 0
 	                } )
-	            ).then( (  jsonObj ) => {
+	            ).then( ( /** @type {[string, string[]]} */jsonObj ) => {
 	                wikipediaMenuItems.value = mapSearchResult( jsonObj );
 	            } );
 	        }
@@ -3073,7 +3347,11 @@ function requireSisterSites () {
 	            onWikipediaInput,
 	            onCommonsInput,
 	            wikipedia,
-	            commons
+	            commons,
+	            commonsPlaceholder,
+	            wikipediaPlaceholder,
+	            commonsDisabled,
+	            wikipediaDisabled
 	        };
 	    }
 	};
@@ -3119,7 +3397,7 @@ function requireGetListingInfo () {
 	 * listing template type if not enty exists for the specified type.
 	 *
 	 * @param {string} type
-	 * @return {string}
+	 * @return {ListingInfo}
 	 */
 	const getListingInfo = function(type) {
 	    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
@@ -3129,6 +3407,10 @@ function requireGetListingInfo () {
 	getListingInfo_1 = getListingInfo;
 	return getListingInfo_1;
 }
+
+/**
+ * @type {Vue.VueElement}
+ */
 
 var TelephoneCharInsert;
 var hasRequiredTelephoneCharInsert;
@@ -3153,6 +3435,10 @@ function requireTelephoneCharInsert () {
 	};
 	return TelephoneCharInsert;
 }
+
+/**
+ * @type {Vue.VueElement}
+ */
 
 var specialCharactersString;
 var hasRequiredSpecialCharactersString;
@@ -3320,6 +3606,10 @@ function requireCreateListingFromForm () {
 	const getListingInfo = requireGetListingInfo();
 	const { getConfig } = Config;
 
+	/**
+	 * @param {Record<string,string>} listing
+	 * @return {Record<string,string>}
+	 */
 	const createListingFromForm = ( listing ) => {
 	    const {
 	        LISTING_TYPE_PARAMETER,
@@ -3327,9 +3617,12 @@ function requireCreateListingFromForm () {
 	    } = getConfig();
 	    var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
 	    var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
-	    var listingType = $(`#${listingTypeInput}`).val();
+	    var listingType = /** @type {string} */(
+	        $(`#${listingTypeInput}`).val()
+	    );
 	    var listingParameters = getListingInfo(listingType);
 	    for (var parameter in listingParameters) {
+	        // @ts-ignore jQuery.val can return non-string
 	        listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
 	    }
 	    return listing;
@@ -3348,6 +3641,9 @@ function requireShowPreview () {
 	const listingToStr = requireListingToStr();
 	const createListingFromForm = requireCreateListingFromForm();
 
+	/**
+	 * @param {Record<string,string>} listingTemplateAsMap
+	 */
 	const showPreview = function(listingTemplateAsMap) {
 	    var listing = createListingFromForm( listingTemplateAsMap );
 	    var text = listingToStr(listing);
@@ -3370,6 +3666,8 @@ function requireShowPreview () {
 
 /**
  * Return the current date in the format "2015-01-15".
+ *
+ * @return {string}
  */
 
 var currentLastEditDate_1;
@@ -3383,10 +3681,12 @@ function requireCurrentLastEditDate () {
 	    var year = d.getFullYear();
 	    // Date.getMonth() returns 0-11
 	    var month = d.getMonth() + 1;
-	    if (month < 10) month = `0${month}`;
+	    const monthStr = month < 10 ?
+	        `0${month}` : `${month}`;
 	    var day = d.getDate();
-	    if (day < 10) day = `0${day}`;
-	    return `${year}-${month}-${day}`;
+	    const dayStr = day < 10 ?
+	        `0${day}` : `${day}`;
+	    return `${year}-${monthStr}-${dayStr}`;
 	};
 	currentLastEditDate_1 = currentLastEditDate;
 	return currentLastEditDate_1;
@@ -3432,7 +3732,7 @@ function requireAsyncGetColor () {
 	    if ( cachedColor ) {
 	        return Promise.resolve( cachedColor );
 	    }
-	    // @ts-ignore
+	    // @ts-ignore returns jQueryXHR not Promise
 	    return $.ajax ({
 	        listingType,
 	        url: `${mw.config.get('wgScriptPath')}/api.php?${$.param({
@@ -3496,15 +3796,19 @@ function requireInitColor () {
 	const typeToColor = requireTypeToColor();
 
 	/**
-	 * @param {HTMLElement} form
+	 * @param {HTMLFormElement} form
 	 */
 	const initColor = function(form) {
-	    // @ts-ignore
+	    // @ts-ignore jQuery.val can return non-string
 	    typeToColor( $('#input-type', form).val(), form );
-	    $('#input-type', form).on('change', function () {
-	        // @ts-ignore
-	        typeToColor( this.value, form);
-	    });
+	    $('#input-type', form).on('change',
+	        /**
+	         * @this HTMLInputElement
+	         */
+	        function () {
+	            typeToColor( this.value, form);
+	        }
+	    );
 	};
 
 	initColor_1 = initColor;
@@ -3514,6 +3818,8 @@ function requireInitColor () {
 /**
  * Add listeners to specific strings so that clicking on a string
  * will insert it into the associated input.
+ *
+ * @param {HTMLFormElement} form
  */
 
 var initStringFormFields_1;
@@ -3527,14 +3833,18 @@ function requireInitStringFormFields () {
 	    $(STRING_SELECTOR, form).on( 'click', function() {
 	        var target = $(this).attr('data-for');
 	        var fieldInput = $(`#${target}`);
-	        var caretPos = fieldInput[0].selectionStart;
-	        var oldField = fieldInput.val();
+	        const input = /** @type {HTMLInputElement} */(
+	            fieldInput[0]
+	        );
+	        var caretPos = input.selectionStart || 0;
+	        var oldField = fieldInput.val() || '';
 	        var string = $(this).find('a').text();
+	        // @ts-ignore jQuery.val can return non-string
 	        var newField = oldField.substring(0, caretPos) + string + oldField.substring(caretPos);
 	        fieldInput.val(newField);
 	        fieldInput.select();
 	        // now setting the cursor behind the string inserted
-	        fieldInput[0].setSelectionRange(caretPos + string.length, caretPos + string.length);
+	        input.setSelectionRange(caretPos + string.length, caretPos + string.length);
 	    });
 	};
 
@@ -3550,7 +3860,7 @@ function requireListingEditorForm () {
 	hasRequiredListingEditorForm = 1;
 	const { CdxTextInput, CdxTextArea, CdxTabs, CdxTab } = require$$0$1;
 	const sistersites = requireSisterSites();
-	const { onMounted, ref, computed } = require$$1$1;
+	const { onMounted, ref, computed, defineComponent } = require$$1$1;
 	const { MODE_ADD } = requireMode();
 	const getListingInfo = requireGetListingInfo();
 	const TelephoneCharInsert = requireTelephoneCharInsert();
@@ -3565,6 +3875,9 @@ function requireListingEditorForm () {
 	/**
 	 * Generate the form UI for the listing editor. If editing an existing
 	 * listing, pre-populate the form input fields with the existing values.
+	 *
+	 * @param {HTMLFormElement} form
+	 * @param {ListingInfo} listingParameters
 	 */
 	const hideEmptyFormValues = ( form, listingParameters ) => {
 	    for (var parameter in listingParameters) {
@@ -3578,7 +3891,7 @@ function requireListingEditorForm () {
 	    }
 	};
 
-	ListingEditorForm = {
+	ListingEditorForm = defineComponent( {
 	    name: 'ListingEditorForm',
 	    props: {
 	        customFields: {
@@ -3586,7 +3899,8 @@ function requireListingEditorForm () {
 	            default: []
 	        },
 	        aka: {
-	            type: String
+	            type: String,
+	            default: ''
 	        },
 	        address: {
 	            type: String
@@ -3668,7 +3982,8 @@ function requireListingEditorForm () {
 	            type: Array
 	        },
 	        listingType: {
-	            type: String
+	            type: String,
+	            default: 'listing'
 	        }
 	    },
 	    template: `<cdx-tabs :framed="true" :active="currentTab" @update:active="onUpdateTab">
@@ -3958,8 +4273,10 @@ function requireListingEditorForm () {
 	            aka, address, listingName
 	        } = props;
 	        const nowTimestamp = currentLastEditDate();
+	        /** @type {Vue.Ref<boolean>} */
 	        const shouldUpdateTimestamp = ref( mode === MODE_ADD );
 	        const lastEditTimestamp = computed( () => shouldUpdateTimestamp.value ? nowTimestamp : lastedit );
+	        /** @type {Vue.Ref<string>} */
 	        const currentAltName = ref( aka );
 	        const currentAddress = ref( address );
 	        const currentListingName = ref( listingName );
@@ -3985,21 +4302,24 @@ function requireListingEditorForm () {
 	        onMounted( () => {
 	            if ( form.value ) {
 	                hideEmptyFormValues( form.value, listingParameters );
-	                initColor( form.value, mode );
-	                initStringFormFields( form.value, mode );
+	                initColor( form.value );
+	                initStringFormFields( form.value );
 	            }
 	        } );
 
-	        let previewTimeout;
+	        /** @type {Number} */let previewTimeout = 0;
 	        const currentTab = ref( 'edit' );
+	        /**
+	         * @param {string} activeTab
+	         */
 	        const onUpdateTab = ( activeTab ) => {
 	            if ( activeTab === 'preview' ) {
 	                clearInterval( previewTimeout );
 	                mw.util.throttle( () => {
-	                    previewTimeout = setTimeout( () => {
+	                    previewTimeout = /** @type {number} */ ( /** @type {unknown} */ ( setTimeout( () => {
 	                        showPreview( {} );
 	                    currentTab.value = activeTab;
-	                    }, 200 );
+	                    }, 200 ) ) );
 	                }, 300 )();
 	            } else {
 	                currentTab.value = activeTab;
@@ -4022,6 +4342,9 @@ function requireListingEditorForm () {
 	                image: currentImage.value
 	            } );
 	        };
+	        /**
+	         * @param {SisterSiteData} sisterSiteData
+	         */
 	        const onSisterSiteUpdate = ( sisterSiteData ) => {
 	            currentWikipedia.value = sisterSiteData.wikipedia;
 	            currentWikidata.value = sisterSiteData.wikidata;
@@ -4029,10 +4352,15 @@ function requireListingEditorForm () {
 	            onListingUpdate();
 	        };
 
+	        /** @type {Vue.Ref<Record<string,string>>} */
 	        const customFieldData = ref( {} );
-	        customFields.forEach(( field ) => {
-	            customFieldData.value[field.name] = field.value;
-	        } );
+	         /** @type {ListingEditorFieldDefinition[]} */(
+	            customFields
+	         ).forEach(
+	            ( field ) => {
+	                customFieldData.value[field.name] = field.value;
+	            }
+	        );
 
 	        return {
 	            customFields,
@@ -4059,7 +4387,7 @@ function requireListingEditorForm () {
 	            showLastEditedField
 	        };
 	    }
-	};
+	} );
 	return ListingEditorForm;
 }
 
@@ -4181,6 +4509,9 @@ function requireListingEditorFormDialog () {
 	const validateImage = requireImage();
 	const validateCoords = requireCoords();
 
+	/**
+	 * @type {Vue.Component}
+	 */
 	ListingEditorFormDialog = {
 	    name: 'ListingEditorFormDialog',
 	    template: `<ListingEditorDialog
@@ -4331,6 +4662,9 @@ function requireListingEditorFormDialog () {
 	            }
 	        } );
 
+	        /**
+	         * @param {Record<string,string>} data
+	         */
 	        const onListingUpdate = ( data ) => {
 	            hasData.value = data.name || data.address || data.alt;
 	            emailValid.value = validateEmail( data.email );
@@ -4361,6 +4695,8 @@ function requireGetListingTypesRegex () {
 	 * within a section of wikitext. Note that the returned regex simply
 	 * matches the start of the template ("{{listing") and not the full
 	 * template ("{{listing|key=value|...}}").
+	 *
+	 * @return {RegExp}
 	 */
 	const getListingTypesRegex = function() {
 	    const { LISTING_TEMPLATES, listingTypeRegExp } = getConfig();
@@ -4390,6 +4726,9 @@ function requireGetListingWikitextBraces () {
 	 * Given a listing index, return the full wikitext for that listing
 	 * ("{{listing|key=value|...}}"). An index of 0 returns the first listing
 	 * template invocation, 1 returns the second, etc.
+	 *
+	 * @param {number} listingIndex
+	 * @return {string}
 	 */
 	const getListingWikitextBraces = function(listingIndex) {
 	    let sectionText = getSectionText();
@@ -4405,8 +4744,10 @@ function requireGetListingWikitextBraces () {
 
 	    for (var i = 0; i <= listingIndex; i++) {
 	        regexResult = listingRegex.exec(sectionText);
-	        listingMatchIndex = regexResult.index;
-	        listingSyntax = regexResult[1];
+	        if ( regexResult ) {
+	            listingMatchIndex = regexResult.index;
+	            listingSyntax = regexResult[1];
+	        }
 	    }
 	    // listings may contain nested templates, so step through all section
 	    // text after the matched text to find MATCHING closing braces
@@ -4414,6 +4755,9 @@ function requireGetListingWikitextBraces () {
 	    // captured in the listingSyntax variable
 	    var curlyBraceCount = 2;
 	    var endPos = sectionText.length;
+	    if ( !listingMatchIndex || !listingSyntax ) {
+	        throw new Error( 'Unable to locate listing index' );
+	    }
 	    var startPos = listingMatchIndex + listingSyntax.length;
 	    var matchFound = false;
 	    for (var j = startPos; j < endPos; j++) {
@@ -4457,6 +4801,11 @@ function requireGetSectionName () {
 	return getSectionName_1;
 }
 
+/**
+ * @param {Object} editPayload
+ * @return {AbortableJQueryDeferred<MwApiEditResponse>}
+ */
+
 var savePayload_1;
 var hasRequiredSavePayload;
 
@@ -4466,6 +4815,9 @@ function requireSavePayload () {
 	const savePayload = ( editPayload ) => {
 	    const api = new mw.Api();
 	    let abortedByUser = false;
+	    /**
+	     * @param {JQuery.Deferred<any>} rtn
+	     */
 	    const abort = ( rtn ) => {
 	        return () => {
 	            abortedByUser = true;
@@ -4474,26 +4826,37 @@ function requireSavePayload () {
 	            } );
 	        };
 	    };
+	    /**
+	     * @param {string} res
+	     * @param {Object} [data]
+	     * @return {AbortableJQueryDeferred<MwApiEditResponse>}
+	     */
 	    const delayedReject = ( res, data ) => {
-	        const rtn = $.Deferred();
+	        const rtn = /** @type {AbortableJQueryDeferred<MwApiEditResponse>} */$.Deferred();
 	        setTimeout(() => {
 	            if ( !abortedByUser ) {
 	                rtn.reject( res, data );
 	            }
 	        }, window.__save_debug_timeout || 5000 );
-	        rtn.abort = abort( rtn );
-	        return rtn;
+	        return Object.assign( rtn, {
+	            abort: abort( rtn )
+	        } );
 	    };
+	    /**
+	     * @param {Object} res
+	     * @return {AbortableJQueryDeferred<MwApiEditResponse>}
+	     */
 	    const delayedPromise = ( res ) => {
-	        const rtn = $.Deferred();
+	        const rtn = /** @type {AbortableJQueryDeferred<MwApiEditResponse>} */$.Deferred();
 	        setTimeout(() => {
 	            if ( !abortedByUser ) {
 	                rtn.resolve( res );
 	            }
 	            rtn.resolve( res );
 	        }, window.__save_debug_timeout || 5000 );
-	        rtn.abort = abort( rtn );
-	        return rtn;
+	        return Object.assign( rtn, {
+	            abort: abort( rtn )
+	        } );
 	    };
 	    switch ( window.__save_debug ) {
 	        case -1:
@@ -4549,6 +4912,7 @@ function requireSavePayload () {
 	                }
 	            } );
 	        default:
+	            // @ts-ignore returns JQueryXHR
 	            return api.postWithToken(
 	                "csrf",
 	                editPayload
@@ -4576,27 +4940,45 @@ function requireSaveForm () {
 	 * If an error occurs while saving the form, remove the "saving" dialog,
 	 * restore the original listing editor form (with all user content), and
 	 * display an alert with a failure message.
+	 *
+	 * @param {string} msg
 	 */
 	const saveFailed = function(msg) {
 	    alert(msg);
 	};
 
+	/**
+	 * @param {any} [data]
+	 * @return {AbortableJQueryDeferred<any>}
+	 */
 	const abortableReject = ( data ) => {
 	    const reject = Promise.reject( data );
-	    reject.abort = () => {};
-	    return reject;
+	    return Object.assign( reject, {
+	        abort: () => {}
+	    } );
 	};
-
+	/**
+	 * @param {any} [data]
+	 * @return {AbortableJQueryDeferred<Object>}
+	 */
 	const abortableResolve = ( data ) => {
 	    const resolve = Promise.resolve( data );
-	    resolve.abort = () => {};
-	    return resolve;
+	    return Object.assign( resolve, {
+	        abort: () => {}
+	    } );
 	};
 
 	/**
 	 * Execute the logic to post listing editor changes to the server so that
 	 * they are saved. After saving the page is refreshed to show the updated
 	 * article.
+	 *
+	 * @param {string} summary
+	 * @param {boolean} minor
+	 * @param {number} sectionNumber
+	 * @param {string} cid
+	 * @param {string} answer
+	 * @return {AbortableJQueryDeferred<Object>}
 	 */
 	const saveForm = function(summary, minor, sectionNumber, cid, answer) {
 	    const { EDITOR_TAG } = getConfig();
@@ -4614,7 +4996,8 @@ function requireSaveForm () {
 	        $.extend( editPayload, { minor: 'true' } );
 	    }
 	    const payload = savePayload(editPayload);
-	    const newPayload = payload.then(function(data) {
+	    const abort = payload.abort;
+	    const newPayload = payload.then(function(/** @type {MwApiEditResponse} */ data) {
 	        if (data && data.edit && data.edit.result == 'Success') {
 	            if ( data.edit.nochange !== undefined ) {
 	                alert( 'Save skipped as there was no change to the content!' );
@@ -4625,6 +5008,7 @@ function requireSaveForm () {
 	            var canonicalUrl = $("link[rel='canonical']").attr("href");
 	            var currentUrlWithoutHash = window.location.href.replace(window.location.hash, "");
 	            if (canonicalUrl && currentUrlWithoutHash != canonicalUrl) {
+	                // @ts-ignore needs @wikimedia/types-wikimedia update
 	                var sectionName = mw.util.escapeIdForLink(getSectionName());
 	                if (sectionName.length) {
 	                    canonicalUrl += `#${sectionName}`;
@@ -4633,6 +5017,7 @@ function requireSaveForm () {
 	            } else {
 	                window.location.reload();
 	            }
+	            return;
 	        } else if (data && data.error) {
 	            saveFailed(`${translate( 'submitApiError' )} "${data.error.code}": ${data.error.info}` );
 	            return abortableReject( {} );
@@ -4653,7 +5038,7 @@ function requireSaveForm () {
 	            saveFailed(translate( 'submitUnknownError' ));
 	            return abortableReject( {} );
 	        }
-	    }, function(code, result) {
+	    }, function(/** @type {string} */code, /** @type {{textStatus?: string}} */ result) {
 	        if (code === "http") {
 	            saveFailed(`${translate( 'submitHttpError' )}: ${result.textStatus}` );
 	        } else if (code === "ok-but-empty") {
@@ -4663,8 +5048,9 @@ function requireSaveForm () {
 	        }
 	        return abortableReject( {} );
 	    });
-	    newPayload.abort = payload.abort;
-	    return newPayload;
+	    return Object.assign( newPayload, {
+	        abort
+	    } );
 	};
 
 	saveForm_1 = saveForm;
@@ -4689,14 +5075,16 @@ function requireFixupFormValues () {
 	    // newlines in listing content won't render properly in lists, so replace them with <br> tags
 	    if ( REPLACE_NEW_LINE_CHARS ) {
 	        $('#input-content').val(
-	            ($('#input-content').val() || '')
+	            /** @type {string} */($('#input-content').val() || '')
 	                .trim().replace(/\n/g, '<br />')
 	        );
 	    }
 	    // add trailing period in content. Note: replace(/(?<!\.)$/, '.') is not supported by IE
 	    // Trailing period shall not be added if one of the following char is present: ".", "!" or "?"
 	    const $content = $('#input-content');
-	    const contentValue = $content.val() || '';
+	    const contentValue = /** @type {string} */(
+	        $content.val() || ''
+	    );
 	    if ( APPEND_FULL_STOP_TO_DESCRIPTION && contentValue ) {
 	        $content
 	            .val(
@@ -4707,16 +5095,18 @@ function requireFixupFormValues () {
 
 	    // remove trailing period from price and address block
 	    $('#input-price').val(
-	        ($('#input-price').val() || '')
+	        /** @type {string} */($('#input-price').val() || '')
 	            .trim().replace(/\.$/, '')
 	    );
 	    $('#input-address').val(
-	        ($('#input-address').val() || '')
+	        /** @type {string} */($('#input-address').val() || '')
 	            .trim().replace(/\.$/, '')
 	    );
 	    // in case of decimal format, decimal digits will be limited to 6
-	    const latInput = ( $('#input-lat').val() || '' ).trim();
-	    const longInput = ( $('#input-long').val() || '' ).trim();
+	    const latInput = /** @type {string} */(
+	        $('#input-lat').val() || '' ).trim();
+	    const longInput = /** @type {string} */(
+	        $('#input-long').val() || '' ).trim();
 
 	    if ( latInput && longInput ) {
 	        fixupLatLon( latInput, longInput, COORD_PRECISION || 6 );
@@ -4728,7 +5118,7 @@ function requireFixupFormValues () {
 	/**
 	 * @param {string} latInput
 	 * @param {string} longInput
-	 * @param {string} precision
+	 * @param {number} precision
 	 */
 	const fixupLatLon = ( latInput, longInput, precision ) => {
 	    const inputLatLength = Math.min(
@@ -4753,7 +5143,9 @@ function requireFixupFormValues () {
 
 	const fixupUrl = () => {
 	    var webRegex = new RegExp('^https?://', 'i');
-	    var url = $('#input-url').val();
+	    var url = /** @type {string} */(
+	        $('#input-url').val()
+	    );
 	    if (!webRegex.test(url) && url !== '') {
 	        $('#input-url').val(`http://${url}`);
 	    }
@@ -5118,9 +5510,9 @@ function requireFormToText () {
 	 *
 	 * @param {string} mode
 	 * @param {string} listingTemplateWikiSyntax
-	 * @param {Record<string,Object>} listingTemplateAsMap
-	 * @param {string} sectionNumber
-	 * @return {JQuery.Ajax}
+	 * @param {Record<string,string>} listingTemplateAsMap
+	 * @param {number} sectionNumber
+	 * @return {AbortableJQueryDeferred<Object>}
 	 */
 	const formToText = function(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber) {
 	    const { LISTING_TYPE_PARAMETER, DEFAULT_LISTING_TEMPLATE } = getConfig();
@@ -5128,18 +5520,22 @@ function requireFormToText () {
 	    var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
 	    var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
 	    var listingType = $(`#${listingTypeInput}`).val();
+	    if ( !listingType ||  listingType !== 'string' ) {
+	        listingType = 'listing';
+	    }
 	    var listingParameters = getListingInfo(listingType);
 	    for (var parameter in listingParameters) {
 	        let $node = $(`#${listingParameters[parameter].id}`);
 	        // do not drop custom fields that were in the original listing
 	        if ( $node.length ) {
+	            // @ts-ignore needs further inspection
 	            listing[parameter] = $node.val() || '';
 	        }
 	    }
 	    var text = listingToStr(listing);
 	    var summary = editSummarySection();
 	    if (mode == MODE_ADD) {
-	        summary = updateSectionTextWithAddedListing(summary, text, listing);
+	        summary = updateSectionTextWithAddedListing(summary, text, listing, LISTING_TYPE_PARAMETER);
 	    } else {
 	        summary = updateSectionTextWithEditedListing(summary, text, listingTemplateWikiSyntax);
 	    }
@@ -5212,6 +5608,9 @@ function requireListingTemplateToParamsArray () {
 	 * symbol delimits template params, but this method will also inspect the
 	 * content to deal with nested templates or wikilinks that might contain
 	 * pipe characters that should not be used as delimiters.
+	 *
+	 * @param {string} listingTemplateWikiSyntax
+	 * @return {string[]}
 	 */
 	const listingTemplateToParamsArray = function(listingTemplateWikiSyntax) {
 	    var results = [];
@@ -5347,10 +5746,15 @@ function requireListingTemplateAsMapToEnglish () {
 	    "wikidata": "Q3716372",
 	    "descrizione": "Esso venne edificato nel 1089 ad opera di Ruggero D'Altavilla al di sopra di una preesistente moschea araba poco dopo la conquista normanna di Naro avvenuta nel 1086 e venne dedicato a Maria Santissima Assunta dagli Angeli. Venne elevato a Chiesa Madre, ad opera di Gualtiero Offmill Arcivescovo di Palermo, nel 1174, anno in cui venne abbandonato il rito ortodosso nella Chiesa di San Nicolò di Bari. Il portale d'ingresso è di epoca chiaramontana e presenta un caratteristico arco a sesto acuto poggiato sopra un gruppo di quattordici colonnine, riccamente modulato ed ornato da zig-zag e palmette.\n:Nel 1889 venne destinato a cimitero dei morti di colera e le opere custodite al suo interno furono per la maggior parte portate in altre chiese. Il Duomo, restaurato nei primi anni del secolo XXI è stato fortemente destabilizzato dall'evento franoso che colpì il centro abitato il 4 febbraio 2005 ed è attualmente puntellato e non fruibile al pubblico."
 	}
-	    */
+	*/
 
+	/**
+	 * @param {Record<string, string>} map
+	 * @return {Record<string, string>}
+	 */
 	listingTemplateAsMapToEnglish = ( map ) => {
 	    const { LISTING_TEMPLATE_PARAMETERS } = getConfig();
+	    /** @type {Record<string,string>} */
 	    const enMap = {};
 	    Object.keys( LISTING_TEMPLATE_PARAMETERS ).forEach( ( key ) => {
 	        const { id } = LISTING_TEMPLATE_PARAMETERS[ key ];
@@ -5385,10 +5789,21 @@ function requireOpenListingEditorDialog () {
 	const listingTemplateAsMapToEnglish = requireListingTemplateAsMapToEnglish();
 
 	/**
+	 * @typedef {Object} ListingEditorDialogOptions
+	 * @property {string[]} telephoneCodes
+	 * @property {string[]} NATL_CURRENCY
+	 */
+	/**
 	 * This method is called asynchronously after the initListingEditorDialog()
 	 * method has retrieved the existing wiki section content that the
 	 * listing is being added to (and that contains the listing wiki syntax
 	 * when editing).
+	 *
+	 * @param {string} mode
+	 * @param {number} sectionNumber
+	 * @param {number} listingIndex
+	 * @param {string} listingType
+	 * @param {ListingEditorDialogOptions} options
 	 */
 	var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listingType, {
 	    telephoneCodes,
@@ -5407,8 +5822,8 @@ function requireOpenListingEditorDialog () {
 	            getSectionText()
 	        )
 	    );
-
-	    var listingTemplateAsMap, listingTemplateWikiSyntax;
+	    var /** @type {Object<String,string>} */listingTemplateAsMap,
+	        /** @type {string} */listingTemplateWikiSyntax;
 	    if (mode == MODE_ADD) {
 	        listingTemplateAsMap = {};
 	        listingTemplateAsMap[LISTING_TYPE_PARAMETER] = listingType;
@@ -5420,9 +5835,22 @@ function requireOpenListingEditorDialog () {
 	    // modal form - must submit or cancel
 	    const dialogTitleSuffix = window.__USE_LISTING_EDITOR_BETA__ ? 'Beta' : '';
 
+	    /**
+	     * @type {string[]|null}
+	     */
 	    let captchaSaveArgs;
 
+	    /**
+	     * @param {Function} setCaptcha
+	     * @param {Function} reset
+	     * @return {Function}
+	     */
 	    const handleCaptchaError = ( setCaptcha, reset ) => {
+	        /**
+	         * @param {Object} options
+	         * @param {MwApiEditObjResponse} options.edit
+	         * @param {string[]} options.args
+	         */
 	        return ( { edit, args } ) => {
 	            if ( edit && edit.captcha ) {
 	                captchaSaveArgs = args;
@@ -5433,10 +5861,19 @@ function requireOpenListingEditorDialog () {
 	        };
 	    };
 
+	   /**
+	     * @param {Function} setCaptcha
+	     * @param {Function} closeAction
+	     */
 	    const onCaptchaSubmit = ( setCaptcha, closeAction ) => {
 	        if ( captchaSaveArgs ) {
-	            captchaSaveArgs.push( $('#input-captcha').val() );
+	            captchaSaveArgs.push(
+	                /** @type {string} */ (
+	                    $('#input-captcha').val() || ''
+	                )
+	            );
 	            setCaptcha( '' );
+	            // @ts-ignore argument
 	            saveForm.apply( null, captchaSaveArgs ).then( () => {
 	                captchaSaveArgs = null;
 	                closeAction();
@@ -5445,13 +5882,16 @@ function requireOpenListingEditorDialog () {
 	    };
 
 	    /**
-	     * @param {Function} closeDialog
+	     * @param {() => void} closeDialog
 	     * @param {Function} reset
 	     * @param {Function} setCaptcha
-	     * @return {JQuery.Ajax}
+	     * @return {AbortableJQueryDeferred<any>}
 	     */
 	    const onSubmit = ( closeDialog, reset, setCaptcha ) => {
 	        const restoreText = getSectionText();
+	        /**
+	         * @param {string} arg
+	         */
 	        const teardown = ( arg ) => {
 	            handleCaptchaError( setCaptcha, reset )( arg );
 	            // if it failed we need to restore it for subsequent attempts
@@ -5467,8 +5907,7 @@ function requireOpenListingEditorDialog () {
 	            rtn = formToText(mode, listingTemplateWikiSyntax, listingTemplateAsMap, sectionNumber);
 	        }
 	        const newRtn = rtn.then( closeDialog, teardown );
-	        newRtn.abort = rtn.abort;
-	        return newRtn;
+	        return Object.assign( newRtn, { abort: rtn.abort } );
 	    };
 
 	    const customListingType = isCustomListingType(listingType) ? listingType : undefined;
@@ -5484,6 +5923,7 @@ function requireOpenListingEditorDialog () {
 	            'hours', 'checkin', 'checkout', 'price', 'type',
 	            'name', 'content', 'lastedit', 'url'
 	        ].includes( key ) );
+	    /** @type {ListingEditorFieldDefinition[]} */
 	    const customFields = [];
 	    otherKeys.forEach( ( customFieldName ) => {
 	        if ( customFieldName !== 'type' ) {
@@ -5529,6 +5969,7 @@ function requireOpenListingEditorDialog () {
 	            translate( `addTitle${dialogTitleSuffix}` ) : translate( `editTitle${dialogTitleSuffix}` ),
 	        dialogClass: 'listing-editor-dialog'
 	    } );
+	    // @ts-ignore for testing only
 	    app.test = {
 	        handleCaptchaError,
 	        onCaptchaSubmit,
@@ -5554,6 +5995,9 @@ function requireFindListingIndex () {
 	/**
 	 * Given an edit link that was clicked for a listing, determine what index
 	 * that listing is within a section. First listing is 0, second is 1, etc.
+	 *
+	 * @param {JQuery} sectionHeading
+	 * @param {JQuery} clicked
 	 */
 	const findListingIndex = function(sectionHeading, clicked) {
 	    var count = 0;
@@ -5562,6 +6006,7 @@ function requireFindListingIndex () {
 	            return false;
 	        }
 	        count++;
+	        return;
 	    });
 	    return count;
 	};
@@ -5574,7 +6019,7 @@ function requireFindListingIndex () {
  * Given an editable heading, examine it to determine what section index
  * the heading represents. First heading is 1, second is 2, etc.
  *
- * @param {JQuery|undefined} heading
+ * @param {JQuery<HTMLElement>|undefined} heading
  * @return {number}
  */
 
@@ -5589,6 +6034,7 @@ function requireFindSectionIndex () {
 	        return 0;
 	    }
 	    var link = heading.find('.mw-editsection a').attr('href');
+	    // @ts-ignore needs further inspection
 	    return (link !== undefined) ? link.split('=').pop() : 0;
 	};
 
@@ -5599,6 +6045,9 @@ function requireFindSectionIndex () {
 /**
  * Given a DOM element, find the nearest editable section (h2 or h3) that
  * it is contained within.
+ *
+ * @param {JQuery<HTMLElement>} element
+ * @return {JQuery<HTMLElement>}
  */
 
 var findSectionHeading_1;
@@ -5625,6 +6074,10 @@ function requireLocalData () {
 	let CC = '';
 	let LC = '';
 
+	/**
+	 * @param {JQuery} $el
+	 * @return {Record<string,string[]>}
+	 */
 	const loadFromCountryData = ( $el ) => {
 	    CC = '';
 	    dataSel = $el.attr('data-country-calling-code');
@@ -5633,6 +6086,7 @@ function requireLocalData () {
 	    dataSel = $el.attr('data-local-dialing-code');
 	    if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
 
+	    /** @type {string[]} */
 	    let NATL_CURRENCY = [];
 	    var dataSel =  $el.attr('data-currency');
 	    if ((dataSel !== undefined) && (dataSel !== '')) {
@@ -5658,6 +6112,13 @@ function requireLocalData () {
 	};
 	return localData;
 }
+
+/**
+ * @param {JQuery<HTMLElement>} entry
+ * @param {Record<string,string>} sectionToTemplateType
+ * @param {string} defaultType
+ * @return {string}
+ */
 
 var findListingTypeForSection;
 var hasRequiredFindListingTypeForSection;
@@ -5710,6 +6171,10 @@ function requireInitListingEditorDialog () {
 	 * type is returned.
 	 */
 	const _findListingTypeForSection = requireFindListingTypeForSection();
+	/**
+	 * @param {JQuery<HTMLElement>} entry
+	 * @return {string}
+	 */
 	const findListingTypeForSection = function(entry ) {
 	    const { SECTION_TO_TEMPLATE_TYPE,
 	        DEFAULT_LISTING_TEMPLATE } = getConfig();
@@ -5722,8 +6187,12 @@ function requireInitListingEditorDialog () {
 	 * syntax contained within the specified section. This wiki text will
 	 * later be modified via the listing editor and re-submitted as a section
 	 * edit.
+	 *
+	 * @param {string} mode
+	 * @param {JQuery<HTMLElement>} clicked
 	 */
 	var initListingEditorDialog = function(mode, clicked) {
+	    /** @type {string} */
 	    var listingType;
 	    if (mode === MODE_ADD) {
 	        listingType = findListingTypeForSection(clicked);
@@ -5763,7 +6232,11 @@ function requireInitListingEditorDialog () {
 	                NATL_CURRENCY
 	            }
 	        );
-	    }, function( _jqXHR, textStatus, errorThrown ) {
+	    }, function(
+	        /** @type JQuery.jqXHR} */_jqXHR,
+	        /** @type string} */textStatus,
+	        /** @type string} */errorThrown
+	    ) {
 	        alert( `${translate( 'ajaxInitFailure' )}: ${textStatus} ${errorThrown}`);
 	    });
 	};
@@ -5777,7 +6250,14 @@ const { LANG } = globalConfig;
 const translateModule = translate_1;
 const { loadConfig } = Config;
 
-var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
+var src = (
+	/**
+	 * @param {boolean} ALLOWED_NAMESPACE
+	 * @param {Record<string,string>} SECTION_TO_TEMPLATE_TYPE
+	 * @param {ListingConfig} PROJECT_CONFIG
+	 * @return {Object}
+	 */
+	function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONFIG ) {
 
 	var PROJECT_CONFIG_KEYS = [
 		'SHOW_LAST_EDITED_FIELD', 'SUPPORTED_SECTIONS',
@@ -5791,6 +6271,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 
 	// check project has been setup correctly with no missing keys.
 	PROJECT_CONFIG_KEYS.forEach( function ( key ) {
+		// @ts-ignore needs further inspection
 		if ( PROJECT_CONFIG[ key ] === undefined ) {
 			throw new Error( `Project must define project setting ${key}` );
 		}
@@ -5800,6 +6281,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 	var TRANSLATIONS = Object.assign(
 		{},
 		TRANSLATIONS_ALL.en,
+		// @ts-ignore needs further inspection
 		TRANSLATIONS_ALL[ userLanguage ]
 	);
 
@@ -5807,7 +6289,7 @@ var src = ( function ( ALLOWED_NAMESPACE, SECTION_TO_TEMPLATE_TYPE, PROJECT_CONF
 		userLanguage
 	);
 	missingTranslations.forEach( ( missing ) => {
-		mw.log.warn( `Language missing translation ${missing.key} will fall back to English.` );
+		mw.log.warn( `Language missing translation ${missing} will fall back to English.` );
 	} );
 
 	translateModule.init( TRANSLATIONS );

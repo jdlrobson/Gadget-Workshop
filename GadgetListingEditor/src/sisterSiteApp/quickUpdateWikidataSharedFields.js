@@ -2,7 +2,7 @@ const { LANG } = require( '../globalConfig.js' );
 const { translate } = require( '../translate.js' );
 const { iata } = require( '../templates.js' );
 const trimDecimal = require( '../trimDecimal.js' );
-const { getConfig, getWikidataClaims } = require( '../Config.js' );
+const { getListingTemplateConfiguration, getWikidataClaims } = require( '../Config.js' );
 const updateFieldIfNotNull = require( './updateFieldIfNotNull.js' );
 
 /**
@@ -13,7 +13,7 @@ const updateFieldIfNotNull = require( './updateFieldIfNotNull.js' );
 module.exports = function(wikidataRecord, SisterSite) {
     const { API_WIKIDATA, wikidataClaim, wikidataWikipedia,
         ajaxSisterSiteSearch } = SisterSite;
-    const { LISTING_TEMPLATES } = getConfig();
+    const LISTING_TEMPLATES = getListingTemplateConfiguration();
     const WIKIDATA_CLAIMS = getWikidataClaims();
     const ajaxData = {
         action: 'wbgetentities',

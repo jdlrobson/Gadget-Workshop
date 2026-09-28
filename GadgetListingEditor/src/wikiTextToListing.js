@@ -1,7 +1,7 @@
 const getListingTypesRegex = require( './getListingTypesRegex' );
 const listingTemplateToParamsArray = require( './listingTemplateToParamsArray' );
 const restoreComments = require( './restoreComments.js' );
-const { getConfig } = require( './Config.js' );
+const { getConfig, getListingTemplateConfiguration } = require( './Config.js' );
 
 /**
  * Convert raw wiki listing syntax into a mapping of key-value pairs
@@ -11,7 +11,8 @@ const { getConfig } = require( './Config.js' );
  */
 const wikiTextToListing = function(listingTemplateWikiSyntax) {
     const { LISTING_TYPE_PARAMETER,
-        LISTING_CONTENT_PARAMETER, LISTING_TEMPLATES } = getConfig();
+        LISTING_CONTENT_PARAMETER } = getConfig();
+    const LISTING_TEMPLATES = getListingTemplateConfiguration();
     var typeRegex = getListingTypesRegex();
     // convert "{{see" to {{listing|type=see"
     listingTemplateWikiSyntax = listingTemplateWikiSyntax.replace(typeRegex,`{{listing| ${LISTING_TYPE_PARAMETER}=$2$3`);

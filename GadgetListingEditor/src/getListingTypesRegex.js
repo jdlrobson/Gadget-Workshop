@@ -1,4 +1,4 @@
-const { getConfig } = require( './Config.js' );
+const { getConfig, getListingTemplateConfiguration } = require( './Config.js' );
 /**
  * Return a regular expression that can be used to find all listing
  * template invocations (as configured via the LISTING_TEMPLATES map)
@@ -9,7 +9,8 @@ const { getConfig } = require( './Config.js' );
  * @return {RegExp}
  */
 const getListingTypesRegex = function() {
-    const { LISTING_TEMPLATES, listingTypeRegExp } = getConfig();
+    const { listingTypeRegExp } = getConfig();
+    const LISTING_TEMPLATES = getListingTemplateConfiguration();
     if ( !listingTypeRegExp ) {
         throw new Error( 'please define listingTypeRegExp in [[MediaWiki:Gadget-ListingEditor.json]]' );
     }

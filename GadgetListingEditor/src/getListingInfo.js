@@ -1,5 +1,5 @@
 const isCustomListingType = require( './isCustomListingType.js' );
-const { getConfig } = require( './Config.js' );
+const { getConfig, getListingTemplateConfiguration } = require( './Config.js' );
 
 /**
  * Given a listing type, return the appropriate entry from the
@@ -10,7 +10,8 @@ const { getConfig } = require( './Config.js' );
  * @return {ListingInfo}
  */
 const getListingInfo = function(type) {
-    const { DEFAULT_LISTING_TEMPLATE, LISTING_TEMPLATES } = getConfig();
+    const { DEFAULT_LISTING_TEMPLATE } = getConfig();
+    const LISTING_TEMPLATES = getListingTemplateConfiguration();
     return (isCustomListingType(type)) ? LISTING_TEMPLATES[DEFAULT_LISTING_TEMPLATE] : LISTING_TEMPLATES[type];
 };
 

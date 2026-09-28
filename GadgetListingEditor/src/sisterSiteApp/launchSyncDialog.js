@@ -7,7 +7,7 @@ const updateFieldIfNotNull = require( './updateFieldIfNotNull.js' );
 const ListingEditorSyncDialog = require( '../components/ListingEditorSyncDialog.js' );
 const getSyncValues = require( '../../src/getSyncValues.js' );
 const { translate } = require( '../translate.js' );
-const { getConfig, getWikidataClaims } = require( '../Config.js' );
+const { getListingTemplateConfiguration, getWikidataClaims } = require( '../Config.js' );
 const SisterSite = require( '../SisterSite.js' );
 
 /**
@@ -22,7 +22,7 @@ const makeSubmitFunction = function( updateModel, ss, closeFn ) {
             closeFn = () => close();
         }
         const doClose = closeFn;
-        const { LISTING_TEMPLATES } = getConfig();
+        const LISTING_TEMPLATES = getListingTemplateConfiguration();
         const WIKIDATA_CLAIMS = getWikidataClaims();
         const { API_WIKIDATA, sendToWikidata, changeOnWikidata,
             removeFromWikidata, ajaxSisterSiteSearch } = ss;

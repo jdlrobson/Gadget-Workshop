@@ -133,6 +133,8 @@ function generateListingTemplateConfig( {
 
 let _loaded = false;
 
+/** @type {ListingTemplateConfig|undefined} */let _listingConfig;
+
 /**
  * @param {Partial<ListingConfig>} newConfig
  * @param {Object} projectConfig
@@ -144,7 +146,19 @@ const loadConfig = ( newConfig, projectConfig ) => {
     }
     _loaded = true;
     config = Object.assign( {}, DEFAULTS, newConfig, projectConfig );
-    config.LISTING_TEMPLATES = generateListingTemplateConfig( config );
+    _listingConfig = undefined;
+};
+
+/**
+ * @return {ListingTemplateConfig}
+ */
+const getListingTemplateConfiguration = () => {
+    if ( _listingConfig ) {
+        return _listingConfig;
+    } else {
+        _listingConfig = generateListingTemplateConfig( config );
+        return _listingConfig;
+    }
 };
 
 /** @type {ListingWikidataClaims|undefined} */let _wikidataClaims;
@@ -175,6 +189,7 @@ const extendConfig = ( newConfig ) => {
 const getConfig = () => /** @type {ListingConfig} */( config );
 
 module.exports = {
+    getListingTemplateConfiguration,
     getWikidataClaims,
     extendConfig,
     loadConfig,

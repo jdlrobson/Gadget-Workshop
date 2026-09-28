@@ -1,7 +1,7 @@
 const { prepareSyncUrl } = require( './makeSyncLinks.js' );
 const parseDMS = require( './parseDMS.js' );
 const trimDecimal = require( './trimDecimal.js' );
-const { getConfig } = require( './Config.js' );
+const { getConfig, getWikidataClaims } = require( './Config.js' );
 
 /**
  * @param {RadioDefinitionField} field
@@ -10,7 +10,8 @@ const { getConfig } = require( './Config.js' );
  * @return {RadioDefinition}
  */
 const prepareRadio = function(field, claimValue, guid) {
-    const { LISTING_TEMPLATES, WIKIDATA_CLAIMS } = getConfig();
+    const { LISTING_TEMPLATES } = getConfig();
+    const WIKIDATA_CLAIMS = getWikidataClaims();
 
     var j = 0;
     for (j = 0; j < claimValue.length; j++) {

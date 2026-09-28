@@ -1,6 +1,6 @@
 const parseDMS = require( './parseDMS.js' );
 const { LANG } = require( './globalConfig.js' );
-const { getConfig } = require( './Config.js' );
+const { getWikidataClaims } = require( './Config.js' );
 
 /**
  * @param {string[]} value
@@ -21,7 +21,7 @@ const prepareSyncValues = ( value, valBool ) => {
  */
 const prepareSyncUrl = function(unprocessedValue, mode, valBool) {
     const value = prepareSyncValues( unprocessedValue, valBool );
-    const { WIKIDATA_CLAIMS } = getConfig();
+    const WIKIDATA_CLAIMS = getWikidataClaims();
     let prefix = '';
     let suffix = '';
     switch(mode) {

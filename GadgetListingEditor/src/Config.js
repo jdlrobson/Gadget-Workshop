@@ -145,7 +145,20 @@ const loadConfig = ( newConfig, projectConfig ) => {
     _loaded = true;
     config = Object.assign( {}, DEFAULTS, newConfig, projectConfig );
     config.LISTING_TEMPLATES = generateListingTemplateConfig( config );
-    config.WIKIDATA_CLAIMS = generateWikidataClaims( config );
+};
+
+/** @type {ListingWikidataClaims|undefined} */let _wikidataClaims;
+
+/**
+ * @return {ListingWikidataClaims}
+ */
+const getWikidataClaims = () => {
+    if ( _wikidataClaims ) {
+        return _wikidataClaims;
+    } else {
+        _wikidataClaims = generateWikidataClaims( config );
+        return _wikidataClaims;
+    }
 };
 
 /**
@@ -162,6 +175,7 @@ const extendConfig = ( newConfig ) => {
 const getConfig = () => /** @type {ListingConfig} */( config );
 
 module.exports = {
+    getWikidataClaims,
     extendConfig,
     loadConfig,
     getConfig

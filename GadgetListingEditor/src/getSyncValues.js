@@ -1,7 +1,7 @@
 const { iata } = require( './templates.js' );
 const prepareRadio = require( './prepareRadio.js' );
 const trimDecimal = require( './trimDecimal.js' );
-const { getConfig } = require( './Config.js' );
+const { getWikidataClaims } = require( './Config.js' );
 const { translate } = require( './translate.js' );
 
 /**
@@ -13,7 +13,7 @@ const { translate } = require( './translate.js' );
 module.exports = ( jsonObj, wikidataRecord ) => {
     const SisterSite = require( './SisterSite.js' )();
     const { wikidataClaim, wikidataWikipedia } = SisterSite;
-    const { WIKIDATA_CLAIMS } = getConfig();
+    const WIKIDATA_CLAIMS = getWikidataClaims();
 
     /** @type {Record<string,WikidataClaimRecord>} */
     const res = {};

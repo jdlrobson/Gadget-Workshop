@@ -22,10 +22,10 @@ const getListingWikitextBraces = function(listingIndex) {
 
     for (var i = 0; i <= listingIndex; i++) {
         regexResult = listingRegex.exec(sectionText);
-        // @ts-ignore
-        listingMatchIndex = regexResult.index;
-        // @ts-ignore
-        listingSyntax = regexResult[1];
+        if ( regexResult ) {
+            listingMatchIndex = regexResult.index;
+            listingSyntax = regexResult[1];
+        }
     }
     // listings may contain nested templates, so step through all section
     // text after the matched text to find MATCHING closing braces
@@ -53,7 +53,6 @@ const getListingWikitextBraces = function(listingIndex) {
     if (!matchFound) {
         listingSyntax = sectionText.substring(listingMatchIndex);
     }
-    // @ts-ignore
     return listingSyntax.trim();
 };
 

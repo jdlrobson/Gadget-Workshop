@@ -12,8 +12,9 @@ const createListingFromForm = ( listing ) => {
     } = getConfig();
     var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
     var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
-    var listingType = $(`#${listingTypeInput}`).val();
-    // @ts-ignore
+    var listingType = /** @type {string} */(
+        $(`#${listingTypeInput}`).val()
+    );
     var listingParameters = getListingInfo(listingType);
     for (var parameter in listingParameters) {
         // @ts-ignore jQuery.val can return non-string

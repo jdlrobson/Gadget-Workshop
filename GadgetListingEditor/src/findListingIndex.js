@@ -11,12 +11,12 @@ const EDIT_LINK_SELECTOR = '.vcard-edit-button';
  */
 const findListingIndex = function(sectionHeading, clicked) {
     var count = 0;
-    // @ts-ignore
     $(EDIT_LINK_SELECTOR, sectionHeading).each(function() {
         if (clicked.is($(this))) {
             return false;
         }
         count++;
+        return;
     });
     return count;
 };

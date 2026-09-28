@@ -144,8 +144,7 @@ const extendConfig = ( newConfig ) => {
 /**
  * @return {ListingConfig}
  */
-// @ts-ignore
-const getConfig = () => config;
+const getConfig = () => /** @type {ListingConfig} */( config );
 
 module.exports = {
     extendConfig,

@@ -103,8 +103,6 @@ module.exports = defineComponent( {
     },
     setup( {
         title,
-        // @ts-ignore
-        disabledSubmitButton,
         onCaptchaSubmit,
         onSubmit, onClose, dialogElement, dialogClass, onHelp, onMount
     } ) {
@@ -138,16 +136,16 @@ module.exports = defineComponent( {
          * @param {HTMLInputElement} el
          * @return {boolean}
          */
-        const fieldValue = ( el ) => (
-            // @ts-ignore
+        const fieldValue = ( el ) => !!(
             el.type === 'checkbox' || el.type === 'radio' ? String( el.checked ) : el.value
         );
         const captureInitialValues = () => {
             if ( !targetElement.value ) {
                 return;
             }
-            // @ts-ignore
-            ( /** @type {NodeListOf<HTMLInputElement>} */ ( targetElement.value.querySelectorAll( 'input, textarea, select' ) ) ).forEach( ( el ) => {
+            ( /** @type {NodeListOf<HTMLInputElement>} */ (
+                targetElement.value.querySelectorAll( 'input, textarea, select' ) )
+            ).forEach( ( el ) => {
                 if ( el.id ) {
                     initialValues[ el.id ] = fieldValue( el );
                 }
@@ -157,8 +155,9 @@ module.exports = defineComponent( {
             if ( !targetElement.value ) {
                 return false;
             }
-            // @ts-ignore
-            const fields = /** @type {NodeListOf<HTMLInputElement>} */ ( targetElement.value.querySelectorAll( 'input, textarea, select' ) );
+            const fields = /** @type {NodeListOf<HTMLInputElement>} */ (
+                targetElement.value.querySelectorAll( 'input, textarea, select' )
+            );
             for ( let i = 0; i < fields.length; i++ ) {
                 const el = fields[ i ];
                 if ( el.id && ( el.id in initialValues ) &&
@@ -202,7 +201,6 @@ module.exports = defineComponent( {
             onCaptchaSubmit: () => {
                 onCaptchaSubmit( setCaptcha, closeAction );
             },
-            disabledSubmitButton,
             captchaRequested,
             saveInProgress,
             title,

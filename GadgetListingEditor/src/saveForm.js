@@ -60,6 +60,10 @@ const saveForm = function(summary, minor, sectionNumber, cid, answer) {
         captchaid: cid,
         captchaword: answer
     };
+    // Don't send editor tag if not present
+    if ( !EDITOR_TAG ) {
+        delete editPayload.tags;
+    }
     if (minor) {
         $.extend( editPayload, { minor: 'true' } );
     }

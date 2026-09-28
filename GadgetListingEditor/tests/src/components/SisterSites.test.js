@@ -5,6 +5,14 @@ const { mount } = require( '@vue/test-utils' );
 const { nextTick } = require( 'vue' );
 const wikidataClaims = require( '../wikidataClaims.json' );
 const SisterSite = require('../../../src/SisterSite');
+const { loadConfig } = require( '../../../src/Config.js' );
+const enConfig = require( '../../../dist/en:Gadget-ListingEditor.json' );
+
+// quickUpdateWikidataSharedFields mutates claim values in place (see the
+// trimDecimal calls on res[key].latitude/longitude), and `require()` caches
+// this fixture, so snapshot a pristine copy now, before any test below can
+// mutate the shared object.
+const pristineWikidataClaims = JSON.parse( JSON.stringify( wikidataClaims ) );
 
 describe( 'SisterSites', () => {
     const mountForTest = ( api ) => {
@@ -50,6 +58,28 @@ describe( 'SisterSites', () => {
         const app = mountForTest();
         app.find('#input-wikidata-label').trigger('blur');
         expect(app.emitted('updated:listing'));
+    });
+    it('shows synced wikipedia/image values as disabled placeholders and blanks the input when WIKIDATA_SYNC_PLACEHOLDER is enabled', async () => {
+        loadConfig( Object.assign( {}, enConfig, { WIKIDATA_SYNC_PLACEHOLDER: true } ) );
+        window.confirm = jest.fn(() => true);
+        window.alert = jest.fn();
+        const api = SisterSite();
+        api.ajaxSisterSiteSearch = jest.fn( () => Promise.resolve( JSON.parse( JSON.stringify( pristineWikidataClaims ) ) ) );
+        const app = mountForTest(api);
+        app.find('#wikidata-shared-quick').trigger('click');
+        for ( let i = 0; i < 6; i++ ) {
+            await nextTick();
+        }
+        const wikipediaInput = app.find('#input-wikipedia');
+        expect( wikipediaInput.element.value ).toBe('');
+        expect( wikipediaInput.attributes('placeholder') ).toBe('Nottingham Castle');
+        expect( wikipediaInput.attributes('disabled') ).toBeDefined();
+        const imageInput = app.find('#input-image');
+        expect( imageInput.element.value ).toBe('');
+        expect( imageInput.attributes('placeholder') ).toBe('Nottingham Castle Gate 2009.jpg');
+        expect( imageInput.attributes('disabled') ).toBeDefined();
+        // restore the default config so later tests in this file aren't affected
+        loadConfig( enConfig );
     });
 } );
 

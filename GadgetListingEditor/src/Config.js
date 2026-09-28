@@ -1,3 +1,18 @@
+/**
+ * Config defaults applied before a wiki's own project/gadget config, so
+ * every project gets an explicit, opt-in-only value rather than an
+ * implicit `undefined` that happens to behave like "off".
+ *
+ * @type {Partial<ListingConfig>}
+ */
+const DEFAULTS = {
+    // When true, wikipedia/image fields that were just synced from
+    // Wikidata are shown disabled with the synced value as a placeholder
+    // and saved empty, so the article re-fetches them from Wikidata at
+    // render time instead of drifting out of sync locally.
+    WIKIDATA_SYNC_PLACEHOLDER: false
+};
+
 /** @type {Partial<ListingConfig>} */
 let config = {};
 /**
@@ -128,7 +143,7 @@ const loadConfig = ( newConfig, projectConfig ) => {
         mw.log.warn( 'Configuration was already loaded. @todo: fix this!' );
     }
     _loaded = true;
-    config = Object.assign( {}, newConfig, projectConfig );
+    config = Object.assign( {}, DEFAULTS, newConfig, projectConfig );
     config.LISTING_TEMPLATES = generateListingTemplateConfig( config );
     config.WIKIDATA_CLAIMS = generateWikidataClaims( config );
 };

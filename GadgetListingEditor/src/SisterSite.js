@@ -33,7 +33,7 @@ module.exports = function() {
      * @param {string} value
      * @param {string} property
      * @param {boolean} [guidBool]
-     * @return {string|null|CoordValue}
+     * @return {string|null|CoordValue|MwApiWikidataDataValueObject}
      */
     var wikidataClaim = function(jsonObj, value, property, guidBool) {
         var entity = _wikidataEntity(jsonObj, value);
@@ -48,13 +48,18 @@ module.exports = function() {
         if( propertyObj[index].mainsnak.datavalue.type === "monolingualtext" ) { // have to select correct language, Wikidata sends all despite specifying
             while( propertyObj[index].mainsnak.datavalue.value.language !== LANG ) {
                 index = index + 1;
-                if( !(propertyObj[index]) ) { return null; } // if we run out of langs and none of them matched
+                if( !(propertyObj[index]) ) {
+                    return null;
+                } // if we run out of langs and none of them matched
             }
-            if (guidBool === true) { return propertyObj[index].id; }
+            if (guidBool === true) {
+                return propertyObj[index].id;
+            }
             return propertyObj[index].mainsnak.datavalue.value.text;
         }
-        if (guidBool === true) { return propertyObj[index].id; }
-        // @ts-ignore
+        if (guidBool === true) {
+            return propertyObj[index].id;
+        }
         return propertyObj[index].mainsnak.datavalue.value;
     };
     // parse the wikidata "entity" object from the wikidata response
@@ -164,7 +169,7 @@ module.exports = function() {
                 }
                 else if ( jsonObj.claim.references.length === 1 ) { // skip if >1 reference; too complex to automatically set
                     var acceptedProps = [WIKIDATA_PROP_WMURL, WIKIDATA_PROP_WMPRJ]; // properties relating to Wikimedia import only
-                    // @ts-ignore
+                    // @ts-ignore code needs review.
                     var diff = $(jsonObj.claim.references[0]['snaks-order']).not(acceptedProps).get(); // x-compatible method for diff on arrays, from https://stackoverflow.com/q/1187518
                     if( diff.length === 0 ) { // if the set of present properties is a subset of the set of acceptable properties
                         promises.push(

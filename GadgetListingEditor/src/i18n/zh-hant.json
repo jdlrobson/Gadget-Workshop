@@ -39,6 +39,7 @@
 	"splurge": "高預算",
 	"cancel": "取消",
 	"cancelAll": "全部清除",
+	"confirmDiscard": "您有未儲存的變更。您確定要在不儲存的情況下關閉嗎？",
 	"form-tab-label-edit": "編輯",
 	"form-tab-label-preview": "預覽",
 	"preview": "預覽",

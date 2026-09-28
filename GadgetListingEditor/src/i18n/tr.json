@@ -46,6 +46,7 @@
 	"splurge": "Lüks",
 	"cancel": "İptal",
 	"cancelAll": "Tümünü temizle",
+	"confirmDiscard": "Kaydedilmemiş değişiklikleriniz var. Kaydetmeden kapatmak istediğinizden emin misiniz?",
 	"form-tab-label-edit": "değiştir",
 	"form-tab-label-preview": "önizleme",
 	"preview": "Önizleme",

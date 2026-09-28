@@ -1,4 +1,5 @@
 const fs = require( 'fs' );
+const { renderTypedefDocs } = require( './generateListingConfigDocs.js' );
 /**
  * @param {string} lang
  * @returns {string}
@@ -89,23 +90,31 @@ function generatePage( templatePath, outputPath, data ) {
     fs.writeFileSync( outputPath, html, 'utf-8' );
 }
 
-Object.keys(titles).forEach( async ( lang ) => {
-    const title = titles[ lang ];
-    const json = await fetch( `https://${lang}.wikivoyage.org/w/api.php?action=parse&format=json&page=${title}&parser=parsoid&formatversion=2` ).then( res => res.json() );
-    const content = json.parse.text;
-    const data = {
-		previews: `<ul>${Object.keys( titles ).map( ( key ) => `<li>
+( async () => {
+    // Computed once and reused across every language page - it doesn't
+    // depend on `lang`, and re-running TypeDoc per language would just
+    // repeat the same project conversion pointlessly.
+    const documentation = await renderTypedefDocs( 'ListingConfig' );
+
+    await Promise.all( Object.keys(titles).map( async ( lang ) => {
+        const title = titles[ lang ];
+        const json = await fetch( `https://${lang}.wikivoyage.org/w/api.php?action=parse&format=json&page=${title}&parser=parsoid&formatversion=2` ).then( res => res.json() );
+        const content = json.parse.text;
+        const data = {
+            previews: `<ul>${Object.keys( titles ).map( ( key ) => `<li>
     <a href="index-${key}.html">${langs[key]}</a>
   </li>`).join('')}</ul>`,
-        lang,
-		languser: lang,
-		version: require( './package.json' ).version,
-        title,
-        content,
-        script: script( lang ),
-        theme: 'day'
-    };
-	generatePage( `./template.html`, `./dist/index-${lang}.html`, data );
-	generatePage( `./template-index.html`, `./dist/index.html`, data );
-} );
+            lang,
+            languser: lang,
+            version: require( './package.json' ).version,
+            title,
+            content,
+            script: script( lang ),
+            theme: 'day',
+            documentation
+        };
+        generatePage( `./template.html`, `./dist/index-${lang}.html`, data );
+        generatePage( `./template-index.html`, `./dist/index.html`, data );
+    } ) );
+} )();
 

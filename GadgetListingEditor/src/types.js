@@ -32,34 +32,45 @@
  */
 /**
  * @typedef {Object} ListingConfig
- * @property {boolean} SHOW_LAST_EDITED_FIELD
+ * @property {boolean} SHOW_LAST_EDITED_FIELD whether to show the last edited field
+ *  on listings.
  * @property {boolean} WIKIDATA_SYNC_PLACEHOLDER When true, fields that
  *   Wikidata can supply dynamically at render time (wikipedia, commons image)
  *   are shown as a disabled placeholder after syncing and saved empty, so the
  *   local value cannot drift out of sync with Wikidata.
- * @property {string[]} SUPPORTED_SECTIONS
- * @property {Record<string, string>} sectionType
- * @property {string} iata
- * @property {number} COORD_PRECISION
- * @property {string} EDITOR_TAG
- * @property {string} listingTypeRegExp
- * @property {Record<string,string>} SECTION_TO_TEMPLATE_TYPE
- * @property {boolean} APPEND_FULL_STOP_TO_DESCRIPTION
- * @property {boolean} REPLACE_NEW_LINE_CHARS
- * @property {string[]} LISTING_TEMPLATES_OMIT
- * @property {boolean} VALIDATE_CALLBACKS_EMAIL
- * @property {boolean} SUBMIT_FORM_CALLBACKS_UPDATE_LAST_EDIT
- * @property {boolean} ALLOW_UNRECOGNIZED_PARAMETERS
- * @property {boolean} ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP
- * @property {string} LISTING_TYPE_PARAMETER
- * @property {string} LISTING_CONTENT_PARAMETER
- * @property {string} DEFAULT_LISTING_TEMPLATE
- * @property {ListingTemplateParametersConfig} SLEEP_TEMPLATE_PARAMETERS
- * @property {ListingTemplateParametersConfig} LISTING_TEMPLATE_PARAMETERS
- * @property {string} WIKIDATAID
- * @property {string[]} SPECIAL_CHARS
- * @property {ListingTemplateConfig} LISTING_TEMPLATES
- * @property {ListingWikidataClaims} WIKIDATA_CLAIMS
+ * @property {string[]} SUPPORTED_SECTIONS array of lowercased strings that will be
+ *  checked against the section heading string. For example if "do" is in array than listings
+ *  can be added to any heading == Do ==
+ * @property {Record<string, string>} sectionType maps heading titles to section types
+ *   e.g. `{ "Eat_and_drink": "eat" }`
+ * @property {string} iata template for rendering iata e.g. `"{{IATA|%s}}"`
+ * @property {number} COORD_PRECISION How many decimal places to show. Defaults to 6.
+ * @property {string} [EDITOR_TAG] if present all edits will be tagged with this
+ *   string. It must be defined in Special:Tags.
+ * @property {string} listingTypeRegExp regular expression for creating lists! Override at
+ *   your own risk!
+ * @property {Record<string,string>} SECTION_TO_TEMPLATE_TYPE private. Do not configure.
+ *  See sectionType.
+ * @property {boolean} APPEND_FULL_STOP_TO_DESCRIPTION adds a full stop at end of description.
+ * @property {boolean} REPLACE_NEW_LINE_CHARS replace all new line characters inside form values
+ *  before saving
+ * @property {boolean} VALIDATE_CALLBACKS_EMAIL checks email fields are in expected format
+ *   e.g. don't allow emails missing @ character
+ * @property {boolean} ALLOW_UNRECOGNIZED_PARAMETERS private do not use
+ * @property {boolean} ALLOW_UNRECOGNIZED_PARAMETERS_LOOKUP whether to allow unrecognized parameters
+ *  to be saved.
+ * @property {string} LISTING_TYPE_PARAMETER type field for your listing template defined in DEFAULT_LISTING_TEMPLATE
+ * @property {string} LISTING_CONTENT_PARAMETER content field for your template in DEFAULT_LISTING_TEMPLATE
+ * @property {string} DEFAULT_LISTING_TEMPLATE the wiki page where your listing template lives.
+ * @property {ListingTemplateParametersConfig} SLEEP_TEMPLATE_PARAMETERS map fields specific to sleep section to
+ * configuration options. Unstable and likely to change in future.
+ *  e.g. `{ "hours": { "hideIfEmpty": "div_hours", "skipIfEmpty": true } }`
+ * @property {ListingTemplateParametersConfig} LISTING_TEMPLATE_PARAMETERS map fields to configuration options.
+ * Unstable and likely to change in future.
+ *  e.g. `{ "hours": { "hideIfEmpty": "div_hours", "skipIfEmpty": true } }`
+ * @property {string} WIKIDATAID the wikidata ID of your project
+ * @property {string[]} SPECIAL_CHARS a list of characters that are commonly used in your
+ * language/;locale and might be helpful e.g. é - these appear in listing editor for easy copy and pasting
  */
 /**
  * @typedef {Object} ListingInfoParameter

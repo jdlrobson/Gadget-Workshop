@@ -388,7 +388,7 @@ module.exports = defineComponent( {
             <div class="listing-divider"></div>
             <div class="editor-row">
                 <div title="Preview">{{ $translate( 'preview' ) }}</div>
-                <div id="listing-preview-text"></div>
+                <div id="listing-preview-text" v-html="previewHtml"></div>
             </div>
         </div>
     </template>
@@ -449,6 +449,9 @@ module.exports = defineComponent( {
 
         /** @type {Number} */let previewTimeout = 0;
         const currentTab = ref( 'edit' );
+
+        const previewHtml = ref( '' );
+
         /**
          * @param {string} activeTab
          */
@@ -457,7 +460,10 @@ module.exports = defineComponent( {
                 clearInterval( previewTimeout );
                 mw.util.throttle( () => {
                     previewTimeout = /** @type {number} */ ( /** @type {unknown} */ ( setTimeout( () => {
-                        showPreview( {} );
+                        showPreview( {
+                        } ).then( ( html ) => {
+                            previewHtml.value = html;
+                        } );
                     currentTab.value = activeTab;
                     }, 200 ) ) );
                 }, 300 )();
@@ -503,6 +509,7 @@ module.exports = defineComponent( {
         );
 
         return {
+            previewHtml,
             customFields,
             customFieldData,
             currentImage,

@@ -1,24 +1,19 @@
 const getListingInfo = require( './getListingInfo.js' );
-const { getConfig } = require( './Config' );
 
 /**
- * @param {Record<string,string>} listing
+ * @param {Record<string,string>} listingData
  * @return {Record<string,string>}
  */
-const createListingFromForm = ( listing ) => {
-    const {
-        LISTING_TYPE_PARAMETER,
-        DEFAULT_LISTING_TEMPLATE
-    } = getConfig();
-    var defaultListingParameters = getListingInfo(DEFAULT_LISTING_TEMPLATE);
-    var listingTypeInput = defaultListingParameters[LISTING_TYPE_PARAMETER].id;
-    var listingType = /** @type {string} */(
-        $(`#${listingTypeInput}`).val()
-    );
-    var listingParameters = getListingInfo(listingType);
+const createListingFromForm = ( listingData ) => {
+    const listingParameters = getListingInfo(listingData.type);
+    /** @type {Record<string,string>} */
+    const listing = {};
     for (var parameter in listingParameters) {
-        // @ts-ignore jQuery.val can return non-string
-        listing[parameter] = $(`#${listingParameters[parameter].id}`).val();
+        const parameterId = listingParameters[parameter].id;
+        let key = parameterId.indexOf( 'input-' ) === 0 ?
+            parameterId.split('input-')[1] : parameterId;
+        key = parameterId.indexOf('-value') > -1 ? key.split('-value')[0] : key;
+        listing[parameter] = listingData[key];
     }
     return listing;
 };

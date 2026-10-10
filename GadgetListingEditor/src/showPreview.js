@@ -4,12 +4,11 @@ const createListingFromForm = require( './createListingFromForm.js' );
 const fetchPath = require( './fetchPath.js' );
 
 /**
- * @param {Record<string,string>} listingTemplateAsMap
+ * @param {Record<string,string>} listingData
  * @return {Promise<string>}
  */
-const showPreview = function(listingTemplateAsMap) {
-    var listing = createListingFromForm( listingTemplateAsMap );
-    var text = listingToStr(listing);
+const showPreview = function(listingData) {
+    const text = listingToStr(createListingFromForm(listingData));
     const params = $.param({
         origin: '*',
         action: 'parse',

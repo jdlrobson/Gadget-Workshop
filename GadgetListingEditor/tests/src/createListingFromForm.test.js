@@ -2,16 +2,15 @@ const createListingFromForm = require( '../../src/createListingFromForm' );
 
 describe( 'createListingFromForm', () => {
 	it( 'creates a listing from form', () => {
-        $( `<div>
-    <input id='input-wikidata-value' value='Q919191'>
-    <input id='input-lastedit' value='2017-03-21'>
-    <input id='input-content' value='hello'>
-    <input id='input-long' value='-1.08609'>
-    <input id='input-lat' value='53.205875'>
-    <input id='input-type' value='see'>
-    <input id='input-name' value='[[Sherwood Forest]] Country Park'>
-` ).appendTo( document.body );
-        const listing = createListingFromForm({});
+        const listing = createListingFromForm({
+            type: 'see',
+            name: '[[Sherwood Forest]] Country Park',
+            lat: '53.205875',
+            long: '-1.08609',
+            lastedit: '2017-03-21',
+            content: 'hello',
+            wikidata: 'Q919191'
+        });
         expect( listing ).toStrictEqual( {
             address: undefined,
             alt: undefined,

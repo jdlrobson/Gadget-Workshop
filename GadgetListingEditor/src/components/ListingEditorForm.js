@@ -407,8 +407,18 @@ module.exports = defineComponent( {
     emits: [ 'updated:listing' ],
     setup( props, { emit } ) {
         const { showLastEditedField, mode, listingType, lat, long, lastedit,
+            price,
+            checkout,
+            checkin,
+            hours,
+            fax,
+            tollfree,
+            phone,
+            directions,
+            url,
             customFields,
             email,
+            content,
             wikidata, wikipedia, image,
             aka, address, listingName
         } = props;
@@ -447,6 +457,30 @@ module.exports = defineComponent( {
             }
         } );
 
+        const dataToObject = () => Object.assign( {
+            content,
+            price,
+            checkout,
+            checkin,
+            hours,
+            fax,
+            tollfree,
+            phone,
+            directions,
+            url,
+            type: listingType,
+            lastedit: lastEditTimestamp.value,
+            lat: currentLat.value,
+            long: currentLong.value,
+            alt: currentAltName.value,
+            name: currentListingName.value,
+            address: currentAddress.value,
+            email: currentEmail.value,
+            wikipedia: currentWikipedia.value,
+            wikidata: currentWikidata.value,
+            image: currentImage.value
+        }, customFieldData.value );
+
         /** @type {Number} */let previewTimeout = 0;
         const currentTab = ref( 'edit' );
 
@@ -460,8 +494,7 @@ module.exports = defineComponent( {
                 clearInterval( previewTimeout );
                 mw.util.throttle( () => {
                     previewTimeout = /** @type {number} */ ( /** @type {unknown} */ ( setTimeout( () => {
-                        showPreview( {
-                        } ).then( ( html ) => {
+                        showPreview( dataToObject() ).then( ( html ) => {
                             previewHtml.value = html;
                         } );
                     currentTab.value = activeTab;
@@ -476,17 +509,7 @@ module.exports = defineComponent( {
         const currentWikipedia = ref( wikipedia );
         const currentImage = ref( image );
         const onListingUpdate = () => {
-            emit( 'updated:listing', {
-                lat: currentLat.value,
-                long: currentLong.value,
-                alt: currentAltName.value,
-                name: currentListingName.value,
-                address: currentAddress.value,
-                email: currentEmail.value,
-                wikipedia: currentWikipedia.value,
-                wikidata: currentWikidata.value,
-                image: currentImage.value
-            } );
+            emit( 'updated:listing', dataToObject() );
         };
         /**
          * @param {SisterSiteData} sisterSiteData

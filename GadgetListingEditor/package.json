@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "node makeHtml.js && npx http-server dist -p 9999",
     "start": "npx tsc && npm test && rollup -c",
-    "test": "eslint . && jest"
+    "test": "npx tsc && eslint . && jest"
   },
   "repository": {
     "type": "git",

@@ -144,7 +144,7 @@ exports[`listingEditorForm makes use of specialCharactersString 1`] = `
           <div class="editor-fullwidth">
             <div id="div_type" class="editor-row" style="display: none;">
               <div class="editor-label-col"><label for="input-type">Type</label></div>
-              <div><select id="input-type" style="box-shadow: -20px 0 0 0 var(--background-color-base, white) inset;"></select></div>
+              <div><select id="input-type" style="box-shadow: var(--background-color-base, white) -20px 0px 0px 0px inset;"></select></div>
               <div class="editor-fullwidth"><span id="span-closed"><input type="checkbox" id="input-closed"><label for="input-closed" class="listing-tooltip" title="Check the box if the business is no longer in operation or if the listing should be deleted for some other reason, and it will be removed from this article">delete this listing?</label></span></div>
             </div>
             <div id="div_url" class="editor-row">

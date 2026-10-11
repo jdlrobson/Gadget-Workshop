@@ -4,6 +4,11 @@ const translatePlugin = require( '../../../src/translatePlugin' );
 const { shallowMount, mount } = require( '@vue/test-utils' );
 
 describe( 'listingEditorForm', () => {
+    beforeEach( () => {
+        global.fetch = jest.fn( () => Promise.resolve( {
+            then: () => Promise.resolve( {} )
+        } ) );
+    } );
     it('renders', () => {
         const wrapper = shallowMount(ListingEditorForm, {
             props: {

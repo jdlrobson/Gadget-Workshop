@@ -9,8 +9,9 @@ const parseDMS = require( '../parseDMS.js' );
 const showPreview = require( '../showPreview.js' );
 const currentLastEditDate = require( '../currentLastEditDate' );
 const isRTLString = require( '../isRTLString' );
-const initColor = require( '../initColor' );
 const initStringFormFields = require( '../initStringFormFields.js' );
+const asyncGetColor = require('../asyncGetColor.js');
+const { getConfig } = require( '../Config.js' );
 
 /**
  * Generate the form UI for the listing editor. If editing an existing
@@ -262,9 +263,10 @@ module.exports = defineComponent( {
                     <label for="input-type">{{ $translate( 'type' ) }}</label>
                 </div>
                 <div>
-                    <select id="input-type">
+                    <select id="input-type" @change="onTypeChange" v-model="currentListingType"
+                        :style="currentTypeStyle">
                         <option v-for="t in listingTypes"
-                            :value="t" :selected="listingType === t">{{ t }}</option>
+                            :value="t">{{ t }}</option>
                     </select>
                 </div>
                 <div class="editor-fullwidth">
@@ -449,10 +451,25 @@ module.exports = defineComponent( {
             }
         ] );
         const form = ref(null);
+        const currentListingType = ref( listingType );
+        const { DEFAULT_LISTING_COLOR } = getConfig();
+        const currentTypeColor = ref( DEFAULT_LISTING_COLOR );
+        const currentTypeStyle = computed(
+            () => ({
+                'box-shadow': `${currentTypeColor.value} -20px 0px 0px 0px inset`
+            })
+        );
+        const onTypeChange = () => {
+            asyncGetColor( currentListingType.value ).then( ( color ) => {
+                currentTypeColor.value = color;
+            } );
+        };
         onMounted( () => {
             if ( form.value ) {
                 hideEmptyFormValues( form.value, listingParameters );
-                initColor( form.value );
+                asyncGetColor( currentListingType.value ).then( ( color ) => {
+                    currentTypeColor.value = color;
+                } );
                 initStringFormFields( form.value );
             }
         } );
@@ -468,7 +485,7 @@ module.exports = defineComponent( {
             phone,
             directions,
             url,
-            type: listingType,
+            type: currentListingType.value,
             lastedit: lastEditTimestamp.value,
             lat: currentLat.value,
             long: currentLong.value,
@@ -532,6 +549,9 @@ module.exports = defineComponent( {
         );
 
         return {
+            currentListingType,
+            onTypeChange,
+            currentTypeStyle,
             previewHtml,
             customFields,
             customFieldData,

@@ -5,6 +5,11 @@ const translatePlugin = require( '../../../src/translatePlugin' );
 const { mount } = require( '@vue/test-utils' );
 
 describe( 'ListingEditorFormDialog', () => {
+    beforeEach( () => {
+        global.fetch = jest.fn( () => Promise.resolve( {
+            then: () => Promise.resolve( {} )
+        } ) );
+    } );
     it('renders', () => {
         const wrapper = mount(ListingEditorFormDialog, {
             props: {

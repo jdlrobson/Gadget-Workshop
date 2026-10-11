@@ -49,6 +49,7 @@
  *   string. It must be defined in Special:Tags.
  * @property {string} listingTypeRegExp regular expression for creating lists! Override at
  *   your own risk!
+ * @property {string} [DEFAULT_LISTING_COLOR] the default color for listings with unknown type.
  * @property {Record<string,string>} SECTION_TO_TEMPLATE_TYPE private. Do not configure.
  *  See sectionType.
  * @property {boolean} APPEND_FULL_STOP_TO_DESCRIPTION adds a full stop at end of description.

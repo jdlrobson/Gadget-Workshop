@@ -8,7 +8,9 @@ const respondWithColor = jest.fn( () => {
             }
         }
     };
-    return Promise.resolve( response );
+    return Promise.resolve( {
+        then: () => Promise.resolve( response )
+    } );
 } );
 
 const respondWithBlank = jest.fn( () => {
@@ -19,7 +21,9 @@ const respondWithBlank = jest.fn( () => {
             }
         }
     };
-    return Promise.resolve( response );
+    return Promise.resolve( {
+        then: () => Promise.resolve( response )
+    } );
 } );
 
 describe( 'asyncGetColor', () => {
@@ -33,7 +37,7 @@ describe( 'asyncGetColor', () => {
         };
     } );
 	it( 'caches', () => {
-        $.ajax = respondWithColor;
+        global.fetch = respondWithColor;
 		asyncGetColor( 'type' ).then( ( color ) => {
             expect( color ).toBe( '#33ffff' );
             asyncGetColor( 'type' );
@@ -41,7 +45,7 @@ describe( 'asyncGetColor', () => {
         } );
 	} );
     it( 'doesnt resolve if cannot resolve template', () => {
-        $.ajax = respondWithBlank;
+        global.fetch = respondWithBlank;
 		asyncGetColor( 'type' ).then( ( color ) => {
             expect( color ).toBe( '' );
             asyncGetColor( 'type' );

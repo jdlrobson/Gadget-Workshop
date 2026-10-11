@@ -6,6 +6,7 @@
  * @type {Partial<ListingConfig>}
  */
 const DEFAULTS = {
+    DEFAULT_LISTING_COLOR: 'var(--background-color-base, white)',
     // When true, wikipedia/image fields that were just synced from
     // Wikidata are shown disabled with the synced value as a placeholder
     // and saved empty, so the article re-fetches them from Wikidata at

@@ -2,26 +2,24 @@ let CC = '';
 let LC = '';
 
 /**
- * @param {JQuery} $el
+ * @param {HTMLElement|null} el
  * @return {Record<string,string[]>}
  */
-const loadFromCountryData = ( $el ) => {
-    CC = '';
-    dataSel = $el.attr('data-country-calling-code');
-    if ((dataSel !== undefined) && (dataSel !== '')) CC = dataSel;
-    LC = '';
-    dataSel = $el.attr('data-local-dialing-code');
-    if ((dataSel !== undefined) && (dataSel !== '')) LC = dataSel;
+const loadFromCountryData = ( el ) => {
+    const /** @type {string[]} */telephoneCodes = [];
+    let /** @type {string[]} */ NATL_CURRENCY = [];
 
-    /** @type {string[]} */
-    let NATL_CURRENCY = [];
-    var dataSel =  $el.attr('data-currency');
-    if ((dataSel !== undefined) && (dataSel !== '')) {
-        NATL_CURRENCY = dataSel.split( ',' ).map( function( item ) {
-            return item.trim();
-        });
+    if ( !el ) {
+        return {
+            telephoneCodes,
+            NATL_CURRENCY
+        };
     }
-    const telephoneCodes = [];
+    CC = el.getAttribute('data-country-calling-code') || '';
+    LC = el.getAttribute('data-local-dialing-code') || '';
+    NATL_CURRENCY = ( el.getAttribute('data-currency') || '' ).split( ',' ).filter( item => item )
+        .map( item => item.trim() );
+
     if ( CC ) {
         telephoneCodes.push( CC );
     }

@@ -53,7 +53,7 @@ var initListingEditorDialog = function(mode, clicked) {
     const {
         telephoneCodes,
         NATL_CURRENCY
-    } = localData.loadFromCountryData( $( '.countryData' ) );
+    } = localData.loadFromCountryData( document.querySelector( '.countryData' ) );
 
     api.ajax({
         prop: 'revisions',

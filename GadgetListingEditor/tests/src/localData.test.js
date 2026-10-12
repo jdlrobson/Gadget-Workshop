@@ -2,14 +2,14 @@ const { loadFromCountryData } = require( '../../src/localData' );
 
 describe( 'loadFromCountryData', () => {
 	it( 'extracts from the DOM', () => {
-        const $countryData = $( `<div class="countryData"
+        const countryData = $( `<div class="countryData"
     data-local-dialing-code="415"
     data-currency="$"
-    data-country-calling-code="+44" />` );
+    data-country-calling-code="+44" />` )[ 0 ];
 		const {
             telephoneCodes,
             NATL_CURRENCY
-        } = loadFromCountryData( $countryData );
+        } = loadFromCountryData( countryData );
 		expect( telephoneCodes ).toStrictEqual( [ "+44", "415" ] );
 		expect(  NATL_CURRENCY ).toStrictEqual( [ '$' ] );
 	} );

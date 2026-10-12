@@ -27,7 +27,6 @@ const asyncGetColor = ( listingType ) => {
     return fetchPath(`${mw.config.get('wgScriptPath')}/api.php?${query}`)
         .then( ( response ) => response.json() )
         .then( ( data ) => {
-            console.log( 'Fetched color data:', data, data.parse.text['*'] );
             const nodeFragment = document.createElement( 'div' );
             nodeFragment.innerHTML = data.parse.text['*'];
             const color = ( nodeFragment.textContent || '' ).trim();

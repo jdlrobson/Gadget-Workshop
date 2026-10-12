@@ -88,15 +88,14 @@ var openListingEditorDialog = function(mode, sectionNumber, listingIndex, listin
     };
 
    /**
+    * @param {string} captchaValue
      * @param {Function} setCaptcha
      * @param {Function} closeAction
      */
-    const onCaptchaSubmit = ( setCaptcha, closeAction ) => {
+    const onCaptchaSubmit = ( captchaValue, setCaptcha, closeAction ) => {
         if ( captchaSaveArgs ) {
             captchaSaveArgs.push(
-                /** @type {string} */ (
-                    $('#input-captcha').val() || ''
-                )
+                captchaValue
             );
             setCaptcha( '' );
             // @ts-ignore argument

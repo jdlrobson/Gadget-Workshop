@@ -25,7 +25,7 @@ module.exports = defineComponent( {
             <strong>{{ $translate( 'enterCaptcha' ) }}</strong>
             <p>{{ $translate( 'externalLinks' ) }}</p>
             <img class="fancycaptcha-image" :src="captchaRequested">
-            <cdx-text-input id="input-captcha"></cdx-text-input>
+            <cdx-text-input id="input-captcha" v-model="captcha"></cdx-text-input>
             <cdx-button @click="onCaptchaSubmit">{{ $translate( 'submit' ) }}</cdx-button>
         </div>
     </div>
@@ -109,6 +109,7 @@ module.exports = defineComponent( {
         /** @type {Vue.Ref<AbortableJQueryDeferred<any>|null>} */
         const activeXhr = ref( null );
         const captchaRequested = ref( '' );
+        const captcha = ref( '' );
         const saveInProgress = ref( false );
         const defaultAction = {
             label: 'Cancel'
@@ -198,8 +199,9 @@ module.exports = defineComponent( {
             captureInitialValues();
         });
         return {
+            captcha,
             onCaptchaSubmit: () => {
-                onCaptchaSubmit( setCaptcha, closeAction );
+                onCaptchaSubmit( captcha.value, setCaptcha, closeAction );
             },
             captchaRequested,
             saveInProgress,

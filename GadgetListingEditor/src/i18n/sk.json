@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"KormiSK",
 			"Wizzard"
 		]
 	},
@@ -46,6 +47,7 @@
 	"splurge": "Luxusné",
 	"cancel": "Zrušiť",
 	"cancelAll": "Vymazať všetko",
+	"confirmDiscard": "Máte neuložené zmeny. Naozaj chcete zatvoriť bez uloženia?",
 	"form-tab-label-edit": "upraviť",
 	"form-tab-label-preview": "náhľad",
 	"preview": "Náhľad",
